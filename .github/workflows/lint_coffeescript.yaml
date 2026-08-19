@@ -19,9 +19,6 @@ jobs:
     - name: check out code
       uses: actions/checkout@v4
 
-    - name: install system dependencies
-      run: sudo apt install -y libpng-dev
-
     - name: install pnpm
       uses: pnpm/action-setup@v4
 

@@ -6,15 +6,12 @@ on:
     - main
   pull_request:
     paths:
-      - .babelrc
       - .mocharc.js
       - app/**.js
       - bulk-decaffeinate.config.js
       - cli/**.js
       - config/**.js
       - desktop/**.js
-      - gulp/**.js
-      - gulpfile.babel.js
       #- packages/**.js
       - scripts/**.js
       - server/**.js
@@ -27,9 +24,6 @@ jobs:
     steps:
     - name: check out code
       uses: actions/checkout@v4
-
-    - name: install system dependencies
-      run: sudo apt install -y libpng-dev
 
     - name: install pnpm
       uses: pnpm/action-setup@v4

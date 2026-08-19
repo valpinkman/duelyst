@@ -25,12 +25,13 @@ gulp + browserify. **We are in the middle of modernizing the whole stack** — r
 ```bash
 pnpm install                                   # after clone or lockfile change
 pnpm tsc:chroma-js                             # required once before build (packages/chroma-js has no committed dist)
-FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # gulp client build -> dist/src (dummy URL is fine for build)
+FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # client build -> dist/src (dummy URL fine unless you want to play)
+pnpm build:vite                                # JS bundle only (~2.4s); build:client:watch for the dev loop
 pnpm test:unit                                 # mocha, ~1300 tests, ~6s, no external services
 pnpm test:integration:misc                     # the only integration suite that runs in CI (rest need Postgres/Redis/Firebase)
 pnpm lint:js:all && pnpm lint:coffee:all       # eslint (airbnb-base) + coffeelint
 pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
-docker compose up                              # full local stack (Docker images not yet re-verified after the pnpm switch)
+docker compose up                              # full local stack (rebuild images after source changes: they are NOT live-mounted)
 ```
 
 Playing the game locally requires a Firebase Realtime Database (`FIREBASE_URL`, legacy
@@ -52,7 +53,7 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 | `bin/` | entrypoints: `app-module-path` → `coffeescript/register` → `config/config` → main | JS |
 | `config/` | convict schema `config.js` + `{development,staging,production}.json` | JS |
 | `test/` | mocha: `unit/` (sdk, ai, firebase, misc), `integration/`, `rest/` (broken), `perf/` (Benchmark.js) | JS |
-| `gulp/`, `gulpfile.babel.js` | build: browserify+coffeeify+hbsfy+glslify+envify, sass, vendor concat, asset copy | JS |
+| `vite.config.client.mjs`, `scripts/build/build-client.mjs` | client build: Vite/rolldown bundle (coffee/hbs/glslify plugins, envify defines) + vendor concat, sass, index.html, locales, resource copy | JS |
 | `scripts/generate_packages.js` | **build-critical**: scans `//pragma PKGS:` comments and RSX refs to emit `app/data/packages.js` | JS |
 | `packages/` | vendored forks: `chroma-js` (TS), `warlock`, `backfire`, `Backbone.VirtualCollection` | mixed |
 | `desktop/` | Electron shell wrapping `dist/src` | JS |
@@ -79,9 +80,14 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 - **CommonJS "export before require" idiom** (`module.exports = X` at the top of managers, class
   defined before requires in `gameSession.coffee`) exists to survive circular requires. It does not
   survive ESM — restructure, don't just rename.
-- **Build-time env → client** via envify: `API_URL`, `FIREBASE_URL`, `VERSION`, `NODE_ENV`,
-  `AI_TOOLS_ENABLED`, `ALL_CARDS_AVAILABLE`, … (`gulp/bundler.js`). Gulp refuses to build without
-  a `FIREBASE_URL` ending in `firebaseio.com/`.
+- **Build-time env → client** via Vite `define`: `API_URL`, `FIREBASE_URL`, `VERSION`, `NODE_ENV`,
+  `AI_TOOLS_ENABLED`, `ALL_CARDS_AVAILABLE`, … The build refuses to run without a `FIREBASE_URL`
+  ending in `firebaseio.com/`. **Trap:** `vite build` forces `NODE_ENV=production`, which would
+  flip convict onto `production.json`; the orchestrator therefore resolves config itself and
+  passes it in via `DUELYST_BUILD_CONFIG`.
+- **Asset packages are text-parsed** (`scripts/generate_packages.js`) — the build verifies the
+  generated key set against `scripts/build/packages-manifest.json` and fails on drift.
+  Regenerate deliberately with `--update-packages-manifest`.
 - Style: 2-space indent, LF, single quotes, semicolons in JS (`.editorconfig`, `.eslintrc.json`,
   `coffeelint.json`). ESLint has many per-directory rule downgrades — don't "fix" them wholesale.
 
@@ -116,6 +122,9 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — GULP DELETED (4.5). Gate met against a real Firebase RTDB: registered, logged in,
+  played a practice game vs the AI, conceded; then rebuilt from scratch gulp-free (0 console
+  errors). pnpm build = scripts/build/build-client.mjs.
 - 2026-08-19 — desktop/ folded into the pnpm workspace (yarn.lock removed, electron allowlisted);
   Electron-2 packaging unpin deferred to a packaging QA run.
 - 2026-08-19 — Phase 6 conversion done: entire runtime (app+server+worker) CoffeeScript-free;

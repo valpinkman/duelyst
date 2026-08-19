@@ -8,8 +8,6 @@ on:
     paths:
       - app/**
       - config/**
-      - gulp/**
-      - gulpfile.babel.js
       - package.json
       - server/**
       - test/**
