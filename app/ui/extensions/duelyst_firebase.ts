@@ -1,6 +1,25 @@
 var Promise = require('bluebird');
 var _ = require('underscore');
 
+/*
+ * backfire (app/vendor/backfire) is a Backbone<->Firebase binding written for
+ * firebase 2.x and shipped only as a minified build. Rather than edit that
+ * blob, the one place it is incompatible with a modern SDK is corrected here.
+ *
+ * backfire derives a child's id with:
+ *     typeof snap.key === 'function' ? snap.key() : snap.name()
+ * In firebase 2.x `key` was a METHOD; from v3 on it is a plain string
+ * property, so that test falls through to `name()`, which no longer exists -
+ * every synced model would come back with `id === undefined`.
+ *
+ * See app/firebase.ts for why the rest of backfire works untouched.
+ */
+if (Backbone.Firebase && Backbone.Firebase.prototype) {
+  Backbone.Firebase.prototype._getKey = function (snapshotOrRef) {
+    return typeof snapshotOrRef.key === 'function' ? snapshotOrRef.key() : snapshotOrRef.key;
+  };
+}
+
 Backbone.DuelystFirebase = {};
 
 Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({

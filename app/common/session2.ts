@@ -7,7 +7,7 @@
 const debug = require('debug')('session');
 const { EventEmitter } = require('events');
 const Promise = require('bluebird');
-const Firebase = require('firebase-v2');
+const Firebase = require('app/firebase');
 const fetch = require('isomorphic-fetch');
 const moment = require('moment');
 const Storage = require('app/common/storage');
@@ -61,16 +61,31 @@ class Session extends EventEmitter {
     throw new Error('Please try again');
   }
 
-  _authFirebase(token) {
+  /*
+   * Authenticate to Firebase with the custom token the API mints (plan 9.1).
+   *
+   * firebase 2.x took a JWT signed with the database secret and handed its
+   * whole `d` payload to the rules as `auth`, which is why this used to be
+   * given the SAME token we send to our API. From v3 on, sign-in takes a real
+   * custom token and the rules see `auth.uid` plus `auth.token.*`.
+   *
+   * The `{ auth: { id, username }, expires }` shape is preserved because
+   * callers read it; only where the values come from has changed.
+   */
+  _authFirebase(firebaseToken) {
     debug('authFirebase');
-    return new Promise((resolve, reject) => {
-      this.fbRef = new Firebase(this.fbUrl);
-      return this.fbRef.authWithCustomToken(token, (err, res) => {
-        debug('authWithCustomToken');
-        if (err) { return reject(err); }
-        return resolve(res);
-      });
-    });
+    this.fbRef = new Firebase(this.fbUrl);
+    return Promise.resolve(
+      Firebase.auth().signInWithCustomToken(firebaseToken)
+        .then((credential) => credential.user.getIdTokenResult()),
+    ).then((result) => ({
+      auth: {
+        id: result.claims.user_id || result.claims.sub,
+        username: result.claims.username,
+      },
+      // v2 reported seconds since epoch; getIdTokenResult gives a date string
+      expires: Math.floor(new Date(result.expirationTime).getTime() / 1000),
+    }));
   }
 
   _deauthFirebase() {
@@ -85,7 +100,8 @@ class Session extends EventEmitter {
           ended: Firebase.ServerValue.TIMESTAMP,
         });
     }
-    return this.fbRef.unauth();
+    // v2's ref.unauth() became a sign-out on the auth instance
+    return Firebase.auth().signOut();
   }
 
   _decodeFirebaseToken(token) {
@@ -127,7 +143,8 @@ class Session extends EventEmitter {
       .then((res) => {
         this.analyticsData = res.analytics_data;
         this.token = res.token;
-        return this._authFirebase(this.token);
+        // the API token authenticates US; firebase_token authenticates Firebase
+        return this._authFirebase(res.firebase_token);
       })
       .then((res) => {
         debug(res);
@@ -302,30 +319,36 @@ class Session extends EventEmitter {
       .then(this._checkResponse);
   }
 
+  /*
+   * Restore a stored session (plan 9.3).
+   *
+   * The order here is inverted from what it used to be. Under firebase 2.x the
+   * stored API token was ALSO a valid Firebase credential, so this signed into
+   * Firebase first and read the user id back out of the decoded token. Custom
+   * tokens cannot be stored and replayed that way - they are short-lived (~1h)
+   * and are exchanged for a session, so a token kept in local storage is
+   * almost always expired by the time it is used.
+   *
+   * So we now validate with our own server FIRST, which both confirms the
+   * stored token and hands back a freshly minted firebase_token, and only then
+   * authenticate to Firebase with that.
+   */
   isAuthenticated(token) {
     if ((token == null)) { return Promise.resolve(false); }
 
-    // decode with Firebase
-    return this._authFirebase(token)
+    this.token = token;
+    return Promise.resolve(
+      fetch(`${this.url}/session`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    )
       .bind(this)
       .timeout(15000)
-      .then((decodedToken) => {
-        debug('isAuthenticated:authFirebase', decodedToken);
-        // use decoded token to init params
-        this.token = token;
-        this.userId = decodedToken.auth.id;
-        this.username = decodedToken.auth.username;
-        this.expires = decodedToken.expires;
-        // validate token with our servers
-        return fetch(`${this.url}/session`, {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${this.token}`,
-          },
-        });
-      })
       .then((res) => {
         debug(`isAuthenticated:fetch ${res.ok}`);
         if (!res.ok) { return null; }
@@ -334,9 +357,21 @@ class Session extends EventEmitter {
         return this._checkResponse(res);
       })
       .then((data) => {
+        if (data === null) { return null; }
+        this.analyticsData = data.analytics_data;
+        // the server re-issues both on every session check
+        if (data.token) { this.token = data.token; }
+        return this._authFirebase(data.firebase_token).then((decoded) => {
+          debug('isAuthenticated:authFirebase', decoded);
+          this.userId = decoded.auth.id;
+          this.username = decoded.auth.username;
+          this.expires = decoded.expires;
+          return data;
+        });
+      })
+      .then((data) => {
         if (data === null) { return false; }
 
-        this.analyticsData = data.analytics_data;
         this.emit('login', { token: this.token, userId: this.userId, analyticsData: this.analyticsData });
         return true;
       })
