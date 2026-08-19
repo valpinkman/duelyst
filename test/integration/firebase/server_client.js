@@ -54,22 +54,24 @@ describe('Firebase.ServerClient.IntegrationTests', () => {
       });
   });
 
+  /*
+   * Both of these used to drop the inner promise instead of returning it, so
+   * the assertions ran after the test had already resolved - they could not
+   * fail the run, only surface as an unhandled rejection. The read-back
+   * assertion was also written `expect(snapshot.val().to.be.equal(x))`, with
+   * the paren in the wrong place, so it read `.to` off the VALUE and threw
+   * TypeError instead of ever comparing anything (upstream 4ab9ccdd).
+   * Returning the chains makes both tests real; `eql` because snapshot.val()
+   * is a fresh object, so reference equality could never hold.
+   */
   it('should write test data', () => DuelystFirebase.connect(firebaseUrl).getRootRef()
-    .then((rootRef) => {
-      rootRef.child(testRef)
-        .set(testObject, (error) => {
-          expect(error).to.not.exist;
-          DuelystFirebase.disconnect(firebaseUrl);
-        });
-    }));
+    .then((rootRef) => rootRef.child(testRef).set(testObject))
+    .then(() => DuelystFirebase.disconnect(firebaseUrl)));
 
   it('should read back test data', () => DuelystFirebase.connect(firebaseUrl).getRootRef()
-    .then((rootRef) => {
-      rootRef.child(testRef)
-        .once('value')
-        .then((snapshot) => {
-          expect(snapshot.val().to.be.equal(testObject));
-          DuelystFirebase.disconnect(firebaseUrl);
-        });
+    .then((rootRef) => rootRef.child(testRef).once('value'))
+    .then((snapshot) => {
+      expect(snapshot.val()).to.eql(testObject);
+      return DuelystFirebase.disconnect(firebaseUrl);
     }));
 });

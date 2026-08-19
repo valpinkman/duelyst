@@ -7,7 +7,16 @@
 let error,
   firebaseServiceAccount;
 const Promise = require('bluebird');
-const firebaseAdmin = require('firebase-admin');
+/*
+ * firebase-admin 14 is fully modular: the namespaced API this file used to
+ * call (firebaseAdmin.credential.cert, firebaseAdmin.database.enableLogging,
+ * app.database(), app.delete()) is gone from the root export, which now only
+ * re-exports `firebase-admin/app`. The equivalents live in subpath entry
+ * points and are imported directly below. The CLASS API is unchanged, so the
+ * 352 DuelystFirebase.connect() call sites are untouched.
+ */
+const { initializeApp, cert, deleteApp } = require('firebase-admin/app');
+const { getDatabase, enableLogging } = require('firebase-admin/database');
 const colors = require('colors');
 const moment = require('moment');
 const util = require('util');
@@ -66,7 +75,16 @@ class DuelystFirebaseModule {
   static disconnect(url) {
     if (this.apps[url] != null) {
       Logger.module('Firebase').log(`disconnecting from ${url}`);
-      this.apps[url].promise.then((deletable) => deletable.delete().then((error) => Logger.module('Firebase').error(`failed to delete: ${error.toString()}`)));
+      /*
+       * This used to be `.then((error) => log('failed to delete: ' + error))`
+       * on the SUCCESS path, so a clean disconnect logged a failure and then
+       * threw TypeError on error.toString() (delete() resolves with nothing),
+       * producing an unhandled rejection every time. Rewritten as a real
+       * .catch while migrating the call to deleteApp().
+       */
+      this.apps[url].promise
+        .then((deletable) => deleteApp(deletable))
+        .catch((e) => Logger.module('Firebase').error(`failed to delete: ${e}`));
       return delete DuelystFirebaseModule.apps[url];
     } else {
       return Logger.module('Firebase').log(`already disconnected from ${url}`);
@@ -90,17 +108,17 @@ class DuelystFirebaseModule {
       }
 
       if (firebaseLoggingEnabled) {
-        firebaseAdmin.database.enableLogging(true);
+        enableLogging(true);
       }
 
       try {
-        const app = firebaseAdmin.initializeApp({
-          credential: firebaseAdmin.credential.cert(firebaseServiceAccount),
+        const app = initializeApp({
+          credential: cert(firebaseServiceAccount),
           databaseURL: this.firebaseUrl,
         }, this.firebaseUrl);
 
         // Initialize the database before resolving.
-        const db = app.database();
+        const db = getDatabase(app);
         const ref = db.ref();
         return resolve(app);
       } catch (e) {
@@ -116,7 +134,7 @@ class DuelystFirebaseModule {
     return this.promise
       .then(function (app) {
         try {
-          const db = app.database();
+          const db = getDatabase(app);
           return db.ref();
         } catch (e) {
           return Logger.module('Firebase').error(`failed to get ref: ${e.toString()}`);

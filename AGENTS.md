@@ -128,6 +128,12 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — firebase-admin 11 → 14 (advisories 148 → 128; its subtree 21 vulnerable paths
+  → 1). v14 is fully modular, so the namespaced calls moved to `firebase-admin/app` +
+  `firebase-admin/database` in the one seam (`server/lib/duelyst_firebase_module.ts`); the
+  class API is unchanged so all 352 `connect()` callers are untouched. Verified against the
+  real RTDB. NOTE: the client still uses `firebase@2.0.3` — that one is the RTDB
+  keep-vs-replace decision, not a bump.
 - 2026-08-19 — deleted `scripts/add_index.js` (GitGuardian). Its two hardcoded Firebase
   tokens came from upstream's 2022 source dump and are public in `open-duelyst/duelyst`;
   decaffeinating the file gave them a new path, which re-flagged them as new incidents.

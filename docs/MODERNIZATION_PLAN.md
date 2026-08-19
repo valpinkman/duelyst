@@ -501,8 +501,20 @@ server and worker. What remains is *typing* (5T.4), not converting.
       `@thream/socketio-jwt` hard-depends on 8.5.1, which would have left the **socket**
       auth path on the vulnerable copy. New `test/unit/misc/auth_tokens.js` covers signing,
       expiry, wrong-secret, the `req.user` pin, and algorithm confusion. — (this commit)
+  - [x] **`firebase-admin` 11.11.1 → 14.2.0** (advisories 148 → 128; its subtree went from
+    **21 vulnerable paths to 1**). v14 is fully modular: the root export is now just
+    `firebase-admin/app`, so `firebaseAdmin.credential.cert`, `firebaseAdmin.database.*`,
+    `app.database()` and `app.delete()` are all gone. Rewritten against the subpath entries
+    (`cert`/`initializeApp`/`deleteApp` from `firebase-admin/app`, `getDatabase`/`enableLogging`
+    from `firebase-admin/database`) in the single seam `server/lib/duelyst_firebase_module.ts` —
+    the only consumer in the repo. The CLASS API is unchanged, so all 352 `DuelystFirebase.connect()`
+    call sites are untouched. Verified against the REAL RTDB, not just a build. — (this commit)
   - [ ] **Tier 2 — needs seam-typing first**: `bluebird` → native promises, `redis` v4,
     `knex` 3, `winston` 3, `kue`. Each changes an API surface that many call sites depend on.
+  - [ ] **Client `firebase` 2.0.3 → 12** is NOT a bump and is deliberately not listed here: it
+    crosses three API generations (v3 namespaced, v9 modular), replaces `.auth(legacyToken)`
+    with `signInWithCustomToken`, and invalidates the vendored `backfire` Backbone binding.
+    It is the "keep vs replace RTDB" decision in concrete form — see Later/optional.
 
   **Latent bug found while doing this, deliberately NOT fixed here** (belongs with the other
   preserved bugs in the correctness pass, 5.2c): `config/config.js` documents
