@@ -440,11 +440,9 @@ server and worker. What remains is *typing* (5T.4), not converting.
   zero external references first.
   **Kept and converted** the tooling worth having: `scripts/localization/*` (finds missing and
   out-of-date i18n keys) and `generate_invite_codes`.
-  **`scripts/add_index` was later deleted** (see 8.3): converting it to `.js` gave the two
-  hardcoded Firebase tokens it had carried since the initial 2022 source dump a new file
-  path, which re-triggered GitGuardian. Dead three ways over — both `duelyst-alpha*`
-  instances are gone, it uses the Firebase v2 API (`new Firebase(url)` / `.auth(token, cb)`)
-  that no current SDK has, and it is a one-off email-index backfill.
+  **`scripts/add_index` was later deleted** (see 8.3), and in 9.5 the rest of these went too —
+  measured rather than assumed, they were all dead. `generate_invite_codes` was kept here as
+  "worth having"; it never ran.
   **Dropped as unfixable:** `delete_user`, `find_user`, `find_userid_by_name` — all three
   `require('server/lib/users_module')`, which has never existed in this repo (it was in the
   audit's unresolved list); they cannot ever have run.
@@ -453,8 +451,8 @@ server and worker. What remains is *typing* (5T.4), not converting.
   CoffeeScript plugin and `.coffee` resolution, the `coffeescript/register` calls left in
   8 test/server/script files, and 9 dependencies only the deleted ops used. — (this commit)
 - [x] 8.3 Deleted `scripts/add_index.js` — the only legacy script with Firebase tokens
-  inlined (its three siblings `clear_user_quests`, `generate_invite_codes`,
-  `add_quest_queue_job` already read `config.get('firebaseToken')`). The tokens date to
+  inlined. (I described its three siblings as safely reading `config.get('firebaseToken')`;
+  **that config key does not exist**, so they crashed too — see 9.5, where they were deleted.) The tokens date to
   upstream commit `12b49376` (2022-03-29, "init repo with initial source dump") and are
   public in `open-duelyst/duelyst`, so nothing was newly exposed — but 8.1's decaffeinate
   pass rewrote `add_index.coffee` to `.js`, and GitGuardian counts a known secret at a new
@@ -737,7 +735,25 @@ custom token puts the subject on `auth.uid` and custom claims under `auth.token.
   Rollback if ever needed: the pre-cutover ruleset is `e6a8ac0c^:firebaseRules.json`, and the
   client is one `git revert` of the `phase-9.3` merge.
 
-**Phase 9 complete — the whole stack is off firebase@2.0.3.**
+- [x] 9.5 **`firebase@2.0.3` deleted from the repo entirely.** After the cutover it survived only
+  as the `firebase-v2` alias for five legacy scripts. Each was tested rather than assumed, and
+  all five were dead:
+  - `clear_user_quests`, `generate_invite_codes`, `test/utils/dump-firebase` — read
+    `config.get('firebaseToken')`, **a config key that does not exist**, and
+    `config.get('firebase')`, which returns the config *namespace object* rather than a URL since
+    the config was namespaced. Both crash on load with
+    `FIREBASE FATAL ERROR: Cannot parse Firebase url`.
+  - `connect_users` — hangs forever connecting to `wargame.firebaseio.com`.
+  - `add_quest_queue_job` — targets `duelyst-dev.firebaseio.com`.
+
+  All four hosts are Counterplay infrastructure that died with the 2016 shutdown, and nothing in
+  the repo referenced any of the five. Deleted, and `firebase-v2` removed: **0 references to
+  `firebase@2.0.3` in the lockfile.** If invite codes are ever switched on
+  (`INVITE_CODES_ACTIVE` defaults to false), `generate_invite_codes` is a few lines to
+  reimplement against `firebase-admin`, which the server already uses.
+
+**Phase 9 complete — the whole stack is off firebase@2.0.3, and the package is gone from the
+repo entirely.**
 
 *Sequencing note:* tier-2 deps (7.3) come after this, per owner.
 
