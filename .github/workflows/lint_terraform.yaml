@@ -1,6 +1,7 @@
 name: lint_terraform
 
 on:
+  workflow_dispatch:
   push:
     branches:
     - main
