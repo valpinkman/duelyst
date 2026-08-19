@@ -104,10 +104,12 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-mocha": "^10.1.0",
+    "events": "^3.3.0",
     "fast-stats": "0.0.3",
     "get-pixels": "^3.3.0",
     "glsl-fxaa": "^3.0.0",
     "glslify": "2.1.2",
+    "glslify7": "npm:glslify@^7.1.1",
     "graceful-fs": "^4.1.11",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^2.3.1",
@@ -147,6 +149,7 @@
     "mailchimp": "1.1.0",
     "minimist": "^1.2.0",
     "mocha": "^10.0.0",
+    "os-browserify": "^0.3.0",
     "read-pkg": "^1.1.0",
     "rework-plugin-url": "^1.0.1",
     "sass": "^1.49.9",
@@ -155,8 +158,10 @@
     "typescript": "^4.8.2",
     "uglify-es": "^3.0.27",
     "uglifyify": "^4.0.3",
+    "url": "^0.11.4",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
+    "vite": "^8.2.1",
     "vitest": "^4.1.11",
     "vorpal": "^1.11.4",
     "watchify": "^3.2.2"
@@ -204,7 +209,8 @@
     "tsc:chroma-js": "tsc -p ./packages/chroma-js/tsconfig.json",
     "watch": "node --max_old_space_size=2048 --stack-size=100000 node_modules/gulp/bin/gulp.js build",
     "test:vitest": "vitest run",
-    "test:vitest:watch": "vitest"
+    "test:vitest:watch": "vitest",
+    "build:vite": "vite build --config vite.config.client.mjs"
   },
   "packageManager": "pnpm@10.12.1",
   "pnpm": {

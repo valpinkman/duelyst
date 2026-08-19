@@ -11,7 +11,9 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** Phase 4 — Vite for the client (4.1 first: config, coffee plugin, aliases, hbs, glsl, envify defines).
+- **Next step:** 4.2 — wrap `generate_packages.js` as a pre-build step for the Vite pipeline
+  (currently `build:vite` relies on a prior gulp build for `app/data/packages.js`, locales,
+  resources, vendor.js, index.html, css).
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -135,7 +137,17 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
 
 ### Phase 4 — Client build: gulp/browserify → Vite
 
-- [ ] 4.1 Vite config: `app/*` alias, CoffeeScript plugin, `.hbs` precompile, glslify-call handling (plugin or codemod to glsl imports), `define` for the envify vars, SCSS includePaths, `vendor.js` kept as a plain script tag.
+- [x] 4.1 `vite.config.client.mjs` + `pnpm build:vite` builds `dist/src/duelyst.js` from the
+  same entries as browserify (index + conditional editor via a virtual multi-entry module) in
+  **2.4s vs ~35s**. Custom plugins: CoffeeScript transform, hbsfy-compatible `.hbs` precompile,
+  static replacement of `glslify('…')` call sites via the glslify v7 compiler (aliased dep
+  `glslify7`; runtime `glslify` aliased to a stub). Browserify-parity settings that mattered:
+  `mainFields: ['browser','main']` (CJS deps, i18next), node builtin shims (`events`, `url`,
+  `os-browserify`), a `process` banner shim, a UMD `this`-shim for moment-duration-format, and
+  rolldown's native CJS handling for the export-before-require cycle idiom. **Verified in a
+  real browser (Playwright)**: the Vite bundle boots to the LOGIN screen with the identical
+  console profile as the gulp bundle (only the expected dummy-Firebase warning). SCSS stays
+  with gulp for now (4.4/4.5). — (this commit)
 - [ ] 4.2 `generate_packages.js` wrapped as a build plugin (or pre-build step) producing `app/data/packages.js`; asset copy & locale merge preserved; `app/resources` stays out of the module graph.
 - [ ] 4.3 Runtime CDN base URL replaces the regex URL rewriting (`rsx:*_urls`, rework-url).
 - [ ] 4.4 Dev server + `server/routes/public.coffee` alignment (serve Vite output / proxy).
