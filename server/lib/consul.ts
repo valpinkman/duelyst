@@ -13,6 +13,12 @@ const request = require('superagent');
 const _ = require('underscore');
 
 class Consul {
+  declare static baseUrl: any;
+  declare static kvUrl: any;
+  declare static gameServiceHealthUrl: any;
+  declare static aiServiceHealthUrl: any;
+  declare static kv: any;
+
   static getHealthyServers(callback) {
     return new Promise((resolve, reject) => request.get(this.gameServiceHealthUrl).end(function (err, res) {
       if ((res != null) && (res.status >= 400)) {

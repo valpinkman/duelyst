@@ -122,6 +122,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — server + worker are TypeScript. The whole runtime is now TS; a practice game
+  plays end-to-end against it. Remaining work is typing, not converting.
 - 2026-08-19 — the entire client (app/) is TypeScript; only app/data data/generated files stay .js.
   Browser-verified: main menu, shaders, 0 console errors.
 - 2026-08-19 — app/sdk is 100% TypeScript (1,375 files). Typecheck baseline 423 errors

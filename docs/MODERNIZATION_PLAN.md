@@ -372,7 +372,18 @@ mocha + vitest + both builds + wire-format tests.
   *Accepted:* mocha 1300 + vitest 1300 + build (manifest 2795) + lint green; all four images
   rebuilt and booted; browser loads the main menu with **0 console errors** and shaders
   rendering. — (this commit)
-- [ ] 5T.2d Rename `server/` + `worker/` (the last ~300 runtime `.js` files).
+- [x] 5T.2d **`server/` and `worker/` are TypeScript** (241 files). `require-dir` keeps
+  autoloading routes and middleware because tsx registers `.ts` in `require.extensions`.
+  Deliberately left as `.js`: the 86 knex migrations (append-only history, loaded by the knex
+  CLI) and `server/knexfile.js` (read by that CLI outside our loaders).
+  *Accepted:* mocha 1300 + integration:misc 13 + lint + build green; all four images rebuilt;
+  api serves (200 `/`, 200 `/healthcheck`, 401 from the JWT-guarded route → the whole route
+  tree registered), game/sp/worker boot; **played a practice game against the TypeScript SP
+  server** — game created, mulligan confirmed, turn ended, AI responded (steps 2→8), 0 console
+  errors. — (this commit)
+
+**The stack conversion is complete**: CoffeeScript → JS → TypeScript across client, SDK,
+server and worker. What remains is *typing* (5T.4), not converting.
 - [ ] 5T.4 Incremental typing: drive `pnpm typecheck` to zero, then move directories from
   `tsconfig.json` into `tsconfig.strict.json`.
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook

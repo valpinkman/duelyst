@@ -28,6 +28,8 @@ const { Redis, Jobs, GameManager } = require('../../redis');
 const SDK = require('../../../app/sdk');
 
 class InventoryModule {
+  declare static SOFTWIPE_AVAILABLE_UNTIL: any;
+
   static MAX_SOFTWIPE_COUNT = 1;
 
   /**

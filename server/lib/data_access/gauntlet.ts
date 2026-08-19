@@ -28,6 +28,8 @@ const SDK = require('../../../app/sdk');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 
 class GauntletModule {
+  declare static _GAUNTLET_SPIRIT_ORB_REWARD_SETS: any;
+
   static GAUNTLET_TICKET_GOLD_PRICE = 0;
   static GAUNTLET_MAX_WINS = 12;
 
