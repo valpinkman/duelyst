@@ -9,7 +9,7 @@ const UtilsSDK = require('../../../utils/utils_sdk');
 const UsableDecks = require('../../../../server/ai/decks/usable_decks');
 const StarterAI = require('../../../../server/ai/starter_ai');
 const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger.coffee');
+const Logger = require('../../../../app/common/logger');
 const SDK = require('../../../../app/sdk/index');
 const CardFactory = require('../../../../app/sdk/cards/cardFactory');
 

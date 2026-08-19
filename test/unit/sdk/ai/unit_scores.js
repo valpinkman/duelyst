@@ -7,7 +7,7 @@ const UtilsSDK = require('../../../utils/utils_sdk');
 const StarterAI = require('../../../../server/ai/starter_ai');
 const ScoreForUnit = require('../../../../server/ai/scoring/base/unit');
 const SDK = require('../../../../app/sdk/index');
-const Logger = require('../../../../app/common/logger.coffee');
+const Logger = require('../../../../app/common/logger');
 const CONFIG = require('../../../../app/common/config');
 
 // disable the logger for cleaner test output

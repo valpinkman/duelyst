@@ -18,7 +18,7 @@ class GameSession {
 
     this.instance = null;
 
-    // Injectable network hook (see app/networkManager.coffee). The SDK itself is
+    // Injectable network hook (see app/networkManager). The SDK itself is
     // network-agnostic: when a non-authoritative session submits an explicit
     // action, the resulting step is handed to this callback for transmission.
     // The browser client registers it at boot (application.coffee); servers and

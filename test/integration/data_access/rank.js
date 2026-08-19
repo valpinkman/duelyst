@@ -16,7 +16,7 @@ const SyncModule = require('../../../server/lib/data_access/sync.coffee');
 const FirebasePromises = require('../../../server/lib/firebase_promises.coffee');
 const generatePushId = require('../../../app/common/generate_push_id');
 const config = require('../../../config/config');
-const Logger = require('../../../app/common/logger.coffee');
+const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex.coffee');
 

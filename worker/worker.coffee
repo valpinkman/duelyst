@@ -1,6 +1,6 @@
 fs = require 'fs'
 os = require 'os'
-Logger = require '../app/common/logger.coffee'
+Logger = require '../app/common/logger'
 config = require '../config/config.js'
 Promise = require 'bluebird'
 { Jobs } = require '../server/redis'

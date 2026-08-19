@@ -15,7 +15,7 @@ Firebase = require("firebase")
 _ = require("underscore")
 fbRef = new Firebase(config.get("firebase"))
 moment = require('moment')
-Logger = require '../../app/common/logger.coffee'
+Logger = require '../../app/common/logger'
 Promise = require 'bluebird'
 
 # Firebase secure token for duelyst-dev.firebaseio.com

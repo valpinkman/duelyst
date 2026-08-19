@@ -1,4 +1,4 @@
-const Logger = require('./logger.coffee');
+const Logger = require('./logger');
 const EventBus = require('./eventbus');
 const EVENTS = require('./event_types');
 

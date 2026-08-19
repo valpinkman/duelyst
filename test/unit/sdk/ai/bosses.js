@@ -6,7 +6,7 @@ const { expect } = require('chai');
 const _ = require('underscore');
 
 const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger.coffee');
+const Logger = require('../../../../app/common/logger');
 const SDK = require('../../../../app/sdk/index');
 const CardFactory = require('../../../../app/sdk/cards/cardFactory');
 const UtilsSDK = require('../../../utils/utils_sdk');

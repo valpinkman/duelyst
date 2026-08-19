@@ -1,5 +1,5 @@
 config     = require '../config/config.js'
-Logger     = require '../app/common/logger.coffee'
+Logger     = require '../app/common/logger'
 Colors     = require 'colors'
 Promise   = require 'bluebird'
 request   = require 'superagent'

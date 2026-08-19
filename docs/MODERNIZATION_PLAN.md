@@ -223,10 +223,14 @@ mocha + vitest + both builds + wire-format tests.
   `register.coffee`, `networkManager.coffee`, remaining `app/common` coffee) → 5.5b.
   *Accepted:* mocha+vitest 1300 (wire-format guards green), both builds, packages manifest
   verified, in-container 1300, browser boot to login screen (0 errors). — (this commit)
-- [ ] 5.5b Client boot files: `application.coffee`, `index.coffee`, `register.coffee`,
-  `networkManager.coffee`, `app/common/*.coffee` (~10), `app/data.coffee`,
-  `app/localization/index.coffee`, shader generator, replay.
-  *Accept per batch:* baseline green + golden-file serialization tests green.
+- [x] 5.5b All 25 remaining client-layer coffee files: `application`, `index`, `register`,
+  `networkManager`, `app/common/*` (session2 needed a one-line `super()` — CS allowed
+  super-less subclass constructors), `data`, `localization/index`, shader generator, replay,
+  editor, profile model, view helpers. **`app/` is now 100% CoffeeScript-free.** Vite entry
+  paths updated to `.js`. — (this commit)
+  *Accepted:* mocha+vitest 1300, both builds (packages manifest verified), lint green,
+  browser boots to login screen (0 errors). Remaining coffee: server/worker/cli/scripts (178
+  files) → Phase 6.
 
 ### Phase 6 — Server: build step + TS
 

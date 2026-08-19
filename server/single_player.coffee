@@ -18,9 +18,9 @@ request = require 'superagent'
 shutdownLib = require './shutdown'
 StarterAI = require './ai/starter_ai'
 SDK = require '../app/sdk'
-Logger = require '../app/common/logger.coffee'
+Logger = require '../app/common/logger'
 EVENTS = require '../app/common/event_types'
-UtilsGameSession = require '../app/common/utils/utils_game_session.coffee'
+UtilsGameSession = require '../app/common/utils/utils_game_session'
 
 # lib Modules
 Consul = require './lib/consul'
@@ -33,7 +33,7 @@ env = config.get('env')
 # Responds to /health endpoint with status 200
 # Otherwise responds with status 404
 
-Logger     = require '../app/common/logger.coffee'
+Logger     = require '../app/common/logger'
 CONFIG     = require '../app/common/config'
 http     = require 'http'
 url     = require 'url'

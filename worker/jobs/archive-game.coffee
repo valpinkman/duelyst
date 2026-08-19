@@ -7,7 +7,7 @@ config = require '../../config/config.js'
 env = config.get('env')
 {GameManager} = require '../../server/redis/'
 Promise = require 'bluebird'
-Logger = require '../../app/common/logger.coffee'
+Logger = require '../../app/common/logger'
 
 ###*
 # Job - 'archive-game'

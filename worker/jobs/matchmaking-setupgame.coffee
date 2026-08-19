@@ -6,7 +6,7 @@ getGameServerAsync = require '../get_gameserver.coffee'
 createGameAsync = require '../creategame.coffee'
 DuelystFirebaseModule = require '../../server/lib/duelyst_firebase_module.coffee'
 FirebasePromises = require '../../server/lib/firebase_promises.coffee'
-Logger = require '../../app/common/logger.coffee'
+Logger = require '../../app/common/logger'
 
 ###*
 # Job - 'matchmaking-setupmatch'

@@ -11,7 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 const DamageAction = require('app/sdk/actions/damageAction');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
-const UtilsGameSession = require('../../common/utils/utils_game_session.coffee');
+const UtilsGameSession = require('../../common/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class SpellDamageAndSpawnEntitiesNearbyGeneral extends SpellSpawnEntity {

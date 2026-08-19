@@ -31,7 +31,7 @@
   const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
   const CONFIG = require('app/common/config');
   const UtilsJavascript = require('app/common/utils/utils_javascript');
-  const DATA = require('app/data.coffee');
+  const DATA = require('app/data');
   const FX = require('app/data/fx');
   const RSX = require('app/data/resources');
   const PKGS_DEF = require('app/data/packages_predefined');
@@ -1240,7 +1240,7 @@
 
   // read all files and exit when complete
   Promise.all([
-    helpers.readFile(`${dir}/../app/application.coffee`, mapResourcesForFile),
+    helpers.readFile(`${dir}/../app/application`, mapResourcesForFile),
     helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/audio`, mapResourcesForFile),
     helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/ui`, mapResourcesForFile, /\.scss/),
     helpers.readFile(`${dir}/../dist/src/duelyst.css`, mapResourcesForFile),

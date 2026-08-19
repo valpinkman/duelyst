@@ -7,7 +7,7 @@ const UtilsPosition = {};
 module.exports = UtilsPosition;
 
 const CONFIG = require('../config');
-const Logger = require('../logger.coffee');
+const Logger = require('../logger');
 
 /**
  * Creates a mapped array from a list of a positions in board (index) space.

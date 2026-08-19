@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — app/ is 100% CoffeeScript-free (client boot files + common converted in 5.5b).
+  Only server/worker/cli/scripts coffee remains (Phase 6).
 - 2026-08-19 — app/sdk is 100% JavaScript (1,375 files converted across 5.1–5.5); wire-format
   and packages-manifest guards green throughout; browser boot verified.
 - 2026-08-19 — CRITICAL catch: 5.2c had silently dropped 325 asset packages (text-parsers

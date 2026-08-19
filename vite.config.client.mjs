@@ -130,8 +130,8 @@ function umdThisShimPlugin() {
 // A virtual entry reproduces that multi-entry-single-bundle behavior.
 const VIRTUAL_ENTRY = '\0duelyst-entry';
 function entryPlugin() {
-  const entries = ["./app/index.coffee"];
-  if (config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.coffee');
+  const entries = ["./app/index.js"];
+  if (config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.js');
   return {
     name: 'duelyst:entry',
     resolveId(id) {

@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const supertest = require('supertest');
 const api = require('../../server/express.coffee');
 const { version } = require('../../version.json');
-const Logger = require('../../app/common/logger.coffee');
+const Logger = require('../../app/common/logger');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

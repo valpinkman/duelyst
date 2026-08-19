@@ -7,7 +7,7 @@ const Promise = require('bluebird');
 const { expect } = require('chai');
 
 const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger.coffee');
+const Logger = require('../../../../app/common/logger');
 const SDK = require('../../../../app/sdk/index');
 const UtilsSDK = require('../../../utils/utils_sdk');
 

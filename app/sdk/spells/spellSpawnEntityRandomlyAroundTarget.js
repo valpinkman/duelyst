@@ -7,7 +7,7 @@ const CONFIG = require('../../common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
 const CardType = require('../cards/cardType');
 const Cards = require('../cards/cardsLookupComplete');
-const UtilsGameSession = require('../../common/utils/utils_game_session.coffee');
+const UtilsGameSession = require('../../common/utils/utils_game_session');
 const _ = require('underscore');
 
 class SpellSpawnEntityRandomlyAroundTarget extends SpellSpawnEntity {

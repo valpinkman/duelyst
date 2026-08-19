@@ -1,4 +1,4 @@
-const Logger = require('app/common/logger.coffee');
+const Logger = require('app/common/logger');
 
 // SDK Namespace Wrapper
 const GameSession = require('app/sdk/gameSession');

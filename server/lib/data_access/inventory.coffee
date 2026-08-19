@@ -6,7 +6,7 @@ _ = require 'underscore'
 
 FirebasePromises = require '../firebase_promises'
 DuelystFirebase = require '../duelyst_firebase_module'
-Logger = require '../../../app/common/logger.coffee'
+Logger = require '../../../app/common/logger'
 SyncModule = require './sync'
 Errors = require '../custom_errors'
 knex = require("../data_access/knex")

@@ -1,6 +1,6 @@
 express = require 'express'
 Promise = require 'bluebird'
-Logger = require '../../app/common/logger.coffee'
+Logger = require '../../app/common/logger'
 Errors = require '../lib/custom_errors'
 DuelystFirebase = require '../lib/duelyst_firebase_module'
 FirebasePromises = require '../lib/firebase_promises'

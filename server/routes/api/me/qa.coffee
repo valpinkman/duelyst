@@ -22,7 +22,7 @@ ShopModule = require '../../../lib/data_access/shop.coffee'
 TwitchModule = require '../../../lib/data_access/twitch.coffee'
 knex = require '../../../lib/data_access/knex'
 DataAccessHelpers = require '../../../lib/data_access/helpers'
-Logger = require '../../../../app/common/logger.coffee'
+Logger = require '../../../../app/common/logger'
 Errors = require '../../../lib/custom_errors'
 # sdk
 SDK = require '../../../../app/sdk'

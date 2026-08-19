@@ -41,7 +41,7 @@ const bundlerOpts = {
 
 const entries = ['./app/index'];
 if (config.get('datGuiEditorEnabled')) {
-  entries.push('./app/tools/editor.coffee');
+  entries.push('./app/tools/editor');
 }
 
 // gutil.log(`bundler options: ${JSON.stringify(opts)}`)

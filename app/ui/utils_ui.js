@@ -8,7 +8,7 @@ module.exports = UtilsUI;
 
 const EventBus = require('app/common/eventbus');
 const EVENTS = require('app/common/event_types');
-const Logger = require('app/common/logger.coffee');
+const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const SDK = require('app/sdk');
 const audio_engine = require('app/audio/audio_engine');

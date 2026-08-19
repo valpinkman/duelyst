@@ -7,7 +7,7 @@ const UtilsEngine = {};
 module.exports = UtilsEngine;
 
 const CONFIG = require('../config');
-const Logger = require('../logger.coffee');
+const Logger = require('../logger');
 
 /**
  * Returns the origin of the static reference window used for layout calculations.

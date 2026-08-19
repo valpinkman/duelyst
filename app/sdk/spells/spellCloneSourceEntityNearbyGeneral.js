@@ -1,6 +1,6 @@
 const CONFIG = require('../../common/config');
 const SpellCloneSourceEntity = require('./spellCloneSourceEntity');
-const UtilsGameSession = require('../../common/utils/utils_game_session.coffee');
+const UtilsGameSession = require('../../common/utils/utils_game_session');
 
 /*
   Spawns a new entity nearby my general as clone of another entity.

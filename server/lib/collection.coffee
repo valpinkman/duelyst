@@ -2,7 +2,7 @@ _ = require 'underscore'
 Promise = require 'bluebird'
 
 CONFIG = require '../../app/common/config'
-Logger = require '../../app/common/logger.coffee'
+Logger = require '../../app/common/logger'
 SDK = require '../../app/sdk'
 InventoryModule = require './data_access/inventory.coffee'
 knex = require './data_access/knex.coffee'

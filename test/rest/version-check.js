@@ -14,7 +14,7 @@ if (env === 'production') {
 }
 
 // disable the logger for cleaner test output
-const Logger = require('../../app/common/logger.coffee');
+const Logger = require('../../app/common/logger');
 
 Logger.enabled = false;
 

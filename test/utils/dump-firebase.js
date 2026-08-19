@@ -2,7 +2,7 @@ const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../..'));
 const Firebase = require('firebase');
 const c = require('../../config/config');
-// const Logger = require('app/common/logger.coffee')
+// const Logger = require('app/common/logger')
 
 if (process.env.NODE_ENV !== 'test') {
   // Logger.module("UNITTEST").log('Must run as NODE_ENV=test')

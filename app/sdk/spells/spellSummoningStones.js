@@ -8,7 +8,7 @@
  */
 const Spell = require('./spell');
 const CONFIG = require('app/common/config');
-const UtilsGameSession = require('../../common/utils/utils_game_session.coffee');
+const UtilsGameSession = require('../../common/utils/utils_game_session');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 

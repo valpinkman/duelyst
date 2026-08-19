@@ -7,7 +7,7 @@ const _ = require('underscore');
 const Promise = require('bluebird');
 
 const CONFIG = require('../../../../app/common/config');
-const Logger = require('../../../../app/common/logger.coffee');
+const Logger = require('../../../../app/common/logger');
 const SDK = require('../../../../app/sdk/index');
 const BeginnerAbyssianChallenge3 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge3');
 const BeginnerSonghaiChallenge1 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge1');

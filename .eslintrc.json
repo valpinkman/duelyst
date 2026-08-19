@@ -178,6 +178,72 @@
     },
     {
       "files": [
+        "app/*.js",
+        "app/common/**/*.js",
+        "app/replay/**/*.js",
+        "app/localization/**/*.js",
+        "app/shaders/**/*.js",
+        "app/data/**/*.js"
+      ],
+      "rules": {
+        "consistent-return": "warn",
+        "guard-for-in": "warn",
+        "no-var": "warn",
+        "vars-on-top": "warn",
+        "block-scoped-var": "warn",
+        "no-redeclare": "warn",
+        "no-use-before-define": "warn",
+        "no-loop-func": "warn",
+        "no-restricted-syntax": "warn",
+        "no-mixed-operators": "warn",
+        "no-cond-assign": "warn",
+        "no-return-assign": "warn",
+        "no-multi-assign": "warn",
+        "no-shadow": "warn",
+        "prefer-const": "warn",
+        "prefer-destructuring": "warn",
+        "class-methods-use-this": "off",
+        "default-param-last": "warn",
+        "no-nested-ternary": "warn",
+        "no-undef": "warn",
+        "no-plusplus": "warn",
+        "no-bitwise": "warn",
+        "max-classes-per-file": "warn",
+        "radix": "warn",
+        "no-useless-constructor": "warn",
+        "no-empty-function": "warn",
+        "no-empty": "warn",
+        "default-case": "warn",
+        "no-lonely-if": "warn",
+        "no-prototype-builtins": "warn",
+        "no-unused-expressions": "warn",
+        "camelcase": "warn",
+        "func-names": "warn",
+        "no-alert": "warn",
+        "no-new": "warn",
+        "prefer-rest-params": "warn",
+        "no-restricted-globals": "warn",
+        "prefer-arrow-callback": "warn",
+        "object-shorthand": "warn",
+        "prefer-template": "warn",
+        "no-else-return": "warn",
+        "strict": "warn",
+        "no-continue": "warn",
+        "one-var": "warn",
+        "no-multi-str": "warn",
+        "import/order": "off",
+        "import/no-unresolved": "off",
+        "import/extensions": "off",
+        "import/newline-after-import": "off",
+        "no-unreachable": "warn",
+        "prefer-spread": "warn",
+        "function-paren-newline": "warn",
+        "no-unsafe-negation": "warn",
+        "prefer-promise-reject-errors": "warn"
+      }
+    },
+    {
+      "files": [
         "app/tools/**/*.js"
       ],
       "rules": {
@@ -240,7 +306,10 @@
         ],
         "import/no-unresolved": [
           "warn"
-        ]
+        ],
+        "import/extensions": "off",
+        "prefer-promise-reject-errors": "warn",
+        "no-prototype-builtins": "warn"
       }
     },
     {

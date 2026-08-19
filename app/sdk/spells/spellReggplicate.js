@@ -8,7 +8,7 @@
  */
 const CONFIG = require('../../common/config');
 const SpellSpawnEntity = require('./spellSpawnEntity');
-const UtilsGameSession = require('../../common/utils/utils_game_session.coffee');
+const UtilsGameSession = require('../../common/utils/utils_game_session');
 const ModifierEgg = require('app/sdk/modifiers/modifierEgg');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const CardType = require('app/sdk/cards/cardType');

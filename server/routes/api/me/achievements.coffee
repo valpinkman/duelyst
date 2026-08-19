@@ -1,7 +1,7 @@
 express = require 'express'
 
 AchievementsModule = require '../../../lib/data_access/achievements'
-Logger = require '../../../../app/common/logger.coffee'
+Logger = require '../../../../app/common/logger'
 DataAccessHelpers = require '../../../lib/data_access/helpers'
 
 t = require 'tcomb-validation'

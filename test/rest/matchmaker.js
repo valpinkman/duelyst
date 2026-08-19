@@ -9,7 +9,7 @@ const { version } = require('../../version.json');
 const UsersModule = require('../../server/lib/data_access/users.coffee');
 const SyncModule = require('../../server/lib/data_access/sync.coffee');
 const Errors = require('../../server/lib/custom_errors.coffee');
-const Logger = require('../../app/common/logger.coffee');
+const Logger = require('../../app/common/logger');
 const GameType = require('../../app/sdk/gameType');
 
 const request = supertest(api);
