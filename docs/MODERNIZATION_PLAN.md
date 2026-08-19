@@ -235,7 +235,15 @@ mocha + vitest + both builds + wire-format tests.
 ### Phase 6 — Server: build step + TS
 
 - [ ] 6.1 Introduce a real server build/run (tsx or tsc) coexisting with `coffeescript/register`; Dockerfiles updated.
-- [ ] 6.2 Convert in order: `server/redis/` → `server/routes/` (kill `require-dir` for explicit imports) → `server/lib/data_access/` → `worker/` → `game.coffee` / `single_player.coffee` last.
+- [ ] 6.2 Convert in order: `server/redis/` → `server/routes/` → `server/lib/data_access/` →
+  `worker/` → `game.coffee` / `single_player.coffee` last.
+  - [x] 6.2a `server/redis/` (15 files). Landmine found & defused repo-wide: decaffeinate
+    emits `let exports;` for the `module.exports = exports = …` idiom — a CJS SyntaxError
+    (shadows the wrapper param) that makes Node silently retry the file as ESM and die with
+    "require is not defined in ES module scope". Also: `docker compose up` runs STALE images —
+    every in-container gate claim now rebuilds first. All 4 service images rebuilt from the
+    current tree: api 200, game 8001, sp 8000, worker processing (only the expected
+    dummy-Firebase job failure). — (this commit)
 - [ ] 6.3 Retire `coffeescript/register` from `bin/*` when no `.coffee` remains server-side.
 
 ### Phase 7 — Test & dependency endgame

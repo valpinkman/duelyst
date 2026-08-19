@@ -20,7 +20,7 @@ const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');
 const knex = require('../../../server/lib/data_access/knex.coffee');
 
-const { SRankManager } = require('../../../server/redis/index.coffee');
+const { SRankManager } = require('../../../server/redis/index');
 
 // disable the logger
 // for cleaner test output
