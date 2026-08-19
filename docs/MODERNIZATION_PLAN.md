@@ -187,7 +187,14 @@ mocha + vitest + both builds + wire-format tests.
     class methods; preserved as an explicit no-op with a comment. — (this commit)
   - [x] 5.2b 304 files: `app/sdk/spells/*` (except `spell.coffee`), `playerModifiers/*`
     (except `playerModifier.coffee`), `gameSessionModifiers/*` — fully scripted, zero
-    failures, zero manual fixes. — (this commit)
+    failures, zero manual fixes.
+  - [x] 5.2c 180 meta-game files: achievements, quests, challenges, giftCrates, cosmetics,
+    progression, rank, rift, codex, playModes, agents, helpers, validators. 12 quests used
+    `this` before `super` → new pre-transform `scripts/codemods/fix-this-before-super.mjs`
+    (prototype-reads in super args; CS param-properties moved after super); 1 hand-converted
+    (`questParticipationWithFaction`: bound `=>` method + a faithfully-preserved latent bug —
+    its constructor always read the prototype `factionId` (null) for the quest name).
+    — (this commit)
 - [ ] 5.3 `actions/` (65), `validators/`, `helpers/`.
 - [ ] 5.4 `entities/`, `cards/card.coffee`, factories (watch `@type` vs `type:` and prototype defaults — see audit §3.1 risks).
 - [ ] 5.5 `gameSession.coffee` last; then `application.coffee` / boot files.

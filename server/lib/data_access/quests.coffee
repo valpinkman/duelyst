@@ -22,7 +22,7 @@ generatePushId = require '../../../app/common/generate_push_id'
 # SDK imports
 SDK = require '../../../app/sdk'
 QuestFactory = require '../../../app/sdk/quests/questFactory'
-QuestCatchUp = require '../../../app/sdk/quests/questCatchUp.coffee'
+QuestCatchUp = require '../../../app/sdk/quests/questCatchUp'
 QuestType = require '../../../app/sdk/quests/questTypeLookup'
 UtilsGameSession = require '../../../app/common/utils/utils_game_session.coffee'
 NewPlayerProgressionHelper = require '../../../app/sdk/progression/newPlayerProgressionHelper'

@@ -17,12 +17,12 @@ const FirebasePromises = require('../../../server/lib/firebase_promises.coffee')
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger.coffee');
 const SDK = require('../../../app/sdk/index.coffee');
-const QuestType = require('../../../app/sdk/quests/questTypeLookup.coffee');
+const QuestType = require('../../../app/sdk/quests/questTypeLookup');
 const knex = require('../../../server/lib/data_access/knex.coffee');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum.coffee');
-const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup.coffee');
-const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper.coffee');
-const GiftCrateLookup = require('../../../app/sdk/giftCrates/giftCrateLookup.coffee');
+const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
+const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
+const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlayerProgressionHelper');
+const GiftCrateLookup = require('../../../app/sdk/giftCrates/giftCrateLookup');
 const generatePushId = require('../../../app/common/generate_push_id');
 
 // disable the logger for cleaner test output

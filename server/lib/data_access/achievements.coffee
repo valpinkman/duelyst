@@ -24,9 +24,9 @@ Rarity = require '../../../app/sdk/cards/rarityLookup'
 Faction = require '../../../app/sdk/cards/factionsLookup'
 GameSession = require '../../../app/sdk/gameSession.coffee'
 UtilsGameSession = require '../../../app/common/utils/utils_game_session.coffee'
-QuestFactory = require '../../../app/sdk/quests/questFactory.coffee'
-QuestType = require '../../../app/sdk/quests/questTypeLookup.coffee'
-CosmeticsFactory = require '../../../app/sdk/cosmetics/cosmeticsFactory.coffee'
+QuestFactory = require '../../../app/sdk/quests/questFactory'
+QuestType = require '../../../app/sdk/quests/questTypeLookup'
+CosmeticsFactory = require '../../../app/sdk/cosmetics/cosmeticsFactory'
 
 class AchievementsModule
 

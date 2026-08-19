@@ -1,6 +1,6 @@
 require('coffeescript/register');
 const _ = require('underscore');
-const AgentActions = require('../../app/sdk/agents/agentActions.coffee');
+const AgentActions = require('../../app/sdk/agents/agentActions');
 const SDK = require('../../app/sdk/index.coffee');
 
 const UtilsSDK = {};

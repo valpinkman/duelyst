@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — 180 meta-game sdk files decaffeinated (5.2c); app/sdk down to 169 .coffee
+  (core classes, actions, entities, cards, factories).
 - 2026-08-19 — 304 spells/playerModifiers/gameSessionModifiers decaffeinated (5.2b); clean run.
 - 2026-08-19 — 716 modifiers decaffeinated to JS (5.2a); suite, both builds, wire-format
   fixture all green.

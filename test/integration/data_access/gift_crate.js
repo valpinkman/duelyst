@@ -19,9 +19,9 @@ const generatePushId = require('../../../app/common/generate_push_id');
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger.coffee');
 const SDK = require('../../../app/sdk/index.coffee');
-const GiftCrateFactory = require('../../../app/sdk/giftCrates/giftCrateFactory.coffee');
+const GiftCrateFactory = require('../../../app/sdk/giftCrates/giftCrateFactory');
 const knex = require('../../../server/lib/data_access/knex.coffee');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum.coffee');
+const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

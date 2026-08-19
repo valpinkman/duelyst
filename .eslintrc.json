@@ -167,7 +167,11 @@
         "no-bitwise": "warn",
         "max-classes-per-file": "warn",
         "default-case": "warn",
-        "import/order": "off"
+        "import/order": "off",
+        "radix": "warn",
+        "no-useless-constructor": "warn",
+        "no-empty-function": "warn",
+        "no-empty": "warn"
       }
     },
     {

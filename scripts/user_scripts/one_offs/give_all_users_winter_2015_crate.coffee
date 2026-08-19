@@ -28,7 +28,7 @@ DuelystFirebase = require("../../../server/lib/duelyst_firebase_module")
 fbUtil = require '../../../app/common/utils/utils_firebase.js'
 GiftCrateModule = require '../../../server/lib/data_access/gift_crate.coffee'
 
-GiftCrateLookup = require '../../../app/sdk/giftCrates/giftCrateLookup.coffee'
+GiftCrateLookup = require '../../../app/sdk/giftCrates/giftCrateLookup'
 # endregion Requires
 
 Logger.enabled = false

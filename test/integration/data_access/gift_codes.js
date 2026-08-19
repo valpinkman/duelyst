@@ -20,7 +20,7 @@ const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger.coffee');
 const SDK = require('../../../app/sdk/index.coffee');
 const knex = require('../../../server/lib/data_access/knex.coffee');
-const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum.coffee');
+const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;

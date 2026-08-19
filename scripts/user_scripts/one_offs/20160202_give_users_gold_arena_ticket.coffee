@@ -27,7 +27,7 @@ fs = require 'fs'
 # Firebase secure token for duelyst-dev.firebaseio.com
 Logger.module("Script").log "loading modules..."
 GiftCrateModule = require '../../../server/lib/data_access/gift_crate.coffee'
-GiftCrateLookup = require '../../../app/sdk/giftCrates/giftCrateLookup.coffee'
+GiftCrateLookup = require '../../../app/sdk/giftCrates/giftCrateLookup'
 Logger.module("Script").log "loading modules... DONE"
 # endregion Requires
 

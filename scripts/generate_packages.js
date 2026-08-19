@@ -27,8 +27,8 @@
   const Cards = require('app/sdk/cards/cardsLookupComplete');
   const FactionsLookup = require('app/sdk/cards/factionsLookup');
   const FactionFactory = require('app/sdk/cards/factionFactory.coffee');
-  const CodexChapters = require('app/sdk/codex/codexChapterLookup.coffee');
-  const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup.coffee');
+  const CodexChapters = require('app/sdk/codex/codexChapterLookup');
+  const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
   const CONFIG = require('app/common/config');
   const UtilsJavascript = require('app/common/utils/utils_javascript');
   const DATA = require('app/data.coffee');
@@ -1240,7 +1240,7 @@
     console.log(' [GP] Packaging resources for SPECIAL files...');
     return Promise.all([
       helpers.readFile(`${dir}/../app/sdk/cards/factionFactory.coffee`, parseFactionFactory),
-      helpers.readFile(`${dir}/../app/sdk/codex/codex.coffee`, parseCodex),
+      helpers.readFile(`${dir}/../app/sdk/codex/codex`, parseCodex),
       helpers.readFile(`${dir}/../app/view/layers/game/BattleMap.js`, parseBattleMap),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/modifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/playerModifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
@@ -1262,7 +1262,7 @@
     // parse cosmetic factory after card factory
     // that way all card resources have been gathered
     // and card skin packages can be correctly generated
-      helpers.readFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory.coffee`, parseCosmeticsFactory))
+      helpers.readFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory`, parseCosmeticsFactory))
     .then(() => {
       console.log(' [GP] Resources packed for CARD FACTORY!');
       console.log(' [GP] Wrapping packages...');

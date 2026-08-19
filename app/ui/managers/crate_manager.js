@@ -21,8 +21,8 @@ var Promise = require('bluebird');
 var Analytics = require('app/common/analytics');
 var _ = require('underscore');
 var moment = require('moment');
-var GiftCrateLookup = require('../../sdk/giftCrates/giftCrateLookup.coffee');
-var GiftCrateFactory = require('../../sdk/giftCrates/giftCrateFactory.coffee');
+var GiftCrateLookup = require('../../sdk/giftCrates/giftCrateLookup');
+var GiftCrateFactory = require('../../sdk/giftCrates/giftCrateFactory');
 var ProfileManager = require('./profile_manager');
 var Manager = require('./manager');
 

@@ -7,11 +7,11 @@ const Promise = require('bluebird');
 const CONFIG = require('../../../../app/common/config');
 const Logger = require('../../../../app/common/logger.coffee');
 const SDK = require('../../../../app/sdk/index.coffee');
-const BeginnerAbyssianChallenge1 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge1.coffee');
-const BeginnerSonghaiChallenge5 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge5.coffee');
-const BeginnerMagmarChallenge1 = require('../../../../app/sdk/challenges/magmar/BeginnerMagmarChallenge1.coffee');
-const BeginnerVetruvianChallenge1 = require('../../../../app/sdk/challenges/vetruvian/BeginnerVetruvianChallenge1.coffee');
-const BeginnerLyonarChallenge2 = require('../../../../app/sdk/challenges/lyonar/BeginnerLyonarChallenge2.coffee');
+const BeginnerAbyssianChallenge1 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge1');
+const BeginnerSonghaiChallenge5 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge5');
+const BeginnerMagmarChallenge1 = require('../../../../app/sdk/challenges/magmar/BeginnerMagmarChallenge1');
+const BeginnerVetruvianChallenge1 = require('../../../../app/sdk/challenges/vetruvian/BeginnerVetruvianChallenge1');
+const BeginnerLyonarChallenge2 = require('../../../../app/sdk/challenges/lyonar/BeginnerLyonarChallenge2');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

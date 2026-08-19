@@ -22,7 +22,7 @@ _ = require("underscore")
 fbRef = new Firebase(config.get("firebase"))
 moment = require('moment')
 Logger = require '../../../app/common/logger.coffee'
-QuestFactory = require '../../../app/sdk/quests/questFactory.coffee'
+QuestFactory = require '../../../app/sdk/quests/questFactory'
 
 # Firebase secure token for duelyst-dev.firebaseio.com
 firebaseToken = config.get("firebaseToken")

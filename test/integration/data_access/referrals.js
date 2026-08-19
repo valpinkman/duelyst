@@ -21,7 +21,7 @@ const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger.coffee');
 const SDK = require('../../../app/sdk/index.coffee');
 const knex = require('../../../server/lib/data_access/knex.coffee');
-const FirstReferralPurchaseAchievement = require('../../../app/sdk/achievements/referralBasedAchievements/firstReferralPurchaseAchievement.coffee');
+const FirstReferralPurchaseAchievement = require('../../../app/sdk/achievements/referralBasedAchievements/firstReferralPurchaseAchievement');
 
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
