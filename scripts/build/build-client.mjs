@@ -108,7 +108,7 @@ const VENDOR_FILES = [
   'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
   'node_modules/underscore/underscore.js',
   'node_modules/backbone/backbone.js',
-  'packages/backfire/dist/backfire.min.js',
+  'app/vendor/backfire/backfire.min.js',
   'node_modules/backbone.marionette/lib/backbone.marionette.js',
   'app/vendor/jquery_ui/jquery-ui.min.js',
   'app/vendor/ccConfig.js',
