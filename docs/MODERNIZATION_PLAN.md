@@ -195,6 +195,13 @@ mocha + vitest + both builds + wire-format tests.
     (`questParticipationWithFaction`: bound `=>` method + a faithfully-preserved latent bug —
     its constructor always read the prototype `factionId` (null) for the quest name).
     — (this commit)
+- [x] 5.3a **Regression fix + new guard**: 5.2c had silently dropped 325 asset packages —
+  `generate_packages.js` text-parsers assumed CoffeeScript syntax (`type:` colon form, `extends X`
+  at line end, extensionless reads of the now-renamed codex/cosmeticsFactory, comma-less object
+  values). Parsers now accept both syntaxes; verified key-set parity with the pre-5.2 output
+  (2,806/2,806, remaining diffs ordering-only). **New guard:** `pnpm build:client` verifies the
+  generated package key set against the committed `scripts/build/packages-manifest.json` and
+  fails on any change; update deliberately with `--update-packages-manifest`. — (this commit)
 - [x] 5.3 `actions/` — all 65 files including the `action.coffee` base and `actionFactory`
   (validators/helpers already landed in 5.2c). Key finding: **class hierarchies must convert
   together, children-first** — a CS1 subclass cannot extend an ES6 base ("Class constructor

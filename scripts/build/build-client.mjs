@@ -35,11 +35,37 @@ function log(step, message) {
   process.stdout.write(`[build-client] ${step}: ${message}\n`);
 }
 
+const PACKAGES_MANIFEST = path.join(rootDir, 'scripts/build/packages-manifest.json');
+
 function step1Packages() {
   const flags = ['-d'];
   if (development) flags.push('-fa');
   execFileSync('node', ['scripts/generate_packages.js', ...flags], { stdio: 'inherit' });
   log('packages', 'app/data/packages.js generated');
+
+  // Guard: generate_packages.js TEXT-PARSES source files, so a CoffeeScript->
+  // JS conversion (or any refactor) can silently drop asset packages while the
+  // build still "succeeds" (this happened in plan step 5.2c: 325 packages
+  // vanished). The committed manifest locks the exact package key set.
+  // Regenerate deliberately with --update-packages-manifest and commit the
+  // diff together with the change that caused it.
+  delete require.cache[require.resolve(path.join(rootDir, 'app/data/packages'))];
+  const pkgs = require(path.join(rootDir, 'app/data/packages'));
+  const keys = Object.keys(pkgs).filter((k) => typeof pkgs[k] !== 'function').sort();
+  if (args.has('--update-packages-manifest') || !fs.existsSync(PACKAGES_MANIFEST)) {
+    fs.writeFileSync(PACKAGES_MANIFEST, `${JSON.stringify(keys, null, 1)}\n`);
+    log('packages', `manifest updated (${keys.length} keys)`);
+  } else {
+    const golden = JSON.parse(fs.readFileSync(PACKAGES_MANIFEST, 'utf8'));
+    const goldenSet = new Set(golden);
+    const keySet = new Set(keys);
+    const missing = golden.filter((k) => !keySet.has(k));
+    const added = keys.filter((k) => !goldenSet.has(k));
+    if (missing.length > 0 || added.length > 0) {
+      throw new Error(`asset package set changed: ${missing.length} missing (${missing.slice(0, 5).join(', ')}...), ${added.length} added (${added.slice(0, 5).join(', ')}...). If intentional, rerun with --update-packages-manifest and commit the manifest.`);
+    }
+    log('packages', `manifest verified (${keys.length} keys)`);
+  }
 }
 
 function step2Bundle() {

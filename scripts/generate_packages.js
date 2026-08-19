@@ -315,9 +315,9 @@
     }
 
     // determine for super class
-    const superclassBlock = content.match(/extends (\w+?)[\r\n]/);
+    const superclassBlock = content.match(/extends (\w+?)[\s\r\n{]/);
     if (superclassBlock != null && superclassBlock.length > 0) {
-      const superclassName = superclassBlock[0].replace(/extends (\w+?)[\r\n]/g, '$1');
+      const superclassName = superclassBlock[1];
       SDK_SUPERCLASS_MAP[className] = superclassName;
     }
 
@@ -801,7 +801,7 @@
   const parseModifier = function (file, content) {
     const fileName = helpers.getFileName(file);
     const className = fileName[0].toUpperCase() + fileName.slice(1);
-    let modifierType = content.match(/type:.*?['"](\w+?)['"]/);
+    let modifierType = content.match(/type\s*[:=]\s*['"](\w+?)['"]/);
     if (modifierType != null) {
       modifierType = modifierType[1];
     } else {
@@ -923,7 +923,7 @@
     content = helpers.stripComments(content).replace('\r', '\n');
 
     // get challenge type for package identifier
-    let challengeType = content.match(/type[\s\t]*?:[\s\t]*?["'](\w+)['"]/);
+    let challengeType = content.match(/type[\s\t]*?[:=][\s\t]*?["'](\w+)['"]/);
     if (challengeType != null) {
       challengeType = challengeType[1];
 
@@ -944,9 +944,9 @@
       }
 
       // determine super class
-      const superclassBlock = content.match(/extends (\w+?)[\r\n]/);
+      const superclassBlock = content.match(/extends (\w+?)[\s\r\n{]/);
       if (superclassBlock != null && superclassBlock.length > 0) {
-        const superclassName = superclassBlock[0].replace(/extends (\w+?)[\r\n]/g, '$1');
+        const superclassName = superclassBlock[1];
         CHALLENGE_SUPERCLASS_MAP[challengeType] = superclassName;
       }
     }
@@ -959,7 +959,7 @@
     content = helpers.stripComments(content).replace('\r', '\n');
 
     // get challenge type for package identifier
-    let challengeType = content.match(/type[\s\t]*?:[\s\t]*?["'](\w+)['"]/);
+    let challengeType = content.match(/type[\s\t]*?[:=][\s\t]*?["'](\w+)['"]/);
     if (challengeType != null) {
       challengeType = challengeType[1];
 
@@ -1115,8 +1115,8 @@
       const cardSkinIdKey = cardSkinIdBlock && cardSkinIdBlock[1];
       if (cardSkinIdKey != null) {
         const cardSkinId = CosmeticsLookup.CardSkin[cardSkinIdKey];
-        const cardIdBlock = cardSkinBlock.match(/cardId[\s\t]*?:[\s\t]*?(Cards\..*?)[\s\t]*?[\r\n]/);
-        const skinNumBlock = cardSkinBlock.match(/skinNum[\s\t]*?:[\s\t]*?(\d*?)[\s\t]*?[\r\n]/);
+        const cardIdBlock = cardSkinBlock.match(/cardId[\s\t]*?:[\s\t]*?(Cards\.[\w.]+)/);
+        const skinNumBlock = cardSkinBlock.match(/skinNum[\s\t]*?:[\s\t]*?(\d+)/);
         if (cardIdBlock == null) {
           console.log(` [GP] [WARN] card skin data for ${cardSkinIdKey} -> has no card id!`);
         } else {
@@ -1240,7 +1240,7 @@
     console.log(' [GP] Packaging resources for SPECIAL files...');
     return Promise.all([
       helpers.readFile(`${dir}/../app/sdk/cards/factionFactory.coffee`, parseFactionFactory),
-      helpers.readFile(`${dir}/../app/sdk/codex/codex`, parseCodex),
+      helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/codex/codex.js`) ? `${dir}/../app/sdk/codex/codex.js` : `${dir}/../app/sdk/codex/codex`, parseCodex),
       helpers.readFile(`${dir}/../app/view/layers/game/BattleMap.js`, parseBattleMap),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/modifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/playerModifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
@@ -1262,7 +1262,7 @@
     // parse cosmetic factory after card factory
     // that way all card resources have been gathered
     // and card skin packages can be correctly generated
-      helpers.readFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory`, parseCosmeticsFactory))
+      helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/cosmetics/cosmeticsFactory.js`) ? `${dir}/../app/sdk/cosmetics/cosmeticsFactory.js` : `${dir}/../app/sdk/cosmetics/cosmeticsFactory`, parseCosmeticsFactory))
     .then(() => {
       console.log(' [GP] Resources packed for CARD FACTORY!');
       console.log(' [GP] Wrapping packages...');
