@@ -17,7 +17,6 @@ var generatePushId = require('../../../app/common/generate_push_id');
 var config = require('../../../config/config');
 var Promise = require('bluebird');
 var Logger = require('../../../app/common/logger.coffee');
-var sinon = require('sinon');
 var _ = require('underscore');
 var SDK = require('../../../app/sdk.coffee');
 var moment = require('moment');

@@ -6,7 +6,6 @@ const chai = require('chai');
 chai.config.includeStack = true;
 const { expect } = chai;
 const Promise = require('bluebird');
-const sinon = require('sinon');
 const _ = require('underscore');
 const moment = require('moment');
 const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module.coffee');

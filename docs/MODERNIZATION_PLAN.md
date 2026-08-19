@@ -8,10 +8,10 @@ step it describes, so it can never drift from the code.
 ## ▶ Resume here
 
 - **Branch:** `modernization` (stacked commits, one per step; not pushed anywhere yet)
-- **Current state:** Phase 0 complete; 1.1 done (vitest runs `test/unit/sdk`, 1285/1285 parity
-  with mocha). Baseline green: `pnpm build` + `pnpm test:unit` (1287 passing).
-- **Next step:** 1.2 — codemod mocha-isms across the rest of `test/unit` (this.timeout, done,
-  dead sinon/power-assert imports, `test/index.js`).
+- **Current state:** Phase 0 complete; 1.1 + 1.2 done (vitest runs `test/unit/sdk` at 1285/1285
+  parity; dead test files/imports removed). Baseline green: `pnpm build` + `pnpm test:unit`
+  (1287 passing).
+- **Next step:** 1.3 — extend vitest to all of `test/unit`; add a vitest CI job.
 - **Known dirty state:** none. Docker images and GitHub workflows were converted to pnpm
   mechanically but have not been exercised (1.4 / 1.5 below).
 
@@ -43,8 +43,15 @@ step it describes, so it can never drift from the code.
   deferred to Phase 4). Fixed 4 tests that assigned undeclared globals (strict-mode error under
   vite-node, silent global leak under mocha).
   *Accepted:* vitest 1285/1285 == mocha 1285/1285 on the subtree; full gate green. — (this commit)
-- [ ] 1.2 Codemod the mocha-isms in `test/unit`: `this.timeout(n)` (122) → per-test options, `done` callbacks (69) → async, delete dead sinon/power-assert imports and `test/index.js`.
-  *Accept:* both runners green on `test/unit`.
+- [x] 1.2 Remove mocha-isms/dead weight from `test/unit`. Reality was smaller than the audit's
+  repo-wide counts: within `test/unit` the only `this.timeout`/`done` usages were inside
+  commented-out code. Done: deleted `test/index.js` (stale aggregator requiring non-existent
+  dirs) and `test/unit/session/index.js` (0 active tests) + its `test:unit:session` script;
+  codemod `scripts/codemods/remove-dead-test-imports.js` stripped the 15 never-used
+  `require('sinon')` imports from integration files; dropped `sinon` + `power-assert`
+  devDependencies. The real `this.timeout`/`done` debt lives in `test/integration` + `test/rest`
+  → handled in 7.1/7.2.
+  *Accepted:* mocha 1287 + vitest 1285 green; gate green. — (this commit)
 - [ ] 1.3 Extend vitest to all of `test/unit`; add a `unit_tests_vitest` CI job next to the mocha one.
 - [ ] 1.4 Verify the converted GitHub workflows actually pass (push branch / act).
 - [ ] 1.5 Rebuild Docker images under pnpm; `docker compose up` smoke test.

@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — test/unit cleaned of dead weight (stale aggregators, unused sinon/power-assert);
+  codemods live in `scripts/codemods/`.
 - 2026-08-19 — vitest runs beside mocha for `test/unit/sdk` (`pnpm test:vitest`, 1285/1285
   parity). CJS native-require passthrough, no coffee plugin yet; gate's coffee-lint = CI scope
   (`lint:coffee app server worker`) — `lint:coffee:all` has pre-existing errors in dead dirs.

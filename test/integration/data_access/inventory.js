@@ -4,7 +4,6 @@ require('coffeescript/register');
 
 const chai = require('chai');
 const Promise = require('bluebird');
-const sinon = require('sinon');
 const _ = require('underscore');
 const moment = require('moment');
 
