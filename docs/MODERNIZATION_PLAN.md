@@ -475,13 +475,42 @@ server and worker. What remains is *typing* (5T.4), not converting.
   — under mocha that hit the global object and was never read; in strict mode it throws.
   `app-module-path` preludes stay for now: they are what lets the CommonJS suites resolve
   root-absolute requires. — (this commit)
-- [~] 7.2 Spike done (in-container against compose Postgres/Redis, post-conversion): the
-  `data_access` suites all LOAD and RUN — no module errors from the conversion. Two
-  environment gates found: (1) test setup expects a seeded referral code — fix with
-  `INSERT INTO referral_codes (code, is_active) VALUES ('kumite14', true)` after migrate
-  (should become a migration/seed script when reviving for CI); (2) `createNewUser` connects
-  to Firebase Admin — needs REAL credentials, so full revival is blocked on the Firebase
-  decision below (owner). CI stays on `misc` until then.
+- [~] 7.2 **Measured properly (2026-08-19). The earlier note below was wrong about the
+  blocker: it is NOT the Firebase decision.** Full `pnpm test:integration` run in the
+  `test-integration` container against compose Postgres/Redis + the real RTDB, peeling one
+  layer at a time. Four distinct causes, only one of which is about credentials:
+
+  1. **mocha hooks (FIXED, 77697ea2).** 14 of 23 files died at import with
+     `ReferenceError: before is not defined` — vitest has no bare `before`/`after`. A
+     regression from 7.1's mocha retirement, invisible because CI only runs `misc` and
+     `misc` happens to have no such hooks. Registered tests went **19 → 525**.
+  2. **referral-code seed (mechanical).** `INSERT INTO referral_codes (code, is_active)
+     VALUES ('kumite14', true)` after migrate clears it, as previously documented. Needs to
+     become a real seed script for CI.
+  3. **~4 years of test rot (the actual blocker).** The `data_access` + `achievements`
+     suites are written against an auth API upstream deleted: they call
+     `UsersModule.userIdForEmail()` (removed by upstream `4dfebc3b`, 2022-10-12) in 18 files,
+     and pass an EMAIL as the first argument to `createNewUser`, whose signature has long
+     been `(username, password, inviteCode, referralCode, campaignData, registrationSource)`.
+     The email lands in the `username` slot and Firebase rejects it —
+     `child failed: path argument was an invalid path = "unit-test@duelyst.local"` — because
+     RTDB keys cannot contain `.`. **This is a test rewrite, not a config fix.**
+     *Verified salvageable*: modernizing just those two calls in `challenges.js`
+     (`createNewUser('unittest','hash','kumite14')`, `userIdForUsername`) took it from
+     0 running to **7 passing / 2 failing**, the 2 being a real `ERROR PROCESSING QUEST DATA`
+     worth investigating on its own (possibly the same quest bug the e2e allowlists).
+  4. **5 files disabled upstream** (`achievements/*`, `data_access/{achievements,shop}`) are
+     commented out at the top and fail as `No test suite found`. They need excluding from the
+     vitest `include`, not fixing.
+
+  **Ready for CI today:** `misc` (already there) and `firebase` — the firebase suite passes
+  6/6 against a real RTDB. Its only requirement is env plumbing, NOT the keep/replace
+  decision: `.env` stores `FIREBASE_PRIVATE_KEY` with literal `\n`, which Compose decodes on
+  interpolation but a plain shell does not, so a CI secret must carry real newlines (or
+  `config` should decode). See 7.3's firebase-admin entry.
+
+  *(Superseded note kept for history: the original spike claimed revival was "blocked on the
+  Firebase decision below (owner)". Measurement shows credentials are not what blocks it.)*
 - [~] 7.3 Legacy dependency upgrades — each its own step, after TS conversion of the code
   that uses them.
   - [x] **Tier 1 — drop-in / self-contained** (advisories 212 → 148):
