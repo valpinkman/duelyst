@@ -1,0 +1,4 @@
+packages:
+  - 'packages/*'
+  # desktop/ (Electron shell) is intentionally not a workspace member yet:
+  # it has its own lockfile and packaging flow. Fold it in once apps/ exists.
