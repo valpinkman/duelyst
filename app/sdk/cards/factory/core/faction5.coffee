@@ -7,7 +7,6 @@ moment = require 'moment'
 Logger = require 'app/common/logger'
 
 CONFIG = require('app/common/config')
-config = require('config/config')
 RSX = require('app/data/resources')
 
 Card = require 'app/sdk/cards/card'
@@ -128,7 +127,7 @@ class CardFactory_CoreSet_Faction5
 
     if (identifier == Cards.Faction5.AltGeneral)
       card = new Unit(gameSession)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.setIsGeneral(true)
       card.factionId = Factions.Faction5
@@ -173,7 +172,7 @@ class CardFactory_CoreSet_Faction5
     if (identifier == Cards.Faction5.ThirdGeneral)
       card = new Unit(gameSession)
       card.setIsGeneral(true)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableWithAchievement(true)
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction5Achievement.id)
       card.factionId = Factions.Faction5
@@ -474,7 +473,7 @@ class CardFactory_CoreSet_Faction5
     if (identifier == Cards.Faction5.PrimordialGazer)
       card = new Unit(gameSession)
       card.factionId = Factions.Faction5
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.name = i18next.t("cards.faction_5_unit_primordial_gazer_name")
       card.setDescription(i18next.t("cards.faction_5_unit_primordial_gazer_desc"))
@@ -869,7 +868,7 @@ class CardFactory_CoreSet_Faction5
     if (identifier == Cards.Spell.DampeningWave)
       card = new SpellApplyModifiers(gameSession)
       card.factionId = Factions.Faction5
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.DampeningWave
       card.name = i18next.t("cards.faction_5_spell_dampening_wave_name")
@@ -955,7 +954,7 @@ class CardFactory_CoreSet_Faction5
     if (identifier == Cards.Spell.DanceOfDreams)
       card = new SpellApplyPlayerModifiers(gameSession)
       card.factionId = Factions.Faction5
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.DanceOfDreams
       card.name = i18next.t("cards.faction_5_spell_dance_of_dreams_name")
@@ -1088,7 +1087,7 @@ class CardFactory_CoreSet_Faction5
     if (identifier == Cards.Spell.PlasmaStorm)
       card = new SpellLavastorm(gameSession)
       card.factionId = Factions.Faction5
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.PlasmaStorm
       card.name = i18next.t("cards.faction_5_spell_plasma_storm_name")

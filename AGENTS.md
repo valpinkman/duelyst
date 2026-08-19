@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — app/ no longer requires config/config.js anywhere (factories + progression_manager
+  use the process.env.ALL_CARDS_AVAILABLE pattern).
 - 2026-08-19 — networkManager extracted from app/sdk (now app/networkManager.coffee);
   GameSession gets an injected step submitter. SDK has zero browser refs.
 - 2026-08-19 — Phase 1 done: Docker stack verified under pnpm (all services boot, 1287 tests

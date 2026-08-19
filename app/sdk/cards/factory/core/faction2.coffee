@@ -7,7 +7,6 @@ moment = require 'moment'
 Logger = require 'app/common/logger'
 
 CONFIG = require('app/common/config')
-config = require('config/config')
 RSX = require('app/data/resources')
 
 Card = require 'app/sdk/cards/card'
@@ -128,7 +127,7 @@ class CardFactory_CoreSet_Faction2
 
     if (identifier == Cards.Faction2.AltGeneral)
       card = new Unit(gameSession)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.setIsGeneral(true)
       card.factionId = Factions.Faction2
@@ -173,7 +172,7 @@ class CardFactory_CoreSet_Faction2
     if (identifier == Cards.Faction2.ThirdGeneral)
       card = new Unit(gameSession)
       card.setIsGeneral(true)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableWithAchievement(true)
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction2Achievement.id)
       card.factionId = Factions.Faction2
@@ -519,7 +518,7 @@ class CardFactory_CoreSet_Faction2
       card = new Unit(gameSession)
       card.factionId = Factions.Faction2
       card.raceId = Races.Arcanyst
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.name = i18next.t("cards.faction_2_unit_chakri_avatar_name")
       card.setFXResource(["FX.Cards.Faction2.ChakriAvatar"])
@@ -877,7 +876,7 @@ class CardFactory_CoreSet_Faction2
     if (identifier == Cards.Spell.SaberspineSeal)
       card = new SpellApplyModifiers(gameSession)
       card.factionId = Factions.Faction2
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.SaberspineSeal
       card.name = i18next.t("cards.faction_2_spell_saberspine_seal_name")
@@ -1050,7 +1049,7 @@ class CardFactory_CoreSet_Faction2
     if (identifier == Cards.Spell.InnerFocus)
       card = new SpellInnerFocus(gameSession)
       card.factionId = Factions.Faction2
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.InnerFocus
       card.name = i18next.t("cards.faction_2_spell_inner_focus_name")
@@ -1090,7 +1089,7 @@ class CardFactory_CoreSet_Faction2
     if (identifier == Cards.Spell.GhostLightning)
       card = new SpellDamage(gameSession)
       card.factionId = Factions.Faction2
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.GhostLightning
       card.name = i18next.t("cards.faction_2_spell_ghost_lightning_name")

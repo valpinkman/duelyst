@@ -7,7 +7,6 @@ moment = require 'moment'
 Logger = require 'app/common/logger'
 
 CONFIG = require('app/common/config')
-config = require('config/config')
 RSX = require('app/data/resources')
 
 Card = require 'app/sdk/cards/card'
@@ -130,7 +129,7 @@ class CardFactory_CoreSet_Faction6
 
     if (identifier == Cards.Faction6.AltGeneral)
       card = new Unit(gameSession)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.setIsGeneral(true)
       card.factionId = Factions.Faction6
@@ -175,7 +174,7 @@ class CardFactory_CoreSet_Faction6
     if (identifier == Cards.Faction6.ThirdGeneral)
       card = new Unit(gameSession)
       card.setIsGeneral(true)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableWithAchievement(true)
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction6Achievement.id)
       card.factionId = Factions.Faction6
@@ -221,7 +220,7 @@ class CardFactory_CoreSet_Faction6
     if (identifier == Cards.Faction6.FenrirWarmaster)
       card = new Unit(gameSession)
       card.factionId = Factions.Faction6
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.name = i18next.t("cards.faction_6_unit_fenrir_warmaster_name")
       card.setDescription(i18next.t("cards.faction_6_unit_fenrir_warmaster_desc"))
@@ -1169,7 +1168,7 @@ class CardFactory_CoreSet_Faction6
     if (identifier == Cards.Spell.ChromaticCold)
       card = new SpellChromaticCold(gameSession)
       card.factionId = Factions.Faction6
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.ChromaticCold
       card.name = i18next.t("cards.faction_6_spell_chromatic_cold_name")
@@ -1231,7 +1230,7 @@ class CardFactory_CoreSet_Faction6
     if (identifier == Cards.Spell.Avalanche)
       card = new SpellAvalanche(gameSession)
       card.factionId = Factions.Faction6
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.Avalanche
       card.name = i18next.t("cards.faction_6_spell_avalanche_name")
@@ -1334,7 +1333,7 @@ class CardFactory_CoreSet_Faction6
     if (identifier == Cards.Spell.AspectOfTheWolf)
       card = new SpellAspectBase(gameSession)
       card.factionId = Factions.Faction6
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.AspectOfTheWolf
       card.name = i18next.t("cards.faction_6_spell_aspect_of_the_fox_name")

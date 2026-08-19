@@ -11,8 +11,7 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 2.2 — remove `config/config.js` requires from the 6 card factories and
-  `progression_manager.js`.
+- **Next step:** 2.3 — break `utils_ui.js` → `audio_engine` (last common→client edge).
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -74,7 +73,12 @@ step it describes, so it can never drift from the code.
   in `application.coffee`; servers/tests run authoritative sessions and never need it. Dropped
   networkManager's unused `applyCardToBoardAction` import. `app/sdk` now has zero
   `window`/socket.io references. — (this commit)
-- [ ] 2.2 Remove `config/config.js` requires from the 6 core card factories and `app/ui/managers/progression_manager.js` (they only need a couple of flags — pass via `app/common/config` or env).
+- [x] 2.2 `config/config.js` (server convict) no longer required anywhere under `app/`. The 6
+  core card factories and `progression_manager.js` only read `allCardsAvailable`; they now use
+  the `process.env.ALL_CARDS_AVAILABLE` pattern `card.coffee` already established (envify
+  client-side, convict env write-back server-side). Note: convict's Boolean default made the
+  factories' existential guard dead code in every configured environment; the env form keeps
+  the same behavior on client and server. — (this commit)
 - [ ] 2.3 Break `app/common/utils/utils_ui.js` → `app/audio/audio_engine` (the one common→client edge).
 - [ ] 2.4 Fix `app/common/chroma.js` to require `@counterplay/chromajs` by name instead of a relative path into `packages/`.
 - [ ] 2.5 Move the `app/sdk.coffee` barrel inside `app/sdk/` (leave a re-export shim; ~29 server requires + 154 client requires keep working).

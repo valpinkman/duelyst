@@ -7,7 +7,6 @@ moment = require 'moment'
 Logger = require 'app/common/logger'
 
 CONFIG = require('app/common/config')
-config = require('config/config')
 RSX = require('app/data/resources')
 
 Card = require 'app/sdk/cards/card'
@@ -129,7 +128,7 @@ class CardFactory_CoreSet_Faction4
 
     if (identifier == Cards.Faction4.AltGeneral)
       card = new Unit(gameSession)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.setIsGeneral(true)
       card.factionId = Factions.Faction4
@@ -174,7 +173,7 @@ class CardFactory_CoreSet_Faction4
     if (identifier == Cards.Faction4.ThirdGeneral)
       card = new Unit(gameSession)
       card.setIsGeneral(true)
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableWithAchievement(true)
         card.setIsUnlockedWithAchievementId(WartechGeneralFaction4Achievement.id)
       card.factionId = Factions.Faction4
@@ -219,7 +218,7 @@ class CardFactory_CoreSet_Faction4
     if (identifier == Cards.Faction4.AbyssalCrawler)
       card = new Unit(gameSession)
       card.factionId = Factions.Faction4
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.name = i18next.t("cards.faction_4_unit_abyssal_crawler_name")
       card.setDescription(i18next.t("cards.faction_4_unit_abyssal_crawler_desc"))
@@ -860,7 +859,7 @@ class CardFactory_CoreSet_Faction4
     if (identifier == Cards.Spell.DaemonicLure)
       card = new SpellDamage(gameSession)
       card.factionId = Factions.Faction4
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.DaemonicLure
       card.name = i18next.t("cards.faction_4_spell_daemonic_lure_name")
@@ -901,7 +900,7 @@ class CardFactory_CoreSet_Faction4
     if (identifier == Cards.Spell.ShadowNova)
       card = new SpellChokingShadows(gameSession)
       card.factionId = Factions.Faction4
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.ShadowNova
       card.name = i18next.t("cards.faction_4_spell_shadow_nova_name")
@@ -1121,7 +1120,7 @@ class CardFactory_CoreSet_Faction4
     if (identifier == Cards.Spell.SoulshatterPact)
       card = new SpellApplyModifiers(gameSession)
       card.factionId = Factions.Faction4
-      if !config.get('allCardsAvailable')?
+      if !process.env.ALL_CARDS_AVAILABLE?
         card.setIsUnlockableBasic(true)
       card.id = Cards.Spell.SoulshatterPact
       card.name = i18next.t("cards.faction_4_spell_soulshatter_pact_name")
