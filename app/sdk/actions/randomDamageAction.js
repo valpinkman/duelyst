@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -12,11 +11,7 @@ const CONFIG = require('app/common/config');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
 
 class RandomDamageAction extends DamageAction {
-  static initClass() {
-    this.type = 'RandomDamageAction';
-
-    this.prototype.canTargetGenerals = false;
-  }
+  static type = 'RandomDamageAction';
 
   constructor() {
     super(...arguments);
@@ -42,6 +37,6 @@ class RandomDamageAction extends DamageAction {
     }
   }
 }
-RandomDamageAction.initClass();
+RandomDamageAction.prototype.canTargetGenerals = false;
 
 module.exports = RandomDamageAction;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,17 +15,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchSpawnEntity extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchSpawnEntity';
-    this.type = 'ModifierStartTurnWatchSpawnEntity';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the start of your turn, summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierStartTurnWatchSpawnEntity';
+  static modifierName = 'Turn Watch';
+  static description = 'At the start of your turn, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -91,6 +82,8 @@ class ModifierStartTurnWatchSpawnEntity extends ModifierStartTurnWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierStartTurnWatchSpawnEntity.initClass();
+ModifierStartTurnWatchSpawnEntity.prototype.type = 'ModifierStartTurnWatchSpawnEntity';
+ModifierStartTurnWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierStartTurnWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierStartTurnWatchSpawnEntity;

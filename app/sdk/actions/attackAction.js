@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,9 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const _ = require('underscore');
 
 class AttackAction extends DamageAction {
-  static initClass() {
-    this.type = 'AttackAction';
-  }
+  static type = 'AttackAction';
 
   constructor(gameSession) {
     super(gameSession);
@@ -55,6 +52,5 @@ class AttackAction extends DamageAction {
     }
   }
 }
-AttackAction.initClass();
 
 module.exports = AttackAction;

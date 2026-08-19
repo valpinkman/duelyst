@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,14 +9,8 @@ const ModifierBanding = require('./modifierBanding');
 const ModifierBanded = require('./modifierBanded');
 
 class ModifierBandingAttackAndHealth extends ModifierBanding {
-  static initClass() {
-    this.prototype.type = 'ModifierBandingAttackAndHealth';
-    this.type = 'ModifierBandingAttackAndHealth';
-
-    this.description = 'Gains %X / %Y';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealAttackAndHealth'];
-  }
+  static type = 'ModifierBandingAttackAndHealth';
+  static description = 'Gains %X / %Y';
 
   static createContextObject(attackBuff, healthBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -40,6 +33,7 @@ class ModifierBandingAttackAndHealth extends ModifierBanding {
     return this.description;
   }
 }
-ModifierBandingAttackAndHealth.initClass();
+ModifierBandingAttackAndHealth.prototype.type = 'ModifierBandingAttackAndHealth';
+ModifierBandingAttackAndHealth.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealAttackAndHealth'];
 
 module.exports = ModifierBandingAttackAndHealth;

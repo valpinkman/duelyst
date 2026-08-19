@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -9,18 +8,14 @@ const ModifierBelongsToAllRaces = require('app/sdk/modifiers/modifierBelongsToAl
 const Modifier = require('./modifier');
 
 class ModifierFeralu extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierFeralu';
-    this.type = 'ModifierFeralu';
-
-    this.modifierName = 'Feralu';
-    this.description = '';
-  }
+  static type = 'ModifierFeralu';
+  static modifierName = 'Feralu';
+  static description = '';
 
   _filterPotentialCardInAura(card) {
     return ((card.getRaceId() !== Races.Neutral) || card.hasModifierClass(ModifierBelongsToAllRaces)) && super._filterPotentialCardInAura(card);
   }
 }
-ModifierFeralu.initClass();
+ModifierFeralu.prototype.type = 'ModifierFeralu';
 
 module.exports = ModifierFeralu;

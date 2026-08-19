@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
@@ -9,16 +8,8 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitStealEnemyGeneralHealth extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitStealEnemyGeneralHealth';
-    this.type = 'ModifierOpeningGambitStealEnemyGeneralHealth';
-
-    this.description = 'Your General steals X Health from the enemy General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierOpeningGambitStealEnemyGeneralHealth';
+  static description = 'Your General steals X Health from the enemy General';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -44,6 +35,8 @@ class ModifierOpeningGambitStealEnemyGeneralHealth extends ModifierOpeningGambit
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierOpeningGambitStealEnemyGeneralHealth.initClass();
+ModifierOpeningGambitStealEnemyGeneralHealth.prototype.type = 'ModifierOpeningGambitStealEnemyGeneralHealth';
+ModifierOpeningGambitStealEnemyGeneralHealth.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitStealEnemyGeneralHealth.prototype.damageAmount = 0;
 
 module.exports = ModifierOpeningGambitStealEnemyGeneralHealth;

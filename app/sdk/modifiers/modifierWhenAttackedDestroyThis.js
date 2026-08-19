@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -10,10 +9,7 @@ const KillAction = require('app/sdk/actions/killAction');
 const Modifier = require('./modifier');
 
 class ModifierWhenAttackedDestroyThis extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierWhenAttackedDestroyThis';
-    this.type = 'ModifierWhenAttackedDestroyThis';
-  }
+  static type = 'ModifierWhenAttackedDestroyThis';
 
   onAfterAction(event) {
     super.onAfterAction(event);
@@ -33,7 +29,7 @@ class ModifierWhenAttackedDestroyThis extends Modifier {
     }
   }
 }
-ModifierWhenAttackedDestroyThis.initClass();
+ModifierWhenAttackedDestroyThis.prototype.type = 'ModifierWhenAttackedDestroyThis';
 
 module.exports = ModifierWhenAttackedDestroyThis;
 

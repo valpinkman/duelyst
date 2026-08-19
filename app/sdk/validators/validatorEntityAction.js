@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,7 @@ const Entity = require('app/sdk/entities/entity');
 const i18next = require('i18next');
 
 class ValidatorEntityAction extends Validator {
-  static initClass() {
-    this.prototype.type = 'ValidatorEntityAction';
-    this.type = 'ValidatorEntityAction';
-  }
+  static type = 'ValidatorEntityAction';
 
   onValidateAction(event) {
     super.onValidateAction(event);
@@ -49,6 +45,6 @@ class ValidatorEntityAction extends Validator {
     }
   }
 }
-ValidatorEntityAction.initClass();
+ValidatorEntityAction.prototype.type = 'ValidatorEntityAction';
 
 module.exports = ValidatorEntityAction;

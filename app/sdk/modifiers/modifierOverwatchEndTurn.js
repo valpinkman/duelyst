@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,12 +8,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierOverwatch = require('./modifierOverwatch');
 
 class ModifierOverwatchEndTurn extends ModifierOverwatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchEndTurn';
-    this.type = 'ModifierOverwatchEndTurn';
-
-    this.description = 'When opponent ends turn, %X';
-  }
+  static type = 'ModifierOverwatchEndTurn';
+  static description = 'When opponent ends turn, %X';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject != null) {
@@ -30,6 +25,6 @@ class ModifierOverwatchEndTurn extends ModifierOverwatch {
     return false;
   }
 }
-ModifierOverwatchEndTurn.initClass();
+ModifierOverwatchEndTurn.prototype.type = 'ModifierOverwatchEndTurn';
 
 module.exports = ModifierOverwatchEndTurn;

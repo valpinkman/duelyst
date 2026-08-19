@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierAction = require('./modifierAction');
@@ -9,11 +8,8 @@ const ModifierAction = require('./modifierAction');
   Action used for modifier deactivation.
 */
 class ModifierDeactivatedAction extends ModifierAction {
-  static initClass() {
-    this.type = 'ModifierDeactivatedAction';
-    this.prototype.type = 'ModifierDeactivatedAction';
-  }
+  static type = 'ModifierDeactivatedAction';
 }
-ModifierDeactivatedAction.initClass();
+ModifierDeactivatedAction.prototype.type = 'ModifierDeactivatedAction';
 
 module.exports = ModifierDeactivatedAction;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,8 @@ const Modifier = require('./modifier');
 const ModifierDynamicCountModifySelf = require('./modifierDynamicCountModifySelf');
 
 class ModifierDynamicCountModifySelfByShadowTilesOnBoard extends ModifierDynamicCountModifySelf {
-  static initClass() {
-    this.prototype.type = 'ModifierDynamicCountModifySelfByShadowTilesOnBoard';
-    this.type = 'ModifierDynamicCountModifySelfByShadowTilesOnBoard';
-
-    this.description = 'This minion has %X for each friendly Shadow Creep';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierDynamicCountModifySelfByShadowTilesOnBoard';
+  static description = 'This minion has %X for each friendly Shadow Creep';
 
   static createContextObject(attackBuff, maxHPBuff, description, appliedName, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -52,6 +42,10 @@ class ModifierDynamicCountModifySelfByShadowTilesOnBoard extends ModifierDynamic
     return shadowTileCount;
   }
 }
-ModifierDynamicCountModifySelfByShadowTilesOnBoard.initClass();
+ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.type = 'ModifierDynamicCountModifySelfByShadowTilesOnBoard';
+ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeInDeck = false;
+ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeInHand = false;
+ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeInSignatureCards = false;
+ModifierDynamicCountModifySelfByShadowTilesOnBoard.prototype.activeOnBoard = true;
 
 module.exports = ModifierDynamicCountModifySelfByShadowTilesOnBoard;

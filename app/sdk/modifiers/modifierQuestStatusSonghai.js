@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
@@ -10,10 +9,7 @@ const i18next = require('i18next');
 const ModifierQuestStatus = require('./modifierQuestStatus');
 
 class ModifierQuestStatusSonghai extends ModifierQuestStatus {
-  static initClass() {
-    this.prototype.type = 'ModifierQuestStatusSonghai';
-    this.type = 'ModifierQuestStatusSonghai';
-  }
+  static type = 'ModifierQuestStatusSonghai';
 
   static createContextObject(questCompleted, minionCostsSummoned) {
     const contextObject = super.createContextObject();
@@ -43,6 +39,6 @@ class ModifierQuestStatusSonghai extends ModifierQuestStatus {
     return i18next.t('modifiers.songhaiquest_counter_applied_name');
   }
 }
-ModifierQuestStatusSonghai.initClass();
+ModifierQuestStatusSonghai.prototype.type = 'ModifierQuestStatusSonghai';
 
 module.exports = ModifierQuestStatusSonghai;

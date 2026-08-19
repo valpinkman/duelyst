@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
@@ -11,15 +10,9 @@ const Modifier = require('./modifier');
 
 */
 class ModifierCustomSpawn extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierCustomSpawn';
-    this.type = 'ModifierCustomSpawn';
-
-    this.modifierName = 'Custom Spawn';
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCustomSpawn'];
-  }
+  static type = 'ModifierCustomSpawn';
+  static modifierName = 'Custom Spawn';
+  static description = '';
 
   getCustomSpawnPositions() {
     // return an array of valid spawn positions
@@ -27,6 +20,7 @@ class ModifierCustomSpawn extends Modifier {
     return [];
   }
 }
-ModifierCustomSpawn.initClass();
+ModifierCustomSpawn.prototype.type = 'ModifierCustomSpawn';
+ModifierCustomSpawn.prototype.fxResource = ['FX.Modifiers.ModifierCustomSpawn'];
 
 module.exports = ModifierCustomSpawn;

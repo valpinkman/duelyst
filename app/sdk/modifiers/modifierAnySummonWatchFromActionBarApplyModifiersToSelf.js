@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,7 @@ const i18next = require('i18next');
 const ModifierAnySummonWatchFromActionBar = require('./modifierAnySummonWatchFromActionBar');
 
 class ModifierAnySummonWatchFromActionBarApplyModifiersToSelf extends ModifierAnySummonWatchFromActionBar {
-  static initClass() {
-    this.prototype.type = 'ModifierAnySummonWatchFromActionBarApplyModifiersToSelf';
-    this.type = 'ModifierAnySummonWatchFromActionBarApplyModifiersToSelf';
-
-    this.description = i18next.t('modifiers.any_summon_watch_from_action_bar_apply_modifiers_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierAnySummonWatchFromActionBarApplyModifiersToSelf';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -42,6 +34,8 @@ class ModifierAnySummonWatchFromActionBarApplyModifiersToSelf extends ModifierAn
     }
   }
 }
-ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.initClass();
+ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.prototype.type = 'ModifierAnySummonWatchFromActionBarApplyModifiersToSelf';
+ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.description = i18next.t('modifiers.any_summon_watch_from_action_bar_apply_modifiers_def');
+ModifierAnySummonWatchFromActionBarApplyModifiersToSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierAnySummonWatchFromActionBarApplyModifiersToSelf;

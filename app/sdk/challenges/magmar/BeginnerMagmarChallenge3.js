@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,27 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/crushing-reach-basic-otk/11712
 
 class BeginnerMagmarChallenge3 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerMagmarChallenge3';
-    this.prototype.type = 'BeginnerMagmarChallenge3';
-    this.prototype.categoryType = ChallengeCategory.keywords.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_magmar_3_title');
-    this.prototype.description = i18next.t('challenges.beginner_magmar_3_description');
-    this.prototype.iconUrl = RSX.speech_portrait_magmar.img;
-
-    this.prototype._musicOverride = RSX.music_gauntlet.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_magmar_3_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_magmar_3_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 8;
-    this.prototype.startingHandSizePlayer = 6;
-  }
+  static type = 'BeginnerMagmarChallenge3';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -100,6 +79,19 @@ class BeginnerMagmarChallenge3 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerMagmarChallenge3.initClass();
+BeginnerMagmarChallenge3.prototype.type = 'BeginnerMagmarChallenge3';
+BeginnerMagmarChallenge3.prototype.categoryType = ChallengeCategory.keywords.type;
+BeginnerMagmarChallenge3.prototype.name = i18next.t('challenges.beginner_magmar_3_title');
+BeginnerMagmarChallenge3.prototype.description = i18next.t('challenges.beginner_magmar_3_description');
+BeginnerMagmarChallenge3.prototype.iconUrl = RSX.speech_portrait_magmar.img;
+BeginnerMagmarChallenge3.prototype._musicOverride = RSX.music_gauntlet.audio;
+BeginnerMagmarChallenge3.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_magmar_3_start');
+BeginnerMagmarChallenge3.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_magmar_3_fail'),
+];
+BeginnerMagmarChallenge3.prototype.battleMapTemplateIndex = 0;
+BeginnerMagmarChallenge3.prototype.snapShotOnPlayerTurn = 0;
+BeginnerMagmarChallenge3.prototype.startingManaPlayer = 8;
+BeginnerMagmarChallenge3.prototype.startingHandSizePlayer = 6;
 
 module.exports = BeginnerMagmarChallenge3;

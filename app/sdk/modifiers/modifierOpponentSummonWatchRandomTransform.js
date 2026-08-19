@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -21,17 +20,9 @@ const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchRandomTransform';
-    this.type = 'ModifierOpponentSummonWatchRandomTransform';
-
-    this.modifierName = 'Opponent Summon Watch';
-    this.description = 'Whenever an enemy summons a minion, transform it into a random minion of the same cost';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpponentSummonWatchRandomTransform';
+  static modifierName = 'Opponent Summon Watch';
+  static description = 'Whenever an enemy summons a minion, transform it into a random minion of the same cost';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -83,6 +74,9 @@ class ModifierOpponentSummonWatchRandomTransform extends ModifierOpponentSummonW
     return true;
   }
 }
-ModifierOpponentSummonWatchRandomTransform.initClass(); // default when no card restrictions are needed
+ModifierOpponentSummonWatchRandomTransform.prototype.type = 'ModifierOpponentSummonWatchRandomTransform';
+ModifierOpponentSummonWatchRandomTransform.prototype.cardDataOrIndexToSpawn = null;
+ModifierOpponentSummonWatchRandomTransform.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+// default when no card restrictions are needed
 
 module.exports = ModifierOpponentSummonWatchRandomTransform;

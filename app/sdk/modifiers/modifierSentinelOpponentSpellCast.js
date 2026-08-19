@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,7 @@ const i18next = require('i18next');
 const ModifierSentinel = require('./modifierSentinel');
 
 class ModifierSentinelOpponentSpellCast extends ModifierSentinel {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentSpellCast';
-    this.type = 'ModifierSentinelOpponentSpellCast';
-
-    this.description = i18next.t('modifiers.sentinel_spell_cast');
-  }
+  static type = 'ModifierSentinelOpponentSpellCast';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject != null) {
@@ -36,7 +30,8 @@ class ModifierSentinelOpponentSpellCast extends ModifierSentinel {
     return false;
   }
 }
-ModifierSentinelOpponentSpellCast.initClass();
+ModifierSentinelOpponentSpellCast.prototype.type = 'ModifierSentinelOpponentSpellCast';
+ModifierSentinelOpponentSpellCast.description = i18next.t('modifiers.sentinel_spell_cast');
 
 module.exports = ModifierSentinelOpponentSpellCast;
 

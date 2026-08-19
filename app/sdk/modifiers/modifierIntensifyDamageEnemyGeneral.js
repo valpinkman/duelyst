@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierIntensify = require('./modifierIntensify');
 
 class ModifierIntensifyDamageEnemyGeneral extends ModifierIntensify {
-  static initClass() {
-    this.prototype.type = 'ModifierIntensifyDamageEnemyGeneral';
-    this.type = 'ModifierIntensifyDamageEnemyGeneral';
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierIntensifyDamageEnemyGeneral';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -34,6 +28,7 @@ class ModifierIntensifyDamageEnemyGeneral extends ModifierIntensify {
     return this.getGameSession().executeAction(enemyDamageAction);
   }
 }
-ModifierIntensifyDamageEnemyGeneral.initClass();
+ModifierIntensifyDamageEnemyGeneral.prototype.type = 'ModifierIntensifyDamageEnemyGeneral';
+ModifierIntensifyDamageEnemyGeneral.prototype.damageAmount = 0;
 
 module.exports = ModifierIntensifyDamageEnemyGeneral;

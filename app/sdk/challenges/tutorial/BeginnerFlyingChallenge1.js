@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,26 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/starter-challenge-lyonar-a/7563
 
 class BeginnerFlyingChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerFlyingChallenge1';
-    this.prototype.type = 'BeginnerFlyingChallenge1';
-    this.prototype.categoryType = ChallengeCategory.keywords.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_flying_challenge_title');
-    this.prototype.description = i18next.t('challenges.beginner_flying_challenge_description');
-    this.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_flying_challenge_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_flying_challenge_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = CONFIG.MAX_MANA;
-  }
+  static type = 'BeginnerFlyingChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -97,6 +77,18 @@ class BeginnerFlyingChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerFlyingChallenge1.initClass();
+BeginnerFlyingChallenge1.prototype.type = 'BeginnerFlyingChallenge1';
+BeginnerFlyingChallenge1.prototype.categoryType = ChallengeCategory.keywords.type;
+BeginnerFlyingChallenge1.prototype.name = i18next.t('challenges.beginner_flying_challenge_title');
+BeginnerFlyingChallenge1.prototype.description = i18next.t('challenges.beginner_flying_challenge_description');
+BeginnerFlyingChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
+BeginnerFlyingChallenge1.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
+BeginnerFlyingChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_flying_challenge_start');
+BeginnerFlyingChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_flying_challenge_fail'),
+];
+BeginnerFlyingChallenge1.prototype.battleMapTemplateIndex = 0;
+BeginnerFlyingChallenge1.prototype.snapShotOnPlayerTurn = 0;
+BeginnerFlyingChallenge1.prototype.startingManaPlayer = CONFIG.MAX_MANA;
 
 module.exports = BeginnerFlyingChallenge1;

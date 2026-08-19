@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,20 +8,7 @@ const PlayerModifierEmblem = require('./playerModifierEmblem');
 const EndTurnAction = require('app/sdk/actions/endTurnAction');
 
 class PlayerModifierEmblemEndTurnWatch extends PlayerModifierEmblem {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemEndTurnWatch';
-    this.type = 'PlayerModifierEmblemEndTurnWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-
-    this.prototype.activeOnMyTurn = true;
-    this.prototype.activeOnEnemyTurn = false;
-  }
+  static type = 'PlayerModifierEmblemEndTurnWatch';
 
   static createContextObject(activeOnMyTurn, activeOnEnemyTurn, options) {
     if (activeOnMyTurn == null) { activeOnMyTurn = true; }
@@ -60,7 +46,14 @@ class PlayerModifierEmblemEndTurnWatch extends PlayerModifierEmblem {
 
   onTurnWatch(action) {}
 }
-PlayerModifierEmblemEndTurnWatch.initClass();
+PlayerModifierEmblemEndTurnWatch.prototype.type = 'PlayerModifierEmblemEndTurnWatch';
+PlayerModifierEmblemEndTurnWatch.prototype.activeInHand = false;
+PlayerModifierEmblemEndTurnWatch.prototype.activeInDeck = false;
+PlayerModifierEmblemEndTurnWatch.prototype.activeInSignatureCards = false;
+PlayerModifierEmblemEndTurnWatch.prototype.activeOnBoard = true;
+PlayerModifierEmblemEndTurnWatch.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
+PlayerModifierEmblemEndTurnWatch.prototype.activeOnMyTurn = true;
+PlayerModifierEmblemEndTurnWatch.prototype.activeOnEnemyTurn = false;
 // override me in sub classes to implement special behavior
 
 module.exports = PlayerModifierEmblemEndTurnWatch;

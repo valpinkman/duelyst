@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,24 +15,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierAntiMagicField extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAntiMagicField';
-    this.type = 'ModifierAntiMagicField';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.antimagic_field_def');
-
-    this.modifierName = i18next.t('modifiers.antimagic_field_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAntiMagicField'];
-  }
+  static type = 'ModifierAntiMagicField';
+  static isKeyworded = true;
+  static description = null;
 
   onValidateAction(event) {
     const a = event.action;
@@ -60,6 +44,14 @@ class ModifierAntiMagicField extends Modifier {
     }
   }
 }
-ModifierAntiMagicField.initClass();
+ModifierAntiMagicField.prototype.type = 'ModifierAntiMagicField';
+ModifierAntiMagicField.keywordDefinition = i18next.t('modifiers.antimagic_field_def');
+ModifierAntiMagicField.modifierName = i18next.t('modifiers.antimagic_field_name');
+ModifierAntiMagicField.prototype.activeInHand = false;
+ModifierAntiMagicField.prototype.activeInDeck = false;
+ModifierAntiMagicField.prototype.activeInSignatureCards = false;
+ModifierAntiMagicField.prototype.activeOnBoard = true;
+ModifierAntiMagicField.prototype.maxStacks = 1;
+ModifierAntiMagicField.prototype.fxResource = ['FX.Modifiers.ModifierAntiMagicField'];
 
 module.exports = ModifierAntiMagicField;

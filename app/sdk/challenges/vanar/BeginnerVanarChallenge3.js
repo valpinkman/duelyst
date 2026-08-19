@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -23,27 +22,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/starter-challenge-vanar/7519
 
 class BeginnerVanarChallenge3 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerVanarChallenge3';
-    this.prototype.type = 'BeginnerVanarChallenge3';
-    this.prototype.categoryType = ChallengeCategory.expert.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_vanar_3_title');
-    this.prototype.description = i18next.t('challenges.beginner_vanar_3_description');
-    this.prototype.iconUrl = RSX.speech_portrait_vanar.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vanar_3_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_vanar_3_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 3;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 6;
-    this.prototype.startingHandSizePlayer = 4;
-  }
+  static type = 'BeginnerVanarChallenge3';
 
   constructor() {
     super();
@@ -106,6 +85,19 @@ class BeginnerVanarChallenge3 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerVanarChallenge3.initClass();
+BeginnerVanarChallenge3.prototype.type = 'BeginnerVanarChallenge3';
+BeginnerVanarChallenge3.prototype.categoryType = ChallengeCategory.expert.type;
+BeginnerVanarChallenge3.prototype.name = i18next.t('challenges.beginner_vanar_3_title');
+BeginnerVanarChallenge3.prototype.description = i18next.t('challenges.beginner_vanar_3_description');
+BeginnerVanarChallenge3.prototype.iconUrl = RSX.speech_portrait_vanar.img;
+BeginnerVanarChallenge3.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
+BeginnerVanarChallenge3.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vanar_3_start');
+BeginnerVanarChallenge3.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_vanar_3_fail'),
+];
+BeginnerVanarChallenge3.prototype.battleMapTemplateIndex = 3;
+BeginnerVanarChallenge3.prototype.snapShotOnPlayerTurn = 0;
+BeginnerVanarChallenge3.prototype.startingManaPlayer = 6;
+BeginnerVanarChallenge3.prototype.startingHandSizePlayer = 4;
 
 module.exports = BeginnerVanarChallenge3;

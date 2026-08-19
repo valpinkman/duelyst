@@ -1,23 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizeHealMyGeneral extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeHealMyGeneral';
-    this.type = 'ModifierSynergizeHealMyGeneral';
-
-    this.description = 'Restore %X Health to your General';
-
-    this.prototype.healAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierSynergizeHealMyGeneral';
+  static description = 'Restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
     const contextObject = super.createContextObject();
@@ -43,6 +34,8 @@ class ModifierSynergizeHealMyGeneral extends ModifierSynergize {
     return this.getGameSession().executeAction(healAction);
   }
 }
-ModifierSynergizeHealMyGeneral.initClass();
+ModifierSynergizeHealMyGeneral.prototype.type = 'ModifierSynergizeHealMyGeneral';
+ModifierSynergizeHealMyGeneral.prototype.healAmount = 0;
+ModifierSynergizeHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 
 module.exports = ModifierSynergizeHealMyGeneral;

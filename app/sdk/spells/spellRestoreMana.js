@@ -1,17 +1,12 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Spell = require('./spell');
 const RestoreManaAction = require('app/sdk/actions/restoreManaAction');
 
 class SpellRestoreMana extends Spell {
-  static initClass() {
-    this.prototype.restoreManaAmount = 0;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -20,6 +15,6 @@ class SpellRestoreMana extends Spell {
     return this.getGameSession().executeAction(restoreManaAction);
   }
 }
-SpellRestoreMana.initClass();
+SpellRestoreMana.prototype.restoreManaAmount = 0;
 
 module.exports = SpellRestoreMana;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,20 +11,9 @@ const ModifierStrikeback = require('./modifierStrikeback');
 const Modifier = require('./modifier');
 
 class ModifierExtraDamageOnCounterattack extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierExtraDamageOnCounterattack';
-    this.type = 'ModifierExtraDamageOnCounterattack';
-
-    this.modifierName = 'Extra Damage on Counterattack';
-    this.description = 'Deals double damage on counter attacks';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
-  }
+  static type = 'ModifierExtraDamageOnCounterattack';
+  static modifierName = 'Extra Damage on Counterattack';
+  static description = 'Deals double damage on counter attacks';
 
   static createContextObject(extraDamage, options) {
     if (extraDamage == null) { extraDamage = 2; }
@@ -69,6 +57,11 @@ class ModifierExtraDamageOnCounterattack extends Modifier {
     return a.changeDamageMultiplierBy(this.extraDamage);
   }
 }
-ModifierExtraDamageOnCounterattack.initClass();
+ModifierExtraDamageOnCounterattack.prototype.type = 'ModifierExtraDamageOnCounterattack';
+ModifierExtraDamageOnCounterattack.prototype.activeInHand = false;
+ModifierExtraDamageOnCounterattack.prototype.activeInDeck = false;
+ModifierExtraDamageOnCounterattack.prototype.activeInSignatureCards = false;
+ModifierExtraDamageOnCounterattack.prototype.activeOnBoard = true;
+ModifierExtraDamageOnCounterattack.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
 
 module.exports = ModifierExtraDamageOnCounterattack;

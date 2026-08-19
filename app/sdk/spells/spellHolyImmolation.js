@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -14,13 +13,6 @@ const HealAction = require('app/sdk/actions/healAction');
 const DamageAction = require('app/sdk/actions/damageAction');
 
 class SpellHolyImmolation extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.AllyDirect;
-    this.prototype.healAmount = 0;
-    this.prototype.damageAmount = 0;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -52,6 +44,9 @@ class SpellHolyImmolation extends Spell {
     })();
   }
 }
-SpellHolyImmolation.initClass();
+SpellHolyImmolation.prototype.targetType = CardType.Unit;
+SpellHolyImmolation.prototype.spellFilterType = SpellFilterType.AllyDirect;
+SpellHolyImmolation.prototype.healAmount = 0;
+SpellHolyImmolation.prototype.damageAmount = 0;
 
 module.exports = SpellHolyImmolation;

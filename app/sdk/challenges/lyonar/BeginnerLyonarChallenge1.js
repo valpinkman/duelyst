@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,26 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/starter-challenge-lyonar-a/7563
 
 class BeginnerLyonarChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerLyonarChallenge1';
-    this.prototype.type = 'BeginnerLyonarChallenge1';
-    this.prototype.categoryType = ChallengeCategory.beginner.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_lyonar_1_title');
-    this.prototype.description = i18next.t('challenges.beginner_lyonar_1_description');
-    this.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
-
-    this.prototype._musicOverride = RSX.music_mainmenu_lyonar.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_lyonar_1_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_lyonar_1_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 5;
-  }
+  static type = 'BeginnerLyonarChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -94,6 +74,18 @@ class BeginnerLyonarChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerLyonarChallenge1.initClass();
+BeginnerLyonarChallenge1.prototype.type = 'BeginnerLyonarChallenge1';
+BeginnerLyonarChallenge1.prototype.categoryType = ChallengeCategory.beginner.type;
+BeginnerLyonarChallenge1.prototype.name = i18next.t('challenges.beginner_lyonar_1_title');
+BeginnerLyonarChallenge1.prototype.description = i18next.t('challenges.beginner_lyonar_1_description');
+BeginnerLyonarChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
+BeginnerLyonarChallenge1.prototype._musicOverride = RSX.music_mainmenu_lyonar.audio;
+BeginnerLyonarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_lyonar_1_start');
+BeginnerLyonarChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_lyonar_1_fail'),
+];
+BeginnerLyonarChallenge1.prototype.battleMapTemplateIndex = 0;
+BeginnerLyonarChallenge1.prototype.snapShotOnPlayerTurn = 0;
+BeginnerLyonarChallenge1.prototype.startingManaPlayer = 5;
 
 module.exports = BeginnerLyonarChallenge1;

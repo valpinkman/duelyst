@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchImmolateDamagedMinions extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchImmolateDamagedMinions';
-    this.type = 'ModifierStartTurnWatchImmolateDamagedMinions';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericHeal', 'FX.Modifiers.ModifierGenericDamageNearby'];
-  }
+  static type = 'ModifierStartTurnWatchImmolateDamagedMinions';
 
   onTurnWatch() {
     const board = this.getGameSession().getBoard();
@@ -54,6 +48,7 @@ class ModifierStartTurnWatchImmolateDamagedMinions extends ModifierStartTurnWatc
     })();
   }
 }
-ModifierStartTurnWatchImmolateDamagedMinions.initClass();
+ModifierStartTurnWatchImmolateDamagedMinions.prototype.type = 'ModifierStartTurnWatchImmolateDamagedMinions';
+ModifierStartTurnWatchImmolateDamagedMinions.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericHeal', 'FX.Modifiers.ModifierGenericDamageNearby'];
 
 module.exports = ModifierStartTurnWatchImmolateDamagedMinions;

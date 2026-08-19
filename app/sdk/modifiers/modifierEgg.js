@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,22 +12,9 @@ const i18next = require('i18next');
 const ModifierRemoveAndReplaceEntity = require('./modifierRemoveAndReplaceEntity');
 
 class ModifierEgg extends ModifierRemoveAndReplaceEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierEgg';
-    this.type = 'ModifierEgg';
-
-    this.modifierName = '';
-    this.isHiddenToUI = false;
-    this.prototype.isRemovable = true;
-    this.prototype.isInherent = true; // eggs should show description in card text
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.durationEndTurn = 2; // eggs placed on owner's turn take 2 turns to hatch (until end of enemy's next turn)
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEgg'];
-  }
+  static type = 'ModifierEgg';
+  static modifierName = '';
+  static isHiddenToUI = false;
 
   static createContextObject(cardDataOrIndexToSpawn) {
     const contextObject = super.createContextObject(cardDataOrIndexToSpawn);
@@ -81,6 +67,12 @@ class ModifierEgg extends ModifierRemoveAndReplaceEntity {
     return super.replace();
   }
 }
-ModifierEgg.initClass();
+ModifierEgg.prototype.type = 'ModifierEgg';
+ModifierEgg.prototype.isRemovable = true;
+ModifierEgg.prototype.isInherent = true;
+ModifierEgg.prototype.maxStacks = 1;
+ModifierEgg.prototype.cardDataOrIndexToSpawn = null;
+ModifierEgg.prototype.durationEndTurn = 2;
+ModifierEgg.prototype.fxResource = ['FX.Modifiers.ModifierEgg'];
 
 module.exports = ModifierEgg;

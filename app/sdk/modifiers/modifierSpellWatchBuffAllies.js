@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,15 +13,9 @@ const ModifierSpellWatch = require('./modifierSpellWatch');
 const Modifier = require('./modifier');
 
 class ModifierSpellWatchBuffAllies extends ModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchBuffAllies';
-    this.type = 'ModifierSpellWatchBuffAllies';
-
-    this.modifierName = 'Spell Watch (Buff allies )';
-    this.description = 'Whenever you cast a spell, friendly minions gain %X.';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSpellWatchBuffAllies';
+  static modifierName = 'Spell Watch (Buff allies )';
+  static description = 'Whenever you cast a spell, friendly minions gain %X.';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -63,6 +56,7 @@ class ModifierSpellWatchBuffAllies extends ModifierSpellWatch {
     })();
   }
 }
-ModifierSpellWatchBuffAllies.initClass();
+ModifierSpellWatchBuffAllies.prototype.type = 'ModifierSpellWatchBuffAllies';
+ModifierSpellWatchBuffAllies.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSpellWatchBuffAllies;

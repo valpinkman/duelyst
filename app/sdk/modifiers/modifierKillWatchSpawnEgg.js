@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,17 +14,7 @@ const ModifierKillWatch = require('./modifierKillWatch');
 const ModifierEgg = require('./modifierEgg');
 
 class ModifierKillWatchSpawnEgg extends ModifierKillWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchSpawnEgg';
-    this.type = 'ModifierKillWatchSpawnEgg';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.minionName = null;
-    this.prototype.numSpawns = 0;
-    this.prototype.spawnPattern = null;
-  }
+  static type = 'ModifierKillWatchSpawnEgg';
 
   static createContextObject(includeAllies, includeGenerals, cardDataOrIndexToSpawn, minionName, numSpawns, spawnPattern, options) {
     if (includeAllies == null) { includeAllies = true; }
@@ -62,6 +51,11 @@ class ModifierKillWatchSpawnEgg extends ModifierKillWatch {
     }
   }
 }
-ModifierKillWatchSpawnEgg.initClass();
+ModifierKillWatchSpawnEgg.prototype.type = 'ModifierKillWatchSpawnEgg';
+ModifierKillWatchSpawnEgg.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierKillWatchSpawnEgg.prototype.cardDataOrIndexToSpawn = null;
+ModifierKillWatchSpawnEgg.prototype.minionName = null;
+ModifierKillWatchSpawnEgg.prototype.numSpawns = 0;
+ModifierKillWatchSpawnEgg.prototype.spawnPattern = null;
 
 module.exports = ModifierKillWatchSpawnEgg;

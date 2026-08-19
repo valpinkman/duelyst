@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,14 +9,7 @@ const ModifierBanding = require('./modifierBanding');
 const ModifierBandedHeal = require('./modifierBandedHeal');
 
 class ModifierBandingHeal extends ModifierBanding {
-  static initClass() {
-    this.prototype.type = 'ModifierBandingHeal';
-    this.type = 'ModifierBandingHeal';
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
-  }
+  static type = 'ModifierBandingHeal';
 
   static createContextObject(options) {
     if (options == null) { options = undefined; }
@@ -29,6 +21,8 @@ class ModifierBandingHeal extends ModifierBanding {
     return contextObject;
   }
 }
-ModifierBandingHeal.initClass();
+ModifierBandingHeal.prototype.type = 'ModifierBandingHeal';
+ModifierBandingHeal.prototype.maxStacks = 1;
+ModifierBandingHeal.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
 
 module.exports = ModifierBandingHeal;

@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS104: Avoid inline assignments
  * DS204: Change includes calls to have a more natural evaluation order
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -13,20 +12,9 @@ const Modifier = require('./modifier');
 const ModifierStunnedVanar = require('./modifierStunnedVanar');
 
 class ModifierStunWhenAttacked extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierStunWhenAttacked';
-    this.type = 'ModifierStunWhenAttacked';
-
-    this.modifierName = 'Stunner';
-    this.description = 'Minions next to this minion that attack it are Stunned';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierStunWhenAttacked';
+  static modifierName = 'Stunner';
+  static description = 'Minions next to this minion that attack it are Stunned';
 
   onAction(actionEvent) {
     super.onAction(actionEvent);
@@ -42,6 +30,11 @@ class ModifierStunWhenAttacked extends Modifier {
     }
   }
 }
-ModifierStunWhenAttacked.initClass();
+ModifierStunWhenAttacked.prototype.type = 'ModifierStunWhenAttacked';
+ModifierStunWhenAttacked.prototype.activeInHand = false;
+ModifierStunWhenAttacked.prototype.activeInDeck = false;
+ModifierStunWhenAttacked.prototype.activeInSignatureCards = false;
+ModifierStunWhenAttacked.prototype.activeOnBoard = true;
+ModifierStunWhenAttacked.prototype.maxStacks = 1;
 
 module.exports = ModifierStunWhenAttacked;

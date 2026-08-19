@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,17 +9,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchDamageEnemyGeneralHealMyGeneral extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchDamageEnemyGeneral';
-    this.type = 'ModifierDeathWatchDamageEnemyGeneral';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'Deal %X damage to the enemy General, and restore %Y Health to your General';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierDeathWatchDamageEnemyGeneral';
+  static modifierName = 'Deathwatch';
+  static description = 'Deal %X damage to the enemy General, and restore %Y Health to your General';
 
   static createContextObject(damageAmount, healAmount, options) {
     if (damageAmount == null) { damageAmount = 1; }
@@ -66,6 +57,8 @@ class ModifierDeathWatchDamageEnemyGeneralHealMyGeneral extends ModifierDeathWat
     }
   }
 }
-ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.initClass();
+ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.type = 'ModifierDeathWatchDamageEnemyGeneral';
+ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.damageAmount = 0;
+ModifierDeathWatchDamageEnemyGeneralHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierDeathWatchDamageEnemyGeneralHealMyGeneral;

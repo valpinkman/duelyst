@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,7 @@ const Action = require('./action');
 const CardType = require('app/sdk/cards/cardType');
 
 class SwapUnitsAction extends Action {
-  static initClass() {
-    this.type = 'SwapUnitsAction';
-    this.prototype.fxResource = ['FX.Actions.Teleport'];
-  }
+  static type = 'SwapUnitsAction';
 
   constructor() {
     super(...arguments);
@@ -40,6 +36,6 @@ class SwapUnitsAction extends Action {
     }
   }
 }
-SwapUnitsAction.initClass();
+SwapUnitsAction.prototype.fxResource = ['FX.Actions.Teleport'];
 
 module.exports = SwapUnitsAction;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,18 +8,9 @@ const KillAction = require('app/sdk/actions/killAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishLoseGame extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishLoseGame';
-    this.type = 'ModifierDyingWishLoseGame';
-
-    this.prototype.name = 'Dying Wish: Kill General';
-    this.prototype.description = 'When this minion dies, your general dies';
-
-    this.appliedName = 'Life Link';
-    this.appliedDescription = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierDyingWishLoseGame';
+  static appliedName = 'Life Link';
+  static appliedDescription = '';
 
   onDyingWish() {
     const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
@@ -33,6 +23,9 @@ class ModifierDyingWishLoseGame extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishLoseGame.initClass();
+ModifierDyingWishLoseGame.prototype.type = 'ModifierDyingWishLoseGame';
+ModifierDyingWishLoseGame.prototype.name = 'Dying Wish: Kill General';
+ModifierDyingWishLoseGame.prototype.description = 'When this minion dies, your general dies';
+ModifierDyingWishLoseGame.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierDyingWishLoseGame;

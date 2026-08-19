@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,16 +14,6 @@ const UtilsGameSession = require('../../common/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class SpellDamageAndSpawnEntitiesNearbyGeneral extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.EnemyDirect;
-    this.prototype.damageAmount = 2;
-    this.prototype.spawnSilently = true;
-    this.prototype.numUnits = 2;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Neutral.Spellspark };
-    // spawns wraithlings
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -61,6 +50,11 @@ class SpellDamageAndSpawnEntitiesNearbyGeneral extends SpellSpawnEntity {
     return validPositions;
   }
 }
-SpellDamageAndSpawnEntitiesNearbyGeneral.initClass();
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.targetType = CardType.Unit;
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.spellFilterType = SpellFilterType.EnemyDirect;
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.damageAmount = 2;
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.spawnSilently = true;
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.numUnits = 2;
+SpellDamageAndSpawnEntitiesNearbyGeneral.prototype.cardDataOrIndexToSpawn = { id: Cards.Neutral.Spellspark };
 
 module.exports = SpellDamageAndSpawnEntitiesNearbyGeneral;

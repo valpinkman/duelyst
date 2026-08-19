@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RemoveAction = require('app/sdk/actions/removeAction');
@@ -11,14 +10,7 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierEnemyStunWatch = require('./modifierEnemyStunWatch');
 
 class ModifierEnemyStunWatchFullyHeal extends ModifierEnemyStunWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyStunWatchFullyHeal';
-    this.type = 'ModifierEnemyStunWatchFullyHeal';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-  }
+  static type = 'ModifierEnemyStunWatchFullyHeal';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +28,8 @@ class ModifierEnemyStunWatchFullyHeal extends ModifierEnemyStunWatch {
     }
   }
 }
-ModifierEnemyStunWatchFullyHeal.initClass();
+ModifierEnemyStunWatchFullyHeal.prototype.type = 'ModifierEnemyStunWatchFullyHeal';
+ModifierEnemyStunWatchFullyHeal.prototype.cardDataOrIndexToSpawn = null;
+ModifierEnemyStunWatchFullyHeal.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
 
 module.exports = ModifierEnemyStunWatchFullyHeal;

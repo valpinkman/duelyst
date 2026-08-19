@@ -1,32 +1,16 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SetExhaustionAction = require('app/sdk/actions/setExhaustionAction');
 const Modifier = require('./modifier');
 
 class ModifierTransformed extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierTransformed';
-    this.type = 'ModifierTransformed';
-
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = 'Transformed';
-    this.description = 'Transformed';
-
-    this.isHiddenToUI = true;
-    this.prototype.isRemovable = false;
-    this.prototype.isInherent = true; // transform should show description in card text
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.isCloneable = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierTransformed'];
-  }
+  static type = 'ModifierTransformed';
+  static modifierName = 'Transformed';
+  static description = 'Transformed';
+  static isHiddenToUI = true;
 
   static createContextObject(exhausted, movesMade, attacksMade, options) {
     const contextObject = super.createContextObject(options);
@@ -52,6 +36,14 @@ class ModifierTransformed extends Modifier {
     }
   }
 }
-ModifierTransformed.initClass();
+ModifierTransformed.prototype.type = 'ModifierTransformed';
+ModifierTransformed.prototype.maxStacks = 1;
+ModifierTransformed.prototype.isRemovable = false;
+ModifierTransformed.prototype.isInherent = true;
+ModifierTransformed.prototype.activeInDeck = false;
+ModifierTransformed.prototype.activeInHand = false;
+ModifierTransformed.prototype.activeInSignatureCards = false;
+ModifierTransformed.prototype.isCloneable = false;
+ModifierTransformed.prototype.fxResource = ['FX.Modifiers.ModifierTransformed'];
 
 module.exports = ModifierTransformed;

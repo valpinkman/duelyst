@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RemoveCardFromHandAction = require('app/sdk/actions/removeCardFromHandAction');
@@ -10,12 +9,7 @@ const i18next = require('i18next');
 const ModifierCannot = require('./modifierCannot');
 
 class ModifierCannotBeRemovedFromHand extends ModifierCannot {
-  static initClass() {
-    this.prototype.type = 'ModifierCannotBeRemovedFromHand';
-    this.type = 'ModifierCannotBeRemovedFromHand';
-
-    this.prototype.activeInHand = true;
-  }
+  static type = 'ModifierCannotBeRemovedFromHand';
 
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
@@ -27,7 +21,8 @@ class ModifierCannotBeRemovedFromHand extends ModifierCannot {
     }
   }
 }
-ModifierCannotBeRemovedFromHand.initClass();
+ModifierCannotBeRemovedFromHand.prototype.type = 'ModifierCannotBeRemovedFromHand';
+ModifierCannotBeRemovedFromHand.prototype.activeInHand = true;
 
 module.exports = ModifierCannotBeRemovedFromHand;
 

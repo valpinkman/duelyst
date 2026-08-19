@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,23 +14,9 @@ const i18next = require('i18next');
 const ModifierSituationalBuffSelf = require('./modifierSituationalBuffSelf');
 
 class ModifierInfiltrate extends ModifierSituationalBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierInfiltrate';
-    this.type = 'ModifierInfiltrate';
-
-    this.isKeyworded = true;
-
-    this.modifierName = i18next.t('modifiers.infiltrate_name');
-    this.description = 'Whenever this minion is on the enemy side of the battlefield..';
-    this.keywordDefinition = i18next.t('modifiers.infiltrate_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierInfiltrate'];
-  }
+  static type = 'ModifierInfiltrate';
+  static isKeyworded = true;
+  static description = 'Whenever this minion is on the enemy side of the battlefield..';
 
   static createContextObject(modifiersContextObjects, description, options) {
     const contextObject = super.createContextObject(options);
@@ -72,6 +57,13 @@ class ModifierInfiltrate extends ModifierSituationalBuffSelf {
     return (x >= enemySideStartX) && (x <= enemySideEndX);
   }
 }
-ModifierInfiltrate.initClass();
+ModifierInfiltrate.prototype.type = 'ModifierInfiltrate';
+ModifierInfiltrate.modifierName = i18next.t('modifiers.infiltrate_name');
+ModifierInfiltrate.keywordDefinition = i18next.t('modifiers.infiltrate_def');
+ModifierInfiltrate.prototype.activeInHand = false;
+ModifierInfiltrate.prototype.activeInDeck = false;
+ModifierInfiltrate.prototype.activeInSignatureCards = false;
+ModifierInfiltrate.prototype.activeOnBoard = true;
+ModifierInfiltrate.prototype.fxResource = ['FX.Modifiers.ModifierInfiltrate'];
 
 module.exports = ModifierInfiltrate;

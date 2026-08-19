@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,16 +14,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishSpawnEntityNearbyGeneral extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnEntityNearbyGeneral';
-    this.type = 'ModifierDyingWishSpawnEntityNearbyGeneral';
-
-    this.modifierName = 'Dying Wish';
-    this.description = 'Summon %X nearby your General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierDyingWishSpawnEntityNearbyGeneral';
+  static modifierName = 'Dying Wish';
+  static description = 'Summon %X nearby your General';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -72,6 +64,8 @@ class ModifierDyingWishSpawnEntityNearbyGeneral extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishSpawnEntityNearbyGeneral.initClass();
+ModifierDyingWishSpawnEntityNearbyGeneral.prototype.type = 'ModifierDyingWishSpawnEntityNearbyGeneral';
+ModifierDyingWishSpawnEntityNearbyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishSpawnEntityNearbyGeneral.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierDyingWishSpawnEntityNearbyGeneral;

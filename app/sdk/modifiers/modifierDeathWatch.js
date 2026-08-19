@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,23 +12,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierDeathWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatch';
-    this.type = 'ModifierDeathWatch';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.deathwatch_def');
-
-    this.modifierName = i18next.t('modifiers.deathwatch_name');
-    this.description = 'Deathwatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch'];
-  }
+  static type = 'ModifierDeathWatch';
+  static isKeyworded = true;
+  static description = 'Deathwatch';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -50,6 +35,13 @@ class ModifierDeathWatch extends Modifier {
     return action instanceof DieAction && (action.getTarget() != null) && (action.getTarget().getType() === CardType.Unit) && (action.getTarget() !== this.getCard());
   }
 }
-ModifierDeathWatch.initClass();
+ModifierDeathWatch.prototype.type = 'ModifierDeathWatch';
+ModifierDeathWatch.keywordDefinition = i18next.t('modifiers.deathwatch_def');
+ModifierDeathWatch.modifierName = i18next.t('modifiers.deathwatch_name');
+ModifierDeathWatch.prototype.activeInHand = false;
+ModifierDeathWatch.prototype.activeInDeck = false;
+ModifierDeathWatch.prototype.activeInSignatureCards = false;
+ModifierDeathWatch.prototype.activeOnBoard = true;
+ModifierDeathWatch.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch'];
 
 module.exports = ModifierDeathWatch;

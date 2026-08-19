@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomDamageAction = require('app/sdk/actions/randomDamageAction');
@@ -10,12 +9,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 
 class ModifierTakeDamageWatchDamageEnemy extends ModifierTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierTakeDamageWatchDamageEnemy';
-    this.type = 'ModifierTakeDamageWatchDamageEnemy';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierTakeDamageWatchDamageEnemy';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -31,6 +25,7 @@ class ModifierTakeDamageWatchDamageEnemy extends ModifierTakeDamageWatch {
     return this.getGameSession().executeAction(randomDamageAction);
   }
 }
-ModifierTakeDamageWatchDamageEnemy.initClass();
+ModifierTakeDamageWatchDamageEnemy.prototype.type = 'ModifierTakeDamageWatchDamageEnemy';
+ModifierTakeDamageWatchDamageEnemy.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierTakeDamageWatchDamageEnemy;

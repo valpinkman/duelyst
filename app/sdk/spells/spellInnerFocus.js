@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,10 +8,6 @@ const Logger = require('app/common/logger');
 const SpellRefreshExhaustion = require('./spellRefreshExhaustion');
 
 class SpellInnerFocus extends SpellRefreshExhaustion {
-  static initClass() {
-    this.prototype.maxAttack = -1;
-  }
-
   _postFilterPlayPositions(validPositions) {
     const validTargetPositions = [];
 
@@ -28,6 +23,6 @@ class SpellInnerFocus extends SpellRefreshExhaustion {
     return validTargetPositions;
   }
 }
-SpellInnerFocus.initClass();
+SpellInnerFocus.prototype.maxAttack = -1;
 
 module.exports = SpellInnerFocus;

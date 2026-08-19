@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierEnemyStunWatch = require('./modifierEnemyStunWatch');
 
 class ModifierEnemyStunWatchDamageNearbyEnemies extends ModifierEnemyStunWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyStunWatchDamageNearbyEnemies';
-    this.type = 'ModifierEnemyStunWatchDamageNearbyEnemies';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierEnemyStunWatchDamageNearbyEnemies';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -47,6 +39,8 @@ class ModifierEnemyStunWatchDamageNearbyEnemies extends ModifierEnemyStunWatch {
     })();
   }
 }
-ModifierEnemyStunWatchDamageNearbyEnemies.initClass();
+ModifierEnemyStunWatchDamageNearbyEnemies.prototype.type = 'ModifierEnemyStunWatchDamageNearbyEnemies';
+ModifierEnemyStunWatchDamageNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
+ModifierEnemyStunWatchDamageNearbyEnemies.prototype.damageAmount = 0;
 
 module.exports = ModifierEnemyStunWatchDamageNearbyEnemies;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,11 +16,6 @@ const ModifierTransformed = require('app/sdk/modifiers/modifierTransformed');
 const _ = require('underscore');
 
 class SpellTransformSameManaCost extends Spell {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
-    // random thing
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const targetUnit = board.getCardAtPosition({ x, y }, this.targetType);
     const targetManaCost = targetUnit.getManaCost();
@@ -77,6 +71,6 @@ class SpellTransformSameManaCost extends Spell {
     }
   }
 }
-SpellTransformSameManaCost.initClass();
+SpellTransformSameManaCost.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
 
 module.exports = SpellTransformSameManaCost;

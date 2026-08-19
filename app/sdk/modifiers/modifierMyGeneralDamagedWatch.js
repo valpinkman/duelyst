@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,20 +10,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierMyGeneralDamagedWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralDamagedWatch';
-    this.type = 'ModifierMyGeneralDamagedWatch';
-
-    this.modifierName = 'My General Damaged Watch';
-    this.description = 'My General Damaged Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch'];
-  }
+  static type = 'ModifierMyGeneralDamagedWatch';
+  static modifierName = 'My General Damaged Watch';
+  static description = 'My General Damaged Watch';
 
   onAfterCleanupAction(actionEvent) {
     super.onAfterCleanupAction(actionEvent);
@@ -48,7 +36,12 @@ class ModifierMyGeneralDamagedWatch extends Modifier {
 
   onDamageDealtToGeneral(action) {}
 }
-ModifierMyGeneralDamagedWatch.initClass();
+ModifierMyGeneralDamagedWatch.prototype.type = 'ModifierMyGeneralDamagedWatch';
+ModifierMyGeneralDamagedWatch.prototype.activeInHand = false;
+ModifierMyGeneralDamagedWatch.prototype.activeInDeck = false;
+ModifierMyGeneralDamagedWatch.prototype.activeInSignatureCards = false;
+ModifierMyGeneralDamagedWatch.prototype.activeOnBoard = true;
+ModifierMyGeneralDamagedWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyGeneralDamagedWatch;

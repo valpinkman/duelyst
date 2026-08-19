@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Achievement = require('app/sdk/achievements/achievement');
@@ -14,13 +13,9 @@ const i18next = require('i18next');
 const _ = require('underscore');
 
 class FirstCosmeticChestAchievement extends Achievement {
-  static initClass() {
-    this.id = 'firstCosmeticChestAchievement';
-    this.title = i18next.t('achievements.key_mythron_title');
-    this.description = i18next.t('achievements.key_mythron_desc');
-    this.progressRequired = 1;
-    this.rewards = { bronzeCrateKey: 1 };
-  }
+  static id = 'firstCosmeticChestAchievement';
+  static progressRequired = 1;
+  static rewards = { bronzeCrateKey: 1 };
 
   // returns progress made by receiving a loot crate
   static progressForReceivingCosmeticChest(cosmeticChestType) {
@@ -30,6 +25,7 @@ class FirstCosmeticChestAchievement extends Achievement {
     return 0;
   }
 }
-FirstCosmeticChestAchievement.initClass();
+FirstCosmeticChestAchievement.title = i18next.t('achievements.key_mythron_title');
+FirstCosmeticChestAchievement.description = i18next.t('achievements.key_mythron_desc');
 
 module.exports = FirstCosmeticChestAchievement;

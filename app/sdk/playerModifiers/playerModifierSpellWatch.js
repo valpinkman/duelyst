@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifier = require('./playerModifier');
@@ -12,10 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const Stringifiers = require('app/sdk/helpers/stringifiers');
 
 class PlayerModifierSpellWatch extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierSpellWatch';
-    this.type = 'PlayerModifierSpellWatch';
-  }
+  static type = 'PlayerModifierSpellWatch';
 
   onBeforeAction(e) {
     super.onBeforeAction(e);
@@ -32,7 +28,7 @@ class PlayerModifierSpellWatch extends PlayerModifier {
 
   onSpellWatch(action) {}
 }
-PlayerModifierSpellWatch.initClass();
+PlayerModifierSpellWatch.prototype.type = 'PlayerModifierSpellWatch';
 // override me in sub classes to implement special behavior
 
 module.exports = PlayerModifierSpellWatch;

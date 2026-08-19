@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,13 +8,6 @@ const CardType = require('app/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 
 class SpellApplyPlayerModifiers extends SpellApplyModifiers {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.applyToOwnGeneral = false;
-    this.prototype.applyToOpponentGeneral = false;
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
     p.targetsSpace = true; // does not target any unit directly
@@ -44,6 +36,9 @@ class SpellApplyPlayerModifiers extends SpellApplyModifiers {
     return applyEffectPositions;
   }
 }
-SpellApplyPlayerModifiers.initClass();
+SpellApplyPlayerModifiers.prototype.targetType = CardType.Unit;
+SpellApplyPlayerModifiers.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellApplyPlayerModifiers.prototype.applyToOwnGeneral = false;
+SpellApplyPlayerModifiers.prototype.applyToOpponentGeneral = false;
 
 module.exports = SpellApplyPlayerModifiers;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -14,20 +13,9 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const Modifier = require('./modifier');
 
 class ModifierMechazorWatchPutMechazorInHand extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMechazorWatchPutMechazorInHand';
-    this.type = 'ModifierMechazorWatchPutMechazorInHand';
-
-    this.modifierName = 'Spawn Another Mechazor';
-    this.description = 'Whenever you summon MECHAZ0R, put a MECHAZ0R in your action bar';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierMechazorWatchPutMechazorInHand';
+  static modifierName = 'Spawn Another Mechazor';
+  static description = 'Whenever you summon MECHAZ0R, put a MECHAZ0R in your action bar';
 
   onAction(e) {
     super.onAction(e);
@@ -45,6 +33,11 @@ class ModifierMechazorWatchPutMechazorInHand extends Modifier {
     }
   }
 }
-ModifierMechazorWatchPutMechazorInHand.initClass();
+ModifierMechazorWatchPutMechazorInHand.prototype.type = 'ModifierMechazorWatchPutMechazorInHand';
+ModifierMechazorWatchPutMechazorInHand.prototype.cardDataOrIndexToSpawn = null;
+ModifierMechazorWatchPutMechazorInHand.prototype.activeInHand = false;
+ModifierMechazorWatchPutMechazorInHand.prototype.activeInDeck = false;
+ModifierMechazorWatchPutMechazorInHand.prototype.activeInSignatureCards = false;
+ModifierMechazorWatchPutMechazorInHand.prototype.activeOnBoard = true;
 
 module.exports = ModifierMechazorWatchPutMechazorInHand;

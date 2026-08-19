@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction');
@@ -10,20 +9,9 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const Modifier = require('./modifier');
 
 class ModifierNocturne extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierNocturne';
-    this.type = 'ModifierNocturne';
-
-    this.modifierName = 'ModifierNocturne';
-    this.description = 'Whenever you make Shadow Creep or a Wraithling, instead make both';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-  }
+  static type = 'ModifierNocturne';
+  static modifierName = 'ModifierNocturne';
+  static description = 'Whenever you make Shadow Creep or a Wraithling, instead make both';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -50,6 +38,11 @@ class ModifierNocturne extends Modifier {
     }
   }
 }
-ModifierNocturne.initClass();
+ModifierNocturne.prototype.type = 'ModifierNocturne';
+ModifierNocturne.prototype.activeInHand = false;
+ModifierNocturne.prototype.activeInDeck = false;
+ModifierNocturne.prototype.activeInSignatureCards = false;
+ModifierNocturne.prototype.activeOnBoard = true;
+ModifierNocturne.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
 
 module.exports = ModifierNocturne;

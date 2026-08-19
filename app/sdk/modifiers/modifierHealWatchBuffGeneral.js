@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,15 +9,9 @@ const Modifier = require('./modifier');
 const ModifierHealWatch = require('./modifierHealWatch');
 
 class ModifierHealWatchBuffGeneral extends ModifierHealWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierHealWatchBuffGeneral';
-    this.type = 'ModifierHealWatchBuffGeneral';
-
-    this.modifierName = 'Heal Watch';
-    this.description = 'Whenever anything is healed, give your General %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierHealWatchBuffGeneral';
+  static modifierName = 'Heal Watch';
+  static description = 'Whenever anything is healed, give your General %X';
 
   static createContextObject(modifiersContextObjects, description, options) {
     const contextObject = super.createContextObject(options);
@@ -40,6 +33,7 @@ class ModifierHealWatchBuffGeneral extends ModifierHealWatch {
       this.getGameSession().applyModifierContextObject(modifierContextObject, general));
   }
 }
-ModifierHealWatchBuffGeneral.initClass();
+ModifierHealWatchBuffGeneral.prototype.type = 'ModifierHealWatchBuffGeneral';
+ModifierHealWatchBuffGeneral.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierHealWatchBuffGeneral;

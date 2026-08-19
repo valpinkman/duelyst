@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DieAction = require('app/sdk/actions/dieAction');
@@ -16,22 +15,9 @@ const i18next = require('i18next');
 const ModifierUntargetable = require('./modifierUntargetable');
 
 class ModifierInvulnerable extends ModifierUntargetable {
-  static initClass() {
-    this.prototype.type = 'ModifierInvulnerable';
-    this.type = 'ModifierInvulnerable';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.invulnerable_def');
-    this.modifierName = i18next.t('modifiers.invulnerable_name');
-    // @keywordDefinition: i18next.t("modifiers.structure_def")
-    // @modifierName:i18next.t("modifiers.structure_name")
-    this.description = null;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.isRemovable = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierInvulnerable'];
-  }
+  static type = 'ModifierInvulnerable';
+  static isKeyworded = true;
+  static description = null;
 
   onValidateAction(event) {
     super.onValidateAction(event);
@@ -55,6 +41,11 @@ class ModifierInvulnerable extends ModifierUntargetable {
     }
   }
 }
-ModifierInvulnerable.initClass();
+ModifierInvulnerable.prototype.type = 'ModifierInvulnerable';
+ModifierInvulnerable.keywordDefinition = i18next.t('modifiers.invulnerable_def');
+ModifierInvulnerable.modifierName = i18next.t('modifiers.invulnerable_name');
+ModifierInvulnerable.prototype.maxStacks = 1;
+ModifierInvulnerable.prototype.isRemovable = false;
+ModifierInvulnerable.prototype.fxResource = ['FX.Modifiers.ModifierInvulnerable'];
 
 module.exports = ModifierInvulnerable;

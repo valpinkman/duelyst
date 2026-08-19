@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,13 +10,6 @@ const CardType = require('app/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 
 class SpellApplyModifiers extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.numModifiersToApply = 0;
-    // when 0 applies all targetModifiersContextObjects, when > 0 this is the number of random modifiers to apply
-  }
-
   setNumModifiersToApply(val) {
     return this.numModifiersToApply = val;
   }
@@ -55,6 +47,8 @@ class SpellApplyModifiers extends Spell {
     return appliedModifiersContextObjects;
   }
 }
-SpellApplyModifiers.initClass();
+SpellApplyModifiers.prototype.targetType = CardType.Unit;
+SpellApplyModifiers.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellApplyModifiers.prototype.numModifiersToApply = 0;
 
 module.exports = SpellApplyModifiers;

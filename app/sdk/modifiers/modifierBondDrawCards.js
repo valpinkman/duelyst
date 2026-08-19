@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -14,14 +13,8 @@ const ModifierBond = require('./modifierBond');
 const Modifier = require('./modifier');
 
 class ModifierBondDrawCards extends ModifierBond {
-  static initClass() {
-    this.prototype.type = 'ModifierBondDrawCards';
-    this.type = 'ModifierBondDrawCards';
-
-    this.description = 'Draw some cards from the deck';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBond'];
-  }
+  static type = 'ModifierBondDrawCards';
+  static description = 'Draw some cards from the deck';
 
   static createContextObject(numCards) {
     const contextObject = super.createContextObject();
@@ -40,6 +33,7 @@ class ModifierBondDrawCards extends ModifierBond {
     })();
   }
 }
-ModifierBondDrawCards.initClass();
+ModifierBondDrawCards.prototype.type = 'ModifierBondDrawCards';
+ModifierBondDrawCards.prototype.fxResource = ['FX.Modifiers.ModifierBond'];
 
 module.exports = ModifierBondDrawCards;

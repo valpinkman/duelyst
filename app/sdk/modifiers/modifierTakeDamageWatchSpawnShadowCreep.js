@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
@@ -9,15 +8,9 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 
 class ModifierTakeDamageWatchSpawnShadowCreep extends ModifierTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierTakeDamageWatchSpawnShadowCreep';
-    this.type = 'ModifierTakeDamageWatchSpawnShadowCreep';
-
-    this.modifierName = 'Take Damage Watch';
-    this.description = 'Whenever this minion takes damage, turn a space occupied by an enemy into Shadow Creep';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierTakeDamageWatchSpawnShadowCreep';
+  static modifierName = 'Take Damage Watch';
+  static description = 'Whenever this minion takes damage, turn a space occupied by an enemy into Shadow Creep';
 
   onDamageTaken(action) {
     super.onDamageTaken(action);
@@ -31,6 +24,7 @@ class ModifierTakeDamageWatchSpawnShadowCreep extends ModifierTakeDamageWatch {
     }
   }
 }
-ModifierTakeDamageWatchSpawnShadowCreep.initClass();
+ModifierTakeDamageWatchSpawnShadowCreep.prototype.type = 'ModifierTakeDamageWatchSpawnShadowCreep';
+ModifierTakeDamageWatchSpawnShadowCreep.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierTakeDamageWatchSpawnShadowCreep;

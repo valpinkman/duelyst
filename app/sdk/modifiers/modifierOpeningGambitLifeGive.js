@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -19,15 +18,9 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const _ = require('underscore');
 
 class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitLifeGive';
-    this.type = 'ModifierOpeningGambitLifeGive';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Summon all friendly non-token minions destroyed on your opponent\'s last turn on random spaces';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpeningGambitLifeGive';
+  static modifierName = 'Opening Gambit';
+  static description = 'Summon all friendly non-token minions destroyed on your opponent\'s last turn on random spaces';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -127,6 +120,7 @@ class ModifierOpeningGambitLifeGive extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitLifeGive.initClass();
+ModifierOpeningGambitLifeGive.prototype.type = 'ModifierOpeningGambitLifeGive';
+ModifierOpeningGambitLifeGive.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOpeningGambitLifeGive;

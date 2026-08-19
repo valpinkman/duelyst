@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,14 +16,8 @@ const _ = require('underscore');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDeathKnell extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDeathKnell';
-    this.type = 'ModifierOpeningGambitDeathKnell';
-
-    this.description = 'Resummon all friendly Arcanysts destroyed this game nearby';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambitDeathKnell'];
-  }
+  static type = 'ModifierOpeningGambitDeathKnell';
+  static description = 'Resummon all friendly Arcanysts destroyed this game nearby';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -82,6 +75,7 @@ class ModifierOpeningGambitDeathKnell extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitDeathKnell.initClass();
+ModifierOpeningGambitDeathKnell.prototype.type = 'ModifierOpeningGambitDeathKnell';
+ModifierOpeningGambitDeathKnell.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambitDeathKnell'];
 
 module.exports = ModifierOpeningGambitDeathKnell;

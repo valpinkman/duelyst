@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,17 +9,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 
 class ModifierMyGeneralDamagedWatchHealSelf extends ModifierMyGeneralDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralDamagedWatchHealSelf';
-    this.type = 'ModifierMyGeneralDamagedWatchHealSelf';
-
-    this.modifierName = 'My General Damage Watch Heal Self';
-    this.description = 'Whenever your General takes damage, %X';
-
-    this.prototype.healAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierMyGeneralDamagedWatchHealSelf';
+  static modifierName = 'My General Damage Watch Heal Self';
+  static description = 'Whenever your General takes damage, %X';
 
   static createContextObject(healAmount, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -49,6 +40,8 @@ class ModifierMyGeneralDamagedWatchHealSelf extends ModifierMyGeneralDamagedWatc
     }
   }
 }
-ModifierMyGeneralDamagedWatchHealSelf.initClass();
+ModifierMyGeneralDamagedWatchHealSelf.prototype.type = 'ModifierMyGeneralDamagedWatchHealSelf';
+ModifierMyGeneralDamagedWatchHealSelf.prototype.healAmount = 0;
+ModifierMyGeneralDamagedWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierMyGeneralDamagedWatchHealSelf;

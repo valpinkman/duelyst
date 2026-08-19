@@ -1,25 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
 const Modifier = require('./modifier');
 
 class ModifierEnemyAttackWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyAttackWatch';
-    this.type = 'ModifierEnemyAttackWatch';
-
-    this.modifierName = 'ModifierEnemyAttackWatch';
-    this.description = 'Whenever an enemy attacks...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierEnemyAttackWatch';
+  static modifierName = 'ModifierEnemyAttackWatch';
+  static description = 'Whenever an enemy attacks...';
 
   onAction(event) {
     super.onAction(event);
@@ -34,7 +24,11 @@ class ModifierEnemyAttackWatch extends Modifier {
 
   onEnemyAttackWatch(action) {}
 }
-ModifierEnemyAttackWatch.initClass();
+ModifierEnemyAttackWatch.prototype.type = 'ModifierEnemyAttackWatch';
+ModifierEnemyAttackWatch.prototype.activeInHand = false;
+ModifierEnemyAttackWatch.prototype.activeInDeck = false;
+ModifierEnemyAttackWatch.prototype.activeInSignatureCards = false;
+ModifierEnemyAttackWatch.prototype.activeOnBoard = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEnemyAttackWatch;

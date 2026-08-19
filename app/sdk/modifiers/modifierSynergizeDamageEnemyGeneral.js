@@ -1,23 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizeDamageEnemyGeneral extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeDamageEnemyGeneral';
-    this.type = 'ModifierSynergizeDamageEnemyGeneral';
-
-    this.description = 'Deal %X damage to the enemy General';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierSynergizeDamageEnemyGeneral';
+  static description = 'Deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -42,6 +33,8 @@ class ModifierSynergizeDamageEnemyGeneral extends ModifierSynergize {
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierSynergizeDamageEnemyGeneral.initClass();
+ModifierSynergizeDamageEnemyGeneral.prototype.type = 'ModifierSynergizeDamageEnemyGeneral';
+ModifierSynergizeDamageEnemyGeneral.prototype.damageAmount = 0;
+ModifierSynergizeDamageEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierSynergizeDamageEnemyGeneral;

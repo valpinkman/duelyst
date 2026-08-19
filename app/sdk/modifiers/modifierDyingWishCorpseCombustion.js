@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -14,18 +13,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishCorpseCombustion extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishCorpseCombustion';
-    this.type = 'ModifierDyingWishCorpseCombustion';
-
-    this.modifierName = 'Dying Wish';
-    this.description = 'Resummon this minion and deal 3 damage to all nearby enemies';
-
-    this.prototype.damageAmount = 3;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn', 'FX.Modifiers.ModifierGenericDamage'];
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierDyingWishCorpseCombustion';
+  static modifierName = 'Dying Wish';
+  static description = 'Resummon this minion and deal 3 damage to all nearby enemies';
 
   onDyingWish(action) {
     super.onDyingWish(action);
@@ -51,6 +41,9 @@ class ModifierDyingWishCorpseCombustion extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishCorpseCombustion.initClass();
+ModifierDyingWishCorpseCombustion.prototype.type = 'ModifierDyingWishCorpseCombustion';
+ModifierDyingWishCorpseCombustion.prototype.damageAmount = 3;
+ModifierDyingWishCorpseCombustion.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierDyingWishCorpseCombustion.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierDyingWishCorpseCombustion;

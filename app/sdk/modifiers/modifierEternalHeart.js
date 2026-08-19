@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,22 +10,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierEternalHeart extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEternalHeart';
-    this.type = 'ModifierEternalHeart';
-
-    this.modifierName = 'Eternal Heart';
-    this.description = 'Can\'t die';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.EternalHeart'];
-  }
+  static type = 'ModifierEternalHeart';
+  static modifierName = 'Eternal Heart';
+  static description = 'Can\'t die';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -71,6 +57,12 @@ class ModifierEternalHeart extends Modifier {
     }
   }
 }
-ModifierEternalHeart.initClass();
+ModifierEternalHeart.prototype.type = 'ModifierEternalHeart';
+ModifierEternalHeart.prototype.activeInDeck = false;
+ModifierEternalHeart.prototype.activeInHand = false;
+ModifierEternalHeart.prototype.activeInSignatureCards = false;
+ModifierEternalHeart.prototype.activeOnBoard = true;
+ModifierEternalHeart.prototype.maxStacks = 1;
+ModifierEternalHeart.prototype.fxResource = ['FX.Modifiers.EternalHeart'];
 
 module.exports = ModifierEternalHeart;

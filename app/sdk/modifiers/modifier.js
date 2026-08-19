@@ -6,7 +6,6 @@
  * DS104: Avoid inline assignments
  * DS204: Change includes calls to have a more natural evaluation order
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -32,74 +31,9 @@ const i18next = require('i18next');
   An modifier is a modular element that modifies a card, giving them auras, abilities, buffs, debuffs, etc.
 */
 class Modifier extends SDKObject {
-  static initClass() {
-    this.prototype.type = 'Modifier';
-    this.type = 'Modifier';
-    this.description = undefined;
-    this.isHiddenToUI = false; // whether or not this modifier is shown in the UI
-    this.isKeyworded = false; // https://github.com/88dots/cleancoco/wiki/Glossary
-    this.modifierName = undefined;
-
-    this.prototype.activeInDeck = true; // whether this modifier is active while applied to a card in deck
-    this.prototype.activeInHand = true; // whether this modifier is active while applied to a card in hand
-    this.prototype.activeInSignatureCards = true; // whether this modifier is active while applied to a card in signature cards
-    this.prototype.activeOnBoard = true; // whether this modifier is active while applied to a card on board
-    this.prototype.appliedByActionIndex = -1; // index of action that applied this modifier, where -1 is during game setup
-    this.prototype.appliedByModifierIndex = null; // index of modifier that applied this modifier, where -1 is during game setup
-    this.prototype.attributeBuffs = null;
-    this.prototype.attributeBuffsAbsolute = null; // names of attributeBuffs to be treated as absolute values (instead of +- values)
-    this.prototype.attributeBuffsRebased = null; // names of attributeBuffs to be treated as new base stat values, applied before all other buffs
-    this.prototype.attributeBuffsFixed = null; // names of attributeBuffs to be treated as overrides (ignores further attributeBuffs of that type in the stack)
-    this.prototype.auraFilterByCardIds = null; // an array of cardIds to receive the aura
-    this.prototype.auraFilterByCardType = CardType.Unit; // only cards of this type receive the aura
-    this.prototype.auraFilterByRaceIds = null; // an array of raceIds to receive the aura
-    this.prototype.auraFilterByModifierTypes = null; // array of modifier types. only cards with these modifier types will receive the aura
-    this.prototype.auraIncludeAlly = true; // whether to include allied entities in aura
-    this.prototype.auraIncludeBoard = true; // whether to include cards on board in aura
-    this.prototype.auraIncludeEnemy = true; // whether to include enemy entities in aura
-    this.prototype.auraIncludeGeneral = true; // whether a General can be in this aura
-    this.prototype.auraIncludeHand = false; // whether to include cards in hand in aura
-    this.prototype.auraIncludeSignatureCards = false; // whether to include cards in signature cards in aura
-    this.prototype.auraIncludeSelf = true; // whether to include own card in aura
-    this.prototype.auraRadius = 0; // radius around card to search for aura targets, when 0 will just return the card this is applied to
-    this.prototype.auraModifierId = -1; // index used to determine whether aura modifier has been applied to a card
-    this.prototype.cardAffectedIndex = null; // card that is/was affected by modifier, and is always present once the modifier has been applied
-    this.prototype.cardFXResource = null; // fx resource that is added onto this modifier's card's fx resource, effectively overriding card's fx while this modifier is active on the card
-    this.prototype.contextObject = null;
-    this.prototype.durationEndTurn = 0; // how many end of turns can elapse before this modifier is removed
-    this.prototype.durationStartTurn = 0; // how many start of turns can elapse before this modifier is removed
-    this.prototype.durationRespectsBonusTurns = true; // whether duration will be extended with bonus turns
-    this.prototype.durability = 0; // damage unit can take before this is destroyed
-    this.prototype.numEndTurnsElapsed = 0; // how many end of turns have elapsed since this modifier was added
-    this.prototype.numStartTurnsElapsed = 0; // how many start of turns have elapsed since this modifier was added
-    this.prototype.fxResource = null; // array of strings that map to fx data, ex: ["Modifiers.Buff"]
-    this.prototype.hideAsModifierType = null; // type of modifier to hide this modifier as during scrubbing
-    this.prototype.index = null; // unique index of modifier, set automatically by game session
-    this.prototype.isAura = false; // whether this may act like an aura
-    this.prototype.isCloneable = true; // whether this modifier can be cloned
-    this.prototype.isHiddenToUI = false; // whether or not this modifier is shown in the UI
-    this.prototype.isInherent = false; // true for modifiers which are inherent to an card
-    this.prototype.isAdditionalInherent = false; // true for modifiers which have been added as inherent modifiers from an external source
-    this.prototype.isRemovable = true; // whether this can be removed via effects like dispel (any modifier with a few exceptions)
-    this.prototype.isRemoved = false; // whether modifier has been removed
-    this.prototype.isStacking = false; // whether is stacking and able to react to actions/events
-    this.prototype.maxDurability = 0; // durability is assumed infinite unless max durability is > 0
-    this.prototype.maxStacks = CONFIG.INFINITY; // maximum number of stacks possible, set to 1 for non stackable
-    this.prototype.modifiersContextObjects = null; // context objects for modifiers to be added automatically when modifier is activated by an action or modifier applies aura
-    this.prototype.parentModifierIndex = null; // index of parent modifier in game session's master list
-    this.prototype.removedByActionIndex = -1; // index of action that removed this modifier, where -1 is during game setup
-    this.prototype.removedByModifierIndex = -1; // index of modifier that removed this modifier, where -1 is during game setup
-    this.prototype.resetsDamage = false; // whether this modifier resets damage done
-    this.prototype.sourceCardIndex = null;
-    this.prototype.subModifierIndices = null;
-    this.prototype.triggeredByActionsData = null; // indices of all actions that triggered this modifier
-    this.prototype.triggerActionsData = null; // list of action indices that were applied by this modifier triggering, with parent action indices and resolve parent action indices
-    this.prototype.triggerAppliedModifiersData = null; // list of modifier indices that were applied by this modifier triggering, with action indices and resolve action indices
-    this.prototype.triggerActivatedModifiersData = null; // list of modifier indices that were activated by this modifier triggering, with action indices and resolve action indices
-    this.prototype.triggerDeactivatedModifiersData = null; // list of modifier indices that were deactivated by this modifier triggering, with action indices and resolve action indices
-    this.prototype.triggerRemovedModifiersData = null;
-    // list of modifier indices that were removed by this modifier triggering, with action indices and resolve action indices
-  }
+  static type = 'Modifier';
+  static isHiddenToUI = false;
+  static isKeyworded = false;
 
   constructor(gameSession) {
     super(gameSession);
@@ -2917,7 +2851,67 @@ class Modifier extends SDKObject {
    */
   onCreatedToHide(source) {}
 }
-Modifier.initClass();
+Modifier.prototype.type = 'Modifier';
+Modifier.description = undefined;
+Modifier.modifierName = undefined;
+Modifier.prototype.activeInDeck = true;
+Modifier.prototype.activeInHand = true;
+Modifier.prototype.activeInSignatureCards = true;
+Modifier.prototype.activeOnBoard = true;
+Modifier.prototype.appliedByActionIndex = -1;
+Modifier.prototype.appliedByModifierIndex = null;
+Modifier.prototype.attributeBuffs = null;
+Modifier.prototype.attributeBuffsAbsolute = null;
+Modifier.prototype.attributeBuffsRebased = null;
+Modifier.prototype.attributeBuffsFixed = null;
+Modifier.prototype.auraFilterByCardIds = null;
+Modifier.prototype.auraFilterByCardType = CardType.Unit;
+Modifier.prototype.auraFilterByRaceIds = null;
+Modifier.prototype.auraFilterByModifierTypes = null;
+Modifier.prototype.auraIncludeAlly = true;
+Modifier.prototype.auraIncludeBoard = true;
+Modifier.prototype.auraIncludeEnemy = true;
+Modifier.prototype.auraIncludeGeneral = true;
+Modifier.prototype.auraIncludeHand = false;
+Modifier.prototype.auraIncludeSignatureCards = false;
+Modifier.prototype.auraIncludeSelf = true;
+Modifier.prototype.auraRadius = 0;
+Modifier.prototype.auraModifierId = -1;
+Modifier.prototype.cardAffectedIndex = null;
+Modifier.prototype.cardFXResource = null;
+Modifier.prototype.contextObject = null;
+Modifier.prototype.durationEndTurn = 0;
+Modifier.prototype.durationStartTurn = 0;
+Modifier.prototype.durationRespectsBonusTurns = true;
+Modifier.prototype.durability = 0;
+Modifier.prototype.numEndTurnsElapsed = 0;
+Modifier.prototype.numStartTurnsElapsed = 0;
+Modifier.prototype.fxResource = null;
+Modifier.prototype.hideAsModifierType = null;
+Modifier.prototype.index = null;
+Modifier.prototype.isAura = false;
+Modifier.prototype.isCloneable = true;
+Modifier.prototype.isHiddenToUI = false;
+Modifier.prototype.isInherent = false;
+Modifier.prototype.isAdditionalInherent = false;
+Modifier.prototype.isRemovable = true;
+Modifier.prototype.isRemoved = false;
+Modifier.prototype.isStacking = false;
+Modifier.prototype.maxDurability = 0;
+Modifier.prototype.maxStacks = CONFIG.INFINITY;
+Modifier.prototype.modifiersContextObjects = null;
+Modifier.prototype.parentModifierIndex = null;
+Modifier.prototype.removedByActionIndex = -1;
+Modifier.prototype.removedByModifierIndex = -1;
+Modifier.prototype.resetsDamage = false;
+Modifier.prototype.sourceCardIndex = null;
+Modifier.prototype.subModifierIndices = null;
+Modifier.prototype.triggeredByActionsData = null;
+Modifier.prototype.triggerActionsData = null;
+Modifier.prototype.triggerAppliedModifiersData = null;
+Modifier.prototype.triggerActivatedModifiersData = null;
+Modifier.prototype.triggerDeactivatedModifiersData = null;
+Modifier.prototype.triggerRemovedModifiersData = null;
 // override in sub class to implement custom behavior
 
 module.exports = Modifier;

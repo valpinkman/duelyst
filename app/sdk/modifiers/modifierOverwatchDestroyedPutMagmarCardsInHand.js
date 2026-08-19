@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -12,12 +11,8 @@ const ModifierOverwatchDestroyed = require('./modifierOverwatchDestroyed');
 CardType = require('app/sdk/cards/cardType');
 
 class ModifierOverwatchDestroyedPutMagmarCardsInHand extends ModifierOverwatchDestroyed {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchDestroyedPutMagmarCardsInHand';
-    this.type = 'ModifierOverwatchDestroyedPutMagmarCardsInHand';
-
-    this.description = 'When this minion is destroyed add two random Magmar spells with its mana cost to your action bar';
-  }
+  static type = 'ModifierOverwatchDestroyedPutMagmarCardsInHand';
+  static description = 'When this minion is destroyed add two random Magmar spells with its mana cost to your action bar';
 
   onOverwatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -48,6 +43,6 @@ class ModifierOverwatchDestroyedPutMagmarCardsInHand extends ModifierOverwatchDe
     }
   }
 }
-ModifierOverwatchDestroyedPutMagmarCardsInHand.initClass();
+ModifierOverwatchDestroyedPutMagmarCardsInHand.prototype.type = 'ModifierOverwatchDestroyedPutMagmarCardsInHand';
 
 module.exports = ModifierOverwatchDestroyedPutMagmarCardsInHand;

@@ -1,15 +1,9 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 class SDKObject {
-  static initClass() {
-    this.prototype._private = null;
-    // all private values that should not be serialized
-  }
-
   constructor(gameSession) {
     // define private default properties
     // these are all properties private to a sub-class that should not get serialized
@@ -36,6 +30,6 @@ class SDKObject {
     return this._private.gameSession;
   }
 }
-SDKObject.initClass();
+SDKObject.prototype._private = null;
 
 module.exports = SDKObject;

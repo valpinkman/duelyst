@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,17 +8,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierAttackEqualsHealth extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAttackEqualsHealth';
-    this.type = 'ModifierAttackEqualsHealth';
-
-    this.prototype.name = i18next.t('modifiers.attack_equals_health_name');
-    this.prototype.description = i18next.t('modifiers.attack_equals_health_def');
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAttackEqualsHealth'];
-  }
+  static type = 'ModifierAttackEqualsHealth';
 
   constructor(gameSession) {
     super(gameSession);
@@ -67,6 +56,10 @@ class ModifierAttackEqualsHealth extends Modifier {
     }
   }
 }
-ModifierAttackEqualsHealth.initClass();
+ModifierAttackEqualsHealth.prototype.type = 'ModifierAttackEqualsHealth';
+ModifierAttackEqualsHealth.prototype.name = i18next.t('modifiers.attack_equals_health_name');
+ModifierAttackEqualsHealth.prototype.description = i18next.t('modifiers.attack_equals_health_def');
+ModifierAttackEqualsHealth.prototype.maxStacks = 1;
+ModifierAttackEqualsHealth.prototype.fxResource = ['FX.Modifiers.ModifierAttackEqualsHealth'];
 
 module.exports = ModifierAttackEqualsHealth;

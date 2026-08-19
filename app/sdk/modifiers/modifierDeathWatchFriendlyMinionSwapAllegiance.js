@@ -1,22 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceAction');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchFriendlyMinionSwapAllegiance extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchFriendlyMinionSwapAllegiance';
-    this.type = 'ModifierDeathWatchFriendlyMinionSwapAllegiance';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'Whenever a friendly minion is destroyed, your opponent gains control of this minion.';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierDeathWatchFriendlyMinionSwapAllegiance';
+  static modifierName = 'Deathwatch';
+  static description = 'Whenever a friendly minion is destroyed, your opponent gains control of this minion.';
 
   onDeathWatch(action) {
     // if the target is a friendly minion
@@ -27,6 +20,7 @@ class ModifierDeathWatchFriendlyMinionSwapAllegiance extends ModifierDeathWatch 
     }
   }
 }
-ModifierDeathWatchFriendlyMinionSwapAllegiance.initClass();
+ModifierDeathWatchFriendlyMinionSwapAllegiance.prototype.type = 'ModifierDeathWatchFriendlyMinionSwapAllegiance';
+ModifierDeathWatchFriendlyMinionSwapAllegiance.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierDeathWatchFriendlyMinionSwapAllegiance;

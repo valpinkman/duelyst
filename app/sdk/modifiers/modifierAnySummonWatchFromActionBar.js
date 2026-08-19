@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,20 +10,9 @@ const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction')
 const Modifier = require('./modifier');
 
 class ModifierAnySummonWatchFromActionBar extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAnySummonWatchFromActionBar';
-    this.type = 'ModifierAnySummonWatchFromActionBar';
-
-    this.modifierName = 'Any Summon Watch From Action Bar';
-    this.description = 'Any Summon Watch From Action Bar';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAnySummonWatchFromActionBar'];
-  }
+  static type = 'ModifierAnySummonWatchFromActionBar';
+  static modifierName = 'Any Summon Watch From Action Bar';
+  static description = 'Any Summon Watch From Action Bar';
 
   onAction(e) {
     super.onAction(e);
@@ -57,6 +45,11 @@ class ModifierAnySummonWatchFromActionBar extends Modifier {
       this.onSummonWatch(action));
   }
 }
-ModifierAnySummonWatchFromActionBar.initClass();
+ModifierAnySummonWatchFromActionBar.prototype.type = 'ModifierAnySummonWatchFromActionBar';
+ModifierAnySummonWatchFromActionBar.prototype.activeInHand = false;
+ModifierAnySummonWatchFromActionBar.prototype.activeInDeck = false;
+ModifierAnySummonWatchFromActionBar.prototype.activeInSignatureCards = false;
+ModifierAnySummonWatchFromActionBar.prototype.activeOnBoard = true;
+ModifierAnySummonWatchFromActionBar.prototype.fxResource = ['FX.Modifiers.ModifierAnySummonWatchFromActionBar'];
 
 module.exports = ModifierAnySummonWatchFromActionBar;

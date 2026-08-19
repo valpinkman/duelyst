@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,46 +19,7 @@ const BattleMapTemplate = require('app/sdk/battleMapTemplate');
 const i18next = require('i18next');
 
 class Challenge {
-  static initClass() {
-    this.type = 'Challenge';
-    this.prototype.type = 'Challenge';
-    this.prototype.name = 'Challenge';
-    this.prototype.description = 'Learn how to play DUELYST.';
-
-    this.prototype.battleMapTemplateIndex = 0; // when set will attempt to force battlemap to a specific template
-    this.prototype._currentInstruction = null;
-    this.prototype._currentPlayerTurn = null;
-    this.prototype._eventBus = null;
-    this.prototype.hiddenUIElements = null; // array of strings representing unneeded ui elements # TODO: this is just a hacky string checker
-    this.prototype.iconUrl = null; // path to icon resource
-    this.prototype._instructions = null;
-    this.prototype._instructionQueueByTurnIndex = null; // Map of instruction queues by player turn index
-    this.prototype.isChallengeLost = false; // (boolean) Tracks whether the current challenge has been lost (resets on rollback)
-    this.prototype._musicOverride = undefined; // (RSX entry) Manual override of the music to play for this map
-    this.prototype._nextInstructionIndex = 0;
-    this.prototype._playerOwnedBoardTemplate = undefined; // array of arrays that can be filled with unit card ids the player owns at start of challenge
-    this.prototype.prerequisiteChallengeTypes = null; // list of challenge types that must be completed before this challenge is enabled
-    this.prototype._opponentAgent = null;
-    this.prototype._opponentOwnedBoardTemplate = undefined; // array of arrays that can be filled with unit card ids the player owns at start of challenge
-    this.prototype.otkChallengeFailureCount = null; // Integer representing quantity of times otk challenge has been failed
-    this.prototype.otkChallengeFailureMessages = null; // Array of strings, advances each time challenge has been failed
-    this.prototype.otkChallengeStartMessage = null; // String to display when starting otk challenge
-    this.prototype.requiredMulliganHandIndices = null;
-    this.prototype.showCardInstructionalTextForTurns = 0; // integer - will show instructional ui on cards for this many turns
-    this.prototype.customBoard = true; // whether challenge uses a custom board, when true will start board completely empty except for generals
-    this.prototype.skipMulligan = true;
-    this.prototype.snapShotOnPlayerTurn = null;
-    this.prototype.startingHandSize = null; // (Integer, optional) number of cards to have in hand at start of challenge (0-6)
-    this.prototype.startingHandSizePlayer = null; // (Integer, optional) number of cards to have in player hand at start of challenge (0-6)
-    this.prototype.startingHandSizeOpponent = null; // (Integer, optional) number of cards to have in opponent hand at start of challenge (0-6)
-    this.prototype.startingMana = null; // (Integer, optional) starting amount of mana, +1 for player 2
-    this.prototype.startingManaPlayer = null; // (Integer, optional) starting amount of mana for player, +1 when player 2
-    this.prototype.startingManaOpponent = null; // (Integer, optional) starting amount of mana for opponent, +1 when player 2
-    this.prototype.unmulliganableHandIndices = null;
-    this.prototype.userIsPlayer1 = true;
-    this.prototype.usesResetTurn = true;
-    // (boolean) If true, end turn functionality will be replaced with resetting OTK
-  }
+  static type = 'Challenge';
 
   /**
    * Challenge constructor.
@@ -415,6 +375,40 @@ class Challenge {
     }
   }
 }
-Challenge.initClass();
+Challenge.prototype.type = 'Challenge';
+Challenge.prototype.name = 'Challenge';
+Challenge.prototype.description = 'Learn how to play DUELYST.';
+Challenge.prototype.battleMapTemplateIndex = 0;
+Challenge.prototype._currentInstruction = null;
+Challenge.prototype._currentPlayerTurn = null;
+Challenge.prototype._eventBus = null;
+Challenge.prototype.hiddenUIElements = null;
+Challenge.prototype.iconUrl = null;
+Challenge.prototype._instructions = null;
+Challenge.prototype._instructionQueueByTurnIndex = null;
+Challenge.prototype.isChallengeLost = false;
+Challenge.prototype._musicOverride = undefined;
+Challenge.prototype._nextInstructionIndex = 0;
+Challenge.prototype._playerOwnedBoardTemplate = undefined;
+Challenge.prototype.prerequisiteChallengeTypes = null;
+Challenge.prototype._opponentAgent = null;
+Challenge.prototype._opponentOwnedBoardTemplate = undefined;
+Challenge.prototype.otkChallengeFailureCount = null;
+Challenge.prototype.otkChallengeFailureMessages = null;
+Challenge.prototype.otkChallengeStartMessage = null;
+Challenge.prototype.requiredMulliganHandIndices = null;
+Challenge.prototype.showCardInstructionalTextForTurns = 0;
+Challenge.prototype.customBoard = true;
+Challenge.prototype.skipMulligan = true;
+Challenge.prototype.snapShotOnPlayerTurn = null;
+Challenge.prototype.startingHandSize = null;
+Challenge.prototype.startingHandSizePlayer = null;
+Challenge.prototype.startingHandSizeOpponent = null;
+Challenge.prototype.startingMana = null;
+Challenge.prototype.startingManaPlayer = null;
+Challenge.prototype.startingManaOpponent = null;
+Challenge.prototype.unmulliganableHandIndices = null;
+Challenge.prototype.userIsPlayer1 = true;
+Challenge.prototype.usesResetTurn = true;
 
 module.exports = Challenge;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,13 +8,7 @@ const ModifierEnemyAttackWatch = require('./modifierEnemyAttackWatch');
 const Modifier = require('./modifier');
 
 class ModifierEnemyAttackWatchGainAttack extends ModifierEnemyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyAttackWatchGainAttack';
-    this.type = 'ModifierEnemyAttackWatchGainAttack';
-
-    this.prototype.attackBuff = 0;
-    this.prototype.buffName = null;
-  }
+  static type = 'ModifierEnemyAttackWatchGainAttack';
 
   static createContextObject(attackBuff, buffName, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -34,6 +27,8 @@ class ModifierEnemyAttackWatchGainAttack extends ModifierEnemyAttackWatch {
     }
   }
 }
-ModifierEnemyAttackWatchGainAttack.initClass();
+ModifierEnemyAttackWatchGainAttack.prototype.type = 'ModifierEnemyAttackWatchGainAttack';
+ModifierEnemyAttackWatchGainAttack.prototype.attackBuff = 0;
+ModifierEnemyAttackWatchGainAttack.prototype.buffName = null;
 
 module.exports = ModifierEnemyAttackWatchGainAttack;

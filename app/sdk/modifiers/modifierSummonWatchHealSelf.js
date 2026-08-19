@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,7 @@ const CONFIG = require('app/common/config');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchHealSelf extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchHealSelf';
-    this.type = 'ModifierSummonWatchHealSelf';
-
-    this.prototype.name = 'Summon Watch Heal Self';
-    this.prototype.description = 'Whenever you summon a minion, heal this unit';
-
-    this.prototype.healAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierSummonWatchHealSelf';
 
   static createContextObject(healAmount, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -42,6 +31,11 @@ class ModifierSummonWatchHealSelf extends ModifierSummonWatch {
     return card.getDamage() > 0;
   }
 }
-ModifierSummonWatchHealSelf.initClass(); // only heal if unit is currently damaged
+ModifierSummonWatchHealSelf.prototype.type = 'ModifierSummonWatchHealSelf';
+ModifierSummonWatchHealSelf.prototype.name = 'Summon Watch Heal Self';
+ModifierSummonWatchHealSelf.prototype.description = 'Whenever you summon a minion, heal this unit';
+ModifierSummonWatchHealSelf.prototype.healAmount = 0;
+ModifierSummonWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericHeal'];
+// only heal if unit is currently damaged
 
 module.exports = ModifierSummonWatchHealSelf;

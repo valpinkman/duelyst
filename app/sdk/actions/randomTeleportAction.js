@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,13 +11,7 @@ const CONFIG = require('app/common/config');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
 
 class RandomTeleportAction extends TeleportAction {
-  static initClass() {
-    this.type = 'RandomTeleportAction';
-    this.prototype.teleportPattern = null;
-    this.prototype.patternSourceIndex = null; // center the teleport pattern around a specific entity, or the whole board
-    this.prototype.patternSourcePosition = null;
-    // center the teleport pattern around a specific position, or the whole board
-  }
+  static type = 'RandomTeleportAction';
 
   constructor() {
     super(...arguments);
@@ -94,6 +87,8 @@ class RandomTeleportAction extends TeleportAction {
     }
   }
 }
-RandomTeleportAction.initClass();
+RandomTeleportAction.prototype.teleportPattern = null;
+RandomTeleportAction.prototype.patternSourceIndex = null;
+RandomTeleportAction.prototype.patternSourcePosition = null;
 
 module.exports = RandomTeleportAction;

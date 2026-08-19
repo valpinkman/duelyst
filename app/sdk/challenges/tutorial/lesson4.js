@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -25,28 +24,7 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class LessonFour extends Challenge {
-  static initClass() {
-    this.type = 'LessonFour';
-    this.prototype.type = 'LessonFour';
-    this.prototype.categoryType = ChallengeCategory.tutorial.type;
-
-    this.prototype.name = i18next.t('tutorial.lesson_4_title');
-    this.prototype.description = i18next.t('tutorial.lesson_4_description');
-    this.prototype.difficulty = i18next.t('tutorial.lesson_4_difficulty');
-    this.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_4_start_message');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('tutorial.lesson_4_failure_message'),
-    ];
-
-    this.prototype.iconUrl = RSX.speech_portrait_draugar.img;
-    this.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.customBoard = false;
-    this.prototype.startingHandSizeOpponent = 6;
-    this.prototype.usesResetTurn = false;
-    this.prototype.skipMulligan = false;
-  }
+  static type = 'LessonFour';
 
   constructor() {
     super();
@@ -329,7 +307,22 @@ class LessonFour extends Challenge {
     return this._opponentAgent.addActionForTurn(3, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-LessonFour.initClass();
+LessonFour.prototype.type = 'LessonFour';
+LessonFour.prototype.categoryType = ChallengeCategory.tutorial.type;
+LessonFour.prototype.name = i18next.t('tutorial.lesson_4_title');
+LessonFour.prototype.description = i18next.t('tutorial.lesson_4_description');
+LessonFour.prototype.difficulty = i18next.t('tutorial.lesson_4_difficulty');
+LessonFour.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_4_start_message');
+LessonFour.prototype.otkChallengeFailureMessages = [
+  i18next.t('tutorial.lesson_4_failure_message'),
+];
+LessonFour.prototype.iconUrl = RSX.speech_portrait_draugar.img;
+LessonFour.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
+LessonFour.prototype.battleMapTemplateIndex = 0;
+LessonFour.prototype.customBoard = false;
+LessonFour.prototype.startingHandSizeOpponent = 6;
+LessonFour.prototype.usesResetTurn = false;
+LessonFour.prototype.skipMulligan = false;
 
 //    @_opponentAgent.addActionForTurn(1,AgentActions.createAgentActionPlayCard(1,{x:4,y:2}))
 //    @_opponentAgent.addActionForTurn(1,AgentActions.createAgentActionAttackWithUnit("general",{x:4,y:2},true))

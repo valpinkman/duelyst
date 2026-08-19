@@ -1,27 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const MoveAction = require('app/sdk/actions/moveAction');
 const Modifier = require('./modifier');
 
 class ModifierMyMoveWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMoveWatch';
-    this.type = 'ModifierMyMoveWatch';
-
-    this.modifierName = 'Move Watch: Self';
-    this.description = 'Move Watch: Self';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-  }
+  static type = 'ModifierMyMoveWatch';
+  static modifierName = 'Move Watch: Self';
+  static description = 'Move Watch: Self';
 
   onAction(event) {
     super.onAction(event);
@@ -35,7 +23,12 @@ class ModifierMyMoveWatch extends Modifier {
 
   onMyMoveWatch(action) {}
 }
-ModifierMyMoveWatch.initClass();
+ModifierMyMoveWatch.prototype.type = 'ModifierMyMoveWatch';
+ModifierMyMoveWatch.prototype.activeInHand = false;
+ModifierMyMoveWatch.prototype.activeInDeck = false;
+ModifierMyMoveWatch.prototype.activeInSignatureCards = false;
+ModifierMyMoveWatch.prototype.activeOnBoard = true;
+ModifierMyMoveWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyMoveWatch;

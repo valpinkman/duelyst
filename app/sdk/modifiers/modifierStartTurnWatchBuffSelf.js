@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const Modifier = require('./modifier');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchBuffSelf extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchBuffSelf';
-    this.type = 'ModifierStartTurnWatchBuffSelf';
-
-    this.modifierName = 'Start Turn Watch';
-    this.description = 'At the start of your turn, this minion gets %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierStartTurnWatchBuffSelf';
+  static modifierName = 'Start Turn Watch';
+  static description = 'At the start of your turn, this minion gets %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -52,6 +45,7 @@ class ModifierStartTurnWatchBuffSelf extends ModifierStartTurnWatch {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierStartTurnWatchBuffSelf.initClass();
+ModifierStartTurnWatchBuffSelf.prototype.type = 'ModifierStartTurnWatchBuffSelf';
+ModifierStartTurnWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierStartTurnWatchBuffSelf;

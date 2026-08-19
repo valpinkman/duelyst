@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,27 +15,7 @@ const Logger = require('app/common/logger');
 const _ = require('underscore');
 
 class Action extends SDKObject {
-  static initClass() {
-    this.type = 'Action';
-
-    this.prototype.changedByModifierIndices = null;
-    this.prototype.isDepthFirst = false;
-    this.prototype.fxResource = null; // array of strings that map to fx data, ex: ["Actions.Teleport"]
-    this.prototype.index = null; // unique index of action, set automatically by game session
-    this.prototype.isAutomatic = false; // actions that act as explicit actions even though they are not player generated (example - battle pets)
-    this.prototype.manaCost = 0;
-    this.prototype.ownerId = null;
-    this.prototype.parentActionIndex = null; // index of action this should be executed as a result of
-    this.prototype.resolveParentActionIndex = null; // index of action this was actually resolved after
-    this.prototype.resolveSubActionIndices = null; // action indices resolved after this action
-    this.prototype.sourceIndex = null;
-    this.prototype.sourcePosition = null;
-    this.prototype.subActionsOrderedByEventType = null; // actions executed by event type
-    this.prototype.targetIndex = null;
-    this.prototype.targetPosition = null;
-    this.prototype.timestamp = null;
-    this.prototype.triggeringModifierIndex = null;
-  }
+  static type = 'Action';
 
   constructor(gameSession) {
     super(gameSession);
@@ -1082,7 +1061,23 @@ class Action extends SDKObject {
     }
   }
 }
-Action.initClass();
+Action.prototype.changedByModifierIndices = null;
+Action.prototype.isDepthFirst = false;
+Action.prototype.fxResource = null;
+Action.prototype.index = null;
+Action.prototype.isAutomatic = false;
+Action.prototype.manaCost = 0;
+Action.prototype.ownerId = null;
+Action.prototype.parentActionIndex = null;
+Action.prototype.resolveParentActionIndex = null;
+Action.prototype.resolveSubActionIndices = null;
+Action.prototype.sourceIndex = null;
+Action.prototype.sourcePosition = null;
+Action.prototype.subActionsOrderedByEventType = null;
+Action.prototype.targetIndex = null;
+Action.prototype.targetPosition = null;
+Action.prototype.timestamp = null;
+Action.prototype.triggeringModifierIndex = null;
 
 module.exports = Action;
 

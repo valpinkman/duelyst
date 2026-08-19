@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,18 +9,9 @@ const ModifierSituationalBuffSelf = require('./modifierSituationalBuffSelf');
 const Modifier = require('./modifier');
 
 class ModifierSituationalBuffSelfIfSpriggin extends ModifierSituationalBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierSituationalBuffSelfIfSpriggin';
-    this.type = 'ModifierSituationalBuffSelfIfSpriggin';
-
-    this.modifierName = 'ModifierSituationalBuffSelfIfSpriggin';
-    this.description = 'If there is a Spriggin gain +3 Attack';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierSituationalBuffSelfIfSpriggin';
+  static modifierName = 'ModifierSituationalBuffSelfIfSpriggin';
+  static description = 'If there is a Spriggin gain +3 Attack';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -44,6 +34,10 @@ class ModifierSituationalBuffSelfIfSpriggin extends ModifierSituationalBuffSelf 
     return false;
   }
 }
-ModifierSituationalBuffSelfIfSpriggin.initClass();
+ModifierSituationalBuffSelfIfSpriggin.prototype.type = 'ModifierSituationalBuffSelfIfSpriggin';
+ModifierSituationalBuffSelfIfSpriggin.prototype.activeInHand = false;
+ModifierSituationalBuffSelfIfSpriggin.prototype.activeInDeck = false;
+ModifierSituationalBuffSelfIfSpriggin.prototype.activeInSignatureCards = false;
+ModifierSituationalBuffSelfIfSpriggin.prototype.activeOnBoard = true;
 
 module.exports = ModifierSituationalBuffSelfIfSpriggin;

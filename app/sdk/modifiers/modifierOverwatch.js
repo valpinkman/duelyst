@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -11,28 +10,11 @@ const Modifier = require('./modifier');
 const ModifierOverwatchHidden = require('./modifierOverwatchHidden');
 
 class ModifierOverwatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatch';
-    this.type = 'ModifierOverwatch';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = 'A hidden effect which only takes place when a specific event occurs.';
-
-    this.modifierName = 'Guardian';
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-    this.prototype.isRemovable = false;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.hideAsModifierType = ModifierOverwatchHidden.type;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOverwatch'];
-  }
+  static type = 'ModifierOverwatch';
+  static isKeyworded = true;
+  static keywordDefinition = 'A hidden effect which only takes place when a specific event occurs.';
+  static modifierName = 'Guardian';
+  static description = null;
 
   static createContextObject(description, options) {
     const contextObject = super.createContextObject(options);
@@ -97,7 +79,15 @@ class ModifierOverwatch extends Modifier {
 
   onOverwatch(action) {}
 }
-ModifierOverwatch.initClass();
+ModifierOverwatch.prototype.type = 'ModifierOverwatch';
+ModifierOverwatch.prototype.activeInHand = false;
+ModifierOverwatch.prototype.activeInDeck = false;
+ModifierOverwatch.prototype.activeInSignatureCards = false;
+ModifierOverwatch.prototype.activeOnBoard = true;
+ModifierOverwatch.prototype.isRemovable = false;
+ModifierOverwatch.prototype.maxStacks = 1;
+ModifierOverwatch.prototype.hideAsModifierType = ModifierOverwatchHidden.type;
+ModifierOverwatch.prototype.fxResource = ['FX.Modifiers.ModifierOverwatch'];
 // override me in sub classes to implement special behavior for when overwatch is triggered
 
 // if a minion has an overwatch buff and dies without triggering overwatch, then draw a card

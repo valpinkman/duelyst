@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -10,10 +9,7 @@ const ModifierOverwatchMovedNearby = require('./modifierOverwatchMovedNearby');
 const RandomTeleportAction = require('../actions/randomTeleportAction');
 
 class ModifierOverwatchMovedNearbyMoveBothToCorners extends ModifierOverwatchMovedNearby {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchMovedNearbyMoveBothToCorners';
-    this.type = 'ModifierOverwatchMovedNearbyMoveBothToCorners';
-  }
+  static type = 'ModifierOverwatchMovedNearbyMoveBothToCorners';
 
   onOverwatch(action) {
     // teleport enemy
@@ -33,6 +29,6 @@ class ModifierOverwatchMovedNearbyMoveBothToCorners extends ModifierOverwatchMov
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }
-ModifierOverwatchMovedNearbyMoveBothToCorners.initClass();
+ModifierOverwatchMovedNearbyMoveBothToCorners.prototype.type = 'ModifierOverwatchMovedNearbyMoveBothToCorners';
 
 module.exports = ModifierOverwatchMovedNearbyMoveBothToCorners;

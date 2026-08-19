@@ -1,22 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DieAction = require('app/sdk/actions/dieAction');
 const Modifier = require('./modifier');
 
 class ModifierOnDying extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOnDying';
-    this.type = 'ModifierOnDying';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierOnDying';
 
   onAction(e) {
     super.onAction(e);
@@ -33,7 +24,11 @@ class ModifierOnDying extends Modifier {
 
   onDying(action) {}
 }
-ModifierOnDying.initClass();
+ModifierOnDying.prototype.type = 'ModifierOnDying';
+ModifierOnDying.prototype.activeInHand = false;
+ModifierOnDying.prototype.activeInDeck = false;
+ModifierOnDying.prototype.activeInSignatureCards = false;
+ModifierOnDying.prototype.activeOnBoard = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierOnDying;

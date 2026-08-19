@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,13 +9,9 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitRetrieveMostRecentSpell extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitRetrieveMostRecentSpell';
-    this.type = 'ModifierOpeningGambitRetrieveMostRecentSpell';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Put a copy of the most recently cast spell into your action bar';
-  }
+  static type = 'ModifierOpeningGambitRetrieveMostRecentSpell';
+  static modifierName = 'Opening Gambit';
+  static description = 'Put a copy of the most recently cast spell into your action bar';
 
   onOpeningGambit() {
     const spellsPlayedToBoard = this.getGameSession().getSpellsPlayed();
@@ -38,6 +33,6 @@ class ModifierOpeningGambitRetrieveMostRecentSpell extends ModifierOpeningGambit
     }
   }
 }
-ModifierOpeningGambitRetrieveMostRecentSpell.initClass();
+ModifierOpeningGambitRetrieveMostRecentSpell.prototype.type = 'ModifierOpeningGambitRetrieveMostRecentSpell';
 
 module.exports = ModifierOpeningGambitRetrieveMostRecentSpell;

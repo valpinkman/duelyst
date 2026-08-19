@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierManaCostChange = require('app/sdk/modifiers/modifierManaCostChange');
@@ -11,14 +10,7 @@ const _ = require('underscore');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishReduceManaCostOfDyingWish extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishReduceManaCostOfDyingWish';
-    this.type = 'ModifierDyingWishReduceManaCostOfDyingWish';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
-
-    this.prototype.reduceAmount = 0;
-  }
+  static type = 'ModifierDyingWishReduceManaCostOfDyingWish';
 
   static createContextObject(reduceAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -61,6 +53,8 @@ class ModifierDyingWishReduceManaCostOfDyingWish extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishReduceManaCostOfDyingWish.initClass();
+ModifierDyingWishReduceManaCostOfDyingWish.prototype.type = 'ModifierDyingWishReduceManaCostOfDyingWish';
+ModifierDyingWishReduceManaCostOfDyingWish.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
+ModifierDyingWishReduceManaCostOfDyingWish.prototype.reduceAmount = 0;
 
 module.exports = ModifierDyingWishReduceManaCostOfDyingWish;

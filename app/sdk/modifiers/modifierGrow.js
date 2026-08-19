@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,23 +10,9 @@ const ModifierStartTurnWatchBuffSelf = require('./modifierStartTurnWatchBuffSelf
 const ModifierGrowOnBothTurns = require('./modifierGrowOnBothTurns');
 
 class ModifierGrow extends ModifierStartTurnWatchBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierGrow';
-    this.type = 'ModifierGrow';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.grow_def');
-
-    this.modifierName = i18next.t('modifiers.grow_name');
-    this.description = '+%X/+%X';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff', 'FX.Modifiers.ModifierGrow'];
-  }
+  static type = 'ModifierGrow';
+  static isKeyworded = true;
+  static description = '+%X/+%X';
 
   static createContextObject(growValue, options) {
     if (growValue == null) { growValue = 0; }
@@ -66,6 +51,13 @@ class ModifierGrow extends ModifierStartTurnWatchBuffSelf {
     return this.growValue;
   }
 }
-ModifierGrow.initClass();
+ModifierGrow.prototype.type = 'ModifierGrow';
+ModifierGrow.keywordDefinition = i18next.t('modifiers.grow_def');
+ModifierGrow.modifierName = i18next.t('modifiers.grow_name');
+ModifierGrow.prototype.activeInHand = false;
+ModifierGrow.prototype.activeInDeck = false;
+ModifierGrow.prototype.activeInSignatureCards = false;
+ModifierGrow.prototype.activeOnBoard = true;
+ModifierGrow.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff', 'FX.Modifiers.ModifierGrow'];
 
 module.exports = ModifierGrow;

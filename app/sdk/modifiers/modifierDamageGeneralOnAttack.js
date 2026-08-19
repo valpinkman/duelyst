@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,9 @@ const Modifier = require('./modifier');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDamageGeneralOnAttack extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDamageGeneralOnAttack';
-    this.type = 'ModifierDamageGeneralOnAttack';
-
-    this.modifierName = 'Damaging Attacks';
-    this.description = 'Whenever this damages an enemy minion, deal %X damage to the enemy General';
-
-    this.prototype.enemyOnly = true; // should only trigger on dealing damage to enemy, not on ANY damage dealt
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDamageGeneralOnAttack'];
-  }
+  static type = 'ModifierDamageGeneralOnAttack';
+  static modifierName = 'Damaging Attacks';
+  static description = 'Whenever this damages an enemy minion, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -50,6 +41,8 @@ class ModifierDamageGeneralOnAttack extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierDamageGeneralOnAttack.initClass();
+ModifierDamageGeneralOnAttack.prototype.type = 'ModifierDamageGeneralOnAttack';
+ModifierDamageGeneralOnAttack.prototype.enemyOnly = true;
+ModifierDamageGeneralOnAttack.prototype.fxResource = ['FX.Modifiers.ModifierDamageGeneralOnAttack'];
 
 module.exports = ModifierDamageGeneralOnAttack;

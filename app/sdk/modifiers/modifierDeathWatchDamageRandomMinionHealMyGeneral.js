@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchDamageRandomMinionHealMyGeneral extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
-    this.type = 'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'When a friendly minion dies, deal %X damage to a random minion, and restore %Y Health to your General';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
+  static modifierName = 'Deathwatch';
+  static description = 'When a friendly minion dies, deal %X damage to a random minion, and restore %Y Health to your General';
 
   static createContextObject(damageAmount, healAmount, options) {
     if (damageAmount == null) { damageAmount = 3; }
@@ -77,6 +68,8 @@ class ModifierDeathWatchDamageRandomMinionHealMyGeneral extends ModifierDeathWat
     }
   }
 }
-ModifierDeathWatchDamageRandomMinionHealMyGeneral.initClass();
+ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.type = 'ModifierDeathWatchDamageRandomMinionHealMyGeneral';
+ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.damageAmount = 0;
+ModifierDeathWatchDamageRandomMinionHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierDeathWatchDamageRandomMinionHealMyGeneral;

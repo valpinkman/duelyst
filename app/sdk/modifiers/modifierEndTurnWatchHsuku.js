@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,15 +17,7 @@ const ModifierCannotStrikeback = require('./modifierCannotStrikeback');
 const Modifier = require('./modifier');
 
 class ModifierEndTurnWatchHsuku extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchHsuku';
-    this.type = 'ModifierEndTurnWatchHsuku';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.buffName = null;
-    this.prototype.debuffName = null;
-  }
+  static type = 'ModifierEndTurnWatchHsuku';
 
   onTurnWatch() {
     super.onTurnWatch();
@@ -113,6 +104,9 @@ class ModifierEndTurnWatchHsuku extends ModifierEndTurnWatch {
     }
   }
 }
-ModifierEndTurnWatchHsuku.initClass();
+ModifierEndTurnWatchHsuku.prototype.type = 'ModifierEndTurnWatchHsuku';
+ModifierEndTurnWatchHsuku.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
+ModifierEndTurnWatchHsuku.prototype.buffName = null;
+ModifierEndTurnWatchHsuku.prototype.debuffName = null;
 
 module.exports = ModifierEndTurnWatchHsuku;

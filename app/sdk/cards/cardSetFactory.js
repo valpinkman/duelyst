@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardSet = require('./cardSetLookup');
@@ -10,9 +9,7 @@ const defaultOrbGoldCost = 50;
 const defaultFullSetSpiritCost = 5000; // 2.5-22.6% discount
 
 class CardSetFactory {
-  static initClass() {
-    this.setMap = {};
-  }
+  static setMap = {};
 
   static cardSetForIdentifier(identifier) {
     return CardSetFactory.setMap[identifier];
@@ -29,7 +26,6 @@ class CardSetFactory {
     return null;
   }
 }
-CardSetFactory.initClass();
 
 // generate sets once in a map
 const smap = CardSetFactory.setMap;

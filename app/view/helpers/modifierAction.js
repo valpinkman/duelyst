@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,7 @@ const Action = require('app/sdk/actions/action');
   Action used for modifiers.
 */
 class ModifierAction extends Action {
-  static initClass() {
-    this.type = 'ModifierAction';
-    this.prototype.type = 'ModifierAction';
-    this.prototype._modifier = null;
-    this.prototype.modifierIndex = null;
-    this.prototype._parentModifier = null;
-    this.prototype.parentModifierIndex = null;
-  }
+  static type = 'ModifierAction';
 
   constructor(gameSession, modifier) {
     super(gameSession);
@@ -66,7 +58,11 @@ class ModifierAction extends Action {
     return this._parentModifier;
   }
 }
-ModifierAction.initClass();
+ModifierAction.prototype.type = 'ModifierAction';
+ModifierAction.prototype._modifier = null;
+ModifierAction.prototype.modifierIndex = null;
+ModifierAction.prototype._parentModifier = null;
+ModifierAction.prototype.parentModifierIndex = null;
 
 module.exports = ModifierAction;
 

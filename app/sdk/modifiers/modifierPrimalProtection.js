@@ -1,21 +1,13 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierPrimalProtection extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierPrimalProtection';
-    this.type = 'ModifierPrimalProtection';
-
-    this.modifierName = i18next.t('modifiers.primal_protection_name');
-    this.description = i18next.t('modifiers.primal_protection_def');
-
-    this.isHiddenToUI = true;
-  }
+  static type = 'ModifierPrimalProtection';
+  static isHiddenToUI = true;
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +28,8 @@ class ModifierPrimalProtection extends Modifier {
     return contextObject;
   }
 }
-ModifierPrimalProtection.initClass();
+ModifierPrimalProtection.prototype.type = 'ModifierPrimalProtection';
+ModifierPrimalProtection.modifierName = i18next.t('modifiers.primal_protection_name');
+ModifierPrimalProtection.description = i18next.t('modifiers.primal_protection_def');
 
 module.exports = ModifierPrimalProtection;

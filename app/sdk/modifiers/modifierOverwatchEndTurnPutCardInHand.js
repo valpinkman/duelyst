@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,7 @@ const CardType = require('../cards/cardType');
 const ModifierOverwatchEndTurn = require('./modifierOverwatchEndTurn');
 
 class ModifierOverwatchEndTurnPutCardInHand extends ModifierOverwatchEndTurn {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchEndTurnPutCardInHand';
-    this.type = 'ModifierOverwatchEndTurnPutCardInHand';
-  }
+  static type = 'ModifierOverwatchEndTurnPutCardInHand';
 
   static createContextObject(numCards, options) {
     if (numCards == null) { numCards = 0; }
@@ -35,6 +31,6 @@ class ModifierOverwatchEndTurnPutCardInHand extends ModifierOverwatchEndTurn {
     })();
   }
 }
-ModifierOverwatchEndTurnPutCardInHand.initClass();
+ModifierOverwatchEndTurnPutCardInHand.prototype.type = 'ModifierOverwatchEndTurnPutCardInHand';
 
 module.exports = ModifierOverwatchEndTurnPutCardInHand;

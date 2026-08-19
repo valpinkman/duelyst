@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -10,11 +9,7 @@ const GameStatus = require('app/sdk/gameStatus');
 const Logger = require('app/common/logger');
 
 class RollbackToSnapshotAction extends Action {
-  static initClass() {
-    this.type = 'RollbackToSnapshotAction';
-
-    this.prototype.delay = CONFIG.TURN_DELAY;
-  }
+  static type = 'RollbackToSnapshotAction';
 
   constructor() {
     super(...arguments);
@@ -25,6 +20,6 @@ class RollbackToSnapshotAction extends Action {
     return this.getGameSession().p_requestRollbackToSnapshot();
   }
 }
-RollbackToSnapshotAction.initClass();
+RollbackToSnapshotAction.prototype.delay = CONFIG.TURN_DELAY;
 
 module.exports = RollbackToSnapshotAction;

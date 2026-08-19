@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -19,17 +18,11 @@ const moment = require('moment');
 //   )
 
 class Logger {
-  static initClass() {
-    // STATIC
-
-    this._hue = 0;
-    this._padLength = 10;
-    this._modules = {};
-
-    this.enabled = true;
-    this.isRecording = process.env.RECORD_CLIENT_LOGS;
-    this.recordedBuffer = [];
-  }
+  static _hue = 0;
+  static _padLength = 10;
+  static _modules = {};
+  static enabled = true;
+  static recordedBuffer = [];
 
   static startRecording() {
     this.isRecording = true;
@@ -191,6 +184,6 @@ class Logger {
     return styles[key][0] + str + styles[key][1];
   }
 }
-Logger.initClass();
+Logger.isRecording = process.env.RECORD_CLIENT_LOGS;
 
 module.exports = Logger;

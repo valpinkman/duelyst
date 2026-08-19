@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Achievement = require('app/sdk/achievements/achievement');
@@ -11,13 +10,9 @@ const i18next = require('i18next');
 // Given when a player loses 3 games
 
 class HelpingHandAchievement extends Achievement {
-  static initClass() {
-    this.id = 'helpingHand';
-    this.title = i18next.t('achievements.helping_hand_title');
-    this.description = i18next.t('achievements.helping_hand_desc');
-    this.progressRequired = 10;
-    this.rewards = { gold: 100 };
-  }
+  static id = 'helpingHand';
+  static progressRequired = 10;
+  static rewards = { gold: 100 };
 
   static progressForGameDataForPlayerId(gameData, playerId, isUnscored, isDraw) {
     if (isUnscored || !GameType.isFactionXPGameType(gameData.gameType)) {
@@ -33,6 +28,7 @@ class HelpingHandAchievement extends Achievement {
     return 0;
   }
 }
-HelpingHandAchievement.initClass();
+HelpingHandAchievement.title = i18next.t('achievements.helping_hand_title');
+HelpingHandAchievement.description = i18next.t('achievements.helping_hand_desc');
 
 module.exports = HelpingHandAchievement;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -9,10 +8,6 @@ const SpellRefreshExhaustion = require('./spellRefreshExhaustion');
 const SpellFilterType = require('./spellFilterType');
 
 class SpellSpiritAnimalBlessing extends SpellRefreshExhaustion {
-  static initClass() {
-    this.prototype.spellFilterType = SpellFilterType.AllyIndirect;
-  }
-
   _postFilterApplyPositions(validPositions) {
     // spell kills units on 'your side' of the board
     let filteredPositions;
@@ -39,6 +34,6 @@ class SpellSpiritAnimalBlessing extends SpellRefreshExhaustion {
     return filteredPositions;
   }
 }
-SpellSpiritAnimalBlessing.initClass();
+SpellSpiritAnimalBlessing.prototype.spellFilterType = SpellFilterType.AllyIndirect;
 
 module.exports = SpellSpiritAnimalBlessing;

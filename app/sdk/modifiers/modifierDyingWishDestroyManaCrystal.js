@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,7 @@ const RemoveManaCoreAction = require('app/sdk/actions/removeManaCoreAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDestroyManaCrystal extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDestroyManaCrystal';
-    this.type = 'ModifierDyingWishDestroyManaCrystal';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
-
-    this.prototype.amountToRemove = 1;
-    this.prototype.takeFromOwner = false;
-  }
+  static type = 'ModifierDyingWishDestroyManaCrystal';
 
   static createContextObject(takeFromOwner, amountToRemove, options) {
     if (takeFromOwner == null) { takeFromOwner = false; }
@@ -41,6 +32,9 @@ class ModifierDyingWishDestroyManaCrystal extends ModifierDyingWish {
     return this.getGameSession().executeAction(this.getGameSession().executeAction(removeManaCoreAction));
   }
 }
-ModifierDyingWishDestroyManaCrystal.initClass();
+ModifierDyingWishDestroyManaCrystal.prototype.type = 'ModifierDyingWishDestroyManaCrystal';
+ModifierDyingWishDestroyManaCrystal.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
+ModifierDyingWishDestroyManaCrystal.prototype.amountToRemove = 1;
+ModifierDyingWishDestroyManaCrystal.prototype.takeFromOwner = false;
 
 module.exports = ModifierDyingWishDestroyManaCrystal;

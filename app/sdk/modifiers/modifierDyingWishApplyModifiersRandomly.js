@@ -1,26 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
 const ModifierDyingWishApplyModifiers = require('./modifierDyingWishApplyModifiers');
 
 class ModifierDyingWishApplyModifiersRandomly extends ModifierDyingWishApplyModifiers {
-  static initClass() {
-    /*
-    This modifier is used to apply modifiers RANDOMLY to X entities around an entity when it dies.
-    examples:
-    2 random nearby friendly minions gain +1/+1
-    1 random friendly minion gains provoke
-    */
-
-    this.prototype.type = 'ModifierDyingWishApplyModifiersRandomly';
-    this.type = 'ModifierDyingWishApplyModifiersRandomly';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierDyingWishApplyModifiersRandomly';
 
   static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, numberOfApplications, description, options) {
     const contextObject = super.createContextObject(modifiersContextObjects, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, auraIncludeGeneral, description, options);
@@ -41,6 +28,7 @@ class ModifierDyingWishApplyModifiersRandomly extends ModifierDyingWishApplyModi
     return affectedEntities;
   }
 }
-ModifierDyingWishApplyModifiersRandomly.initClass();
+ModifierDyingWishApplyModifiersRandomly.prototype.type = 'ModifierDyingWishApplyModifiersRandomly';
+ModifierDyingWishApplyModifiersRandomly.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierDyingWishApplyModifiersRandomly;

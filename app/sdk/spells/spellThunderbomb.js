@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellDamage = require('./spellDamage');
@@ -11,11 +10,6 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const CardType = require('app/sdk/cards/cardType');
 
 class SpellThunderbomb extends SpellDamage {
-  static initClass() {
-    this.prototype.damageAmount = 3;
-    this.prototype.aoeAmount = 1;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
     const targetEntity = board.getUnitAtPosition(applyEffectPosition);
@@ -38,6 +32,7 @@ class SpellThunderbomb extends SpellDamage {
     })();
   }
 }
-SpellThunderbomb.initClass();
+SpellThunderbomb.prototype.damageAmount = 3;
+SpellThunderbomb.prototype.aoeAmount = 1;
 
 module.exports = SpellThunderbomb;

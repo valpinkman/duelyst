@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,20 +10,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const Modifier = require('./modifier');
 
 class ModifierAnySummonWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAnySummonWatch';
-    this.type = 'ModifierAnySummonWatch';
-
-    this.modifierName = 'Any Summon Watch';
-    this.description = 'Any Summon Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAnySummonWatch'];
-  }
+  static type = 'ModifierAnySummonWatch';
+  static modifierName = 'Any Summon Watch';
+  static description = 'Any Summon Watch';
 
   onAction(e) {
     super.onAction(e);
@@ -57,6 +45,11 @@ class ModifierAnySummonWatch extends Modifier {
       this.onSummonWatch(action));
   }
 }
-ModifierAnySummonWatch.initClass();
+ModifierAnySummonWatch.prototype.type = 'ModifierAnySummonWatch';
+ModifierAnySummonWatch.prototype.activeInHand = false;
+ModifierAnySummonWatch.prototype.activeInDeck = false;
+ModifierAnySummonWatch.prototype.activeInSignatureCards = false;
+ModifierAnySummonWatch.prototype.activeOnBoard = true;
+ModifierAnySummonWatch.prototype.fxResource = ['FX.Modifiers.ModifierAnySummonWatch'];
 
 module.exports = ModifierAnySummonWatch;

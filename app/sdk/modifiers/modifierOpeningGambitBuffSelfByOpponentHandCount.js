@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,14 +9,8 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const Modifier = require('./modifier');
 
 class ModifierOpeningGambitBuffSelfByOpponentHandCount extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitBuffSelfByOpponentHandCount';
-    this.type = 'ModifierOpeningGambitBuffSelfByOpponentHandCount';
-
-    this.description = 'Gains %X for each card in your opponent\'s action bar';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitBuffSelfByOpponentHandCount';
+  static description = 'Gains %X for each card in your opponent\'s action bar';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -60,7 +53,8 @@ class ModifierOpeningGambitBuffSelfByOpponentHandCount extends ModifierOpeningGa
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierOpeningGambitBuffSelfByOpponentHandCount.initClass();
+ModifierOpeningGambitBuffSelfByOpponentHandCount.prototype.type = 'ModifierOpeningGambitBuffSelfByOpponentHandCount';
+ModifierOpeningGambitBuffSelfByOpponentHandCount.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitBuffSelfByOpponentHandCount;
 

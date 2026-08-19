@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,29 +13,10 @@ const ModifierManaCostChange = require('./modifierManaCostChange');
 const ModifierBuilding = require('./modifierBuilding');
 
 class ModifierBuild extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBuild';
-    this.type = 'ModifierBuild';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-    this.prototype.isRemovable = false;
-
-    this.prototype.maxStacks = 1;
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.build_def');
-    // @keywordDefinition: i18next.t("modifiers.structure_def")
-    this.isHiddenToUI = true;
-
-    this.modifierName = i18next.t('modifiers.build_name');
-    // @modifierName:i18next.t("modifiers.structure_name")
-    this.description = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierPortal'];
-  }
+  static type = 'ModifierBuild';
+  static isKeyworded = true;
+  static isHiddenToUI = true;
+  static description = null;
 
   static createContextObject(buildCardData, options) {
     const contextObject = super.createContextObject(options);
@@ -77,6 +57,15 @@ class ModifierBuild extends Modifier {
     }
   }
 }
-ModifierBuild.initClass();
+ModifierBuild.prototype.type = 'ModifierBuild';
+ModifierBuild.prototype.activeInHand = true;
+ModifierBuild.prototype.activeInDeck = false;
+ModifierBuild.prototype.activeInSignatureCards = false;
+ModifierBuild.prototype.activeOnBoard = false;
+ModifierBuild.prototype.isRemovable = false;
+ModifierBuild.prototype.maxStacks = 1;
+ModifierBuild.keywordDefinition = i18next.t('modifiers.build_def');
+ModifierBuild.modifierName = i18next.t('modifiers.build_name');
+ModifierBuild.prototype.fxResource = ['FX.Modifiers.ModifierPortal'];
 
 module.exports = ModifierBuild;

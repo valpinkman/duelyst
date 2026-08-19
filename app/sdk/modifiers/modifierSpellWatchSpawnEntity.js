@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,17 +15,9 @@ const Modifier = require('./modifier');
 const ModifierSpellWatch = require('./modifierSpellWatch');
 
 class ModifierSpellWatchSpawnEntity extends ModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchSpawnEntity';
-    this.type = 'ModifierSpellWatchSpawnEntity';
-
-    this.modifierName = 'Spell Watch (Spawn Entity)';
-    this.description = 'Whenever you cast a spell, summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierSpellWatchSpawnEntity';
+  static modifierName = 'Spell Watch (Spawn Entity)';
+  static description = 'Whenever you cast a spell, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -89,6 +80,8 @@ class ModifierSpellWatchSpawnEntity extends ModifierSpellWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierSpellWatchSpawnEntity.initClass();
+ModifierSpellWatchSpawnEntity.prototype.type = 'ModifierSpellWatchSpawnEntity';
+ModifierSpellWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierSpellWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierSpellWatchSpawnEntity;

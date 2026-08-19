@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,13 +17,6 @@ const ModifierEgg = require('app/sdk/modifiers/modifierEgg');
 const _ = require('underscore');
 
 class SpellEggMorph extends SpellApplyEntityToBoard {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
-    // if spawning an entity, it will be an egg
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -122,6 +114,8 @@ class SpellEggMorph extends SpellApplyEntityToBoard {
     return filteredPositions;
   }
 }
-SpellEggMorph.initClass();
+SpellEggMorph.prototype.targetType = CardType.Unit;
+SpellEggMorph.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellEggMorph.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
 
 module.exports = SpellEggMorph;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,10 +10,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierNoshRak extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierNoshRak';
-    this.type = 'ModifierNoshRak';
-  }
+  static type = 'ModifierNoshRak';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -61,6 +57,6 @@ class ModifierNoshRak extends Modifier {
     return this.getCard().setDamage(this._private.originalDamage);
   }
 }
-ModifierNoshRak.initClass();
+ModifierNoshRak.prototype.type = 'ModifierNoshRak';
 
 module.exports = ModifierNoshRak;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -12,13 +11,7 @@ const i18next = require('i18next');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierSnowRippler extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSnowRippler';
-    this.type = 'ModifierSnowRippler';
-
-    this.modifierName = i18next.t('modifiers.snow_rippler_name');
-    this.description = i18next.t('modifiers.snow_rippler_def');
-  }
+  static type = 'ModifierSnowRippler';
 
   onDealDamage(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -42,6 +35,8 @@ class ModifierSnowRippler extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierSnowRippler.initClass();
+ModifierSnowRippler.prototype.type = 'ModifierSnowRippler';
+ModifierSnowRippler.modifierName = i18next.t('modifiers.snow_rippler_name');
+ModifierSnowRippler.description = i18next.t('modifiers.snow_rippler_def');
 
 module.exports = ModifierSnowRippler;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
@@ -12,12 +11,7 @@ const ModifierCounterMechazorBuildProgressDescription = require('./modifierCount
   Counts current progress towards mechaz0r build
 */
 class ModifierCounterMechazorBuildProgress extends ModifierCounter {
-  static initClass() {
-    this.prototype.type = 'ModifierCounterMechazorBuildProgress';
-    this.type = 'ModifierCounterMechazorBuildProgress';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierCounterMechazorBuildProgress';
 
   static createContextObject(mechazorProgressType, mechazorsBuiltType) {
     const contextObject = super.createContextObject();
@@ -46,6 +40,7 @@ class ModifierCounterMechazorBuildProgress extends ModifierCounter {
     return (mechazorProgress - (numMechazorsSummoned * 5)) * 20;
   }
 }
-ModifierCounterMechazorBuildProgress.initClass();
+ModifierCounterMechazorBuildProgress.prototype.type = 'ModifierCounterMechazorBuildProgress';
+ModifierCounterMechazorBuildProgress.prototype.maxStacks = 1;
 
 module.exports = ModifierCounterMechazorBuildProgress;

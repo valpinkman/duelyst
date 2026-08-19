@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,9 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
-    this.type = 'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
-
-    this.modifierName = 'Summon Watch from action bar (buff by Opening Gambit)';
-    this.description = 'Whenever you summon a minion with Opening Gambit from your action bar, gain %Y';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
+  static modifierName = 'Summon Watch from action bar (buff by Opening Gambit)';
+  static description = 'Whenever you summon a minion with Opening Gambit from your action bar, gain %Y';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -63,6 +56,8 @@ class ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf extends ModifierSu
     return false;
   }
 }
-ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.initClass(); // fallback to false if no opening gambit keywords found
+ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.prototype.type = 'ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf';
+ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+// fallback to false if no opening gambit keywords found
 
 module.exports = ModifierSummonWatchFromActionBarByOpeningGambitBuffSelf;

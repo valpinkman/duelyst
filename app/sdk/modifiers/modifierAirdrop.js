@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
@@ -11,20 +10,14 @@ const Modifier = require('./modifier');
   In Entity.coffee the methods `getValidTargetPositions` and `getIsPositionValidTarget` will check for airdrop by modifier name
 */
 class ModifierAirdrop extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAirdrop';
-    this.type = 'ModifierAirdrop';
-
-    this.isKeyworded = true;
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.airdrop_name');
-    this.description = null;
-    this.keywordDefinition = i18next.t('modifiers.airdrop_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAirdrop'];
-  }
+  static type = 'ModifierAirdrop';
+  static isKeyworded = true;
+  static description = null;
 }
-ModifierAirdrop.initClass();
+ModifierAirdrop.prototype.type = 'ModifierAirdrop';
+ModifierAirdrop.prototype.maxStacks = 1;
+ModifierAirdrop.modifierName = i18next.t('modifiers.airdrop_name');
+ModifierAirdrop.keywordDefinition = i18next.t('modifiers.airdrop_def');
+ModifierAirdrop.prototype.fxResource = ['FX.Modifiers.ModifierAirdrop'];
 
 module.exports = ModifierAirdrop;

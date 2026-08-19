@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -11,14 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierIntensify = require('./modifierIntensify');
 
 class ModifierIntensifyDamageNearby extends ModifierIntensify {
-  static initClass() {
-    this.prototype.type = 'ModifierIntensifyDamageNearby';
-    this.type = 'ModifierIntensifyDamageNearby';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericDamageNearby'];
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierIntensifyDamageNearby';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -44,6 +36,8 @@ class ModifierIntensifyDamageNearby extends ModifierIntensify {
     })();
   }
 }
-ModifierIntensifyDamageNearby.initClass();
+ModifierIntensifyDamageNearby.prototype.type = 'ModifierIntensifyDamageNearby';
+ModifierIntensifyDamageNearby.prototype.fxResource = ['FX.Modifiers.ModifierGenericDamageNearby'];
+ModifierIntensifyDamageNearby.prototype.damageAmount = 0;
 
 module.exports = ModifierIntensifyDamageNearby;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,15 +9,9 @@ const RemoveAction = require('app/sdk/actions/removeAction');
 const ModifierSurviveDamageWatch = require('./modifierSurviveDamageWatch');
 
 class ModifierSurviveDamageWatchReturnToHand extends ModifierSurviveDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSurviveDamageWatchReturnToHand';
-    this.type = 'ModifierSurviveDamageWatchReturnToHand';
-
-    this.modifierName = '';
-    this.description = 'When this minion survives damage, it returns to your action bar';
-
-    this.prototype.hasTriggered = false;
-  }
+  static type = 'ModifierSurviveDamageWatchReturnToHand';
+  static modifierName = '';
+  static description = 'When this minion survives damage, it returns to your action bar';
 
   onSurviveDamage() {
     if (!this.hasTriggered) {
@@ -35,6 +28,7 @@ class ModifierSurviveDamageWatchReturnToHand extends ModifierSurviveDamageWatch 
     }
   }
 }
-ModifierSurviveDamageWatchReturnToHand.initClass();
+ModifierSurviveDamageWatchReturnToHand.prototype.type = 'ModifierSurviveDamageWatchReturnToHand';
+ModifierSurviveDamageWatchReturnToHand.prototype.hasTriggered = false;
 
 module.exports = ModifierSurviveDamageWatchReturnToHand;

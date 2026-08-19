@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,17 +16,9 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchRespawnClones extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchRespawnClones';
-    this.type = 'ModifierStartTurnWatchRespawnClones';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the start of your turn, resummon fallen Legion in random corners.';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierStartTurnWatchRespawnClones';
+  static modifierName = 'Turn Watch';
+  static description = 'At the start of your turn, resummon fallen Legion in random corners.';
 
   static createContextObject(spawnSilently, options) {
     if (spawnSilently == null) { spawnSilently = false; }
@@ -99,6 +90,9 @@ class ModifierStartTurnWatchRespawnClones extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierStartTurnWatchRespawnClones.initClass(); // now that the card has been played, remove it from the array
+ModifierStartTurnWatchRespawnClones.prototype.type = 'ModifierStartTurnWatchRespawnClones';
+ModifierStartTurnWatchRespawnClones.prototype.cardDataOrIndexToSpawn = null;
+ModifierStartTurnWatchRespawnClones.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+// now that the card has been played, remove it from the array
 
 module.exports = ModifierStartTurnWatchRespawnClones;

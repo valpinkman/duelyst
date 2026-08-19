@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchHealMyGeneral extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchHealMyGeneral';
-    this.type = 'ModifierDealDamageWatchHealMyGeneral';
-
-    this.modifierName = 'Deal Damage Watch';
-    this.description = 'Whenever this minion deals damage, restore %X Health to your General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierDealDamageWatchHealMyGeneral';
+  static modifierName = 'Deal Damage Watch';
+  static description = 'Whenever this minion deals damage, restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -43,6 +36,7 @@ class ModifierDealDamageWatchHealMyGeneral extends ModifierDealDamageWatch {
     return this.getGameSession().executeAction(healAction);
   }
 }
-ModifierDealDamageWatchHealMyGeneral.initClass();
+ModifierDealDamageWatchHealMyGeneral.prototype.type = 'ModifierDealDamageWatchHealMyGeneral';
+ModifierDealDamageWatchHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierDealDamageWatchHealMyGeneral;

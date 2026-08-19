@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,16 +11,7 @@ const Action = require('./action');
 const _ = require('underscore');
 
 class PutCardInHandAction extends Action {
-  static initClass() {
-    this.type = 'PutCardInHandAction';
-    this.prototype.cardDataOrIndex = null; // card data or index for new card
-    this.prototype.indexOfCardInHand = null; // optional index in hand to place card, if none provided will use first empty slot
-    this.prototype.burnCard = false;
-
-    // target should always be the card we've put in hand, so we'll alias getCard
-    this.prototype.getTarget = this.prototype.getCard;
-    // if true, card will always be burned even if there is room left in hand
-  }
+  static type = 'PutCardInHandAction';
 
   constructor(gameSession, ownerId, cardDataOrIndex, indexOfCardInHand = null) {
     super(gameSession);
@@ -142,6 +132,9 @@ class PutCardInHandAction extends Action {
     return actionData;
   }
 }
-PutCardInHandAction.initClass();
+PutCardInHandAction.prototype.cardDataOrIndex = null;
+PutCardInHandAction.prototype.indexOfCardInHand = null;
+PutCardInHandAction.prototype.burnCard = false;
+PutCardInHandAction.prototype.getTarget = PutCardInHandAction.prototype.getCard;
 
 module.exports = PutCardInHandAction;

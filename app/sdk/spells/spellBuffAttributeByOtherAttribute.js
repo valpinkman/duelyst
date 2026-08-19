@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,17 +12,6 @@ const Modifier = require('app/sdk/modifiers/modifier');
 const _ = require('underscore');
 
 class SpellBuffAttributeByOtherAttribute extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.attributeTarget = null; // change this attribute
-    this.prototype.attributeSource = null; // change by the value of this attribute
-    this.prototype.appliedName = null;
-    this.prototype.appliedDescription = null;
-    this.prototype.durationEndTurn = null;
-    this.prototype.durationStartTurn = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -50,6 +38,13 @@ class SpellBuffAttributeByOtherAttribute extends Spell {
     return this.getGameSession().applyModifierContextObject(contextObject, entity);
   }
 }
-SpellBuffAttributeByOtherAttribute.initClass();
+SpellBuffAttributeByOtherAttribute.prototype.targetType = CardType.Unit;
+SpellBuffAttributeByOtherAttribute.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellBuffAttributeByOtherAttribute.prototype.attributeTarget = null;
+SpellBuffAttributeByOtherAttribute.prototype.attributeSource = null;
+SpellBuffAttributeByOtherAttribute.prototype.appliedName = null;
+SpellBuffAttributeByOtherAttribute.prototype.appliedDescription = null;
+SpellBuffAttributeByOtherAttribute.prototype.durationEndTurn = null;
+SpellBuffAttributeByOtherAttribute.prototype.durationStartTurn = null;
 
 module.exports = SpellBuffAttributeByOtherAttribute;

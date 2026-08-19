@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -22,13 +21,7 @@ const QuestBeginnerWinTwoPracticeGames = require('app/sdk/quests/questBeginnerWi
 const QuestBeginnerWinOneSeasonGame = require('app/sdk/quests/questBeginnerWinOneSeasonGame');
 
 class NewPlayerProgression {
-  static initClass() {
-    this.featureToCoreStageMapping = {};
-
-    this.FinalStage = NewPlayerProgressionStageEnum.FirstFactionLevelingDone;
-    this.DailyQuestsStartToGenerateStage = NewPlayerProgressionStageEnum.FirstGameDone;
-    this.FirstWinOfTheDayAvailableStage = NewPlayerProgressionStageEnum.FirstGameDone;
-  }
+  static featureToCoreStageMapping = {};
 
   /**
    * Check if a feature is available at a certain stage in new player guided progression.
@@ -67,7 +60,9 @@ class NewPlayerProgression {
     }
   }
 }
-NewPlayerProgression.initClass();
+NewPlayerProgression.FinalStage = NewPlayerProgressionStageEnum.FirstFactionLevelingDone;
+NewPlayerProgression.DailyQuestsStartToGenerateStage = NewPlayerProgressionStageEnum.FirstGameDone;
+NewPlayerProgression.FirstWinOfTheDayAvailableStage = NewPlayerProgressionStageEnum.FirstGameDone;
 
 // feature to stage mapping
 const fMap = NewPlayerProgression.featureToCoreStageMapping;

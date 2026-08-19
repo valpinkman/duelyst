@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,19 +13,15 @@ const ModifierImmuneToDamage = require('./modifierImmuneToDamage');
 */
 
 class ModifierImmuneToDamageByGeneral extends ModifierImmuneToDamage {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToDamageByGeneral';
-    this.type = 'ModifierImmuneToDamageByGeneral';
-
-    this.modifierName = i18next.t('modifiers.immune_to_damage_by_general_name');
-    this.description = i18next.t('modifiers.immune_to_damage_by_general_def');
-  }
+  static type = 'ModifierImmuneToDamageByGeneral';
 
   getIsActionRelevant(a) {
     return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && (this.getCard() === a.getTarget()) && __guard__(a.getSource(), (x) => x.getIsGeneral());
   }
 }
-ModifierImmuneToDamageByGeneral.initClass();
+ModifierImmuneToDamageByGeneral.prototype.type = 'ModifierImmuneToDamageByGeneral';
+ModifierImmuneToDamageByGeneral.modifierName = i18next.t('modifiers.immune_to_damage_by_general_name');
+ModifierImmuneToDamageByGeneral.description = i18next.t('modifiers.immune_to_damage_by_general_def');
 
 module.exports = ModifierImmuneToDamageByGeneral;
 

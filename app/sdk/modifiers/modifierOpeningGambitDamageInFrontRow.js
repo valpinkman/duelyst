@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,17 +9,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDamageInFrontRow extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDamageInFrontRow';
-    this.type = 'ModifierOpeningGambitDamageInFrontRow';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Deal %X damage to all enemies in front of this';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitDamageInFrontRow';
+  static modifierName = 'Opening Gambit';
+  static description = 'Deal %X damage to all enemies in front of this';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -59,6 +50,8 @@ class ModifierOpeningGambitDamageInFrontRow extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDamageInFrontRow.initClass();
+ModifierOpeningGambitDamageInFrontRow.prototype.type = 'ModifierOpeningGambitDamageInFrontRow';
+ModifierOpeningGambitDamageInFrontRow.prototype.damageAmount = 0;
+ModifierOpeningGambitDamageInFrontRow.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitDamageInFrontRow;

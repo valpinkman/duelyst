@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,14 +13,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitSpawnEnemyMinionNearOpponent extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSpawnEnemyMinionNearOpponent';
-    this.type = 'ModifierOpeningGambitSpawnEnemyMinionNearOpponent';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpeningGambitSpawnEnemyMinionNearOpponent';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -57,6 +49,8 @@ class ModifierOpeningGambitSpawnEnemyMinionNearOpponent extends ModifierOpeningG
     }
   }
 }
-ModifierOpeningGambitSpawnEnemyMinionNearOpponent.initClass();
+ModifierOpeningGambitSpawnEnemyMinionNearOpponent.prototype.type = 'ModifierOpeningGambitSpawnEnemyMinionNearOpponent';
+ModifierOpeningGambitSpawnEnemyMinionNearOpponent.prototype.cardDataOrIndexToSpawn = null;
+ModifierOpeningGambitSpawnEnemyMinionNearOpponent.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOpeningGambitSpawnEnemyMinionNearOpponent;

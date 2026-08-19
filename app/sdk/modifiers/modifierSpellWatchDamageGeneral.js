@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,17 +10,9 @@ const ModifierSpellWatch = require('./modifierSpellWatch');
 const Modifier = require('./modifier');
 
 class ModifierSpellWatchDamageGeneral extends ModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchDamageGeneral';
-    this.type = 'ModifierSpellWatchDamageGeneral';
-
-    this.modifierName = 'Spell Watch (Damage General)';
-    this.description = 'Whenever you cast a spell, deal %X damage to the enemy General';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierSpellWatchDamageGeneral';
+  static modifierName = 'Spell Watch (Damage General)';
+  static description = 'Whenever you cast a spell, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -49,6 +40,8 @@ class ModifierSpellWatchDamageGeneral extends ModifierSpellWatch {
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierSpellWatchDamageGeneral.initClass();
+ModifierSpellWatchDamageGeneral.prototype.type = 'ModifierSpellWatchDamageGeneral';
+ModifierSpellWatchDamageGeneral.prototype.damageAmount = 0;
+ModifierSpellWatchDamageGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierSpellWatchDamageGeneral;

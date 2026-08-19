@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,18 +11,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchHealNearby extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchHealNearby';
-    this.type = 'ModifierEndTurnWatchHealNearby';
-
-    this.modifierName = 'End Watch';
-    this.description = 'At the end of your turn, restore %X Health to all nearby friendly minions';
-
-    this.prototype.healAmount = 0;
-    this.prototype.healGeneral = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierEndTurnWatchHealNearby';
+  static modifierName = 'End Watch';
+  static description = 'At the end of your turn, restore %X Health to all nearby friendly minions';
 
   static createContextObject(healAmount, healGeneral, options) {
     if (healAmount == null) { healAmount = 1; }
@@ -61,6 +51,9 @@ class ModifierEndTurnWatchHealNearby extends ModifierEndTurnWatch {
     })();
   }
 }
-ModifierEndTurnWatchHealNearby.initClass();
+ModifierEndTurnWatchHealNearby.prototype.type = 'ModifierEndTurnWatchHealNearby';
+ModifierEndTurnWatchHealNearby.prototype.healAmount = 0;
+ModifierEndTurnWatchHealNearby.prototype.healGeneral = false;
+ModifierEndTurnWatchHealNearby.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierEndTurnWatchHealNearby;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -13,17 +12,9 @@ const _ = require('underscore');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class OpeningGambitTeleportAllNearby extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'OpeningGambitTeleportAllNearby';
-    this.type = 'OpeningGambitTeleportAllNearby';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = ' Push ALL nearby minions and Generals to random spaces';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'OpeningGambitTeleportAllNearby';
+  static modifierName = 'Opening Gambit';
+  static description = ' Push ALL nearby minions and Generals to random spaces';
 
   onOpeningGambit() {
     const entities = this.getGameSession().getBoard().getEntitiesAroundEntity(this.getCard(), CardType.Unit, 1);
@@ -40,6 +31,8 @@ class OpeningGambitTeleportAllNearby extends ModifierOpeningGambit {
     })();
   }
 }
-OpeningGambitTeleportAllNearby.initClass();
+OpeningGambitTeleportAllNearby.prototype.type = 'OpeningGambitTeleportAllNearby';
+OpeningGambitTeleportAllNearby.prototype.damageAmount = 0;
+OpeningGambitTeleportAllNearby.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = OpeningGambitTeleportAllNearby;

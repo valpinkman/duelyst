@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,15 +17,6 @@ const GameFormat = require('app/sdk/gameFormat');
 const _ = require('underscore');
 
 class SpellChrysalisBloom extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
-    this.prototype.numEggs = 4;
-
-    this.prototype.timesApplied = 0; // we'll increment this each time we apply an egg to board, so that we can apply different egg types
-
-    this.prototype.spellFilterType = SpellFilterType.None;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     // get 1 common, 1 rare, 1 epic, and 1 legendary Magmar unit to put in the eggs
     let cardCache = [];
@@ -95,6 +85,9 @@ class SpellChrysalisBloom extends SpellSpawnEntity {
     return true;
   }
 }
-SpellChrysalisBloom.initClass();
+SpellChrysalisBloom.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Egg };
+SpellChrysalisBloom.prototype.numEggs = 4;
+SpellChrysalisBloom.prototype.timesApplied = 0;
+SpellChrysalisBloom.prototype.spellFilterType = SpellFilterType.None;
 
 module.exports = SpellChrysalisBloom;

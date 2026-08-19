@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,13 +12,7 @@ const i18next = require('i18next');
 const ModifierBackstabWatch = require('./modifierBackstabWatch');
 
 class ModifierBackstabWatchStealSpellFromDeck extends ModifierBackstabWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierBackstabWatchStealSpellFromDeck';
-    this.type = 'ModifierBackstabWatchStealSpellFromDeck';
-
-    this.modifierName = i18next.t('modifiers.backstab_watch_steal_spell_from_deck_name');
-    this.description = i18next.t('modifiers.backstab_watch_steal_spell_from_deck_def');
-  }
+  static type = 'ModifierBackstabWatchStealSpellFromDeck';
 
   static createContextObject(options) {
     if (options == null) { options = undefined; }
@@ -58,6 +51,8 @@ class ModifierBackstabWatchStealSpellFromDeck extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchStealSpellFromDeck.initClass();
+ModifierBackstabWatchStealSpellFromDeck.prototype.type = 'ModifierBackstabWatchStealSpellFromDeck';
+ModifierBackstabWatchStealSpellFromDeck.modifierName = i18next.t('modifiers.backstab_watch_steal_spell_from_deck_name');
+ModifierBackstabWatchStealSpellFromDeck.description = i18next.t('modifiers.backstab_watch_steal_spell_from_deck_def');
 
 module.exports = ModifierBackstabWatchStealSpellFromDeck;

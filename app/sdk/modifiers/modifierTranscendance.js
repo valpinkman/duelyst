@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -8,31 +7,22 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierTranscendance extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierTranscendance';
-    this.type = 'ModifierTranscendance';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.celerity_def');
-
-    this.modifierName = i18next.t('modifiers.celerity_name');
-    this.description = '';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.attributeBuffs = {
-      attacks: 1,
-      moves: 1,
-    };
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCelerity'];
-  }
+  static type = 'ModifierTranscendance';
+  static isKeyworded = true;
+  static description = '';
 }
-ModifierTranscendance.initClass();
+ModifierTranscendance.prototype.type = 'ModifierTranscendance';
+ModifierTranscendance.keywordDefinition = i18next.t('modifiers.celerity_def');
+ModifierTranscendance.modifierName = i18next.t('modifiers.celerity_name');
+ModifierTranscendance.prototype.activeInHand = false;
+ModifierTranscendance.prototype.activeInDeck = false;
+ModifierTranscendance.prototype.activeInSignatureCards = false;
+ModifierTranscendance.prototype.activeOnBoard = true;
+ModifierTranscendance.prototype.maxStacks = 1;
+ModifierTranscendance.prototype.attributeBuffs = {
+  attacks: 1,
+  moves: 1,
+};
+ModifierTranscendance.prototype.fxResource = ['FX.Modifiers.ModifierCelerity'];
 
 module.exports = ModifierTranscendance;

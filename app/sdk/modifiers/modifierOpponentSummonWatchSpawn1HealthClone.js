@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,17 +19,9 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 const Modifier = require('./modifier');
 
 class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchSpawn1HealthClone';
-    this.type = 'ModifierOpponentSummonWatchSpawn1HealthClone';
-
-    this.modifierName = 'Opponent Summon Watch';
-    this.description = 'Whenever an enemy summons a minion, summon a 1 health clone nearby your general';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpponentSummonWatchSpawn1HealthClone';
+  static modifierName = 'Opponent Summon Watch';
+  static description = 'Whenever an enemy summons a minion, summon a 1 health clone nearby your general';
 
   static createContextObject(spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -109,6 +100,9 @@ class ModifierOpponentSummonWatchSpawn1HealthClone extends ModifierOpponentSummo
     return true;
   }
 }
-ModifierOpponentSummonWatchSpawn1HealthClone.initClass(); // default when no card restrictions are needed
+ModifierOpponentSummonWatchSpawn1HealthClone.prototype.type = 'ModifierOpponentSummonWatchSpawn1HealthClone';
+ModifierOpponentSummonWatchSpawn1HealthClone.prototype.cardDataOrIndexToSpawn = null;
+ModifierOpponentSummonWatchSpawn1HealthClone.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+// default when no card restrictions are needed
 
 module.exports = ModifierOpponentSummonWatchSpawn1HealthClone;

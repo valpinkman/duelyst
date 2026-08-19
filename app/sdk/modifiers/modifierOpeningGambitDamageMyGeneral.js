@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -11,17 +10,9 @@ const Modifier = require('./modifier');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDamageMyGeneral extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDamageMyGeneral';
-    this.type = 'ModifierOpeningGambitDamageMyGeneral';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Deal %X damage to your General';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericChainLightning'];
-  }
+  static type = 'ModifierOpeningGambitDamageMyGeneral';
+  static modifierName = 'Opening Gambit';
+  static description = 'Deal %X damage to your General';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -47,6 +38,8 @@ class ModifierOpeningGambitDamageMyGeneral extends ModifierOpeningGambit {
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierOpeningGambitDamageMyGeneral.initClass();
+ModifierOpeningGambitDamageMyGeneral.prototype.type = 'ModifierOpeningGambitDamageMyGeneral';
+ModifierOpeningGambitDamageMyGeneral.prototype.damageAmount = 0;
+ModifierOpeningGambitDamageMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericChainLightning'];
 
 module.exports = ModifierOpeningGambitDamageMyGeneral;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction');
@@ -12,23 +11,8 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierFirstBlood extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierFirstBlood';
-    this.type = 'ModifierFirstBlood';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.rush_def');
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.rush_name');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierFirstBlood'];
-  }
+  static type = 'ModifierFirstBlood';
+  static isKeyworded = true;
 
   onActivate() {
     super.onActivate();
@@ -65,7 +49,15 @@ class ModifierFirstBlood extends Modifier {
     return this.deactivateRushIfNeeded();
   }
 }
-ModifierFirstBlood.initClass();
+ModifierFirstBlood.prototype.type = 'ModifierFirstBlood';
+ModifierFirstBlood.keywordDefinition = i18next.t('modifiers.rush_def');
+ModifierFirstBlood.prototype.maxStacks = 1;
+ModifierFirstBlood.modifierName = i18next.t('modifiers.rush_name');
+ModifierFirstBlood.prototype.activeInHand = false;
+ModifierFirstBlood.prototype.activeInDeck = false;
+ModifierFirstBlood.prototype.activeInSignatureCards = false;
+ModifierFirstBlood.prototype.activeOnBoard = true;
+ModifierFirstBlood.prototype.fxResource = ['FX.Modifiers.ModifierFirstBlood'];
 
 module.exports = ModifierFirstBlood;
 

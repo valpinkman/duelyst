@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -23,28 +22,7 @@ const ChallengeCategory = require('app/sdk/challenges/challengeCategory');
 const i18next = require('i18next');
 
 class LessonTwo extends Challenge {
-  static initClass() {
-    this.type = 'LessonTwo';
-    this.prototype.type = 'LessonTwo';
-    this.prototype.categoryType = ChallengeCategory.tutorial.type;
-
-    this.prototype.name = i18next.t('tutorial.lesson_2_title');
-    this.prototype.description = i18next.t('tutorial.lesson_2_description');
-    this.prototype.difficulty = i18next.t('tutorial.lesson_2_difficulty');
-    this.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_2_start_message');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('tutorial.lesson_2_failure_message'),
-    ];
-
-    this.prototype.iconUrl = RSX.speech_portrait_rook.img;
-    this.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-
-    this.prototype.userIsPlayer1 = false;
-    this.prototype.startingHandSizePlayer = 2;
-    this.prototype.battleMapTemplateIndex = 5;
-    this.prototype.customBoard = false;
-    this.prototype.usesResetTurn = false;
-  }
+  static type = 'LessonTwo';
 
   constructor() {
     super();
@@ -297,6 +275,21 @@ class LessonTwo extends Challenge {
     return this._opponentAgent.addActionForTurn(3, AgentActions.createAgentActionPlayCardFindPosition(1, () => [GameSession.getInstance().getGeneralForPlayer2().getPosition()]));
   }
 }
-LessonTwo.initClass();
+LessonTwo.prototype.type = 'LessonTwo';
+LessonTwo.prototype.categoryType = ChallengeCategory.tutorial.type;
+LessonTwo.prototype.name = i18next.t('tutorial.lesson_2_title');
+LessonTwo.prototype.description = i18next.t('tutorial.lesson_2_description');
+LessonTwo.prototype.difficulty = i18next.t('tutorial.lesson_2_difficulty');
+LessonTwo.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_2_start_message');
+LessonTwo.prototype.otkChallengeFailureMessages = [
+  i18next.t('tutorial.lesson_2_failure_message'),
+];
+LessonTwo.prototype.iconUrl = RSX.speech_portrait_rook.img;
+LessonTwo.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
+LessonTwo.prototype.userIsPlayer1 = false;
+LessonTwo.prototype.startingHandSizePlayer = 2;
+LessonTwo.prototype.battleMapTemplateIndex = 5;
+LessonTwo.prototype.customBoard = false;
+LessonTwo.prototype.usesResetTurn = false;
 
 module.exports = LessonTwo;

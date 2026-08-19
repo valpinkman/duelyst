@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,28 +13,9 @@ const ModifierSentinelHidden = require('./modifierSentinelHidden');
 const ModifierOverwatch = require('./modifierOverwatch');
 
 class ModifierSentinel extends ModifierOverwatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinel';
-    this.type = 'ModifierSentinel';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.sentinel_def');
-
-    this.modifierName = i18next.t('modifiers.sentinel_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-    this.prototype.isRemovable = false;
-    this.prototype.transformCardData = null;
-    this.prototype.maxStacks = 1;
-
-    this.prototype.hideAsModifierType = ModifierSentinelHidden.type;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSentinel'];
-  }
+  static type = 'ModifierSentinel';
+  static isKeyworded = true;
+  static description = null;
 
   static createContextObject(description, transformCardData, options) {
     const contextObject = super.createContextObject(description, options);
@@ -75,6 +55,17 @@ class ModifierSentinel extends ModifierOverwatch {
     return this.transformCardData;
   }
 }
-ModifierSentinel.initClass();
+ModifierSentinel.prototype.type = 'ModifierSentinel';
+ModifierSentinel.keywordDefinition = i18next.t('modifiers.sentinel_def');
+ModifierSentinel.modifierName = i18next.t('modifiers.sentinel_name');
+ModifierSentinel.prototype.activeInHand = false;
+ModifierSentinel.prototype.activeInDeck = false;
+ModifierSentinel.prototype.activeInSignatureCards = false;
+ModifierSentinel.prototype.activeOnBoard = true;
+ModifierSentinel.prototype.isRemovable = false;
+ModifierSentinel.prototype.transformCardData = null;
+ModifierSentinel.prototype.maxStacks = 1;
+ModifierSentinel.prototype.hideAsModifierType = ModifierSentinelHidden.type;
+ModifierSentinel.prototype.fxResource = ['FX.Modifiers.ModifierSentinel'];
 
 module.exports = ModifierSentinel;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const StartTurnAction = require('app/sdk/actions/startTurnAction');
@@ -12,12 +11,7 @@ const ModifierCounterShadowCreepDescription = require('./modifierCounterShadowCr
   Counts total number of shadow creep tiles owned by this player
 */
 class ModifierCounterShadowCreep extends ModifierCounter {
-  static initClass() {
-    this.prototype.type = 'ModifierCounterShadowCreep';
-    this.type = 'ModifierCounterShadowCreep';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierCounterShadowCreep';
 
   static createContextObject(modTypeToTrack) {
     const contextObject = super.createContextObject();
@@ -37,6 +31,7 @@ class ModifierCounterShadowCreep extends ModifierCounter {
     return modifierStackingShadows.getNumStacksForPlayer(this.getGameSession().getBoard(), this.getCard().getOwner());
   }
 }
-ModifierCounterShadowCreep.initClass();
+ModifierCounterShadowCreep.prototype.type = 'ModifierCounterShadowCreep';
+ModifierCounterShadowCreep.prototype.maxStacks = 1;
 
 module.exports = ModifierCounterShadowCreep;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
@@ -9,18 +8,7 @@ const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 const ModifierDoomed2 = require('./modifierDoomed2');
 
 class ModifierDoomed3 extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDoomed3';
-    this.type = 'ModifierDoomed3';
-
-    this.modifierName = i18next.t('modifiers.doomed_name');
-    this.description = i18next.t('modifiers.doomed_3_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDoomed3'];
-
-    this.prototype.isRemovable = false;
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierDoomed3';
 
   onTurnWatch() {
     super.onTurnWatch();
@@ -30,6 +18,11 @@ class ModifierDoomed3 extends ModifierEndTurnWatch {
     return this.getGameSession().removeModifier(this);
   }
 }
-ModifierDoomed3.initClass();
+ModifierDoomed3.prototype.type = 'ModifierDoomed3';
+ModifierDoomed3.modifierName = i18next.t('modifiers.doomed_name');
+ModifierDoomed3.description = i18next.t('modifiers.doomed_3_def');
+ModifierDoomed3.prototype.fxResource = ['FX.Modifiers.ModifierDoomed3'];
+ModifierDoomed3.prototype.isRemovable = false;
+ModifierDoomed3.prototype.maxStacks = 1;
 
 module.exports = ModifierDoomed3;

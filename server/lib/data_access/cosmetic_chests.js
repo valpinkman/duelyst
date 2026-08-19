@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -31,11 +30,9 @@ const UtilsGameSession = require('../../../app/common/utils/utils_game_session')
 const InventoryModule = require('./inventory');
 
 class CosmeticChestsModule {
-  static initClass() {
-    this.CHEST_GAME_COUNT_WINDOW = 10;
-    this.BOSS_CHEST_EXPIRATION_HOURS = 48;
-    this.CHEST_EXPIRATION_BUFFER_MINUTES = 15;
-  }
+  static CHEST_GAME_COUNT_WINDOW = 10;
+  static BOSS_CHEST_EXPIRATION_HOURS = 48;
+  static CHEST_EXPIRATION_BUFFER_MINUTES = 15;
 
   /**
    * Give a user 1 or more cosmetic chests.
@@ -992,7 +989,6 @@ class CosmeticChestsModule {
     return null;
   }
 }
-CosmeticChestsModule.initClass();
 
 module.exports = CosmeticChestsModule;
 

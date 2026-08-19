@@ -4,7 +4,6 @@
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,8 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierFriendlyDeathWatch = require('./modifierFriendlyDeathWatch');
 
 class ModifierFriendlyDeathWatchForBattlePetDrawCard extends ModifierFriendlyDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierFriendlyDeathWatchForBattlePetDrawCard';
-    this.type = 'ModifierFriendlyDeathWatchForBattlePetDrawCard';
-
-    this.description = 'Whenever a friendly Battle Pet dies, draw %X';
-  }
+  static type = 'ModifierFriendlyDeathWatchForBattlePetDrawCard';
+  static description = 'Whenever a friendly Battle Pet dies, draw %X';
 
   static createContextObject(numCards) {
     if (numCards == null) { numCards = 1; }
@@ -55,7 +50,7 @@ class ModifierFriendlyDeathWatchForBattlePetDrawCard extends ModifierFriendlyDea
     }
   }
 }
-ModifierFriendlyDeathWatchForBattlePetDrawCard.initClass();
+ModifierFriendlyDeathWatchForBattlePetDrawCard.prototype.type = 'ModifierFriendlyDeathWatchForBattlePetDrawCard';
 
 module.exports = ModifierFriendlyDeathWatchForBattlePetDrawCard;
 

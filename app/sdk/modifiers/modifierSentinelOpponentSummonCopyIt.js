@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,7 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierSentinelOpponentSummon = require('./modifierSentinelOpponentSummon');
 
 class ModifierSentinelOpponentSummonCopyIt extends ModifierSentinelOpponentSummon {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentSummonCopyIt';
-    this.type = 'ModifierSentinelOpponentSummonCopyIt';
-  }
+  static type = 'ModifierSentinelOpponentSummonCopyIt';
 
   onOverwatch(action) {
     super.onOverwatch(action); // transform unit
@@ -28,6 +24,6 @@ class ModifierSentinelOpponentSummonCopyIt extends ModifierSentinelOpponentSummo
     }
   }
 }
-ModifierSentinelOpponentSummonCopyIt.initClass();
+ModifierSentinelOpponentSummonCopyIt.prototype.type = 'ModifierSentinelOpponentSummonCopyIt';
 
 module.exports = ModifierSentinelOpponentSummonCopyIt;

@@ -1,20 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifier = require('./playerModifier');
 const AttackAction = require('app/sdk/actions/attackAction');
 
 class PlayerModifierFriendlyAttackWatch extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierFriendlyAttackWatch';
-    this.type = 'PlayerModifierFriendlyAttackWatch';
-
-    this.modifierName = 'PlayerModifierFriendlyAttackWatch';
-    this.description = 'Whenever you attack with a friendly entity...';
-  }
+  static type = 'PlayerModifierFriendlyAttackWatch';
+  static modifierName = 'PlayerModifierFriendlyAttackWatch';
+  static description = 'Whenever you attack with a friendly entity...';
 
   onAction(event) {
     super.onAction(event);
@@ -30,7 +25,7 @@ class PlayerModifierFriendlyAttackWatch extends PlayerModifier {
 
   onFriendlyAttackWatch(action) {}
 }
-PlayerModifierFriendlyAttackWatch.initClass();
+PlayerModifierFriendlyAttackWatch.prototype.type = 'PlayerModifierFriendlyAttackWatch';
 // override me in sub classes to implement special behavior
 
 module.exports = PlayerModifierFriendlyAttackWatch;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,18 +11,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 
 class ModifierMyGeneralDamagedWatchDamageNearby extends ModifierMyGeneralDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralDamagedWatchDamageNearby';
-    this.type = 'ModifierMyGeneralDamagedWatchDamageNearby';
-
-    this.modifierName = 'My General Damage Watch Damage Nearby';
-    this.description = 'Whenever your General takes damage, deal %X damage to %Y';
-
-    this.prototype.damageAmount = 0;
-    this.prototype.includeAllies = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
-  }
+  static type = 'ModifierMyGeneralDamagedWatchDamageNearby';
+  static modifierName = 'My General Damage Watch Damage Nearby';
+  static description = 'Whenever your General takes damage, deal %X damage to %Y';
 
   static createContextObject(damageAmount, includeAllies, options) {
     if (includeAllies == null) { includeAllies = false; }
@@ -77,6 +67,9 @@ class ModifierMyGeneralDamagedWatchDamageNearby extends ModifierMyGeneralDamaged
     }
   }
 }
-ModifierMyGeneralDamagedWatchDamageNearby.initClass();
+ModifierMyGeneralDamagedWatchDamageNearby.prototype.type = 'ModifierMyGeneralDamagedWatchDamageNearby';
+ModifierMyGeneralDamagedWatchDamageNearby.prototype.damageAmount = 0;
+ModifierMyGeneralDamagedWatchDamageNearby.prototype.includeAllies = false;
+ModifierMyGeneralDamagedWatchDamageNearby.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
 
 module.exports = ModifierMyGeneralDamagedWatchDamageNearby;

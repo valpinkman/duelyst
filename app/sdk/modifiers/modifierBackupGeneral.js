@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,12 +16,8 @@ const ModifierQuestBuffNeutral = require('./modifierQuestBuffNeutral');
 const ModifierQuestBuffVanar = require('./modifierQuestBuffVanar');
 
 class ModifierBackupGeneral extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBackupGeneral';
-    this.type = 'ModifierBackupGeneral';
-
-    this.description = '';
-  }
+  static type = 'ModifierBackupGeneral';
+  static description = '';
 
   onEvent(event) {
     super.onEvent(event);
@@ -86,6 +81,6 @@ class ModifierBackupGeneral extends Modifier {
     }
   }
 }
-ModifierBackupGeneral.initClass();
+ModifierBackupGeneral.prototype.type = 'ModifierBackupGeneral';
 
 module.exports = ModifierBackupGeneral;

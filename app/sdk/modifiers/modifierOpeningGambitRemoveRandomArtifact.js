@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RemoveRandomArtifactAction = require('app/sdk/actions/removeRandomArtifactAction');
@@ -9,13 +8,9 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitRemoveRandomArtifact extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitRemoveRandomArtifact';
-    this.type = 'ModifierOpeningGambitRemoveRandomArtifact';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Destroy a random enemy artifact';
-  }
+  static type = 'ModifierOpeningGambitRemoveRandomArtifact';
+  static modifierName = 'Opening Gambit';
+  static description = 'Destroy a random enemy artifact';
 
   onOpeningGambit() {
     const general = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
@@ -29,6 +24,6 @@ class ModifierOpeningGambitRemoveRandomArtifact extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitRemoveRandomArtifact.initClass();
+ModifierOpeningGambitRemoveRandomArtifact.prototype.type = 'ModifierOpeningGambitRemoveRandomArtifact';
 
 module.exports = ModifierOpeningGambitRemoveRandomArtifact;

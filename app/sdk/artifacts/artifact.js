@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,16 +15,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const _ = require('underscore');
 
 class Artifact extends Card {
-  static initClass() {
-    this.prototype.type = CardType.Artifact;
-    this.type = CardType.Artifact;
-    this.prototype.name = 'Artifact';
-
-    this.prototype.targetModifiersContextObjects = null; // just like entity modifier options, but used to create modifiers that are added to target of artifact
-    this.prototype.durability = CONFIG.MAX_ARTIFACT_DURABILITY; // modifiers durability
-    this.prototype.canBeAppliedAnywhere = true;
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -85,7 +74,12 @@ class Artifact extends Card {
     }
   }
 }
-Artifact.initClass();
+Artifact.prototype.type = CardType.Artifact;
+Artifact.type = CardType.Artifact;
+Artifact.prototype.name = 'Artifact';
+Artifact.prototype.targetModifiersContextObjects = null;
+Artifact.prototype.durability = CONFIG.MAX_ARTIFACT_DURABILITY;
+Artifact.prototype.canBeAppliedAnywhere = true;
 
 // endregion ### APPLY ###
 

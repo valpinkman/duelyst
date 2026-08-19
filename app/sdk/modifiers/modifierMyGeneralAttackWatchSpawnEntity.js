@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
@@ -12,17 +11,9 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const ModifierMyGeneralAttackWatch = require('./modifierMyGeneralAttackWatch');
 
 class ModifierMyGeneralAttackWatchSpawnEntity extends ModifierMyGeneralAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralAttackWatchSpawnEntity';
-    this.type = 'ModifierMyGeneralAttackWatchSpawnEntity';
-
-    this.modifierName = 'ModifierMyGeneralAttackWatchSpawnEntity';
-    this.description = 'Whenever a my General attacks, spawn an entity';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnCount = 0;
-    this.prototype.spawnPattern = null;
-  }
+  static type = 'ModifierMyGeneralAttackWatchSpawnEntity';
+  static modifierName = 'ModifierMyGeneralAttackWatchSpawnEntity';
+  static description = 'Whenever a my General attacks, spawn an entity';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, spawnPattern, options) {
     const contextObject = super.createContextObject(options);
@@ -55,6 +46,9 @@ class ModifierMyGeneralAttackWatchSpawnEntity extends ModifierMyGeneralAttackWat
     }
   }
 }
-ModifierMyGeneralAttackWatchSpawnEntity.initClass();
+ModifierMyGeneralAttackWatchSpawnEntity.prototype.type = 'ModifierMyGeneralAttackWatchSpawnEntity';
+ModifierMyGeneralAttackWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierMyGeneralAttackWatchSpawnEntity.prototype.spawnCount = 0;
+ModifierMyGeneralAttackWatchSpawnEntity.prototype.spawnPattern = null;
 
 module.exports = ModifierMyGeneralAttackWatchSpawnEntity;

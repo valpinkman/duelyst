@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,13 +11,9 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class WorldExplorerAchievement extends Achievement {
-  static initClass() {
-    this.id = 'worldExplorer';
-    this.title = i18next.t('achievements.world_explorer_title');
-    this.description = i18next.t('achievements.world_explorer_desc');
-    this.progressRequired = 1;
-    this.rewards = { factionLegendaryCard: 1 };
-  }
+  static id = 'worldExplorer';
+  static progressRequired = 1;
+  static rewards = { factionLegendaryCard: 1 };
 
   // returns progress made by reaching a state of faction progression
   static progressForFactionProgression(factionProgressionData) {
@@ -39,7 +34,8 @@ class WorldExplorerAchievement extends Achievement {
     return 1;
   }
 }
-WorldExplorerAchievement.initClass();
+WorldExplorerAchievement.title = i18next.t('achievements.world_explorer_title');
+WorldExplorerAchievement.description = i18next.t('achievements.world_explorer_desc');
 
 module.exports = WorldExplorerAchievement;
 

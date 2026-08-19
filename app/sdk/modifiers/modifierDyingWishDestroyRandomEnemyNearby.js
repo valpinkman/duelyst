@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,10 +9,7 @@ const KillAction = require('app/sdk/actions/killAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDestroyRandomEnemyNearby extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDestroyRandomEnemyNearby';
-    this.type = 'ModifierDyingWishDestroyRandomEnemyNearby';
-  }
+  static type = 'ModifierDyingWishDestroyRandomEnemyNearby';
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -35,6 +31,6 @@ class ModifierDyingWishDestroyRandomEnemyNearby extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDestroyRandomEnemyNearby.initClass();
+ModifierDyingWishDestroyRandomEnemyNearby.prototype.type = 'ModifierDyingWishDestroyRandomEnemyNearby';
 
 module.exports = ModifierDyingWishDestroyRandomEnemyNearby;

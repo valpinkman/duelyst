@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,7 @@ const i18next = require('i18next');
 const ModifierSentinel = require('./modifierSentinel');
 
 class ModifierSentinelOpponentSpellCastRefundManaDrawCard extends ModifierSentinel {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentSpellCastRefundManaDrawCard';
-    this.type = 'ModifierSentinelOpponentSpellCastRefundManaDrawCard';
-
-    this.description = i18next.t('modifiers.sentinel_spell_cast');
-  }
+  static type = 'ModifierSentinelOpponentSpellCastRefundManaDrawCard';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject != null) {
@@ -55,7 +49,8 @@ class ModifierSentinelOpponentSpellCastRefundManaDrawCard extends ModifierSentin
     return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
   }
 }
-ModifierSentinelOpponentSpellCastRefundManaDrawCard.initClass();
+ModifierSentinelOpponentSpellCastRefundManaDrawCard.prototype.type = 'ModifierSentinelOpponentSpellCastRefundManaDrawCard';
+ModifierSentinelOpponentSpellCastRefundManaDrawCard.description = i18next.t('modifiers.sentinel_spell_cast');
 
 module.exports = ModifierSentinelOpponentSpellCastRefundManaDrawCard;
 

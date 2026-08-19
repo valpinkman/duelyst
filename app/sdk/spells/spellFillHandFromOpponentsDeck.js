@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,10 +16,6 @@ const RemoveCardFromDeckAction = require('app/sdk/actions/removeCardFromDeckActi
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 
 class SpellFillHandFromOpponentsDeck extends Spell {
-  static initClass() {
-    this.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
@@ -70,6 +65,6 @@ class SpellFillHandFromOpponentsDeck extends Spell {
     }
   }
 }
-SpellFillHandFromOpponentsDeck.initClass();
+SpellFillHandFromOpponentsDeck.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
 
 module.exports = SpellFillHandFromOpponentsDeck;

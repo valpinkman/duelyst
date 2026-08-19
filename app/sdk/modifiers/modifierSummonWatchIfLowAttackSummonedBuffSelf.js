@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,17 +9,10 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 const Modifier = require('./modifier');
 
 class ModifierSummonWatchIfLowAttackSummonedBuffSelf extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchIfLowAttackSummonedBuffSelf';
-    this.type = 'ModifierSummonWatchIfLowAttackSummonedBuffSelf';
-
-    this.modifierName = 'Summon Watch';
-    this.description = 'Whenever you summon a minion with low attack, this minion gains a buff';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.maxAttackTrigger = 0;
-  }
+  static type = 'ModifierSummonWatchIfLowAttackSummonedBuffSelf';
+  static modifierName = 'Summon Watch';
+  static description = 'Whenever you summon a minion with low attack, this minion gains a buff';
+  static maxAttackTrigger = 0;
 
   static createContextObject(attackBuff, maxHPBuff, maxAttackTrigger, appliedModifierName = null, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -47,6 +39,7 @@ class ModifierSummonWatchIfLowAttackSummonedBuffSelf extends ModifierSummonWatch
     }
   }
 }
-ModifierSummonWatchIfLowAttackSummonedBuffSelf.initClass();
+ModifierSummonWatchIfLowAttackSummonedBuffSelf.prototype.type = 'ModifierSummonWatchIfLowAttackSummonedBuffSelf';
+ModifierSummonWatchIfLowAttackSummonedBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchIfLowAttackSummonedBuffSelf;

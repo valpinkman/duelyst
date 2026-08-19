@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,27 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/songhai-controlled-chaos/10473
 
 class BeginnerSonghaiChallenge3 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerSonghaiChallenge3';
-    this.prototype.type = 'BeginnerSonghaiChallenge3';
-    this.prototype.categoryType = ChallengeCategory.vault2.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_songhai_3_title');
-    this.prototype.description = i18next.t('challenges.beginner_songhai_3_description');
-    this.prototype.iconUrl = RSX.speech_portrait_songhai.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_songhai_3_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_songhai_3_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 2;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = CONFIG.MAX_MANA;
-    this.prototype.startingHandSizePlayer = 6;
-  }
+  static type = 'BeginnerSonghaiChallenge3';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -99,6 +78,19 @@ class BeginnerSonghaiChallenge3 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerSonghaiChallenge3.initClass();
+BeginnerSonghaiChallenge3.prototype.type = 'BeginnerSonghaiChallenge3';
+BeginnerSonghaiChallenge3.prototype.categoryType = ChallengeCategory.vault2.type;
+BeginnerSonghaiChallenge3.prototype.name = i18next.t('challenges.beginner_songhai_3_title');
+BeginnerSonghaiChallenge3.prototype.description = i18next.t('challenges.beginner_songhai_3_description');
+BeginnerSonghaiChallenge3.prototype.iconUrl = RSX.speech_portrait_songhai.img;
+BeginnerSonghaiChallenge3.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
+BeginnerSonghaiChallenge3.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_songhai_3_start');
+BeginnerSonghaiChallenge3.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_songhai_3_fail'),
+];
+BeginnerSonghaiChallenge3.prototype.battleMapTemplateIndex = 2;
+BeginnerSonghaiChallenge3.prototype.snapShotOnPlayerTurn = 0;
+BeginnerSonghaiChallenge3.prototype.startingManaPlayer = CONFIG.MAX_MANA;
+BeginnerSonghaiChallenge3.prototype.startingHandSizePlayer = 6;
 
 module.exports = BeginnerSonghaiChallenge3;

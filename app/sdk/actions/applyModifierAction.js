@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,17 +11,7 @@ const Action = require('./action');
 const _ = require('underscore');
 
 class ApplyModifierAction extends Action {
-  static initClass() {
-    this.type = 'ApplyModifierAction';
-
-    this.prototype.isDepthFirst = true; // modifier actions should execute immediately
-    this.prototype.modifierContextObject = null; // context object that will create the modifier
-    this.prototype.parentModifierIndex = null; // index of modifier that applied or removed this modifier
-    this.prototype.auraModifierId = null;
-
-    this.prototype.getCard = this.prototype.getTarget;
-    // identifier for which modifier in the parentModifier aura this is
-  }
+  static type = 'ApplyModifierAction';
 
   constructor(gameSession, modifierContextObject, card, parentModifier = null, auraModifierId = null) {
     super(gameSession);
@@ -132,7 +121,11 @@ class ApplyModifierAction extends Action {
     return actionData;
   }
 }
-ApplyModifierAction.initClass();
+ApplyModifierAction.prototype.isDepthFirst = true;
+ApplyModifierAction.prototype.modifierContextObject = null;
+ApplyModifierAction.prototype.parentModifierIndex = null;
+ApplyModifierAction.prototype.auraModifierId = null;
+ApplyModifierAction.prototype.getCard = ApplyModifierAction.prototype.getTarget;
 
 module.exports = ApplyModifierAction;
 

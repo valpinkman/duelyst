@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -9,17 +8,7 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierMyAttackMinionWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackMinionWatch';
-    this.type = 'ModifierMyAttackMinionWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyAttackWatch'];
-  }
+  static type = 'ModifierMyAttackMinionWatch';
 
   onAction(event) {
     super.onAction(event);
@@ -33,7 +22,12 @@ class ModifierMyAttackMinionWatch extends Modifier {
 
   onMyAttackMinionWatch(action) {}
 }
-ModifierMyAttackMinionWatch.initClass();
+ModifierMyAttackMinionWatch.prototype.type = 'ModifierMyAttackMinionWatch';
+ModifierMyAttackMinionWatch.prototype.activeInHand = false;
+ModifierMyAttackMinionWatch.prototype.activeInDeck = false;
+ModifierMyAttackMinionWatch.prototype.activeInSignatureCards = false;
+ModifierMyAttackMinionWatch.prototype.activeOnBoard = true;
+ModifierMyAttackMinionWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyAttackWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyAttackMinionWatch;

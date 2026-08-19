@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,13 +11,7 @@ const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction')
 const PlaySignatureCardAction = require('app/sdk/actions/playSignatureCardAction');
 
 class PlayerModifierManaModifierNextCard extends PlayerModifierManaModifier {
-  static initClass() {
-    // single use mana modifier that stays in play ONLY for NEXT card played
-    // ex usage - if the next card you play is a minion, reduce its cost by 1
-
-    this.prototype.type = 'PlayerModifierManaModifierNextCard';
-    this.type = 'PlayerModifierManaModifierNextCard';
-  }
+  static type = 'PlayerModifierManaModifierNextCard';
 
   onAction(event) {
     super.onAction(event);
@@ -50,7 +43,7 @@ class PlayerModifierManaModifierNextCard extends PlayerModifierManaModifier {
     }
   }
 }
-PlayerModifierManaModifierNextCard.initClass();
+PlayerModifierManaModifierNextCard.prototype.type = 'PlayerModifierManaModifierNextCard';
 
 module.exports = PlayerModifierManaModifierNextCard;
 

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,12 +11,7 @@ const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceActi
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitSniperZen extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSniperZen';
-    this.type = 'ModifierOpeningGambitSniperZen';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitSniperZen';
 
   onOpeningGambit() {
     const position = this.getCard().getPosition();
@@ -39,6 +33,7 @@ class ModifierOpeningGambitSniperZen extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitSniperZen.initClass();
+ModifierOpeningGambitSniperZen.prototype.type = 'ModifierOpeningGambitSniperZen';
+ModifierOpeningGambitSniperZen.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitSniperZen;

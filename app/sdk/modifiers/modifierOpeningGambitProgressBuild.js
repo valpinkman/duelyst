@@ -2,22 +2,15 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierOpeningGambit = require('app/sdk/modifiers/modifierOpeningGambit');
 const ModifierBuilding = require('app/sdk/modifiers/modifierBuilding');
 
 class ModifierOpeningGambitProgressBuild extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitProgressBuild';
-    this.type = 'ModifierOpeningGambitProgressBuild';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Progress your buildings by 1';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitProgressBuild';
+  static modifierName = 'Opening Gambit';
+  static description = 'Progress your buildings by 1';
 
   onOpeningGambit() {
     return Array.from(this.getGameSession().getBoard().getFriendlyEntitiesForEntity(this.getCard())).map((unit) =>
@@ -25,6 +18,7 @@ class ModifierOpeningGambitProgressBuild extends ModifierOpeningGambit {
         buildModifier.progressBuild()));
   }
 }
-ModifierOpeningGambitProgressBuild.initClass();
+ModifierOpeningGambitProgressBuild.prototype.type = 'ModifierOpeningGambitProgressBuild';
+ModifierOpeningGambitProgressBuild.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitProgressBuild;

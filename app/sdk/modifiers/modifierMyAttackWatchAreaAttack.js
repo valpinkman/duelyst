@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 
 class ModifierMyAttackWatchAreaAttack extends ModifierMyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackWatchAreaAttack';
-    this.type = 'ModifierMyAttackWatchAreaAttack';
-  }
+  static type = 'ModifierMyAttackWatchAreaAttack';
 
   onMyAttackWatch(action) {
     const entities = this.getGameSession().getBoard().getFriendlyEntitiesAroundEntity(action.getTarget(), CardType.Unit, 1);
@@ -39,6 +35,6 @@ class ModifierMyAttackWatchAreaAttack extends ModifierMyAttackWatch {
     }
   }
 }
-ModifierMyAttackWatchAreaAttack.initClass();
+ModifierMyAttackWatchAreaAttack.prototype.type = 'ModifierMyAttackWatchAreaAttack';
 
 module.exports = ModifierMyAttackWatchAreaAttack;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,15 +11,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDestroyNearbyMinions extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDestroyNearbyMinions';
-    this.type = 'ModifierOpeningGambitDestroyNearbyMinions';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Destroy %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericChainLightningRed'];
-  }
+  static type = 'ModifierOpeningGambitDestroyNearbyMinions';
+  static modifierName = 'Opening Gambit';
+  static description = 'Destroy %X';
 
   static createContextObject(includeAllies, options) {
     if (includeAllies == null) { includeAllies = true; }
@@ -67,6 +60,7 @@ class ModifierOpeningGambitDestroyNearbyMinions extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDestroyNearbyMinions.initClass();
+ModifierOpeningGambitDestroyNearbyMinions.prototype.type = 'ModifierOpeningGambitDestroyNearbyMinions';
+ModifierOpeningGambitDestroyNearbyMinions.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericChainLightningRed'];
 
 module.exports = ModifierOpeningGambitDestroyNearbyMinions;

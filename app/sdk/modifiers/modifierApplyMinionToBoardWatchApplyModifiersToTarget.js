@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,15 +11,7 @@ const Modifier = require('./modifier');
 const ModifierApplyMinionToBoardWatch = require('./modifierApplyMinionToBoardWatch');
 
 class ModifierApplyMinionToBoardWatchApplyModifiersToTarget extends ModifierApplyMinionToBoardWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierApplyMinionToBoardWatchApplyModifiersToTarget';
-    this.type = 'ModifierApplyMinionToBoardWatchApplyModifiersToTarget';
-
-    this.modifierName = i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_name');
-    this.description = i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierApplyMinionToBoardWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierApplyMinionToBoardWatchApplyModifiersToTarget';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -48,7 +39,10 @@ class ModifierApplyMinionToBoardWatchApplyModifiersToTarget extends ModifierAppl
     }
   }
 }
-ModifierApplyMinionToBoardWatchApplyModifiersToTarget.initClass();
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.prototype.type = 'ModifierApplyMinionToBoardWatchApplyModifiersToTarget';
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.modifierName = i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_name');
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.description = i18next.t('modifiers.apply_minion_to_board_watch_apply_modifiers_to_target_def');
+ModifierApplyMinionToBoardWatchApplyModifiersToTarget.prototype.fxResource = ['FX.Modifiers.ModifierApplyMinionToBoardWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierApplyMinionToBoardWatchApplyModifiersToTarget;
 

@@ -1,21 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierIntensify = require('./modifierIntensify');
 const Modifier = require('./modifier');
 
 class ModifierIntensifyBuffSelf extends ModifierIntensify {
-  static initClass() {
-    this.prototype.type = 'ModifierIntensifyBuffSelf';
-    this.type = 'ModifierIntensifyBuffSelf';
-
-    this.prototype.attackBuff = 0;
-    this.prototype.healthBuff = 0;
-    this.prototype.modifierName = null;
-  }
+  static type = 'ModifierIntensifyBuffSelf';
 
   static createContextObject(attackBuff, healthBuff, modifierName, options) {
     const contextObject = super.createContextObject(options);
@@ -34,6 +26,9 @@ class ModifierIntensifyBuffSelf extends ModifierIntensify {
     return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
   }
 }
-ModifierIntensifyBuffSelf.initClass();
+ModifierIntensifyBuffSelf.prototype.type = 'ModifierIntensifyBuffSelf';
+ModifierIntensifyBuffSelf.prototype.attackBuff = 0;
+ModifierIntensifyBuffSelf.prototype.healthBuff = 0;
+ModifierIntensifyBuffSelf.prototype.modifierName = null;
 
 module.exports = ModifierIntensifyBuffSelf;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,14 +14,6 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const _ = require('underscore');
 
 class SpellSpawnEntity extends SpellApplyEntityToBoard {
-  static initClass() {
-    this.prototype.targetType = CardType.Entity;
-    this.prototype.spellFilterType = SpellFilterType.None;
-    this.prototype.cardDataOrIndexToSpawn = null; // id of card to spawn
-    this.prototype.spawnSilently = false;
-    // whether entity should be spawned silently
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
     p.targetsSpace = true; // does not target any unit directly
@@ -77,6 +68,9 @@ class SpellSpawnEntity extends SpellApplyEntityToBoard {
     }
   }
 }
-SpellSpawnEntity.initClass();
+SpellSpawnEntity.prototype.targetType = CardType.Entity;
+SpellSpawnEntity.prototype.spellFilterType = SpellFilterType.None;
+SpellSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+SpellSpawnEntity.prototype.spawnSilently = false;
 
 module.exports = SpellSpawnEntity;

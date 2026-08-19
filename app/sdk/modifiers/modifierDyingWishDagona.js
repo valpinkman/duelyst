@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierDyingWishSpawnEntity = require('./modifierDyingWishSpawnEntity');
 
 class ModifierDyingWishDagona extends ModifierDyingWishSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDagona';
-    this.type = 'ModifierDyingWishDagona';
-
-    this.prototype.spawnOwnerId = null;
-  }
+  static type = 'ModifierDyingWishDagona';
 
   createContextObjectForClone(contextObject) {
     const cloneContextObject = super.createContextObjectForClone(contextObject);
@@ -37,6 +31,7 @@ class ModifierDyingWishDagona extends ModifierDyingWishSpawnEntity {
     return super.getSpawnOwnerId(action);
   }
 }
-ModifierDyingWishDagona.initClass();
+ModifierDyingWishDagona.prototype.type = 'ModifierDyingWishDagona';
+ModifierDyingWishDagona.prototype.spawnOwnerId = null;
 
 module.exports = ModifierDyingWishDagona;

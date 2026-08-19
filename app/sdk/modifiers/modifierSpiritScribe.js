@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -15,14 +14,8 @@ const ModifierProvoke = require('./modifierProvoke');
 const ModifierRanged = require('./modifierRanged');
 
 class ModifierSpiritScribe extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpiritScribe';
-    this.type = 'ModifierSpiritScribe';
-
-    this.description = 'Whenever you summon a minion, this minion gains a random keyword ability';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSpiritScribe';
+  static description = 'Whenever you summon a minion, this minion gains a random keyword ability';
 
   static createContextObject() {
     const contextObject = super.createContextObject();
@@ -46,6 +39,7 @@ class ModifierSpiritScribe extends ModifierSummonWatch {
     }
   }
 }
-ModifierSpiritScribe.initClass();
+ModifierSpiritScribe.prototype.type = 'ModifierSpiritScribe';
+ModifierSpiritScribe.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSpiritScribe;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,12 +8,7 @@ const RandomDamageAction = require('app/sdk/actions/randomDamageAction');
 const ModifierMyAttackOrCounterattackWatch = require('./modifierMyAttackOrCounterattackWatch');
 
 class ModifierMyAttackOrCounterattackWatchDamageRandomEnemy extends ModifierMyAttackOrCounterattackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
-    this.type = 'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
 
   static createContextObject(damageAmount, options) {
     if (options == null) { options = undefined; }
@@ -32,6 +26,7 @@ class ModifierMyAttackOrCounterattackWatchDamageRandomEnemy extends ModifierMyAt
     return this.getGameSession().executeAction(randomDamageAction);
   }
 }
-ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.initClass();
+ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.prototype.type = 'ModifierMyAttackOrCounterattackWatchDamageRandomEnemy';
+ModifierMyAttackOrCounterattackWatchDamageRandomEnemy.prototype.damageAmount = 0;
 
 module.exports = ModifierMyAttackOrCounterattackWatchDamageRandomEnemy;

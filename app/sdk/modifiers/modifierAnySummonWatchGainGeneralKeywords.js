@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -24,15 +23,7 @@ const ModifierAnySummonWatch = require('./modifierAnySummonWatch');
 // ModifierInvulnerable = require 'app/sdk/modifiers/modifierInvulnerable'
 
 class ModifierAnySummonWatchGainGeneralKeywords extends ModifierAnySummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierAnySummonWatchGainGeneralKeywords';
-    this.type = 'ModifierAnySummonWatchGainGeneralKeywords';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierAnySummonWatchGainGeneralKeywords';
 
   onSummonWatch(action) {
     let modifier;
@@ -164,7 +155,11 @@ class ModifierAnySummonWatchGainGeneralKeywords extends ModifierAnySummonWatch {
     }
   }
 }
-ModifierAnySummonWatchGainGeneralKeywords.initClass();
+ModifierAnySummonWatchGainGeneralKeywords.prototype.type = 'ModifierAnySummonWatchGainGeneralKeywords';
+ModifierAnySummonWatchGainGeneralKeywords.prototype.activeInHand = false;
+ModifierAnySummonWatchGainGeneralKeywords.prototype.activeInDeck = false;
+ModifierAnySummonWatchGainGeneralKeywords.prototype.activeInSignatureCards = false;
+ModifierAnySummonWatchGainGeneralKeywords.prototype.activeOnBoard = true;
 // if hasInvulnerable and !mech.hasModifierClass(ModifierInvulnerable)
 //   @getGameSession().applyModifierContextObject(ModifierInvulnerable.createContextObject(), mech)
 

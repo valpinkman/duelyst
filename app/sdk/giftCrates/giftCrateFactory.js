@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -22,9 +21,7 @@ const _ = require('underscore');
 const moment = require('moment');
 
 class GiftCrateFactory {
-  static initClass() {
-    this._giftCrateTemplateCache = null;
-  }
+  static _giftCrateTemplateCache = null;
 
   static _generateCache() {
     if (this._giftCrateTemplateCache !== null) {
@@ -293,6 +290,5 @@ class GiftCrateFactory {
     return this._giftCrateTemplateCache[crateType];
   }
 }
-GiftCrateFactory.initClass();
 
 module.exports = GiftCrateFactory;

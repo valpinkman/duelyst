@@ -1,17 +1,14 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 class CardType {
-  static initClass() {
-    this.Card = 1;
-    this.Entity = 2;
-    this.Unit = 3;
-    this.Spell = 4;
-    this.Tile = 5;
-    this.Artifact = 6;
-  }
+  static Card = 1;
+  static Entity = 2;
+  static Unit = 3;
+  static Spell = 4;
+  static Tile = 5;
+  static Artifact = 6;
 
   static getIsEntityCardType(cardType) {
     return (cardType === CardType.Entity) || (cardType === CardType.Unit) || (cardType === CardType.Tile);
@@ -58,6 +55,5 @@ class CardType {
     return 'Card';
   }
 }
-CardType.initClass();
 
 module.exports = CardType;

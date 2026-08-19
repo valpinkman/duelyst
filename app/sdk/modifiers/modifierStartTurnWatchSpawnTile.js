@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -8,15 +7,9 @@ const UtilsPosition = require('app/common/utils/utils_position');
 const ModifierStartTurnWatchSpawnEntity = require('./modifierStartTurnWatchSpawnEntity');
 
 class ModifierStartTurnWatchSpawnTile extends ModifierStartTurnWatchSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchSpawnTile';
-    this.type = 'ModifierStartTurnWatchSpawnTile';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the start of your turn, turn %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierStartTurnWatchSpawnTile';
+  static modifierName = 'Turn Watch';
+  static description = 'At the start of your turn, turn %X';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
@@ -35,6 +28,7 @@ class ModifierStartTurnWatchSpawnTile extends ModifierStartTurnWatchSpawnEntity 
     return this.description;
   }
 }
-ModifierStartTurnWatchSpawnTile.initClass();
+ModifierStartTurnWatchSpawnTile.prototype.type = 'ModifierStartTurnWatchSpawnTile';
+ModifierStartTurnWatchSpawnTile.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierStartTurnWatchSpawnTile;

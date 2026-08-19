@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,20 +9,8 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierBuffSelfOnReplace extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBuffSelfOnReplace';
-    this.type = 'ModifierBuffSelfOnReplace';
-
-    this.modifierName = 'Buff Self On Replace';
-    this.description = i18next.t('modifiers.buff_self_on_replace_def');
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierBuffSelfOnReplace';
+  static modifierName = 'Buff Self On Replace';
 
   static createContextObject(attackBuff, maxHPBuff, costChange, description, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -63,6 +50,12 @@ class ModifierBuffSelfOnReplace extends Modifier {
     }
   }
 }
-ModifierBuffSelfOnReplace.initClass();
+ModifierBuffSelfOnReplace.prototype.type = 'ModifierBuffSelfOnReplace';
+ModifierBuffSelfOnReplace.description = i18next.t('modifiers.buff_self_on_replace_def');
+ModifierBuffSelfOnReplace.prototype.activeInHand = true;
+ModifierBuffSelfOnReplace.prototype.activeInDeck = true;
+ModifierBuffSelfOnReplace.prototype.activeInSignatureCards = false;
+ModifierBuffSelfOnReplace.prototype.activeOnBoard = false;
+ModifierBuffSelfOnReplace.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierBuffSelfOnReplace;

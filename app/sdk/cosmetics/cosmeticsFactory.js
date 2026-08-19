@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -24,35 +23,20 @@ const Cards = require('app/sdk/cards/cardsLookup');
 const i18next = require('i18next');
 
 class CosmeticsFactory {
-  static initClass() {
-    this._cosmeticsById = {};
-
-    this._cachedCosmetics = null;
-
-    this._cachedCosmeticsForType = null;
-
-    this._cachedCosmeticsForTypeAndFaction = null;
-
-    this._cachedCosmeticsForTypeAndRarity = null;
-
-    this._cachedCosmeticsForTypeAndFactionAndRarity = null;
-
-    this._cachedCosmeticsForFaction = null;
-
-    this._cachedCosmeticsForRarity = null;
-
-    this._cachedCosmeticsForChestType = null;
-
-    this._cachedCosmeticSubTypesByType = null;
-
-    this._cachedLocalizedSubTypeTitles = null;
-
-    this._cachedCosmeticsForTypeAndSubType = null;
-
-    this._cachedCardSkinsForCardId = null;
-
-    this._cachedCardSkinIdsForCardId = null;
-  }
+  static _cosmeticsById = {};
+  static _cachedCosmetics = null;
+  static _cachedCosmeticsForType = null;
+  static _cachedCosmeticsForTypeAndFaction = null;
+  static _cachedCosmeticsForTypeAndRarity = null;
+  static _cachedCosmeticsForTypeAndFactionAndRarity = null;
+  static _cachedCosmeticsForFaction = null;
+  static _cachedCosmeticsForRarity = null;
+  static _cachedCosmeticsForChestType = null;
+  static _cachedCosmeticSubTypesByType = null;
+  static _cachedLocalizedSubTypeTitles = null;
+  static _cachedCosmeticsForTypeAndSubType = null;
+  static _cachedCardSkinsForCardId = null;
+  static _cachedCardSkinIdsForCardId = null;
 
   static cosmeticForIdentifier(identifier) {
     const cosmeticData = this._cosmeticsById[identifier];
@@ -392,7 +376,6 @@ class CosmeticsFactory {
     return i18next.t('cosmetics.generic_mystery_crate');
   }
 }
-CosmeticsFactory.initClass();
 
 // setup emote data
 const cos = CosmeticsFactory._cosmeticsById;

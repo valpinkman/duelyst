@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -12,12 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDestroyEnemyMinions extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDestroyEnemyMinions';
-    this.type = 'ModifierOpeningGambitDestroyEnemyMinions';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitDestroyEnemyMinions';
 
   onOpeningGambit() {
     const entities = this.getGameSession().getBoard().getEnemyEntitiesAroundEntity(this.getCard(), CardType.Unit, CONFIG.WHOLE_BOARD_RADIUS);
@@ -39,6 +33,7 @@ class ModifierOpeningGambitDestroyEnemyMinions extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDestroyEnemyMinions.initClass();
+ModifierOpeningGambitDestroyEnemyMinions.prototype.type = 'ModifierOpeningGambitDestroyEnemyMinions';
+ModifierOpeningGambitDestroyEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitDestroyEnemyMinions;

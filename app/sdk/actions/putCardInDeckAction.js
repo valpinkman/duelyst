@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,16 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const _ = require('underscore');
 
 class PutCardInDeckAction extends Action {
-  static initClass() {
-    this.type = 'PutCardInDeckAction';
-
-    this.prototype.targetPlayerId = null;
-    this.prototype.cardDataOrIndex = null;
-
-    // target should always be the card we've put in deck, so we'll alias getCard
-    this.prototype.getTarget = this.prototype.getCard;
-    // card data or index for new card
-  }
+  static type = 'PutCardInDeckAction';
 
   constructor(gameSession, targetPlayerId, cardDataOrIndex) {
     super(gameSession);
@@ -118,6 +108,8 @@ class PutCardInDeckAction extends Action {
     return actionData;
   }
 }
-PutCardInDeckAction.initClass();
+PutCardInDeckAction.prototype.targetPlayerId = null;
+PutCardInDeckAction.prototype.cardDataOrIndex = null;
+PutCardInDeckAction.prototype.getTarget = PutCardInDeckAction.prototype.getCard;
 
 module.exports = PutCardInDeckAction;

@@ -1,22 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('app/sdk/modifiers/modifier');
 const ModifierBuilding = require('./modifierBuilding');
 
 class ModifierBuildingSlowEnemies extends ModifierBuilding {
-  static initClass() {
-    this.prototype.type = 'ModifierBuildingSlowEnemies';
-    this.type = 'ModifierBuildingSlowEnemies';
-
-    this.prototype.auraAppliedName = null;
-    this.prototype.auraAppliedDescription = null;
-    this.prototype.speedChangeAppliedName = null;
-    this.prototype.speedChangeAppliedDescription = null;
-  }
+  static type = 'ModifierBuildingSlowEnemies';
 
   onActivate() {
     super.onActivate();
@@ -34,6 +25,10 @@ class ModifierBuildingSlowEnemies extends ModifierBuilding {
     return this.getGameSession().applyModifierContextObject(auraContextObject, this.getCard(), this);
   }
 }
-ModifierBuildingSlowEnemies.initClass();
+ModifierBuildingSlowEnemies.prototype.type = 'ModifierBuildingSlowEnemies';
+ModifierBuildingSlowEnemies.prototype.auraAppliedName = null;
+ModifierBuildingSlowEnemies.prototype.auraAppliedDescription = null;
+ModifierBuildingSlowEnemies.prototype.speedChangeAppliedName = null;
+ModifierBuildingSlowEnemies.prototype.speedChangeAppliedDescription = null;
 
 module.exports = ModifierBuildingSlowEnemies;

@@ -1,16 +1,12 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const ModifierQuestStatus = require('./modifierQuestStatus');
 
 class ModifierQuestStatusLyonar extends ModifierQuestStatus {
-  static initClass() {
-    this.prototype.type = 'ModifierQuestStatusLyonar';
-    this.type = 'ModifierQuestStatusLyonar';
-  }
+  static type = 'ModifierQuestStatusLyonar';
 
   static createContextObject(questCompleted, numMinionsSummoned) {
     const contextObject = super.createContextObject();
@@ -32,6 +28,6 @@ class ModifierQuestStatusLyonar extends ModifierQuestStatus {
     return i18next.t('modifiers.lyonarquest_counter_applied_name');
   }
 }
-ModifierQuestStatusLyonar.initClass();
+ModifierQuestStatusLyonar.prototype.type = 'ModifierQuestStatusLyonar';
 
 module.exports = ModifierQuestStatusLyonar;

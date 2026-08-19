@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,18 +12,9 @@ const ModifierEgg = require('app/sdk/modifiers/modifierEgg');
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 
 class ModifierOpponentSummonWatchSummonEgg extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchSummonEgg';
-    this.type = 'ModifierOpponentSummonWatchSummonEgg';
-
-    this.modifierName = 'Opponent Summon Watch Summon Egg';
-    this.description = 'Whenever your opponent summons a minion, summon an egg.';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.eggName = null;
-  }
+  static type = 'ModifierOpponentSummonWatchSummonEgg';
+  static modifierName = 'Opponent Summon Watch Summon Egg';
+  static description = 'Whenever your opponent summons a minion, summon an egg.';
 
   static createContextObject(cardDataOrIndexToSpawn, eggName, options) {
     const contextObject = super.createContextObject(options);
@@ -51,6 +41,9 @@ class ModifierOpponentSummonWatchSummonEgg extends ModifierOpponentSummonWatch {
     }
   }
 }
-ModifierOpponentSummonWatchSummonEgg.initClass();
+ModifierOpponentSummonWatchSummonEgg.prototype.type = 'ModifierOpponentSummonWatchSummonEgg';
+ModifierOpponentSummonWatchSummonEgg.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
+ModifierOpponentSummonWatchSummonEgg.prototype.cardDataOrIndexToSpawn = null;
+ModifierOpponentSummonWatchSummonEgg.prototype.eggName = null;
 
 module.exports = ModifierOpponentSummonWatchSummonEgg;

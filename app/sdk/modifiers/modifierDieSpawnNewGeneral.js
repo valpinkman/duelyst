@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,22 +17,9 @@ const CONFIG = require('app/common/config');
 const Modifier = require('./modifier');
 
 class ModifierDieSpawnNewGeneral extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDieSpawnNewGeneral';
-    this.type = 'ModifierDieSpawnNewGeneral';
-
-    this.modifierName = 'Die Spawn New General';
-    this.description = 'When this reaches low HP, watch out!';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSecondWind'];
-  }
+  static type = 'ModifierDieSpawnNewGeneral';
+  static modifierName = 'Die Spawn New General';
+  static description = 'When this reaches low HP, watch out!';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -133,6 +119,12 @@ class ModifierDieSpawnNewGeneral extends Modifier {
     return this.getGameSession().executeAction(dieAction);
   }
 }
-ModifierDieSpawnNewGeneral.initClass();
+ModifierDieSpawnNewGeneral.prototype.type = 'ModifierDieSpawnNewGeneral';
+ModifierDieSpawnNewGeneral.prototype.activeInDeck = false;
+ModifierDieSpawnNewGeneral.prototype.activeInHand = false;
+ModifierDieSpawnNewGeneral.prototype.activeInSignatureCards = false;
+ModifierDieSpawnNewGeneral.prototype.activeOnBoard = true;
+ModifierDieSpawnNewGeneral.prototype.maxStacks = 1;
+ModifierDieSpawnNewGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSecondWind'];
 
 module.exports = ModifierDieSpawnNewGeneral;

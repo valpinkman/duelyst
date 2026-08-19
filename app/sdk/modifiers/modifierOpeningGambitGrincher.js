@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -11,12 +10,8 @@ const ModifierManaCostChange = require('./modifierManaCostChange');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitGrincher extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitGrincher';
-    this.type = 'ModifierOpeningGambitGrincher';
-
-    this.description = 'Put a random artifact into your action bar. It costs 2 less';
-  }
+  static type = 'ModifierOpeningGambitGrincher';
+  static description = 'Put a random artifact into your action bar. It costs 2 less';
 
   onOpeningGambit() {
     super.onOpeningGambit();
@@ -47,6 +42,6 @@ class ModifierOpeningGambitGrincher extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitGrincher.initClass();
+ModifierOpeningGambitGrincher.prototype.type = 'ModifierOpeningGambitGrincher';
 
 module.exports = ModifierOpeningGambitGrincher;

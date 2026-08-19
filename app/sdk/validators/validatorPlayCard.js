@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,10 +14,7 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class ValidatorPlayCard extends Validator {
-  static initClass() {
-    this.prototype.type = 'ValidatorPlayCard';
-    this.type = 'ValidatorPlayCard';
-  }
+  static type = 'ValidatorPlayCard';
 
   onValidateAction(event) {
     super.onValidateAction(event);
@@ -81,6 +77,6 @@ class ValidatorPlayCard extends Validator {
     }
   }
 }
-ValidatorPlayCard.initClass();
+ValidatorPlayCard.prototype.type = 'ValidatorPlayCard';
 
 module.exports = ValidatorPlayCard;

@@ -1,22 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierOpeningGambitChangeSignatureCard = require('./modifierOpeningGambitChangeSignatureCard');
 
 class ModifierOpeningGambitGrandmasterVariax extends ModifierOpeningGambitChangeSignatureCard {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitGrandmasterVariax';
-    this.type = 'ModifierOpeningGambitGrandmasterVariax';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Your Bloodbound Spell costs 3 and is now AWESOME';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitGrandmasterVariax';
+  static modifierName = 'Opening Gambit';
+  static description = 'Your Bloodbound Spell costs 3 and is now AWESOME';
 
   onOpeningGambit(action) {
     // choose signature spell to replace based on General
@@ -30,6 +23,7 @@ class ModifierOpeningGambitGrandmasterVariax extends ModifierOpeningGambitChange
     return super.onOpeningGambit(action);
   }
 }
-ModifierOpeningGambitGrandmasterVariax.initClass();
+ModifierOpeningGambitGrandmasterVariax.prototype.type = 'ModifierOpeningGambitGrandmasterVariax';
+ModifierOpeningGambitGrandmasterVariax.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitGrandmasterVariax;

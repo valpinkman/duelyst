@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,13 +8,7 @@ const Action = require('./action');
 const CONFIG = require('app/common/config');
 
 class RestoreManaAction extends Action {
-  static initClass() {
-    // restore spent mana to owner of this action
-
-    this.type = 'RestoreManaAction';
-
-    this.prototype.restoreManaAmount = 0;
-  }
+  static type = 'RestoreManaAction';
 
   constructor(gameSession) {
     super(gameSession);
@@ -39,6 +32,6 @@ class RestoreManaAction extends Action {
     }
   }
 }
-RestoreManaAction.initClass();
+RestoreManaAction.prototype.restoreManaAmount = 0;
 
 module.exports = RestoreManaAction;

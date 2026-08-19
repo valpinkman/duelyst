@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizeDamageClosestEnemy extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeDamageClosestEnemy';
-    this.type = 'ModifierSynergizeDamageClosestEnemy';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericDamage'];
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierSynergizeDamageClosestEnemy';
 
   static createContextObject(damageAmount, options) {
     if (options == null) { options = undefined; }
@@ -59,6 +51,8 @@ class ModifierSynergizeDamageClosestEnemy extends ModifierSynergize {
     }
   }
 }
-ModifierSynergizeDamageClosestEnemy.initClass();
+ModifierSynergizeDamageClosestEnemy.prototype.type = 'ModifierSynergizeDamageClosestEnemy';
+ModifierSynergizeDamageClosestEnemy.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericDamage'];
+ModifierSynergizeDamageClosestEnemy.prototype.damageAmount = 0;
 
 module.exports = ModifierSynergizeDamageClosestEnemy;

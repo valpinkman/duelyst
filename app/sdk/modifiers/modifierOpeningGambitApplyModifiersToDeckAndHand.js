@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,19 +15,7 @@ const Modifier = require('./modifier');
  Modifier is used to apply modifiers to cards in deck and hand when a card is played to the board.
 */
 class ModifierOpeningGambitApplyModifiersToDeckAndHand extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitApplyModifiersToDeckAndHand';
-    this.type = 'ModifierOpeningGambitApplyModifiersToDeckAndHand';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-    this.prototype.managedByCard = false; // whether card with opening gambit should manage the modifiers applied, i.e. when the card is silenced/killed these modifiers are removed
-    this.prototype.applyToOwnPlayer = false;
-    this.prototype.applyToEnemyPlayer = false;
-    this.prototype.cardType = null; // type of card to target
-    this.prototype.raceId = null; // race of cards to target
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitApplyModifiersToDeckAndHand';
 
   static createContextObject(modifiersContextObjects, managedByCard, applyToOwnPlayer, applyToEnemyPlayer, cardType = null, raceId = null, description, options) {
     if (managedByCard == null) { managedByCard = false; }
@@ -86,6 +73,13 @@ class ModifierOpeningGambitApplyModifiersToDeckAndHand extends ModifierOpeningGa
     return _.filter(cards, (card) => (card != null) && (!cardType || (card.getType() === cardType)) && (!raceId || card.getBelongsToTribe(raceId)));
   }
 }
-ModifierOpeningGambitApplyModifiersToDeckAndHand.initClass();
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.type = 'ModifierOpeningGambitApplyModifiersToDeckAndHand';
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.modifiersContextObjects = null;
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.managedByCard = false;
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.applyToOwnPlayer = false;
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.applyToEnemyPlayer = false;
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.cardType = null;
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.raceId = null;
+ModifierOpeningGambitApplyModifiersToDeckAndHand.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitApplyModifiersToDeckAndHand;

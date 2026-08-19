@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const CONFIG = require('app/common/config');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchDamageMyGeneral extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchDamageMyGeneral';
-    this.type = 'ModifierStartTurnWatchDamageMyGeneral';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightningRed'];
-  }
+  static type = 'ModifierStartTurnWatchDamageMyGeneral';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -44,6 +36,8 @@ class ModifierStartTurnWatchDamageMyGeneral extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierStartTurnWatchDamageMyGeneral.initClass();
+ModifierStartTurnWatchDamageMyGeneral.prototype.type = 'ModifierStartTurnWatchDamageMyGeneral';
+ModifierStartTurnWatchDamageMyGeneral.prototype.damageAmount = 0;
+ModifierStartTurnWatchDamageMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightningRed'];
 
 module.exports = ModifierStartTurnWatchDamageMyGeneral;

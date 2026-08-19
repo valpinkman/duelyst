@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,17 +9,9 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 const Modifier = require('./modifier');
 
 class ModifierSummonWatchByEntityBuffSelf extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchByEntityBuffSelf';
-    this.type = 'ModifierSummonWatchByEntityBuffSelf';
-
-    this.modifierName = 'Summon Watch (buff by entity)';
-    this.description = 'Whenever you summon a %X, this gains %Y';
-
-    this.prototype.cardName = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchByEntityBuffSelf';
+  static modifierName = 'Summon Watch (buff by entity)';
+  static description = 'Whenever you summon a %X, this gains %Y';
 
   static createContextObject(attackBuff, maxHPBuff, targetEntityId, cardName, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -53,6 +44,8 @@ class ModifierSummonWatchByEntityBuffSelf extends ModifierSummonWatch {
     return card.getBaseCardId() === this.targetEntityId;
   }
 }
-ModifierSummonWatchByEntityBuffSelf.initClass();
+ModifierSummonWatchByEntityBuffSelf.prototype.type = 'ModifierSummonWatchByEntityBuffSelf';
+ModifierSummonWatchByEntityBuffSelf.prototype.cardName = null;
+ModifierSummonWatchByEntityBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchByEntityBuffSelf;

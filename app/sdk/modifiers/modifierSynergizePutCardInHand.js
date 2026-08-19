@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,14 +8,7 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizePutCardInHand extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizePutCardInHand';
-    this.type = 'ModifierSynergizePutCardInHand';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSynergize'];
-
-    this.prototype.cardDataOrIndexToPutInHand = null;
-  }
+  static type = 'ModifierSynergizePutCardInHand';
 
   static createContextObject(cardDataOrIndexToPutInHand, options) {
     if (options == null) { options = undefined; }
@@ -30,6 +22,8 @@ class ModifierSynergizePutCardInHand extends ModifierSynergize {
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierSynergizePutCardInHand.initClass();
+ModifierSynergizePutCardInHand.prototype.type = 'ModifierSynergizePutCardInHand';
+ModifierSynergizePutCardInHand.prototype.fxResource = ['FX.Modifiers.ModifierSynergize'];
+ModifierSynergizePutCardInHand.prototype.cardDataOrIndexToPutInHand = null;
 
 module.exports = ModifierSynergizePutCardInHand;

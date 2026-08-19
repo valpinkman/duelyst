@@ -1,15 +1,10 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellSpawnEntity = require('./spellSpawnEntity');
 
 class SpellSpawnEntitiesOnGeneralsDiagonals extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const applyEffectPositions = [];
 
@@ -40,6 +35,6 @@ class SpellSpawnEntitiesOnGeneralsDiagonals extends SpellSpawnEntity {
     return true;
   }
 }
-SpellSpawnEntitiesOnGeneralsDiagonals.initClass();
+SpellSpawnEntitiesOnGeneralsDiagonals.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = SpellSpawnEntitiesOnGeneralsDiagonals;

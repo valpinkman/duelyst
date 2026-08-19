@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,14 +19,8 @@ const _ = require('underscore');
   Summon watch that remains active whether the original entity dies or not.
 */
 class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierSpellWatchHollowVortex';
-    this.type = 'PlayerModifierSpellWatchHollowVortex';
-
-    this.isHiddenToUI = false;
-
-    this.prototype.manaCostAddition = 0;
-  }
+  static type = 'PlayerModifierSpellWatchHollowVortex';
+  static isHiddenToUI = false;
 
   static createContextObject(manaCostAddition, options) {
     const contextObject = super.createContextObject(options);
@@ -119,6 +112,7 @@ class PlayerModifierSpellWatchHollowVortex extends PlayerModifierSpellWatch {
     }
   }
 }
-PlayerModifierSpellWatchHollowVortex.initClass();
+PlayerModifierSpellWatchHollowVortex.prototype.type = 'PlayerModifierSpellWatchHollowVortex';
+PlayerModifierSpellWatchHollowVortex.prototype.manaCostAddition = 0;
 
 module.exports = PlayerModifierSpellWatchHollowVortex;

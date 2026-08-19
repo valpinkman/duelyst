@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,17 +8,7 @@ const EndTurnAction = require('app/sdk/actions/endTurnAction');
 const Modifier = require('./modifier');
 
 class ModifierEndTurnWatchAnyPlayer extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatch';
-    this.type = 'ModifierEndTurnWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-  }
+  static type = 'ModifierEndTurnWatch';
 
   onActivate() {
     super.onActivate();
@@ -47,7 +36,12 @@ class ModifierEndTurnWatchAnyPlayer extends Modifier {
 
   onTurnWatch(action) {}
 }
-ModifierEndTurnWatchAnyPlayer.initClass();
+ModifierEndTurnWatchAnyPlayer.prototype.type = 'ModifierEndTurnWatch';
+ModifierEndTurnWatchAnyPlayer.prototype.activeInHand = false;
+ModifierEndTurnWatchAnyPlayer.prototype.activeInDeck = false;
+ModifierEndTurnWatchAnyPlayer.prototype.activeInSignatureCards = false;
+ModifierEndTurnWatchAnyPlayer.prototype.activeOnBoard = true;
+ModifierEndTurnWatchAnyPlayer.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEndTurnWatchAnyPlayer;

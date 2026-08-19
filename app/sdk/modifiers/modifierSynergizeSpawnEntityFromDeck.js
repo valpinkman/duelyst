@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,19 +13,7 @@ const PlaySignatureCardAction = require('app/sdk/actions/playSignatureCardAction
 const Modifier = require('./modifier');
 
 class ModifierSynergizeSpawnEntityFromDeck extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeSpawnEntityFromDeck';
-    this.type = 'ModifierSynergizeSpawnEntityFromDeck';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnLocation = null;
-  }
+  static type = 'ModifierSynergizeSpawnEntityFromDeck';
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -83,7 +70,14 @@ class ModifierSynergizeSpawnEntityFromDeck extends Modifier {
     }
   }
 }
-ModifierSynergizeSpawnEntityFromDeck.initClass();
+ModifierSynergizeSpawnEntityFromDeck.prototype.type = 'ModifierSynergizeSpawnEntityFromDeck';
+ModifierSynergizeSpawnEntityFromDeck.prototype.activeInHand = false;
+ModifierSynergizeSpawnEntityFromDeck.prototype.activeInDeck = true;
+ModifierSynergizeSpawnEntityFromDeck.prototype.activeInSignatureCards = false;
+ModifierSynergizeSpawnEntityFromDeck.prototype.activeOnBoard = false;
+ModifierSynergizeSpawnEntityFromDeck.prototype.maxStacks = 1;
+ModifierSynergizeSpawnEntityFromDeck.prototype.cardDataOrIndexToSpawn = null;
+ModifierSynergizeSpawnEntityFromDeck.prototype.spawnLocation = null;
 
 module.exports = ModifierSynergizeSpawnEntityFromDeck;
 

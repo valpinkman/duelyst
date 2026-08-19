@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,10 +12,7 @@ const _ = require('underscore');
 const ModifierSentinelOpponentSummon = require('./modifierSentinelOpponentSummon');
 
 class ModifierSentinelOpponentSummonSwapPlaces extends ModifierSentinelOpponentSummon {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentSummonSwapPlaces';
-    this.type = 'ModifierSentinelOpponentSummonSwapPlaces';
-  }
+  static type = 'ModifierSentinelOpponentSummonSwapPlaces';
 
   onOverwatch(action) {
     // damage unit that was just summoned by enemy
@@ -31,6 +27,6 @@ class ModifierSentinelOpponentSummonSwapPlaces extends ModifierSentinelOpponentS
     }
   }
 }
-ModifierSentinelOpponentSummonSwapPlaces.initClass();
+ModifierSentinelOpponentSummonSwapPlaces.prototype.type = 'ModifierSentinelOpponentSummonSwapPlaces';
 
 module.exports = ModifierSentinelOpponentSummonSwapPlaces;

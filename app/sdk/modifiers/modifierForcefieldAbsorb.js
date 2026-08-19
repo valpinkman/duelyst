@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,22 +8,10 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierImmuneToDamage = require('./modifierImmuneToDamage');
 
 class ModifierForcefieldAbsorb extends ModifierImmuneToDamage {
-  static initClass() {
-    this.prototype.type = 'ModifierForcefieldAbsorb';
-    this.type = 'ModifierForcefieldAbsorb';
-
-    this.modifierName = 'Forcefield Active';
-    this.description = 'This minion takes no damage';
-
-    this.isHiddenToUI = true;
-
-    this.prototype.isCloneable = false;
-    this.prototype.maxStacks = 1;
-
-    this.prototype.absorbedActionIndex = -1; // index of action this triggered an absorb for, when -1 no damage has been absorbed
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierForcefieldAbsorb'];
-  }
+  static type = 'ModifierForcefieldAbsorb';
+  static modifierName = 'Forcefield Active';
+  static description = 'This minion takes no damage';
+  static isHiddenToUI = true;
 
   onModifyActionForExecution(event) {
     super.onModifyActionForExecution(event);
@@ -57,6 +44,10 @@ class ModifierForcefieldAbsorb extends ModifierImmuneToDamage {
     return this.absorbedActionIndex === -1;
   }
 }
-ModifierForcefieldAbsorb.initClass();
+ModifierForcefieldAbsorb.prototype.type = 'ModifierForcefieldAbsorb';
+ModifierForcefieldAbsorb.prototype.isCloneable = false;
+ModifierForcefieldAbsorb.prototype.maxStacks = 1;
+ModifierForcefieldAbsorb.prototype.absorbedActionIndex = -1;
+ModifierForcefieldAbsorb.prototype.fxResource = ['FX.Modifiers.ModifierForcefieldAbsorb'];
 
 module.exports = ModifierForcefieldAbsorb;

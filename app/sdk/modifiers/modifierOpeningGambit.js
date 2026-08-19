@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,25 +11,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierOpeningGambit extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambit';
-    this.type = 'ModifierOpeningGambit';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.opening_gambit_def');
-
-    this.modifierName = i18next.t('modifiers.opening_gambit_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.triggered = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambit';
+  static isKeyworded = true;
+  static description = null;
 
   onActivate() {
     super.onActivate();
@@ -61,6 +44,14 @@ class ModifierOpeningGambit extends Modifier {
     return !this.triggered && super.getIsActiveForCache();
   }
 }
-ModifierOpeningGambit.initClass();
+ModifierOpeningGambit.prototype.type = 'ModifierOpeningGambit';
+ModifierOpeningGambit.keywordDefinition = i18next.t('modifiers.opening_gambit_def');
+ModifierOpeningGambit.modifierName = i18next.t('modifiers.opening_gambit_name');
+ModifierOpeningGambit.prototype.activeInHand = false;
+ModifierOpeningGambit.prototype.activeInDeck = false;
+ModifierOpeningGambit.prototype.activeInSignatureCards = false;
+ModifierOpeningGambit.prototype.activeOnBoard = true;
+ModifierOpeningGambit.prototype.triggered = false;
+ModifierOpeningGambit.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambit;

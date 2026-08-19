@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchApplyModifiers extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchApplyModifiers';
-    this.type = 'ModifierEndTurnWatchApplyModifiers';
-
-    this.modifierName = 'End Watch';
-    this.description = 'At the end of your turn, %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierEndTurnWatchApplyModifiers';
+  static modifierName = 'End Watch';
+  static description = 'At the end of your turn, %X';
 
   static createContextObject(modifiersContextObjects, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, canTargetGeneral, description, options) {
     const contextObject = super.createContextObject(options);
@@ -61,6 +54,7 @@ class ModifierEndTurnWatchApplyModifiers extends ModifierEndTurnWatch {
     return affectedEntities;
   }
 }
-ModifierEndTurnWatchApplyModifiers.initClass();
+ModifierEndTurnWatchApplyModifiers.prototype.type = 'ModifierEndTurnWatchApplyModifiers';
+ModifierEndTurnWatchApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierEndTurnWatchApplyModifiers;

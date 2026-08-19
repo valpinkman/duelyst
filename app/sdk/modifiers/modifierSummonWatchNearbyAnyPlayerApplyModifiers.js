@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -8,14 +7,8 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const ModifierSummonWatchAnyPlayerApplyModifiers = require('./modifierSummonWatchAnyPlayerApplyModifiers');
 
 class ModifierSummonWatchNearbyAnyPlayerApplyModifiers extends ModifierSummonWatchAnyPlayerApplyModifiers {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchNearbyAnyPlayerApplyModifiers';
-    this.type = 'ModifierSummonWatchNearbyAnyPlayerApplyModifiers';
-
-    this.description = 'ANY minion summoned nearby this minion %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchNearbyAnyPlayerApplyModifiers';
+  static description = 'ANY minion summoned nearby this minion %X';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -39,6 +32,7 @@ class ModifierSummonWatchNearbyAnyPlayerApplyModifiers extends ModifierSummonWat
     return false;
   }
 }
-ModifierSummonWatchNearbyAnyPlayerApplyModifiers.initClass();
+ModifierSummonWatchNearbyAnyPlayerApplyModifiers.prototype.type = 'ModifierSummonWatchNearbyAnyPlayerApplyModifiers';
+ModifierSummonWatchNearbyAnyPlayerApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchNearbyAnyPlayerApplyModifiers;

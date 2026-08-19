@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DieAction = require('app/sdk/actions/dieAction');
@@ -12,12 +11,7 @@ const RemoveAction = require('app/sdk/actions/removeAction');
 const ModifierFriendlyDeathWatch = require('./modifierFriendlyDeathWatch');
 
 class ModifierFriendsguard extends ModifierFriendlyDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierFriendsguard';
-    this.type = 'ModifierFriendsguard';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyDeathwatch'];
-  }
+  static type = 'ModifierFriendsguard';
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -40,6 +34,7 @@ class ModifierFriendsguard extends ModifierFriendlyDeathWatch {
     }
   }
 }
-ModifierFriendsguard.initClass();
+ModifierFriendsguard.prototype.type = 'ModifierFriendsguard';
+ModifierFriendsguard.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyDeathwatch'];
 
 module.exports = ModifierFriendsguard;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,25 +16,7 @@ const Promise = require('bluebird');
 const i18next = require('i18next');
 
 class ChallengeRemote extends Challenge {
-  static initClass() {
-    this.type = 'rando-1';
-    this.prototype.type = 'rando-1';
-    this.prototype.categoryType = null;
-    this.prototype.isDaily = true;
-
-    this.prototype.name = '<name>';
-    this.prototype.description = '<description>';
-    this.prototype.iconUrl = RSX.speech_portrait_vanar.img;
-    this.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-
-    this.prototype.otkChallengeStartMessage = '<instructions>';
-    this.prototype.otkChallengeFailureMessages = [
-      'Hint:...',
-    ];
-
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype._gameSessionData = null;
-  }
+  static type = 'rando-1';
 
   static loadAndCreateFromModelData(modelAttributes) {
     return Promise.resolve(fetch(modelAttributes.url))
@@ -165,7 +146,19 @@ class ChallengeRemote extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [gameSession.getGeneralForPlayer1().getPosition()]));
   }
 }
-ChallengeRemote.initClass();
+ChallengeRemote.prototype.type = 'rando-1';
+ChallengeRemote.prototype.categoryType = null;
+ChallengeRemote.prototype.isDaily = true;
+ChallengeRemote.prototype.name = '<name>';
+ChallengeRemote.prototype.description = '<description>';
+ChallengeRemote.prototype.iconUrl = RSX.speech_portrait_vanar.img;
+ChallengeRemote.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
+ChallengeRemote.prototype.otkChallengeStartMessage = '<instructions>';
+ChallengeRemote.prototype.otkChallengeFailureMessages = [
+  'Hint:...',
+];
+ChallengeRemote.prototype.snapShotOnPlayerTurn = 0;
+ChallengeRemote.prototype._gameSessionData = null;
 
 module.exports = ChallengeRemote;
 

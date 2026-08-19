@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -12,20 +11,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierMyAttackWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackWatch';
-    this.type = 'ModifierMyAttackWatch';
-
-    this.modifierName = 'Attack Watch: Self';
-    this.description = 'Attack Watch: Self';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyAttackWatch'];
-  }
+  static type = 'ModifierMyAttackWatch';
+  static modifierName = 'Attack Watch: Self';
+  static description = 'Attack Watch: Self';
 
   onAction(event) {
     super.onAction(event);
@@ -39,7 +27,12 @@ class ModifierMyAttackWatch extends Modifier {
 
   onMyAttackWatch(action) {}
 }
-ModifierMyAttackWatch.initClass();
+ModifierMyAttackWatch.prototype.type = 'ModifierMyAttackWatch';
+ModifierMyAttackWatch.prototype.activeInHand = false;
+ModifierMyAttackWatch.prototype.activeInDeck = false;
+ModifierMyAttackWatch.prototype.activeInSignatureCards = false;
+ModifierMyAttackWatch.prototype.activeOnBoard = true;
+ModifierMyAttackWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyAttackWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyAttackWatch;

@@ -1,23 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
 const ModifierSummonWatchByCardBuffTarget = require('./modifierSummonWatchByCardBuffTarget');
 
 class ModifierSummonWatchDreadnaught extends ModifierSummonWatchByCardBuffTarget {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchDreadnaught';
-    this.type = 'ModifierSummonWatchDreadnaught';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.description = '%X you summon %Y';
-    this.prototype.validCardIds = null;
-    // array of card IDs to watch for
-  }
+  static type = 'ModifierSummonWatchDreadnaught';
+  static description = '%X you summon %Y';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
@@ -31,7 +22,9 @@ class ModifierSummonWatchDreadnaught extends ModifierSummonWatchByCardBuffTarget
     return (__guard__(card.getAppliedToBoardByAction(), (x) => x.getSource()) !== this.getCard()) && super.getIsCardRelevantToWatcher(card);
   }
 }
-ModifierSummonWatchDreadnaught.initClass();
+ModifierSummonWatchDreadnaught.prototype.type = 'ModifierSummonWatchDreadnaught';
+ModifierSummonWatchDreadnaught.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchDreadnaught.prototype.validCardIds = null;
 
 module.exports = ModifierSummonWatchDreadnaught;
 

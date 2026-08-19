@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -21,23 +20,6 @@ const _ = require('underscore');
  * actionStateRecord.setupToRecordStateOnEvent(EVENTS.action, { "remainingMana" : function () { return player.getRemainingMana(); } })
  */
 class ActionStateRecord {
-  static initClass() {
-    this.prototype._currentState = null;
-    this.prototype._currentStateByType = null;
-    this.prototype._actionIndicesRecorded = null;
-    this.prototype._actionIndicesRecordedByEventType = null;
-    this.prototype._lastActionIndicesRecordedCache = null;
-    this.prototype._lastActionIndicesRecordedByEventTypeCache = null;
-    this.prototype._propertyNamesToRecordByEventType = null;
-    this.prototype._currentPropertyNamesToRecord = null;
-    this.prototype._recordingMethodsByEventType = null;
-    this.prototype._currentRecordingMethods = null;
-    this.prototype._stateByActionIndex = null;
-    this.prototype._stateByActionIndexAndEventType = null;
-    this.prototype._eventBus = null;
-    this.prototype._listeningToEvents = false;
-  }
-
   // region INITIALIZE
 
   constructor() {
@@ -388,7 +370,20 @@ class ActionStateRecord {
     }
   }
 }
-ActionStateRecord.initClass();
+ActionStateRecord.prototype._currentState = null;
+ActionStateRecord.prototype._currentStateByType = null;
+ActionStateRecord.prototype._actionIndicesRecorded = null;
+ActionStateRecord.prototype._actionIndicesRecordedByEventType = null;
+ActionStateRecord.prototype._lastActionIndicesRecordedCache = null;
+ActionStateRecord.prototype._lastActionIndicesRecordedByEventTypeCache = null;
+ActionStateRecord.prototype._propertyNamesToRecordByEventType = null;
+ActionStateRecord.prototype._currentPropertyNamesToRecord = null;
+ActionStateRecord.prototype._recordingMethodsByEventType = null;
+ActionStateRecord.prototype._currentRecordingMethods = null;
+ActionStateRecord.prototype._stateByActionIndex = null;
+ActionStateRecord.prototype._stateByActionIndexAndEventType = null;
+ActionStateRecord.prototype._eventBus = null;
+ActionStateRecord.prototype._listeningToEvents = false;
 
 // endregion EVENTS
 

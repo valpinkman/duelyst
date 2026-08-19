@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,14 +13,8 @@ const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 const Modifier = require('./modifier');
 
 class ModifierDealDamageWatchModifyTarget extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchModifyTarget';
-    this.type = 'ModifierDealDamageWatchModifyTarget';
-
-    this.description = 'Whenever this minion damages an enemy minion, %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierDealDamageWatchModifyTarget';
+  static description = 'Whenever this minion damages an enemy minion, %X';
 
   static createContextObject(modifiersContextObjects, description, options) {
     if (description == null) { description = ''; }
@@ -48,6 +41,7 @@ class ModifierDealDamageWatchModifyTarget extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierDealDamageWatchModifyTarget.initClass();
+ModifierDealDamageWatchModifyTarget.prototype.type = 'ModifierDealDamageWatchModifyTarget';
+ModifierDealDamageWatchModifyTarget.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierDealDamageWatchModifyTarget;

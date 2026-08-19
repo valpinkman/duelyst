@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS104: Avoid inline assignments
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -61,34 +60,28 @@ const moment = require('moment');
 const i18next = require('i18next');
 
 class QuestFactory {
-  static initClass() {
-    // global cache for quick access
-    this._questCache = null;
-
-    this.SHORT_QUEST_GOLD = 150;
-    this.LONG_QUEST_GOLD = 300;
-
-    // begin CONSTS DO NOT CHANGE # Iterate last by 100 for new quest base id
-    this._FACTION_CHALLENGER_BASE_ID = 100;
-    this._FACTION_DOMINANCE_BASE_ID = 200;
-    this._KUMITE_INITIATE_ID = 300;
-    this._ASSASIN_MASTER_ID = 400;
-    this._ASSASIN_ID = 401;
-    this._ULTIMATE_AGRESSOR_ID = 500;
-    this._SMALL_WORLD_ID = 600;
-    this._DOMINATOR_ID = 700;
-    this._ARCANYST_BANE_ID = 800;
-    this._CONSERVERS_CHALLENGE_ID = 900;
-    this._PATRONS_DUTY_ID = 1000;
-    this._MENTORS_TEACHING_ID = 1100;
-    this._SHORT_GENERAL_PARTICIPATION_BASE_ID = 1200;
-    this._SHORT_PARTICIPATION_ID = 1300;
-    this._SHORT_GAUNTLET_PARTICIPATION_ID = 1400;
-    this._LONG_PARTICIPATION_ID = 1500;
-    this._LONG_GENERAL_DESTROYER_ID = 1600;
-    this._LONG_MINION_SUMMON_ID = 1700;
-    this._LONG_MINION_DESTROYER_ID = 1800;
-  }
+  static _questCache = null;
+  static SHORT_QUEST_GOLD = 150;
+  static LONG_QUEST_GOLD = 300;
+  static _FACTION_CHALLENGER_BASE_ID = 100;
+  static _FACTION_DOMINANCE_BASE_ID = 200;
+  static _KUMITE_INITIATE_ID = 300;
+  static _ASSASIN_MASTER_ID = 400;
+  static _ASSASIN_ID = 401;
+  static _ULTIMATE_AGRESSOR_ID = 500;
+  static _SMALL_WORLD_ID = 600;
+  static _DOMINATOR_ID = 700;
+  static _ARCANYST_BANE_ID = 800;
+  static _CONSERVERS_CHALLENGE_ID = 900;
+  static _PATRONS_DUTY_ID = 1000;
+  static _MENTORS_TEACHING_ID = 1100;
+  static _SHORT_GENERAL_PARTICIPATION_BASE_ID = 1200;
+  static _SHORT_PARTICIPATION_ID = 1300;
+  static _SHORT_GAUNTLET_PARTICIPATION_ID = 1400;
+  static _LONG_PARTICIPATION_ID = 1500;
+  static _LONG_GENERAL_DESTROYER_ID = 1600;
+  static _LONG_MINION_SUMMON_ID = 1700;
+  static _LONG_MINION_DESTROYER_ID = 1800;
 
   // end CONSTS DO NOT CHANGE #
 
@@ -598,6 +591,5 @@ class QuestFactory {
     }
   }
 }
-QuestFactory.initClass();
 
 module.exports = QuestFactory;

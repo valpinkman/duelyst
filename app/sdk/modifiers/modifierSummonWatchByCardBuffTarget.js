@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS104: Avoid inline assignments
  * DS204: Change includes calls to have a more natural evaluation order
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,16 +11,9 @@ const Modifier = require('./modifier');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchByCardBuffTarget extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchByCardBuffTarget';
-    this.type = 'ModifierSummonWatchByCardBuffTarget';
-
-    this.modifierName = 'Summon Watch (buff by card Id)';
-    this.description = 'Whenever you summon %X, %Y';
-    this.prototype.validCardIds = null; // array of card IDs to watch for
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchByCardBuffTarget';
+  static modifierName = 'Summon Watch (buff by card Id)';
+  static description = 'Whenever you summon %X, %Y';
 
   static createContextObject(modContextObject, validCardIds, cardDescription, buffDescription, options) {
     if (options == null) { options = undefined; }
@@ -54,6 +46,9 @@ class ModifierSummonWatchByCardBuffTarget extends ModifierSummonWatch {
     return (needle = card.getBaseCardId(), Array.from(this.validCardIds).includes(needle));
   }
 }
-ModifierSummonWatchByCardBuffTarget.initClass(); // card is in list of cards we want to buff
+ModifierSummonWatchByCardBuffTarget.prototype.type = 'ModifierSummonWatchByCardBuffTarget';
+ModifierSummonWatchByCardBuffTarget.prototype.validCardIds = null;
+ModifierSummonWatchByCardBuffTarget.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+// card is in list of cards we want to buff
 
 module.exports = ModifierSummonWatchByCardBuffTarget;

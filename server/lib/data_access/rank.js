@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -37,10 +36,7 @@ const CardFactory = require('../../../app/sdk/cards/cardFactory');
 const Rarity = require('../../../app/sdk/cards/rarityLookup');
 
 class RankModule {
-  static initClass() {
-    // Number of games required to get maximum win count based ladder rating value
-    this._SRANK_WIN_COUNT_CEILING = 25;
-  }
+  static _SRANK_WIN_COUNT_CEILING = 25;
 
   /**
    * Checks if a user's ranking needs an update since the season reset.
@@ -1726,6 +1722,5 @@ class RankModule {
     return reward;
   }
 }
-RankModule.initClass();
 
 module.exports = RankModule;

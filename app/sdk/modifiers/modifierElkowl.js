@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -18,14 +17,8 @@ const ModifierRebirth = require('./modifierRebirth');
 const ModifierBlastAttack = require('./modifierBlastAttack');
 
 class ModifierElkowl extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierElkowl';
-    this.type = 'ModifierElkowl';
-
-    this.description = 'Gain two random abilities';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierElkowl';
+  static description = 'Gain two random abilities';
 
   static createContextObject() {
     const contextObject = super.createContextObject();
@@ -54,6 +47,7 @@ class ModifierElkowl extends ModifierOpeningGambit {
     }
   }
 }
-ModifierElkowl.initClass();
+ModifierElkowl.prototype.type = 'ModifierElkowl';
+ModifierElkowl.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierElkowl;

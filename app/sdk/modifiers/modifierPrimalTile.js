@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
@@ -8,21 +7,7 @@ const Modifier = require('./modifier');
 const ModifierGrowPermanent = require('./modifierGrowPermanent');
 
 class ModifierPrimalTile extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierPrimalTile';
-    this.type = 'ModifierPrimalTile';
-
-    this.modifierName = i18next.t('modifiers.primal_flourish_name');
-    this.keywordDefinition = i18next.t('modifiers.primal_flourish_def');
-    this.description = i18next.t('modifiers.primal_flourish_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierPrimalTile'];
-  }
+  static type = 'ModifierPrimalTile';
 
   static getDescription() {
     return this.description;
@@ -47,6 +32,14 @@ class ModifierPrimalTile extends Modifier {
     return contextObject;
   }
 }
-ModifierPrimalTile.initClass();
+ModifierPrimalTile.prototype.type = 'ModifierPrimalTile';
+ModifierPrimalTile.modifierName = i18next.t('modifiers.primal_flourish_name');
+ModifierPrimalTile.keywordDefinition = i18next.t('modifiers.primal_flourish_def');
+ModifierPrimalTile.description = i18next.t('modifiers.primal_flourish_def');
+ModifierPrimalTile.prototype.activeInHand = false;
+ModifierPrimalTile.prototype.activeInDeck = false;
+ModifierPrimalTile.prototype.activeInSignatureCards = false;
+ModifierPrimalTile.prototype.activeOnBoard = true;
+ModifierPrimalTile.prototype.fxResource = ['FX.Modifiers.ModifierPrimalTile'];
 
 module.exports = ModifierPrimalTile;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,14 +15,7 @@ Action to reveal a hidden card.
 */
 
 class RevealHiddenCardAction extends Action {
-  static initClass() {
-    this.type = 'RevealHiddenCardAction';
-
-    this.prototype.isDepthFirst = true; // revealing hidden cards should always occur immediately
-
-    this.prototype.cardData = null;
-    // card data for revealed card
-  }
+  static type = 'RevealHiddenCardAction';
 
   constructor(gameSession, ownerId, cardData) {
     super(gameSession);
@@ -157,6 +149,7 @@ class RevealHiddenCardAction extends Action {
     return this.getGameSession()._indexCardAsNeeded(card);
   }
 }
-RevealHiddenCardAction.initClass();
+RevealHiddenCardAction.prototype.isDepthFirst = true;
+RevealHiddenCardAction.prototype.cardData = null;
 
 module.exports = RevealHiddenCardAction;

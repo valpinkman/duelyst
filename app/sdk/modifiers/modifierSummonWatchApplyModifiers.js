@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,8 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchApplyModifiers extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchApplyModifiers';
-    this.type = 'ModifierSummonWatchApplyModifiers';
-
-    this.description = 'Other minions you summon %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchApplyModifiers';
+  static description = 'Other minions you summon %X';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -52,7 +45,8 @@ class ModifierSummonWatchApplyModifiers extends ModifierSummonWatch {
     return true;
   }
 }
-ModifierSummonWatchApplyModifiers.initClass();
+ModifierSummonWatchApplyModifiers.prototype.type = 'ModifierSummonWatchApplyModifiers';
+ModifierSummonWatchApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchApplyModifiers;
 

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,20 +8,11 @@ const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction')
 const Modifier = require('./modifier');
 
 class ModifierIntensify extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierIntensify';
-    this.type = 'ModifierIntensify';
-
-    this.isKeyworded = true;
-    this.modifierName = 'Intensify';
-    this.description = null;
-    this.keywordDefinition = 'Effect is boosted each time you play it.';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierIntensify';
+  static isKeyworded = true;
+  static modifierName = 'Intensify';
+  static description = null;
+  static keywordDefinition = 'Effect is boosted each time you play it.';
 
   getIsActionRelevant(action) {
     // watch for instances of playing this card
@@ -48,7 +38,11 @@ class ModifierIntensify extends Modifier {
 
   onIntensify() {}
 }
-ModifierIntensify.initClass();
+ModifierIntensify.prototype.type = 'ModifierIntensify';
+ModifierIntensify.prototype.activeInHand = false;
+ModifierIntensify.prototype.activeInDeck = false;
+ModifierIntensify.prototype.activeInSignatureCards = false;
+ModifierIntensify.prototype.activeOnBoard = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierIntensify;

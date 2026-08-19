@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,11 +10,6 @@ const CardType = require('app/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
 
 class SpellMindSteal extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.spellFilterType = SpellFilterType.SpawnSource;
-    this.prototype.spawnSilently = true;
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -44,7 +38,8 @@ class SpellMindSteal extends SpellSpawnEntity {
     }
   }
 }
-SpellMindSteal.initClass();
+SpellMindSteal.prototype.spellFilterType = SpellFilterType.SpawnSource;
+SpellMindSteal.prototype.spawnSilently = true;
 
 module.exports = SpellMindSteal;
 

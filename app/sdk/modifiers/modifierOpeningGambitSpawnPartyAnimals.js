@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -13,12 +12,7 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitSpawnPartyAnimals extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSpawnPartyAnimals';
-    this.type = 'ModifierOpeningGambitSpawnPartyAnimals';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpeningGambitSpawnPartyAnimals';
 
   onOpeningGambit() {
     super.onOpeningGambit();
@@ -65,6 +59,7 @@ class ModifierOpeningGambitSpawnPartyAnimals extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitSpawnPartyAnimals.initClass();
+ModifierOpeningGambitSpawnPartyAnimals.prototype.type = 'ModifierOpeningGambitSpawnPartyAnimals';
+ModifierOpeningGambitSpawnPartyAnimals.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOpeningGambitSpawnPartyAnimals;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,22 +16,8 @@ const Modifier = require('./modifier');
 This modifier is used to apply modifiers to entities around an entity on synergize (when bloodborn spell is activated).
 */
 class ModifierSynergizeApplyModifiers extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeApplyModifiers';
-    this.type = 'ModifierSynergizeApplyModifiers';
-
-    this.description = '';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-    this.prototype.managedByCard = false; // whether card with opening gambit should manage the modifiers applied, i.e. when the card is silenced/killed these modifiers are removed
-    this.prototype.auraIncludeSelf = true; // whether modifiers should target card with opening gambit
-    this.prototype.auraIncludeAlly = true; // whether modifiers should target allied units
-    this.prototype.auraIncludeEnemy = true; // whether modifiers should target enemy units
-    this.prototype.auraIncludeGeneral = true; // whether modifiers should target enemy units
-    this.prototype.auraRadius = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSynergizeApplyModifiers';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options) {
     if (managedByCard == null) { managedByCard = false; }
@@ -108,6 +93,14 @@ class ModifierSynergizeApplyModifiers extends ModifierSynergize {
     return affectedEntities;
   }
 }
-ModifierSynergizeApplyModifiers.initClass();
+ModifierSynergizeApplyModifiers.prototype.type = 'ModifierSynergizeApplyModifiers';
+ModifierSynergizeApplyModifiers.prototype.modifiersContextObjects = null;
+ModifierSynergizeApplyModifiers.prototype.managedByCard = false;
+ModifierSynergizeApplyModifiers.prototype.auraIncludeSelf = true;
+ModifierSynergizeApplyModifiers.prototype.auraIncludeAlly = true;
+ModifierSynergizeApplyModifiers.prototype.auraIncludeEnemy = true;
+ModifierSynergizeApplyModifiers.prototype.auraIncludeGeneral = true;
+ModifierSynergizeApplyModifiers.prototype.auraRadius = 1;
+ModifierSynergizeApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSynergizeApplyModifiers;

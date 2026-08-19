@@ -3,20 +3,13 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierBackstabWatch = require('./modifierBackstabWatch');
 
 class ModifierBackstabWatchAddCardToHand extends ModifierBackstabWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierBackstabWatchAddCardToHand';
-    this.type = 'ModifierBackstabWatchAddCardToHand';
-
-    this.prototype.cardToAdd = null;
-    this.prototype.numToAdd = 0;
-  }
+  static type = 'ModifierBackstabWatchAddCardToHand';
 
   static createContextObject(cardToAdd, numToAdd, options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +29,8 @@ class ModifierBackstabWatchAddCardToHand extends ModifierBackstabWatch {
     })();
   }
 }
-ModifierBackstabWatchAddCardToHand.initClass();
+ModifierBackstabWatchAddCardToHand.prototype.type = 'ModifierBackstabWatchAddCardToHand';
+ModifierBackstabWatchAddCardToHand.prototype.cardToAdd = null;
+ModifierBackstabWatchAddCardToHand.prototype.numToAdd = 0;
 
 module.exports = ModifierBackstabWatchAddCardToHand;

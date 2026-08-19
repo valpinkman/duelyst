@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -12,15 +11,9 @@ const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 const Modifier = require('./modifier');
 
 class ModifierDealDamageWatchTeleportToMe extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchTeleportToMe';
-    this.type = 'ModifierDealDamageWatchTeleportToMe';
-
-    this.modifierName = 'Deal Damage Watch Teleport To Me';
-    this.description = 'Minions damaged by Syvrel are pulled in front of him';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierDealDamageWatchTeleportToMe';
+  static modifierName = 'Deal Damage Watch Teleport To Me';
+  static description = 'Minions damaged by Syvrel are pulled in front of him';
 
   onDealDamage(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -35,6 +28,7 @@ class ModifierDealDamageWatchTeleportToMe extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierDealDamageWatchTeleportToMe.initClass();
+ModifierDealDamageWatchTeleportToMe.prototype.type = 'ModifierDealDamageWatchTeleportToMe';
+ModifierDealDamageWatchTeleportToMe.prototype.maxStacks = 1;
 
 module.exports = ModifierDealDamageWatchTeleportToMe;

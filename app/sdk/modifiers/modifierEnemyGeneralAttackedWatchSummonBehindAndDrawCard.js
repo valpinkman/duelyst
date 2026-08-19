@@ -1,17 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 const ModifierEnemyGeneralAttackedWatch = require('./modifierEnemyGeneralAttackedWatch');
 
 class ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard extends ModifierEnemyGeneralAttackedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard';
-    this.type = 'ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard';
-  }
+  static type = 'ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard';
 
   onEnemyGeneralAttackedWatch(action) {
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
@@ -30,6 +26,6 @@ class ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard extends ModifierE
     }
   }
 }
-ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard.initClass();
+ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard.prototype.type = 'ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard';
 
 module.exports = ModifierEnemyGeneralAttackedWatchSummonBehindAndDrawCard;

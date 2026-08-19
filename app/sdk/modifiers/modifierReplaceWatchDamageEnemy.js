@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierReplaceWatch = require('./modifierReplaceWatch');
 
 class ModifierReplaceWatchDamageEnemy extends ModifierReplaceWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierReplaceWatchDamageEnemy';
-    this.type = 'ModifierReplaceWatchDamageEnemy';
-
-    this.modifierName = 'Replace Watch (damage random enemy)';
-    this.description = 'Whenever you replace a card, deal %X damage to a random enemy';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericDamageSmall'];
-  }
+  static type = 'ModifierReplaceWatchDamageEnemy';
+  static modifierName = 'Replace Watch (damage random enemy)';
+  static description = 'Whenever you replace a card, deal %X damage to a random enemy';
 
   static createContextObject(damageAmount, options) {
     if (options == null) { options = undefined; }
@@ -43,6 +36,7 @@ class ModifierReplaceWatchDamageEnemy extends ModifierReplaceWatch {
     return this.getGameSession().executeAction(randomDamageAction);
   }
 }
-ModifierReplaceWatchDamageEnemy.initClass();
+ModifierReplaceWatchDamageEnemy.prototype.type = 'ModifierReplaceWatchDamageEnemy';
+ModifierReplaceWatchDamageEnemy.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericDamageSmall'];
 
 module.exports = ModifierReplaceWatchDamageEnemy;

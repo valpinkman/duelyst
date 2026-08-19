@@ -1,22 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierEndEveryTurnWatch = require('./modifierEndEveryTurnWatch');
 
 class ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana extends ModifierEndEveryTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
-    this.type = 'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
-
-    this.modifierName = 'End Watch';
-    this.description = 'At the end of each turn, deal damage to the player equal to their remaining mana';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierExplosionsNearby'];
-  }
+  static type = 'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
+  static modifierName = 'End Watch';
+  static description = 'At the end of each turn, deal damage to the player equal to their remaining mana';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -45,6 +38,7 @@ class ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana extends ModifierEndEv
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.initClass();
+ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.prototype.type = 'ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana';
+ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierExplosionsNearby'];
 
 module.exports = ModifierEndTurnWatchDamagePlayerBasedOnRemainingMana;

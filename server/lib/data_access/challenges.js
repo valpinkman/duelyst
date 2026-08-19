@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -43,9 +42,7 @@ const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newP
 const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
 
 class ChallengesModule {
-  static initClass() {
-    this.DAILY_CHALLENGE_ALLOWABLE_CLOCK_SKEW_IN_DAYS = 2;
-  }
+  static DAILY_CHALLENGE_ALLOWABLE_CLOCK_SKEW_IN_DAYS = 2;
 
   /**
    * Completes a challenge for a user and unlocks any rewards !if! it's not already completed
@@ -464,7 +461,6 @@ class ChallengesModule {
       });
   }
 }
-ChallengesModule.initClass();
 
 module.exports = ChallengesModule;
 

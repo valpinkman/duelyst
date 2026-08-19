@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -30,33 +29,6 @@ const PlayerModifierSignatureCardAlwaysReady = require('./playerModifiers/player
 const _ = require('underscore');
 
 class Player extends SDKObject {
-  static initClass() {
-    this.prototype.deck = null;
-    this.prototype.hasResigned = false;
-    this.prototype.hasStartingHand = false;
-    this.prototype.isCurrentPlayer = false;
-    this.prototype.isRanked = false;
-    this.prototype.rank = null;
-    this.prototype.isWinner = false;
-    this.prototype.lastMaximumMana = null;
-    this.prototype.lastActionTakenAt = null; // used by server to account for turn timer
-    this.prototype.lastRemainingMana = null;
-    this.prototype.maximumMana = null;
-    this.prototype.playerId = null;
-    this.prototype.remainingMana = null;
-    this.prototype.signatureCardIndices = null;
-    this.prototype.signatureCardActive = false; // signature card can only be cast when it is active
-    this.prototype.startingMana = null;
-    this.prototype.totalDamageDealt = 0;
-    this.prototype.totalDamageDealtToGeneral = 0;
-    this.prototype.totalMinionsKilled = 0;
-    this.prototype.totalSpellsCast = 0;
-    this.prototype.totalSpellsPlayedFromHand = 0;
-    this.prototype.totalMinionsPlayedFromHand = 0;
-    this.prototype.totalMinionsSpawned = 0;
-    this.prototype.username = null;
-  }
-
   constructor(gameSession, playerId, username) {
     super(gameSession);
 
@@ -649,7 +621,30 @@ class Player extends SDKObject {
     return this.flushAllCachedData();
   }
 }
-Player.initClass();
+Player.prototype.deck = null;
+Player.prototype.hasResigned = false;
+Player.prototype.hasStartingHand = false;
+Player.prototype.isCurrentPlayer = false;
+Player.prototype.isRanked = false;
+Player.prototype.rank = null;
+Player.prototype.isWinner = false;
+Player.prototype.lastMaximumMana = null;
+Player.prototype.lastActionTakenAt = null;
+Player.prototype.lastRemainingMana = null;
+Player.prototype.maximumMana = null;
+Player.prototype.playerId = null;
+Player.prototype.remainingMana = null;
+Player.prototype.signatureCardIndices = null;
+Player.prototype.signatureCardActive = false;
+Player.prototype.startingMana = null;
+Player.prototype.totalDamageDealt = 0;
+Player.prototype.totalDamageDealtToGeneral = 0;
+Player.prototype.totalMinionsKilled = 0;
+Player.prototype.totalSpellsCast = 0;
+Player.prototype.totalSpellsPlayedFromHand = 0;
+Player.prototype.totalMinionsPlayedFromHand = 0;
+Player.prototype.totalMinionsSpawned = 0;
+Player.prototype.username = null;
 
 // endregion SERIALIZATION
 

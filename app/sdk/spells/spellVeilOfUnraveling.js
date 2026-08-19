@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,6 @@ const ModifierSilence = require('app/sdk/modifiers/modifierSilence');
 const _ = require('underscore');
 
 class SpellVeilOfUnraveling extends SpellDamage {
-  static initClass() {
-    this.prototype.damageAmount = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     if ((this.damageAmount == null)) {
       this.destroyShadowCreepAndSetSpellDamage();
@@ -42,6 +37,7 @@ class SpellVeilOfUnraveling extends SpellDamage {
     })();
   }
 }
-SpellVeilOfUnraveling.initClass(); // destroy shadow creep tile
+SpellVeilOfUnraveling.prototype.damageAmount = null;
+// destroy shadow creep tile
 
 module.exports = SpellVeilOfUnraveling;

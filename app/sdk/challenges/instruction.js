@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,56 +12,7 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class Instruction extends Validator {
-  static initClass() {
-    this.prototype.type = 'Instruction';
-    this.type = 'Instruction';
-
-    this.prototype.triggerStepIndex = null;
-
-    this.prototype.isComplete = false;
-    this.prototype.failedLabel = 'Invalid move';
-    this.prototype.showFailureOnSource = false; // whether to show failure label on source or target position
-    this.prototype.sourcePosition = null; // Required source tile x-y indices
-    this.prototype.targetPosition = null; // Required target tile x-y indices
-    this.prototype.handIndex = null; // Required hand index
-    this.prototype.instructionArrowPositions = null; // optional array of positions to drop instructional arrows at start of instruction
-    this.prototype.persistentInstructionArrowPosition = null; // optional x-y tile index of where to place a persistent instruction arrow
-    this.prototype.preventSelectionUntilLabelIndex = null; // optional integer, whether or not to prevent my player from selecting units until the label at this index plays
-    this.prototype.disableReadiness = false; // optional boolean, disables readiness indicators on units (this may grow into filtering and applying visual tags)
-    this.prototype.generalSpeech = null; // optional string of general speech
-    this.prototype.generalSpeechYPosition = null; // optional y descriptor for positioning general speech
-
-    // TODO: Convert into a class
-    // array of objects containing 2 or more values
-    // - label {string}
-    // - position {object} - tile indices
-    // - positionAtHandIndex {integer} - hand index to display at
-    // - positionAtManaIndex {integer} - mana index to point to
-    // - positionAtMyHealth {boolean} - whether to position at my health
-    // - positionAtEnemyHealth {boolean} - whether to position at enemy health
-    // - positionAtEndTurn {boolean} - whether to position at the end turn button
-    // - positionAtPlayerArtifactIndex {ineger} - positions label at one of player's artifacts (0 1 or 2)
-    // - positionAtReplace {boolean} - whether to position at replace node
-    // - positionAtSignatureSpell {boolean} - whether to position at player's signature spell node
-    // - duration {optional, number}
-    // - delay {optional, number} seconds to delay before showing this message
-    // - instructionArrowPositions {optional, array of positions} - places to drop an instructional arrow at start of instruction label
-    // - isPersistent {optional, boolean} - whether or not this exits on it's own or waits for an interaction to continue sequence
-    // - isNotDismissable {optional, boolean} - whether or not this instruction can be clicked to skip (defaults to false)
-    // - triggersInstructionIndex {optional, integer} - which instruction label to play after this one completes, defaults to the next instruction (or itself if last)
-    // instruction label focus directions:
-    // - focusUp: {optional, boolean} - direction this instruction should focus, defaults to false which means focusDown
-    // - focusDown: {optional, boolean} - direction this instruction should focus, defaults to false which means focusDown
-    // - focusLeft: {optional, boolean} - direction this instruction should focus, defaults to false which means focusDown
-    // - focusRight: {optional, boolean} - direction this instruction should focus, defaults to false which means focusDown
-    // Speech label options
-    // - isSpeech {boolean} - true to activate this as a general speech node instead of instruction node
-    // - yPosition {Number} - percentage up the screen for speech to come in from
-    // - isOpponent {boolean} - optional - defaults to false, if true
-    this.prototype.instructionLabels = null; // array of objects with the options described above
-
-    this.prototype.expectedActionType = null;
-  }
+  static type = 'Instruction';
 
   /**
    * Instruction constructor.
@@ -168,6 +118,21 @@ class Instruction extends Validator {
     return { x: (-0.1 + ((index * 7) / 5)), y: -0.25 };
   }
 }
-Instruction.initClass();
+Instruction.prototype.type = 'Instruction';
+Instruction.prototype.triggerStepIndex = null;
+Instruction.prototype.isComplete = false;
+Instruction.prototype.failedLabel = 'Invalid move';
+Instruction.prototype.showFailureOnSource = false;
+Instruction.prototype.sourcePosition = null;
+Instruction.prototype.targetPosition = null;
+Instruction.prototype.handIndex = null;
+Instruction.prototype.instructionArrowPositions = null;
+Instruction.prototype.persistentInstructionArrowPosition = null;
+Instruction.prototype.preventSelectionUntilLabelIndex = null;
+Instruction.prototype.disableReadiness = false;
+Instruction.prototype.generalSpeech = null;
+Instruction.prototype.generalSpeechYPosition = null;
+Instruction.prototype.instructionLabels = null;
+Instruction.prototype.expectedActionType = null;
 
 module.exports = Instruction;

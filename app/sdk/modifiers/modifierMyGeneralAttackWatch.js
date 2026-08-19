@@ -1,25 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
 const Modifier = require('./modifier');
 
 class ModifierMyGeneralAttackWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralAttackWatch';
-    this.type = 'ModifierMyGeneralAttackWatch';
-
-    this.modifierName = 'Attack Watch: My General';
-    this.description = 'Attack Watch: My General';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierMyGeneralAttackWatch';
+  static modifierName = 'Attack Watch: My General';
+  static description = 'Attack Watch: My General';
 
   onAction(event) {
     super.onAction(event);
@@ -34,7 +24,11 @@ class ModifierMyGeneralAttackWatch extends Modifier {
 
   onMyGeneralAttackWatch(action) {}
 }
-ModifierMyGeneralAttackWatch.initClass();
+ModifierMyGeneralAttackWatch.prototype.type = 'ModifierMyGeneralAttackWatch';
+ModifierMyGeneralAttackWatch.prototype.activeInHand = false;
+ModifierMyGeneralAttackWatch.prototype.activeInDeck = false;
+ModifierMyGeneralAttackWatch.prototype.activeInSignatureCards = false;
+ModifierMyGeneralAttackWatch.prototype.activeOnBoard = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyGeneralAttackWatch;

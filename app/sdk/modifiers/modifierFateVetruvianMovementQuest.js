@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,10 +19,7 @@ const ModifierQuestStatusVetruvian = require('./modifierQuestStatusVetruvian');
 const ModifierFate = require('./modifierFate');
 
 class ModifierFateVetruvianMovementQuest extends ModifierFate {
-  static initClass() {
-    this.prototype.type = 'ModifierFateVetruvianMovementQuest';
-    this.type = 'ModifierFateVetruvianMovementQuest';
-  }
+  static type = 'ModifierFateVetruvianMovementQuest';
 
   onActivate() {
     const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
@@ -91,6 +87,6 @@ class ModifierFateVetruvianMovementQuest extends ModifierFate {
     return this.getGameSession().applyModifierContextObject(countModifier, general);
   }
 }
-ModifierFateVetruvianMovementQuest.initClass();
+ModifierFateVetruvianMovementQuest.prototype.type = 'ModifierFateVetruvianMovementQuest';
 
 module.exports = ModifierFateVetruvianMovementQuest;

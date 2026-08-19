@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,12 +19,7 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class ValidatorFollowup extends Validator {
-  static initClass() {
-    this.prototype.type = 'ValidatorFollowup';
-    this.type = 'ValidatorFollowup';
-
-    this.prototype._cardStack = null;
-  }
+  static type = 'ValidatorFollowup';
 
   // region INITIALIZE
 
@@ -169,7 +163,8 @@ class ValidatorFollowup extends Validator {
     }
   }
 }
-ValidatorFollowup.initClass();
+ValidatorFollowup.prototype.type = 'ValidatorFollowup';
+ValidatorFollowup.prototype._cardStack = null;
 
 // endregion events
 

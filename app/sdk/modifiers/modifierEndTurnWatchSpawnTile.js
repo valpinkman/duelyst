@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -8,15 +7,9 @@ const UtilsPosition = require('app/common/utils/utils_position');
 const ModifierEndTurnWatchSpawnEntity = require('./modifierEndTurnWatchSpawnEntity');
 
 class ModifierEndTurnWatchSpawnTile extends ModifierEndTurnWatchSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchSpawnTile';
-    this.type = 'ModifierEndTurnWatchSpawnTile';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the end of your turn, turn %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierEndTurnWatchSpawnTile';
+  static modifierName = 'Turn Watch';
+  static description = 'At the end of your turn, turn %X';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
@@ -35,6 +28,7 @@ class ModifierEndTurnWatchSpawnTile extends ModifierEndTurnWatchSpawnEntity {
     return this.description;
   }
 }
-ModifierEndTurnWatchSpawnTile.initClass();
+ModifierEndTurnWatchSpawnTile.prototype.type = 'ModifierEndTurnWatchSpawnTile';
+ModifierEndTurnWatchSpawnTile.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierEndTurnWatchSpawnTile;

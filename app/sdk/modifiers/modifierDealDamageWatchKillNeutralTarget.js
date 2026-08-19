@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -14,17 +13,9 @@ const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 const ModifierDealDamageWatchKillTarget = require('./modifierDealDamageWatchKillTarget');
 
 class ModifierDealDamageWatchKillNeutralTarget extends ModifierDealDamageWatchKillTarget {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchKillNeutralTarget';
-    this.type = 'ModifierDealDamageWatchKillNeutralTarget';
-
-    this.modifierName = 'Neutral Assassin';
-    this.description = 'Whenever this damages a neutral minion, destroy that minion';
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
-  }
+  static type = 'ModifierDealDamageWatchKillNeutralTarget';
+  static modifierName = 'Neutral Assassin';
+  static description = 'Whenever this damages a neutral minion, destroy that minion';
 
   getIsActionRelevant(a) {
     // kill the target as long as it satisfies base requirements AND is Neutral
@@ -38,7 +29,9 @@ class ModifierDealDamageWatchKillNeutralTarget extends ModifierDealDamageWatchKi
     }
   }
 }
-ModifierDealDamageWatchKillNeutralTarget.initClass();
+ModifierDealDamageWatchKillNeutralTarget.prototype.type = 'ModifierDealDamageWatchKillNeutralTarget';
+ModifierDealDamageWatchKillNeutralTarget.prototype.maxStacks = 1;
+ModifierDealDamageWatchKillNeutralTarget.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
 
 module.exports = ModifierDealDamageWatchKillNeutralTarget;
 

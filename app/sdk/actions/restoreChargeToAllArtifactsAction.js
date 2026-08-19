@@ -3,17 +3,13 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
 
 class RestoreChargeToAllArtifactsAction extends Action {
-  static initClass() {
-    this.type = 'RestoreChargeToAllArtifactsAction';
-    this.prototype.fxResource = ['FX.Actions.RefreshArtifacts'];
-  }
+  static type = 'RestoreChargeToAllArtifactsAction';
 
   constructor() {
     super(...arguments);
@@ -41,6 +37,6 @@ class RestoreChargeToAllArtifactsAction extends Action {
     }
   }
 }
-RestoreChargeToAllArtifactsAction.initClass();
+RestoreChargeToAllArtifactsAction.prototype.fxResource = ['FX.Actions.RefreshArtifacts'];
 
 module.exports = RestoreChargeToAllArtifactsAction;

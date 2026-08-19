@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const MoveAction = require('app/sdk/actions/moveAction');
@@ -10,20 +9,9 @@ const SwapUnitsAction = require('app/sdk/actions/swapUnitsAction');
 const Modifier = require('./modifier');
 
 class ModifierMyMoveWatchAnyReason extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMoveWatchAnyReason';
-    this.type = 'ModifierMyMoveWatchAnyReason';
-
-    this.modifierName = 'Move Watch Any Reason: Self';
-    this.description = 'Move Watch Any Reason: Self';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-  }
+  static type = 'ModifierMyMoveWatchAnyReason';
+  static modifierName = 'Move Watch Any Reason: Self';
+  static description = 'Move Watch Any Reason: Self';
 
   onAction(event) {
     super.onAction(event);
@@ -40,7 +28,12 @@ class ModifierMyMoveWatchAnyReason extends Modifier {
 
   onMyMoveWatchAnyReason(action) {}
 }
-ModifierMyMoveWatchAnyReason.initClass();
+ModifierMyMoveWatchAnyReason.prototype.type = 'ModifierMyMoveWatchAnyReason';
+ModifierMyMoveWatchAnyReason.prototype.activeInHand = false;
+ModifierMyMoveWatchAnyReason.prototype.activeInDeck = false;
+ModifierMyMoveWatchAnyReason.prototype.activeInSignatureCards = false;
+ModifierMyMoveWatchAnyReason.prototype.activeOnBoard = true;
+ModifierMyMoveWatchAnyReason.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyMoveWatchAnyReason;

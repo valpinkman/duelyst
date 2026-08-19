@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -11,13 +10,6 @@ const KillAction = require('app/sdk/actions/killAction');
 const PlayerModifierManaModifierSingleUse = require('app/sdk/playerModifiers/playerModifierManaModifierSingleUse');
 
 class SpellDarkSacrifice extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.AllyDirect;
-    this.prototype.canTargetGeneral = false;
-    this.prototype.costChange = -3;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
     const applyEffectPosition = { x, y };
@@ -37,6 +29,9 @@ class SpellDarkSacrifice extends Spell {
     return true;
   }
 }
-SpellDarkSacrifice.initClass();
+SpellDarkSacrifice.prototype.targetType = CardType.Unit;
+SpellDarkSacrifice.prototype.spellFilterType = SpellFilterType.AllyDirect;
+SpellDarkSacrifice.prototype.canTargetGeneral = false;
+SpellDarkSacrifice.prototype.costChange = -3;
 
 module.exports = SpellDarkSacrifice;

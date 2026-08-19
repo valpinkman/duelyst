@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -9,16 +8,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const GameType = require('app/sdk/gameType');
 
 class QuestBeginner extends Quest {
-  static initClass() {
-    // TODO: needs documentation
-    this.prototype.isReplaceable = false;
-    this.prototype.isRequired = true;
-    this.prototype.isBeginner = true;
-
-    // Set the default Gold reward for quests.
-    this.prototype.goldReward = 150;
-  }
-
   constructor() {
     super(...arguments);
     if (Math.floor(this.id / 100) !== 99) {
@@ -26,6 +15,9 @@ class QuestBeginner extends Quest {
     }
   }
 }
-QuestBeginner.initClass();
+QuestBeginner.prototype.isReplaceable = false;
+QuestBeginner.prototype.isRequired = true;
+QuestBeginner.prototype.isBeginner = true;
+QuestBeginner.prototype.goldReward = 150;
 
 module.exports = QuestBeginner;

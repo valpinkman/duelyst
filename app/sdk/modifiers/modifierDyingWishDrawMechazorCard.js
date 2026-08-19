@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -9,14 +8,8 @@ const Races = require('app/sdk/cards/racesLookup');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDrawMechazorCard extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDrawMechazorCard';
-    this.type = 'ModifierDyingWishDrawMechazorCard';
-
-    this.description = 'Put a random MECH minion into your action bar';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierDyingWishDrawMechazorCard';
+  static description = 'Put a random MECH minion into your action bar';
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -29,6 +22,7 @@ class ModifierDyingWishDrawMechazorCard extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDrawMechazorCard.initClass();
+ModifierDyingWishDrawMechazorCard.prototype.type = 'ModifierDyingWishDrawMechazorCard';
+ModifierDyingWishDrawMechazorCard.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierDyingWishDrawMechazorCard;

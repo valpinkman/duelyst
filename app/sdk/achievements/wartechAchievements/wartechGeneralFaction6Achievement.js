@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,18 +14,9 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 // Play your first 20 Season Ranked games.
 
 class WartechGeneralFaction6Achievement extends Achievement {
-  static initClass() {
-    this.id = 'wartechGeneralFaction6Achievement';
-    this.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_6_abbreviated_name') });
-    this.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_6_abbreviated_name') });
-    this.progressRequired = 10;
-    this.rewards = {
-      cards: [
-        Cards.Faction6.ThirdGeneral,
-      ],
-    };
-    this.tracksProgress = true;
-  }
+  static id = 'wartechGeneralFaction6Achievement';
+  static progressRequired = 10;
+  static tracksProgress = true;
 
   static progressForGameDataForPlayerId(gameData, playerId, isUnscored, isDraw) {
     if (!GameType.isCompetitiveGameType(gameData.gameType)) {
@@ -68,6 +58,12 @@ class WartechGeneralFaction6Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Vanar to unlock.`;
   }
 }
-WartechGeneralFaction6Achievement.initClass();
+WartechGeneralFaction6Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_6_abbreviated_name') });
+WartechGeneralFaction6Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_6_abbreviated_name') });
+WartechGeneralFaction6Achievement.rewards = {
+  cards: [
+    Cards.Faction6.ThirdGeneral,
+  ],
+};
 
 module.exports = WartechGeneralFaction6Achievement;

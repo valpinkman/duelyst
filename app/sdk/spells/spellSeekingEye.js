@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,10 +10,6 @@ const SpellFilterType = require('./spellFilterType');
 const _ = require('underscore');
 
 class SpellOverload extends Spell {
-  static initClass() {
-    this.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
@@ -29,6 +24,6 @@ class SpellOverload extends Spell {
     return this.getGameSession().executeAction(action);
   }
 }
-SpellOverload.initClass();
+SpellOverload.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
 
 module.exports = SpellOverload;

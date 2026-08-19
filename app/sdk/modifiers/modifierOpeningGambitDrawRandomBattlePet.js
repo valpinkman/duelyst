@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -10,15 +9,9 @@ const Races = require('app/sdk/cards/racesLookup');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDrawRandomBattlePet extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDrawRandomBattlePet';
-    this.type = 'ModifierOpeningGambitDrawRandomBattlePet';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Put a random Battle Pet into your action bar';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitDrawRandomBattlePet';
+  static modifierName = 'Opening Gambit';
+  static description = 'Put a random Battle Pet into your action bar';
 
   onOpeningGambit() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -33,6 +26,7 @@ class ModifierOpeningGambitDrawRandomBattlePet extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitDrawRandomBattlePet.initClass();
+ModifierOpeningGambitDrawRandomBattlePet.prototype.type = 'ModifierOpeningGambitDrawRandomBattlePet';
+ModifierOpeningGambitDrawRandomBattlePet.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitDrawRandomBattlePet;

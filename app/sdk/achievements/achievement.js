@@ -1,23 +1,13 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 class Achievement {
-  static initClass() {
-    this.id = null; // lookup id for achievement
-    this.title = null; // player visible title of achievement
-    this.description = null; // player visible description of achievement
-    this.progressRequired = null; // integer of how many sub completions are required to finish achievement
-    // NOTE: rewards can only be of one type (cards, gold, spirit, booster,etc) for now due to UI
-    this.rewards = undefined; // object representing rewards
-    // example rewards:
-    //    gauntletTicket: 1
-    //    gold: 100
-    //    spirit: 100
-    //    spiritOrb: 1
-    this.enabled = true;
-  }
+  static id = null;
+  static title = null;
+  static description = null;
+  static progressRequired = null;
+  static enabled = true;
 
   constructor() {}
   // No need initialize this object
@@ -98,6 +88,6 @@ class Achievement {
     return this.rewards;
   }
 }
-Achievement.initClass();
+Achievement.rewards = undefined;
 
 module.exports = Achievement;

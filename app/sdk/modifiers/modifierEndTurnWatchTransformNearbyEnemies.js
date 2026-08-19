@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,17 +13,9 @@ const ModifierTransformed = require('app/sdk/modifiers/modifierTransformed');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchTransformNearbyEnemies extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchTransformNearbyEnemies';
-    this.type = 'ModifierEndTurnWatchTransformNearbyEnemies';
-
-    this.modifierName = 'End Turn Watch Transform Enemies';
-    this.description = 'At the end of your turn, transform nearby enemies';
-
-    this.prototype.cardToBecome = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-  }
+  static type = 'ModifierEndTurnWatchTransformNearbyEnemies';
+  static modifierName = 'End Turn Watch Transform Enemies';
+  static description = 'At the end of your turn, transform nearby enemies';
 
   static createContextObject(cardToBecome, options) {
     const contextObject = super.createContextObject(options);
@@ -63,6 +54,8 @@ class ModifierEndTurnWatchTransformNearbyEnemies extends ModifierEndTurnWatch {
     })();
   }
 }
-ModifierEndTurnWatchTransformNearbyEnemies.initClass();
+ModifierEndTurnWatchTransformNearbyEnemies.prototype.type = 'ModifierEndTurnWatchTransformNearbyEnemies';
+ModifierEndTurnWatchTransformNearbyEnemies.prototype.cardToBecome = null;
+ModifierEndTurnWatchTransformNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
 
 module.exports = ModifierEndTurnWatchTransformNearbyEnemies;

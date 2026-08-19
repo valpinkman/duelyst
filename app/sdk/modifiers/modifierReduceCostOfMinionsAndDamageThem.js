@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,18 +12,9 @@ const UtilsPosition = require('app/common/utils/utils_position');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierReduceCostOfMinionsAndDamageThem';
-    this.type = 'ModifierReduceCostOfMinionsAndDamageThem';
-
-    this.modifierName = 'Summon Watch (reduce cost of minions and damage them)';
-    this.description = 'Your minions cost %X less to summon and take %Y damage when summoned from your action bar';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierReduceCostOfMinionsAndDamageThem';
+  static modifierName = 'Summon Watch (reduce cost of minions and damage them)';
+  static description = 'Your minions cost %X less to summon and take %Y damage when summoned from your action bar';
 
   static createContextObject(costChange, damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -71,6 +61,10 @@ class ModifierReduceCostOfMinionsAndDamageThem extends ModifierSummonWatch {
     }
   }
 }
-ModifierReduceCostOfMinionsAndDamageThem.initClass();
+ModifierReduceCostOfMinionsAndDamageThem.prototype.type = 'ModifierReduceCostOfMinionsAndDamageThem';
+ModifierReduceCostOfMinionsAndDamageThem.prototype.activeInHand = false;
+ModifierReduceCostOfMinionsAndDamageThem.prototype.activeInDeck = false;
+ModifierReduceCostOfMinionsAndDamageThem.prototype.activeInSignatureCards = false;
+ModifierReduceCostOfMinionsAndDamageThem.prototype.activeOnBoard = true;
 
 module.exports = ModifierReduceCostOfMinionsAndDamageThem;

@@ -3,20 +3,13 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
 
 class RemoveManaCoreAction extends Action {
-  static initClass() {
-    // Removes a mana core
-
-    this.type = 'RemoveManaCoreAction';
-
-    this.prototype.manaAmount = 0;
-  }
+  static type = 'RemoveManaCoreAction';
 
   constructor(gameSession, manaAmount) {
     if (manaAmount == null) { manaAmount = 0; }
@@ -51,6 +44,6 @@ class RemoveManaCoreAction extends Action {
     return this.manaAmount = Math.max(manaAmount, 0);
   }
 }
-RemoveManaCoreAction.initClass();
+RemoveManaCoreAction.prototype.manaAmount = 0;
 
 module.exports = RemoveManaCoreAction;

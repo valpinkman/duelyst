@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,11 +10,6 @@ const SpellFilterType = require('./spellFilterType');
 const DrawCardAction = require('app/sdk/actions/drawCardAction');
 
 class SpellDamageEnemyGeneralBothDrawCard extends SpellDamage {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.None;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const applyEffectPositions = [];
 
@@ -38,6 +32,7 @@ class SpellDamageEnemyGeneralBothDrawCard extends SpellDamage {
     return this.getGameSession().executeAction(this.getOwner().getDeck().actionDrawCard());
   }
 }
-SpellDamageEnemyGeneralBothDrawCard.initClass();
+SpellDamageEnemyGeneralBothDrawCard.prototype.targetType = CardType.Unit;
+SpellDamageEnemyGeneralBothDrawCard.prototype.spellFilterType = SpellFilterType.None;
 
 module.exports = SpellDamageEnemyGeneralBothDrawCard;

@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -47,48 +46,6 @@ const _ = require('underscore');
 const moment = require('moment');
 
 class Card extends SDKObject {
-  static initClass() {
-    this.prototype.type = CardType.Card; // this should always remain the same for major card types (i.e. don't change this per unit/spell/etc)
-    this.type = CardType.Card; // this should always remain the same for major card types (i.e. don't change this per unit/spell/etc)
-    this.prototype.name = 'Card'; // this should be unique to each individual type of unit/spell/etc
-
-    this.prototype.appliedToDeckByActionIndex = -1; // unique index of action that applied this card to the deck, where -1 is during game setup
-    this.prototype.appliedToHandByActionIndex = -1; // unique index of action that applied this card to the hand, where -1 is during game setup
-    this.prototype.appliedToBoardByActionIndex = -1; // unique index of action that applied this card to the board, where -1 is during game setup
-    this.prototype.appliedToSignatureCardsByActionIndex = -1; // unique index of action that applied this card to the signature cards, where -1 is during game setup
-    this.prototype.canBeAppliedAnywhere = false; // whether card can be applied anywhere on board when played
-    this.prototype.factionId = Factions.Neutral;
-    this.prototype.hideAsCardId = null; // card id of the card this card should be hidden as during scrubbing
-    this.prototype.id = null; // this should be unique to each individual type of unit/spell/etc
-    this.prototype.index = null; // unique index of this card, set automatically by game session
-    this.prototype.isPlayed = false; // whether card has been played
-    this.prototype.isRemoved = false; // whether card has been removed (not the same as location, as a card can be removed but still located on board until fully cleaned up)
-    this.prototype.location = CardLocation.Void; // where card is located: deck, hand, board, or void
-    this.prototype.manaCost = 0;
-    this.prototype.modifierIndices = null;
-    this.prototype.modifiersAppliedFromContextObjects = false; // whether modifiers have been applied from modifiers context objects
-    this.prototype.modifiersContextObjects = null; // array of context objects describing the inherent modifiers of this card
-    this.prototype.ownerId = null; // set to player id that owns card, when null the card is owned by the game session
-    this.prototype.parentCardIndex = null; // index of card that caused this card to be played, null if played by player
-    this.prototype.position = null; // position of the card on the board
-    this.prototype.raceId = Races.Neutral;
-    this.prototype.rarityId = Rarity.Fixed;
-    this.prototype.removedFromDeckByActionIndex = -1; // unique index of action that removed this card from deck, where -1 is during game setup
-    this.prototype.removedFromHandByActionIndex = -1; // unique index of action that removed this card from hand, where -1 is during game setup
-    this.prototype.removedFromBoardByActionIndex = -1; // unique index of action that removed this card from the board, where -1 is during game setup
-    this.prototype.removedFromSignatureCardsByActionIndex = -1; // unique index of action that removed this card from signature cards, where -1 is during game setup
-    this.prototype.subCardIndices = null;
-
-    this.prototype.isNotOwnedByPlayer = this.prototype.isOwnedByGameSession;
-
-    this.prototype.getDoesOwnerHaveEnoughManaToAct = this.prototype.getDoesOwnerHaveEnoughManaToPlay;
-
-    // for now cleanse/dispel is just an alias for silence
-    this.prototype.cleanse = this.prototype.silence;
-    this.prototype.dispel = this.prototype.silence;
-    // indices of cards that were played by this card
-  }
-
   constructor(gameSession) {
     super(gameSession);
 
@@ -2933,7 +2890,39 @@ class Card extends SDKObject {
     return this._private.referencedCardData;
   }
 }
-Card.initClass();
+Card.prototype.type = CardType.Card;
+Card.type = CardType.Card;
+Card.prototype.name = 'Card';
+Card.prototype.appliedToDeckByActionIndex = -1;
+Card.prototype.appliedToHandByActionIndex = -1;
+Card.prototype.appliedToBoardByActionIndex = -1;
+Card.prototype.appliedToSignatureCardsByActionIndex = -1;
+Card.prototype.canBeAppliedAnywhere = false;
+Card.prototype.factionId = Factions.Neutral;
+Card.prototype.hideAsCardId = null;
+Card.prototype.id = null;
+Card.prototype.index = null;
+Card.prototype.isPlayed = false;
+Card.prototype.isRemoved = false;
+Card.prototype.location = CardLocation.Void;
+Card.prototype.manaCost = 0;
+Card.prototype.modifierIndices = null;
+Card.prototype.modifiersAppliedFromContextObjects = false;
+Card.prototype.modifiersContextObjects = null;
+Card.prototype.ownerId = null;
+Card.prototype.parentCardIndex = null;
+Card.prototype.position = null;
+Card.prototype.raceId = Races.Neutral;
+Card.prototype.rarityId = Rarity.Fixed;
+Card.prototype.removedFromDeckByActionIndex = -1;
+Card.prototype.removedFromHandByActionIndex = -1;
+Card.prototype.removedFromBoardByActionIndex = -1;
+Card.prototype.removedFromSignatureCardsByActionIndex = -1;
+Card.prototype.subCardIndices = null;
+Card.prototype.isNotOwnedByPlayer = Card.prototype.isOwnedByGameSession;
+Card.prototype.getDoesOwnerHaveEnoughManaToAct = Card.prototype.getDoesOwnerHaveEnoughManaToPlay;
+Card.prototype.cleanse = Card.prototype.silence;
+Card.prototype.dispel = Card.prototype.silence;
 
 // endregion ### SERIALIZATION ###
 

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,7 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const ModifierEgg = require('./modifierEgg');
 
 class ModifierOpeningGambitProgenitor extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitProgenitor';
-    this.type = 'ModifierOpeningGambitProgenitor';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitProgenitor';
 
   onOpeningGambit() {
     const ownerId = this.getOwnerId();
@@ -56,6 +50,7 @@ class ModifierOpeningGambitProgenitor extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitProgenitor.initClass();
+ModifierOpeningGambitProgenitor.prototype.type = 'ModifierOpeningGambitProgenitor';
+ModifierOpeningGambitProgenitor.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitProgenitor;

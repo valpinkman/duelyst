@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -29,19 +28,7 @@ const { Redis, Jobs, GameManager } = require('../../redis');
 const SDK = require('../../../app/sdk');
 
 class InventoryModule {
-  static initClass() {
-    /**
-     * Maximum number of soft wipes allowed. Determines if a user is eligible for a wipe.
-     * @public
-     */
-    this.MAX_SOFTWIPE_COUNT = 1;
-
-    /**
-     * When's the cutoff time for the currently active soft wipe.
-     * @public
-     */
-    this.SOFTWIPE_AVAILABLE_UNTIL = moment.utc('2016-04-20');
-  }
+  static MAX_SOFTWIPE_COUNT = 1;
 
   /**
    * Give a user gold.
@@ -3231,6 +3218,6 @@ class InventoryModule {
       });
   }
 }
-InventoryModule.initClass();
+InventoryModule.SOFTWIPE_AVAILABLE_UNTIL = moment.utc('2016-04-20');
 
 module.exports = InventoryModule;

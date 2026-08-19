@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierSpellWatch = require('./modifierSpellWatch');
 
 class ModifierSpellWatchDamageAllMinions extends ModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchDamageAllMinions';
-    this.type = 'ModifierSpellWatchDamageAllMinions';
-
-    this.modifierName = 'Spell Watch (Damage All Minions)';
-    this.description = 'Whenever you cast a spell, deal %X damage to ALL minions';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
-  }
+  static type = 'ModifierSpellWatchDamageAllMinions';
+  static modifierName = 'Spell Watch (Damage All Minions)';
+  static description = 'Whenever you cast a spell, deal %X damage to ALL minions';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -52,6 +43,8 @@ class ModifierSpellWatchDamageAllMinions extends ModifierSpellWatch {
     })();
   }
 }
-ModifierSpellWatchDamageAllMinions.initClass();
+ModifierSpellWatchDamageAllMinions.prototype.type = 'ModifierSpellWatchDamageAllMinions';
+ModifierSpellWatchDamageAllMinions.prototype.damageAmount = 0;
+ModifierSpellWatchDamageAllMinions.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
 
 module.exports = ModifierSpellWatchDamageAllMinions;

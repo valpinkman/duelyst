@@ -1,27 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
 const Modifier = require('./modifier');
 
 class ModifierEnemyGeneralAttackWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyGeneralAttackWatch';
-    this.type = 'ModifierEnemyGeneralAttackWatch';
-
-    this.modifierName = 'ModifierEnemyGeneralAttackWatch';
-    this.description = 'Whenever the enemy General attacks...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEnemyMinionAttackWatch'];
-  }
+  static type = 'ModifierEnemyGeneralAttackWatch';
+  static modifierName = 'ModifierEnemyGeneralAttackWatch';
+  static description = 'Whenever the enemy General attacks...';
 
   onAction(event) {
     super.onAction(event);
@@ -36,7 +24,12 @@ class ModifierEnemyGeneralAttackWatch extends Modifier {
 
   onEnemyGeneralAttackWatch(action) {}
 }
-ModifierEnemyGeneralAttackWatch.initClass();
+ModifierEnemyGeneralAttackWatch.prototype.type = 'ModifierEnemyGeneralAttackWatch';
+ModifierEnemyGeneralAttackWatch.prototype.activeInHand = false;
+ModifierEnemyGeneralAttackWatch.prototype.activeInDeck = false;
+ModifierEnemyGeneralAttackWatch.prototype.activeInSignatureCards = false;
+ModifierEnemyGeneralAttackWatch.prototype.activeOnBoard = true;
+ModifierEnemyGeneralAttackWatch.prototype.fxResource = ['FX.Modifiers.ModifierEnemyMinionAttackWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEnemyGeneralAttackWatch;

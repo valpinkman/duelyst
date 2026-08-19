@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,8 @@ const _ = require('underscore');
 const ModifierDealOrTakeDamageWatch = require('./modifierDealOrTakeDamageWatch');
 
 class ModifierDealOrTakeDamageWatchRandomTeleportOther extends ModifierDealOrTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealOrTakeDamageWatchRandomTeleportOther';
-    this.type = 'ModifierDealOrTakeDamageWatchRandomTeleportOther';
-
-    this.description = 'Whenever an enemy damages or takes damage from this, teleport that enemy to a random location';
-  }
+  static type = 'ModifierDealOrTakeDamageWatchRandomTeleportOther';
+  static description = 'Whenever an enemy damages or takes damage from this, teleport that enemy to a random location';
 
   onDealOrTakeDamage(action) {
     let targetToTeleport;
@@ -57,7 +52,7 @@ class ModifierDealOrTakeDamageWatchRandomTeleportOther extends ModifierDealOrTak
     return p;
   }
 }
-ModifierDealOrTakeDamageWatchRandomTeleportOther.initClass();
+ModifierDealOrTakeDamageWatchRandomTeleportOther.prototype.type = 'ModifierDealOrTakeDamageWatchRandomTeleportOther';
 
 module.exports = ModifierDealOrTakeDamageWatchRandomTeleportOther;
 

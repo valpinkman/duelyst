@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -23,27 +22,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/mind-game-otk-1/11425
 
 class AdvancedMagmarChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'AdvancedMagmarChallenge1';
-    this.prototype.type = 'AdvancedMagmarChallenge1';
-    this.prototype.categoryType = ChallengeCategory.contest2.type;
-
-    this.prototype.name = i18next.t('challenges.advanced_magmar_1_title');
-    this.prototype.description = i18next.t('challenges.advanced_magmar_1_description');
-    this.prototype.iconUrl = RSX.speech_portrait_magmar.img;
-
-    this.prototype._musicOverride = RSX.music_training.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_magmar_1_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.advanced_magmar_1_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 6;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 6;
-    this.prototype.startingHandSizePlayer = 6;
-  }
+  static type = 'AdvancedMagmarChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -120,6 +99,19 @@ class AdvancedMagmarChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-AdvancedMagmarChallenge1.initClass();
+AdvancedMagmarChallenge1.prototype.type = 'AdvancedMagmarChallenge1';
+AdvancedMagmarChallenge1.prototype.categoryType = ChallengeCategory.contest2.type;
+AdvancedMagmarChallenge1.prototype.name = i18next.t('challenges.advanced_magmar_1_title');
+AdvancedMagmarChallenge1.prototype.description = i18next.t('challenges.advanced_magmar_1_description');
+AdvancedMagmarChallenge1.prototype.iconUrl = RSX.speech_portrait_magmar.img;
+AdvancedMagmarChallenge1.prototype._musicOverride = RSX.music_training.audio;
+AdvancedMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_magmar_1_start');
+AdvancedMagmarChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.advanced_magmar_1_fail'),
+];
+AdvancedMagmarChallenge1.prototype.battleMapTemplateIndex = 6;
+AdvancedMagmarChallenge1.prototype.snapShotOnPlayerTurn = 0;
+AdvancedMagmarChallenge1.prototype.startingManaPlayer = 6;
+AdvancedMagmarChallenge1.prototype.startingHandSizePlayer = 6;
 
 module.exports = AdvancedMagmarChallenge1;

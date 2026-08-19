@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const MoveAction = require('app/sdk/actions/moveAction');
@@ -11,20 +10,9 @@ const SwapUnitsAction = require('app/sdk/actions/swapUnitsAction');
 const Modifier = require('./modifier');
 
 class ModifierMyTeamMoveWatchAnyReason extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyTeamMoveWatchAnyReason';
-    this.type = 'ModifierMyTeamMoveWatchAnyReason';
-
-    this.modifierName = 'Any Move Watch: Self';
-    this.description = 'Whenever a friendly minion is moved for any reason...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-  }
+  static type = 'ModifierMyTeamMoveWatchAnyReason';
+  static modifierName = 'Any Move Watch: Self';
+  static description = 'Whenever a friendly minion is moved for any reason...';
 
   onAction(event) {
     super.onAction(event);
@@ -45,7 +33,12 @@ class ModifierMyTeamMoveWatchAnyReason extends Modifier {
 
   onMyTeamMoveWatch(action, buffTarget) {}
 }
-ModifierMyTeamMoveWatchAnyReason.initClass();
+ModifierMyTeamMoveWatchAnyReason.prototype.type = 'ModifierMyTeamMoveWatchAnyReason';
+ModifierMyTeamMoveWatchAnyReason.prototype.activeInHand = false;
+ModifierMyTeamMoveWatchAnyReason.prototype.activeInDeck = false;
+ModifierMyTeamMoveWatchAnyReason.prototype.activeInSignatureCards = false;
+ModifierMyTeamMoveWatchAnyReason.prototype.activeOnBoard = true;
+ModifierMyTeamMoveWatchAnyReason.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyTeamMoveWatchAnyReason;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,9 @@ const Races = require('app/sdk/cards/racesLookup');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchHydrax extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchHydrax';
-    this.type = 'ModifierSummonWatchHydrax';
-
-    this.modifierName = 'Modifier Summon Watch Hydrax';
-    this.description = 'Whenever you summon a Battle Pet, it and Hydrax gain %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-  }
+  static type = 'ModifierSummonWatchHydrax';
+  static modifierName = 'Modifier Summon Watch Hydrax';
+  static description = 'Whenever you summon a Battle Pet, it and Hydrax gain %X';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -49,6 +42,7 @@ class ModifierSummonWatchHydrax extends ModifierSummonWatch {
     return card.getBelongsToTribe(Races.BattlePet);
   }
 }
-ModifierSummonWatchHydrax.initClass();
+ModifierSummonWatchHydrax.prototype.type = 'ModifierSummonWatchHydrax';
+ModifierSummonWatchHydrax.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
 
 module.exports = ModifierSummonWatchHydrax;

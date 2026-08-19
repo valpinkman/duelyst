@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,11 +12,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class SpellIntensifySpawnEntitiesNearGeneral extends SpellIntensify {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.numberToSummon = 1;
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
@@ -39,6 +33,7 @@ class SpellIntensifySpawnEntitiesNearGeneral extends SpellIntensify {
     }
   }
 }
-SpellIntensifySpawnEntitiesNearGeneral.initClass();
+SpellIntensifySpawnEntitiesNearGeneral.prototype.cardDataOrIndexToSpawn = null;
+SpellIntensifySpawnEntitiesNearGeneral.prototype.numberToSummon = 1;
 
 module.exports = SpellIntensifySpawnEntitiesNearGeneral;

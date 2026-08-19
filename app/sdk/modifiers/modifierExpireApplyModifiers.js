@@ -2,22 +2,15 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
 
 class ModifierExpireApplyModifiers extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierExpireApplyModifiers';
-    this.type = 'ModifierExpireApplyModifiers';
-
-    this.modifierName = '';
-    this.description = '';
-
-    this.prototype.modifiersContextObjects = null;
-  }
+  static type = 'ModifierExpireApplyModifiers';
+  static modifierName = '';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, durationEndTurn, durationStartTurn, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, canTargetGeneral, description, options) {
     if (durationEndTurn == null) { durationEndTurn = 1; }
@@ -58,6 +51,7 @@ class ModifierExpireApplyModifiers extends Modifier {
     return affectedEntities;
   }
 }
-ModifierExpireApplyModifiers.initClass();
+ModifierExpireApplyModifiers.prototype.type = 'ModifierExpireApplyModifiers';
+ModifierExpireApplyModifiers.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierExpireApplyModifiers;

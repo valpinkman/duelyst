@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,9 @@ const _ = require('underscore');
 const ModifierEndTurnWatchSpawnEntity = require('./modifierEndTurnWatchSpawnEntity');
 
 class ModifierEndTurnWatchSpawnEgg extends ModifierEndTurnWatchSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchSpawnEgg';
-    this.type = 'ModifierEndTurnWatchSpawnEgg';
-
-    this.modifierName = 'ModifierEndTurnWatchSpawnEgg';
-    this.description = 'At the end of your turn, summon %X nearby';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierEndTurnWatchSpawnEgg';
+  static modifierName = 'ModifierEndTurnWatchSpawnEgg';
+  static description = 'At the end of your turn, summon %X nearby';
 
   static createContextObject(eggDescription, options) {
     let spawnCount; let spawnDescription; let spawnPattern; let
@@ -54,6 +47,7 @@ class ModifierEndTurnWatchSpawnEgg extends ModifierEndTurnWatchSpawnEntity {
     return cardDataOrIndexToSpawn;
   }
 }
-ModifierEndTurnWatchSpawnEgg.initClass();
+ModifierEndTurnWatchSpawnEgg.prototype.type = 'ModifierEndTurnWatchSpawnEgg';
+ModifierEndTurnWatchSpawnEgg.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierEndTurnWatchSpawnEgg;

@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierAuraAboveAndBelow extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAuraAboveAndBelow';
-    this.type = 'ModifierAuraAboveAndBelow';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAuraAboveAndBelow'];
-  }
+  static type = 'ModifierAuraAboveAndBelow';
 
   _findPotentialCardsInAura() {
     const finalFilteredCards = [];
@@ -31,6 +25,7 @@ class ModifierAuraAboveAndBelow extends Modifier {
     return finalFilteredCards;
   }
 }
-ModifierAuraAboveAndBelow.initClass();
+ModifierAuraAboveAndBelow.prototype.type = 'ModifierAuraAboveAndBelow';
+ModifierAuraAboveAndBelow.prototype.fxResource = ['FX.Modifiers.ModifierAuraAboveAndBelow'];
 
 module.exports = ModifierAuraAboveAndBelow;

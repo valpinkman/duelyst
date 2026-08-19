@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,11 +11,6 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const _ = require('underscore');
 
 class SpellTempTransform extends SpellRemoveAndReplaceEntity {
-  static initClass() {
-    this.prototype.durationEndTurn = 0;
-    this.prototype.durationStartTurn = 0;
-  }
-
   getCardDataOrIndexToSpawn(x, y) {
     let cardDataOrIndexToSpawn = super.getCardDataOrIndexToSpawn(x, y);
 
@@ -39,6 +33,7 @@ class SpellTempTransform extends SpellRemoveAndReplaceEntity {
     return cardDataOrIndexToSpawn;
   }
 }
-SpellTempTransform.initClass();
+SpellTempTransform.prototype.durationEndTurn = 0;
+SpellTempTransform.prototype.durationStartTurn = 0;
 
 module.exports = SpellTempTransform;

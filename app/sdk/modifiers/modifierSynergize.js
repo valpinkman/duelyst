@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlaySignatureCardAction = require('app/sdk/actions/playSignatureCardAction');
@@ -12,23 +11,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierSynergize extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergize';
-    this.type = 'ModifierSynergize';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.blood_surge_def');
-
-    this.modifierName = i18next.t('modifiers.blood_surge_name');
-    this.description = '';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSynergize'];
-  }
+  static type = 'ModifierSynergize';
+  static isKeyworded = true;
+  static description = '';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -45,7 +30,14 @@ class ModifierSynergize extends Modifier {
 
   onSynergize(action) {}
 }
-ModifierSynergize.initClass();
+ModifierSynergize.prototype.type = 'ModifierSynergize';
+ModifierSynergize.keywordDefinition = i18next.t('modifiers.blood_surge_def');
+ModifierSynergize.modifierName = i18next.t('modifiers.blood_surge_name');
+ModifierSynergize.prototype.activeInHand = false;
+ModifierSynergize.prototype.activeInDeck = false;
+ModifierSynergize.prototype.activeInSignatureCards = false;
+ModifierSynergize.prototype.activeOnBoard = true;
+ModifierSynergize.prototype.fxResource = ['FX.Modifiers.ModifierSynergize'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierSynergize;

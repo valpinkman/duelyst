@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -13,12 +12,7 @@ const _ = require('underscore');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitTeleportMinionsToThis extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitTeleportMinionsToThis';
-    this.type = 'ModifierOpeningGambitTeleportMinionsToThis';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitTeleportMinionsToThis';
 
   onOpeningGambit() {
     const entities = this.getGameSession().getBoard().getUnits(true);
@@ -41,6 +35,7 @@ class ModifierOpeningGambitTeleportMinionsToThis extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitTeleportMinionsToThis.initClass();
+ModifierOpeningGambitTeleportMinionsToThis.prototype.type = 'ModifierOpeningGambitTeleportMinionsToThis';
+ModifierOpeningGambitTeleportMinionsToThis.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitTeleportMinionsToThis;

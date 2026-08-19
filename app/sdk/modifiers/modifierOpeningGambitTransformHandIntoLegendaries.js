@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,12 +14,7 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const ModifierCannotBeRemovedFromHand = require('./modifierCannotBeRemovedFromHand');
 
 class ModifierOpeningGambitTransformHandIntoLegendaries extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitTransformHandIntoLegendaries';
-    this.type = 'ModifierOpeningGambitTransformHandIntoLegendaries';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitTransformHandIntoLegendaries';
 
   onOpeningGambit() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -86,6 +80,7 @@ class ModifierOpeningGambitTransformHandIntoLegendaries extends ModifierOpeningG
     }
   }
 }
-ModifierOpeningGambitTransformHandIntoLegendaries.initClass();
+ModifierOpeningGambitTransformHandIntoLegendaries.prototype.type = 'ModifierOpeningGambitTransformHandIntoLegendaries';
+ModifierOpeningGambitTransformHandIntoLegendaries.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitTransformHandIntoLegendaries;

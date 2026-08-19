@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -11,13 +10,9 @@ const GameFormat = require('app/sdk/gameFormat');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction';
-    this.type = 'ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Destroy a random enemy artifact to draw a random in-faction artifact';
-  }
+  static type = 'ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction';
+  static modifierName = 'Opening Gambit';
+  static description = 'Destroy a random enemy artifact to draw a random in-faction artifact';
 
   onOpeningGambit() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -60,6 +55,6 @@ class ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction extends Modif
     }
   }
 }
-ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction.initClass();
+ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction.prototype.type = 'ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction';
 
 module.exports = ModifierOpeningGambitRemoveArtifactToDrawArtifactFromFaction;

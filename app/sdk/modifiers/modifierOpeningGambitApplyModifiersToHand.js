@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,7 @@ const Modifier = require('./modifier');
  Modifier is used to apply modifiers to cards ONLY IN HAND when a card is played to the board.
 */
 class ModifierOpeningGambitApplyModifiersToHand extends ModifierOpeningGambitApplyModifiersToDeckAndHand {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitApplyModifiersToHand';
-    this.type = 'ModifierOpeningGambitApplyModifiersToHand';
-  }
+  static type = 'ModifierOpeningGambitApplyModifiersToHand';
 
   getCardsAffected() {
     let deck;
@@ -42,6 +38,6 @@ class ModifierOpeningGambitApplyModifiersToHand extends ModifierOpeningGambitApp
     return _.filter(cards, (card) => (card != null) && (!cardType || (card.getType() === cardType)) && (!raceId || card.getBelongsToTribe(raceId)));
   }
 }
-ModifierOpeningGambitApplyModifiersToHand.initClass();
+ModifierOpeningGambitApplyModifiersToHand.prototype.type = 'ModifierOpeningGambitApplyModifiersToHand';
 
 module.exports = ModifierOpeningGambitApplyModifiersToHand;

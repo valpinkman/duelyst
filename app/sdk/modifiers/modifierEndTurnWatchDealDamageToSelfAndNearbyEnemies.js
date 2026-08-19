@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies';
-    this.type = 'ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies';
-
-    this.modifierName = 'End Watch';
-    this.description = 'At the end of your turn, deal %X damage to self and all nearby enemies';
-
-    this.prototype.damageAmount = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierExplosionsNearby'];
-  }
+  static type = 'ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies';
+  static modifierName = 'End Watch';
+  static description = 'At the end of your turn, deal %X damage to self and all nearby enemies';
 
   static createContextObject(damageAmount, damageGenerals, damageAmountDelta, options) {
     if (damageAmount == null) { damageAmount = 1; }
@@ -95,6 +86,8 @@ class ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies extends ModifierEndTu
     return p;
   }
 }
-ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.initClass();
+ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.type = 'ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies';
+ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.damageAmount = 1;
+ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierExplosionsNearby'];
 
 module.exports = ModifierEndTurnWatchDealDamageToSelfAndNearbyEnemies;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Achievement = require('app/sdk/achievements/achievement');
@@ -10,18 +9,11 @@ const CosmeticsTypeLookup = require('app/sdk/cosmetics/cosmeticsTypeLookup');
 const _ = require('underscore');
 
 class HomeTurfAchievement extends Achievement {
-  static initClass() {
-    this.id = 'homeTurf';
-    this.title = 'Home Turf';
-    this.description = 'You\'ve won 5 games as Player One. Enjoy a free Premium Battle Map on us!';
-    this.progressRequired = 5;
-    this.enabled = false;
-    this.rewards = {
-      newRandomCosmetics: [
-        { type: CosmeticsTypeLookup.BattleMap },
-      ],
-    };
-  }
+  static id = 'homeTurf';
+  static title = 'Home Turf';
+  static description = 'You\'ve won 5 games as Player One. Enjoy a free Premium Battle Map on us!';
+  static progressRequired = 5;
+  static enabled = false;
 
   static progressForGameDataForPlayerId(gameData, playerId, isUnscored, isDraw) {
     if (isUnscored || !GameType.isFactionXPGameType(gameData.gameType)) {
@@ -35,6 +27,10 @@ class HomeTurfAchievement extends Achievement {
     return 0;
   }
 }
-HomeTurfAchievement.initClass();
+HomeTurfAchievement.rewards = {
+  newRandomCosmetics: [
+    { type: CosmeticsTypeLookup.BattleMap },
+  ],
+};
 
 module.exports = HomeTurfAchievement;

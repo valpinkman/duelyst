@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -10,15 +9,9 @@ const Races = require('app/sdk/cards/racesLookup');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDrawRandomBattlePet extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDrawRandomBattlePet';
-    this.type = 'ModifierDyingWishDrawRandomBattlePet';
-
-    this.modifierName = 'Dying Wish';
-    this.description = 'Put a random Battle Pet into your action bar';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
-  }
+  static type = 'ModifierDyingWishDrawRandomBattlePet';
+  static modifierName = 'Dying Wish';
+  static description = 'Put a random Battle Pet into your action bar';
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -33,6 +26,7 @@ class ModifierDyingWishDrawRandomBattlePet extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDrawRandomBattlePet.initClass();
+ModifierDyingWishDrawRandomBattlePet.prototype.type = 'ModifierDyingWishDrawRandomBattlePet';
+ModifierDyingWishDrawRandomBattlePet.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
 
 module.exports = ModifierDyingWishDrawRandomBattlePet;

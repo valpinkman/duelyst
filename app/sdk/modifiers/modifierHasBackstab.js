@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
@@ -9,18 +8,9 @@ const ModifierBackstab = require('./modifierBackstab');
 // Backstab modifier that can only stack once (this HAS backstab X rather than GAINS backstab X)
 
 class ModifierHasBackstab extends ModifierBackstab {
-  static initClass() {
-    this.prototype.type = 'ModifierHasBackstab';
-    this.type = 'ModifierHasBackstab';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.backstab_def');
-    this.description = 'Has Backstab (%X)';
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBackstab'];
-  }
+  static type = 'ModifierHasBackstab';
+  static isKeyworded = true;
+  static description = 'Has Backstab (%X)';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
@@ -29,6 +19,9 @@ class ModifierHasBackstab extends ModifierBackstab {
     return this.description;
   }
 }
-ModifierHasBackstab.initClass();
+ModifierHasBackstab.prototype.type = 'ModifierHasBackstab';
+ModifierHasBackstab.keywordDefinition = i18next.t('modifiers.backstab_def');
+ModifierHasBackstab.prototype.maxStacks = 1;
+ModifierHasBackstab.prototype.fxResource = ['FX.Modifiers.ModifierBackstab'];
 
 module.exports = ModifierHasBackstab;

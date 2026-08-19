@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,13 +15,8 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierMyMoveWatch = require('./modifierMyMoveWatch');
 
 class ModifierMyMoveWatchSpawnEntity extends ModifierMyMoveWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMoveWatchSpawnEntity';
-    this.type = 'ModifierMyMoveWatchSpawnEntity';
-
-    this.description = 'After this minion moves, summon %X';
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierMyMoveWatchSpawnEntity';
+  static description = 'After this minion moves, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -87,6 +81,7 @@ class ModifierMyMoveWatchSpawnEntity extends ModifierMyMoveWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierMyMoveWatchSpawnEntity.initClass();
+ModifierMyMoveWatchSpawnEntity.prototype.type = 'ModifierMyMoveWatchSpawnEntity';
+ModifierMyMoveWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierMyMoveWatchSpawnEntity;

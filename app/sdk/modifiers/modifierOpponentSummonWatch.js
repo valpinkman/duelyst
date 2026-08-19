@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -12,20 +11,9 @@ const CloneEntityAsTransformAction = require('app/sdk/actions/cloneEntityAsTrans
 const Modifier = require('./modifier');
 
 class ModifierOpponentSummonWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatch';
-    this.type = 'ModifierOpponentSummonWatch';
-
-    this.modifierName = 'Opponent Summon Watch';
-    this.description = 'Opponent Summon Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
-  }
+  static type = 'ModifierOpponentSummonWatch';
+  static modifierName = 'Opponent Summon Watch';
+  static description = 'Opponent Summon Watch';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -45,7 +33,12 @@ class ModifierOpponentSummonWatch extends Modifier {
 
   onSummonWatch(action) {}
 }
-ModifierOpponentSummonWatch.initClass();
+ModifierOpponentSummonWatch.prototype.type = 'ModifierOpponentSummonWatch';
+ModifierOpponentSummonWatch.prototype.activeInHand = false;
+ModifierOpponentSummonWatch.prototype.activeInDeck = false;
+ModifierOpponentSummonWatch.prototype.activeInSignatureCards = false;
+ModifierOpponentSummonWatch.prototype.activeOnBoard = true;
+ModifierOpponentSummonWatch.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierOpponentSummonWatch;

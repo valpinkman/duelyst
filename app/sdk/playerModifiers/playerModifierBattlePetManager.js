@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,12 +14,7 @@ const StartTurnAction = require('app/sdk/actions/startTurnAction');
 const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction');
 
 class PlayerModifierBattlePetManager extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierBattlePetManager';
-    this.type = 'PlayerModifierBattlePetManager';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'PlayerModifierBattlePetManager';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -148,6 +142,7 @@ class PlayerModifierBattlePetManager extends PlayerModifier {
     }
   }
 }
-PlayerModifierBattlePetManager.initClass();
+PlayerModifierBattlePetManager.prototype.type = 'PlayerModifierBattlePetManager';
+PlayerModifierBattlePetManager.prototype.maxStacks = 1;
 
 module.exports = PlayerModifierBattlePetManager;

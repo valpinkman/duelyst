@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,22 +12,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierSecondWind extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSecondWind';
-    this.type = 'ModifierSecondWind';
-
-    this.modifierName = i18next.t('modifiers.second_wind_name');
-    this.description = i18next.t('modifiers.second_wind_def');
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSecondWind'];
-  }
+  static type = 'ModifierSecondWind';
 
   static createContextObject(attackBuff, maxHPBuff, buffsAreRemovable, buffAppliedName, buffAppliedDescription = null, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -104,6 +88,14 @@ class ModifierSecondWind extends Modifier {
     }
   }
 }
-ModifierSecondWind.initClass();
+ModifierSecondWind.prototype.type = 'ModifierSecondWind';
+ModifierSecondWind.modifierName = i18next.t('modifiers.second_wind_name');
+ModifierSecondWind.description = i18next.t('modifiers.second_wind_def');
+ModifierSecondWind.prototype.activeInDeck = false;
+ModifierSecondWind.prototype.activeInHand = false;
+ModifierSecondWind.prototype.activeInSignatureCards = false;
+ModifierSecondWind.prototype.activeOnBoard = true;
+ModifierSecondWind.prototype.maxStacks = 1;
+ModifierSecondWind.prototype.fxResource = ['FX.Modifiers.ModifierSecondWind'];
 
 module.exports = ModifierSecondWind;

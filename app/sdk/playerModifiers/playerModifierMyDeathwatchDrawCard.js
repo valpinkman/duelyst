@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,10 +10,7 @@ const DieAction = require('app/sdk/actions/dieAction');
 const CardType = require('app/sdk/cards/cardType');
 
 class PlayerModifierMyDeathwatchDrawCard extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierMyDeathwatchDrawCard';
-    this.type = 'PlayerModifierMyDeathwatchDrawCard';
-  }
+  static type = 'PlayerModifierMyDeathwatchDrawCard';
 
   static createContextObject(duration, options) {
     if (duration == null) { duration = 1; }
@@ -38,6 +34,6 @@ class PlayerModifierMyDeathwatchDrawCard extends PlayerModifier {
     }
   }
 }
-PlayerModifierMyDeathwatchDrawCard.initClass();
+PlayerModifierMyDeathwatchDrawCard.prototype.type = 'PlayerModifierMyDeathwatchDrawCard';
 
 module.exports = PlayerModifierMyDeathwatchDrawCard;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchDamageRandom extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchDamageRandom';
-    this.type = 'ModifierStartTurnWatchDamageRandom';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the start of your turn, deal %X damage to a random minion or General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
-  }
+  static type = 'ModifierStartTurnWatchDamageRandom';
+  static modifierName = 'Turn Watch';
+  static description = 'At the start of your turn, deal %X damage to a random minion or General';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -53,6 +46,7 @@ class ModifierStartTurnWatchDamageRandom extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierStartTurnWatchDamageRandom.initClass();
+ModifierStartTurnWatchDamageRandom.prototype.type = 'ModifierStartTurnWatchDamageRandom';
+ModifierStartTurnWatchDamageRandom.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
 
 module.exports = ModifierStartTurnWatchDamageRandom;

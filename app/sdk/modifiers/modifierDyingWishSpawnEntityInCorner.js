@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,15 +13,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishSpawnEntityInCorner extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnEntityInCorner';
-    this.type = 'ModifierDyingWishSpawnEntityInCorner';
-
-    this.description = 'Summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDyingWishSpawnEntityInCorner';
+  static description = 'Summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -69,6 +61,8 @@ class ModifierDyingWishSpawnEntityInCorner extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishSpawnEntityInCorner.initClass();
+ModifierDyingWishSpawnEntityInCorner.prototype.type = 'ModifierDyingWishSpawnEntityInCorner';
+ModifierDyingWishSpawnEntityInCorner.prototype.cardDataOrIndexToSpawn = null;
+ModifierDyingWishSpawnEntityInCorner.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDyingWishSpawnEntityInCorner;

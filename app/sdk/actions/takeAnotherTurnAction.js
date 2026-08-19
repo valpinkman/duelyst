@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -10,9 +9,7 @@ const GameStatus = require('app/sdk/gameStatus');
 const Logger = require('app/common/logger');
 
 class TakeAnotherTurnAction extends Action {
-  static initClass() {
-    this.type = 'TakeAnotherTurnAction';
-  }
+  static type = 'TakeAnotherTurnAction';
 
   constructor() {
     super(...arguments);
@@ -25,6 +22,5 @@ class TakeAnotherTurnAction extends Action {
     }
   }
 }
-TakeAnotherTurnAction.initClass();
 
 module.exports = TakeAnotherTurnAction;

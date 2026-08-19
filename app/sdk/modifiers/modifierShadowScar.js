@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,19 +9,7 @@ const i18next = require('i18next');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierShadowScar extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierShadowScar';
-    this.type = 'ModifierShadowScar';
-
-    // @isKeyworded: false
-    this.modifierName = i18next.t('modifiers.shadow_scar_name');
-    this.description = i18next.t('modifiers.shadow_scar_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnOwnerId = null;
-    // dying wish spawn entity will spawn for player with this ID
-  }
+  static type = 'ModifierShadowScar';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnOwnerId, options) {
     const contextObject = super.createContextObject(options);
@@ -43,6 +30,11 @@ class ModifierShadowScar extends ModifierDyingWish {
     }
   }
 }
-ModifierShadowScar.initClass();
+ModifierShadowScar.prototype.type = 'ModifierShadowScar';
+ModifierShadowScar.modifierName = i18next.t('modifiers.shadow_scar_name');
+ModifierShadowScar.description = i18next.t('modifiers.shadow_scar_def');
+ModifierShadowScar.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierShadowScar.prototype.cardDataOrIndexToSpawn = null;
+ModifierShadowScar.prototype.spawnOwnerId = null;
 
 module.exports = ModifierShadowScar;

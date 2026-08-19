@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const PlayCardAction = require('./playCardAction');
 const CardType = require('app/sdk/cards/cardType');
 
 class PlayCardFromHandAction extends PlayCardAction {
-  static initClass() {
-    this.type = 'PlayCardFromHandAction';
-    this.prototype.indexOfCardInHand = null; // index of card in player hand
-    this.prototype.overrideCardData = false; // flag set when card data is overriden to be another card (ex - sentinels play themselves to board as a generic sentinel card)
-    // if we override the card data, we need to retain any mana cost change for the original card being played from hand
-    // only used when overrideCardData is true
-    this.prototype.overridenManaCost = null;
-  }
+  static type = 'PlayCardFromHandAction';
 
   constructor(gameSession, ownerId, x, y, handIndex) {
     super(gameSession, ownerId, x, y);
@@ -106,6 +98,8 @@ class PlayCardFromHandAction extends PlayCardAction {
     }
   }
 }
-PlayCardFromHandAction.initClass();
+PlayCardFromHandAction.prototype.indexOfCardInHand = null;
+PlayCardFromHandAction.prototype.overrideCardData = false;
+PlayCardFromHandAction.prototype.overridenManaCost = null;
 
 module.exports = PlayCardFromHandAction;

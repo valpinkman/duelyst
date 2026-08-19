@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,22 +19,8 @@ All nearby friendly minions gain strikeback
 All nearby enemy minions gain -2 attack
 */
 class ModifierOpeningGambitApplyModifiers extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitApplyModifiers';
-    this.type = 'ModifierOpeningGambitApplyModifiers';
-
-    this.description = '';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-    this.prototype.managedByCard = false; // whether card with opening gambit should manage the modifiers applied, i.e. when the card is silenced/killed these modifiers are removed
-    this.prototype.auraIncludeSelf = true; // whether modifiers should target card with opening gambit
-    this.prototype.auraIncludeAlly = true; // whether modifiers should target allied units
-    this.prototype.auraIncludeEnemy = true; // whether modifiers should target enemy units
-    this.prototype.auraIncludeGeneral = true; // whether modifiers should target enemy units
-    this.prototype.auraRadius = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitApplyModifiers';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options) {
     if (managedByCard == null) { managedByCard = false; }
@@ -107,6 +92,14 @@ class ModifierOpeningGambitApplyModifiers extends ModifierOpeningGambit {
     return affectedEntities;
   }
 }
-ModifierOpeningGambitApplyModifiers.initClass();
+ModifierOpeningGambitApplyModifiers.prototype.type = 'ModifierOpeningGambitApplyModifiers';
+ModifierOpeningGambitApplyModifiers.prototype.modifiersContextObjects = null;
+ModifierOpeningGambitApplyModifiers.prototype.managedByCard = false;
+ModifierOpeningGambitApplyModifiers.prototype.auraIncludeSelf = true;
+ModifierOpeningGambitApplyModifiers.prototype.auraIncludeAlly = true;
+ModifierOpeningGambitApplyModifiers.prototype.auraIncludeEnemy = true;
+ModifierOpeningGambitApplyModifiers.prototype.auraIncludeGeneral = true;
+ModifierOpeningGambitApplyModifiers.prototype.auraRadius = 1;
+ModifierOpeningGambitApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitApplyModifiers;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
@@ -10,23 +9,16 @@ const Modifier = require('./modifier');
 */
 
 class ModifierImmune extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierImmune';
-    this.type = 'ModifierImmune';
-
-    this.modifierName = 'Immune';
-    this.description = '';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierImmunity'];
-  }
+  static type = 'ModifierImmune';
+  static modifierName = 'Immune';
+  static description = '';
 }
-ModifierImmune.initClass();
+ModifierImmune.prototype.type = 'ModifierImmune';
+ModifierImmune.prototype.activeInHand = false;
+ModifierImmune.prototype.activeInDeck = false;
+ModifierImmune.prototype.activeInSignatureCards = false;
+ModifierImmune.prototype.activeOnBoard = true;
+ModifierImmune.prototype.maxStacks = 1;
+ModifierImmune.prototype.fxResource = ['FX.Modifiers.ModifierImmunity'];
 
 module.exports = ModifierImmune;

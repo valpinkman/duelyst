@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,6 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
 
 class SpellBounceToActionbarApplyModifiers extends SpellApplyModifiers {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -46,6 +41,6 @@ class SpellBounceToActionbarApplyModifiers extends SpellApplyModifiers {
     return this.getGameSession().executeAction(putCardInHandAction);
   }
 }
-SpellBounceToActionbarApplyModifiers.initClass();
+SpellBounceToActionbarApplyModifiers.prototype.targetType = CardType.Unit;
 
 module.exports = SpellBounceToActionbarApplyModifiers;

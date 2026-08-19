@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DrawCardAction = require('app/sdk/actions/drawCardAction');
@@ -9,17 +8,9 @@ const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction')
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 
 class ModifierOpponentSummonWatchOpponentDrawCard extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchOpponentDrawCard';
-    this.type = 'ModifierOpponentSummonWatchOpponentDrawCard';
-
-    this.modifierName = 'Opponent Summon Watch';
-    this.description = 'Whenever your opponent summons a minion, they draw a card';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierOpponentSummonWatchOpponentDrawCard';
+  static modifierName = 'Opponent Summon Watch';
+  static description = 'Whenever your opponent summons a minion, they draw a card';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -37,6 +28,8 @@ class ModifierOpponentSummonWatchOpponentDrawCard extends ModifierOpponentSummon
     }
   }
 }
-ModifierOpponentSummonWatchOpponentDrawCard.initClass();
+ModifierOpponentSummonWatchOpponentDrawCard.prototype.type = 'ModifierOpponentSummonWatchOpponentDrawCard';
+ModifierOpponentSummonWatchOpponentDrawCard.prototype.damageAmount = 0;
+ModifierOpponentSummonWatchOpponentDrawCard.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierOpponentSummonWatchOpponentDrawCard;

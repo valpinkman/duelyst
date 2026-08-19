@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,6 @@ const CardType = require('app/sdk/cards/cardType');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 
 class SpellMetalworking extends Spell {
-  static initClass() {
-    this.prototype.numArtifacts = 1;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     return [this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition()];
   }
@@ -58,6 +53,6 @@ class SpellMetalworking extends Spell {
     }
   }
 }
-SpellMetalworking.initClass();
+SpellMetalworking.prototype.numArtifacts = 1;
 
 module.exports = SpellMetalworking;

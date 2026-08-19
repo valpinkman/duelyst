@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,13 +13,6 @@ const SpellFilterType = require('./spellFilterType');
 const _ = require('underscore');
 
 class SpellApplyModifiersToGeneral extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.applyToOwnGeneral = false;
-    this.prototype.applyToOpponentGeneral = false;
-  }
-
   _filterApplyPositions(validPositions) {
     const finalPositions = [];
     const ownGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
@@ -65,6 +57,9 @@ class SpellApplyModifiersToGeneral extends Spell {
     }
   }
 }
-SpellApplyModifiersToGeneral.initClass();
+SpellApplyModifiersToGeneral.prototype.targetType = CardType.Unit;
+SpellApplyModifiersToGeneral.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellApplyModifiersToGeneral.prototype.applyToOwnGeneral = false;
+SpellApplyModifiersToGeneral.prototype.applyToOpponentGeneral = false;
 
 module.exports = SpellApplyModifiersToGeneral;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -44,10 +43,7 @@ try {
 }
 
 class DuelystFirebaseModule {
-  static initClass() {
-    // App objects keyed by URL
-    this.apps = {};
-  }
+  static apps = {};
 
   // Connect to a Firebase URL, returns connection if already exists
   static connect(firebaseUrl) {
@@ -128,6 +124,5 @@ class DuelystFirebaseModule {
       });
   }
 }
-DuelystFirebaseModule.initClass();
 
 module.exports = DuelystFirebaseModule;

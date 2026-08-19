@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,11 +13,6 @@ const CONFIG = require('app/common/config');
 const _ = require('underscore');
 
 class SpellKneel extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
     const applyEffectPosition = { x, y };
@@ -58,6 +52,7 @@ class SpellKneel extends Spell {
     return [];
   }
 }
-SpellKneel.initClass();
+SpellKneel.prototype.targetType = CardType.Unit;
+SpellKneel.prototype.spellFilterType = SpellFilterType.NeutralDirect;
 
 module.exports = SpellKneel;

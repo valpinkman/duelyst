@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,19 +10,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const Modifier = require('./modifier');
 
 class ModifierOnRemoveSpawnEntities extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOnRemoveSpawnEntities';
-    this.type = 'ModifierOnRemoveSpawnEntities';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-
-    this.prototype.numSpawns = 0;
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOnRemoveSpawnEntities';
 
   static createContextObject(cardDataOrIndexToSpawn, numSpawns, options) {
     const contextObject = super.createContextObject(options);
@@ -46,6 +33,12 @@ class ModifierOnRemoveSpawnEntities extends Modifier {
     return super.onRemoveFromCard(action);
   }
 }
-ModifierOnRemoveSpawnEntities.initClass();
+ModifierOnRemoveSpawnEntities.prototype.type = 'ModifierOnRemoveSpawnEntities';
+ModifierOnRemoveSpawnEntities.prototype.activeInDeck = false;
+ModifierOnRemoveSpawnEntities.prototype.activeInHand = false;
+ModifierOnRemoveSpawnEntities.prototype.activeInSignatureCards = false;
+ModifierOnRemoveSpawnEntities.prototype.numSpawns = 0;
+ModifierOnRemoveSpawnEntities.prototype.cardDataOrIndexToSpawn = null;
+ModifierOnRemoveSpawnEntities.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOnRemoveSpawnEntities;

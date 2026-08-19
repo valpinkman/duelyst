@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,18 +9,9 @@ const ModifierDyingWish = require('./modifierDyingWish');
 const Modifier = require('./modifier');
 
 class ModifierDyingWishBuffEnemyGeneral extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishBuffEnemyGeneral';
-    this.type = 'ModifierDyingWishBuffEnemyGeneral';
-
-    this.prototype.name = 'ModifierDyingWishBuffEnemyGeneral';
-    this.prototype.description = 'When this minion dies, buff the enemy general';
-
-    this.appliedName = 'Agonizing Death';
-    this.appliedDescription = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierDyingWishBuffEnemyGeneral';
+  static appliedName = 'Agonizing Death';
+  static appliedDescription = '';
 
   static createContextObject(atkBuff, healthBuff, options) {
     if (atkBuff == null) { atkBuff = 2; }
@@ -41,6 +31,9 @@ class ModifierDyingWishBuffEnemyGeneral extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishBuffEnemyGeneral.initClass();
+ModifierDyingWishBuffEnemyGeneral.prototype.type = 'ModifierDyingWishBuffEnemyGeneral';
+ModifierDyingWishBuffEnemyGeneral.prototype.name = 'ModifierDyingWishBuffEnemyGeneral';
+ModifierDyingWishBuffEnemyGeneral.prototype.description = 'When this minion dies, buff the enemy general';
+ModifierDyingWishBuffEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierDyingWishBuffEnemyGeneral;

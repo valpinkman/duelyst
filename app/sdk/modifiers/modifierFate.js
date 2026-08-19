@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,24 +15,11 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierFate extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierFate';
-    this.type = 'ModifierFate';
-
-    this.isKeyworded = true;
-    this.modifierName = 'Trial';
-    this.description = null;
-    this.keywordDefinition = 'Starts locked in your action bar. Complete the Trial to unlock the ability to play this card.';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.isRemovable = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierFate'];
-  }
+  static type = 'ModifierFate';
+  static isKeyworded = true;
+  static modifierName = 'Trial';
+  static description = null;
+  static keywordDefinition = 'Starts locked in your action bar. Complete the Trial to unlock the ability to play this card.';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -103,7 +89,13 @@ class ModifierFate extends Modifier {
     }
   }
 }
-ModifierFate.initClass();
+ModifierFate.prototype.type = 'ModifierFate';
+ModifierFate.prototype.activeInHand = true;
+ModifierFate.prototype.activeInDeck = true;
+ModifierFate.prototype.activeInSignatureCards = false;
+ModifierFate.prototype.activeOnBoard = false;
+ModifierFate.prototype.isRemovable = false;
+ModifierFate.prototype.fxResource = ['FX.Modifiers.ModifierFate'];
 
 module.exports = ModifierFate;
 

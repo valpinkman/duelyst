@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const ModifierTransformed = require('app/sdk/modifiers/modifierTransformed');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchTransform extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchTransform';
-    this.type = 'ModifierSummonWatchTransform';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-  }
+  static type = 'ModifierSummonWatchTransform';
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -47,6 +39,8 @@ class ModifierSummonWatchTransform extends ModifierSummonWatch {
     return true;
   }
 }
-ModifierSummonWatchTransform.initClass();
+ModifierSummonWatchTransform.prototype.type = 'ModifierSummonWatchTransform';
+ModifierSummonWatchTransform.prototype.cardDataOrIndexToSpawn = null;
+ModifierSummonWatchTransform.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
 
 module.exports = ModifierSummonWatchTransform;

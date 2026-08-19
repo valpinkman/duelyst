@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,13 +17,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const _ = require('underscore');
 
 class SpellCorpseCombustion extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spawnSilently = true;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
-    // use Wind Dervish as default unit for checking spawn positions, etc
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -136,6 +128,8 @@ class SpellCorpseCombustion extends SpellSpawnEntity {
     return validPositions;
   }
 }
-SpellCorpseCombustion.initClass();
+SpellCorpseCombustion.prototype.targetType = CardType.Unit;
+SpellCorpseCombustion.prototype.spawnSilently = true;
+SpellCorpseCombustion.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
 
 module.exports = SpellCorpseCombustion;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,17 +15,7 @@ const GameFormat = require('app/sdk/gameFormat');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchSpawnRandomDemon extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchSpawnRandomDemon';
-    this.type = 'ModifierDeathWatchSpawnRandomDemon';
-
-    this.prototype.possibleCardsToSpawn = null;
-    this.prototype.spawnCount = 1;
-    this.prototype.spawnSilently = true; // most reactive spawns should be silent, i.e. no followups and no opening gambits
-    this.prototype.spawnPattern = CONFIG.PATTERN_3x3;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDeathWatchSpawnRandomDemon';
 
   static createContextObject(possibleCardsToSpawn, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -83,6 +72,11 @@ class ModifierDeathWatchSpawnRandomDemon extends ModifierDeathWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierDeathWatchSpawnRandomDemon.initClass();
+ModifierDeathWatchSpawnRandomDemon.prototype.type = 'ModifierDeathWatchSpawnRandomDemon';
+ModifierDeathWatchSpawnRandomDemon.prototype.possibleCardsToSpawn = null;
+ModifierDeathWatchSpawnRandomDemon.prototype.spawnCount = 1;
+ModifierDeathWatchSpawnRandomDemon.prototype.spawnSilently = true;
+ModifierDeathWatchSpawnRandomDemon.prototype.spawnPattern = CONFIG.PATTERN_3x3;
+ModifierDeathWatchSpawnRandomDemon.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDeathWatchSpawnRandomDemon;

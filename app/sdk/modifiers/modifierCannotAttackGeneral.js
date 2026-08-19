@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,15 +10,7 @@ const i18next = require('i18next');
 const ModifierCannot = require('./modifierCannot');
 
 class ModifierCannotAttackGeneral extends ModifierCannot {
-  static initClass() {
-    this.prototype.type = 'ModifierCannotAttackGeneral';
-    this.type = 'ModifierCannotAttackGeneral';
-
-    this.modifierName = i18next.t('modifiers.cannot_attack_general_name');
-    this.description = i18next.t('modifiers.cannot_attack_general_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCannotAttackGeneral'];
-  }
+  static type = 'ModifierCannotAttackGeneral';
 
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
@@ -30,7 +21,10 @@ class ModifierCannotAttackGeneral extends ModifierCannot {
     }
   }
 }
-ModifierCannotAttackGeneral.initClass();
+ModifierCannotAttackGeneral.prototype.type = 'ModifierCannotAttackGeneral';
+ModifierCannotAttackGeneral.modifierName = i18next.t('modifiers.cannot_attack_general_name');
+ModifierCannotAttackGeneral.description = i18next.t('modifiers.cannot_attack_general_def');
+ModifierCannotAttackGeneral.prototype.fxResource = ['FX.Modifiers.ModifierCannotAttackGeneral'];
 
 module.exports = ModifierCannotAttackGeneral;
 

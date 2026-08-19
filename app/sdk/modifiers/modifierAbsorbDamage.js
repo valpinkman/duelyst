@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -12,22 +11,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierAbsorbDamage extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAbsorbDamage';
-    this.type = 'ModifierAbsorbDamage';
-
-    this.modifierName = i18next.t('modifiers.absorb_damage_name');
-    this.description = i18next.t('modifiers.absorb_damage_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.canAbsorb = true; // can absorb damage from 1 damage action per turn
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAbsorbDamage'];
-  }
+  static type = 'ModifierAbsorbDamage';
 
   onEvent(event) {
     super.onEvent(event);
@@ -83,6 +67,14 @@ class ModifierAbsorbDamage extends Modifier {
     }
   }
 }
-ModifierAbsorbDamage.initClass();
+ModifierAbsorbDamage.prototype.type = 'ModifierAbsorbDamage';
+ModifierAbsorbDamage.modifierName = i18next.t('modifiers.absorb_damage_name');
+ModifierAbsorbDamage.description = i18next.t('modifiers.absorb_damage_def');
+ModifierAbsorbDamage.prototype.activeInHand = false;
+ModifierAbsorbDamage.prototype.activeInDeck = false;
+ModifierAbsorbDamage.prototype.activeInSignatureCards = false;
+ModifierAbsorbDamage.prototype.activeOnBoard = true;
+ModifierAbsorbDamage.prototype.canAbsorb = true;
+ModifierAbsorbDamage.prototype.fxResource = ['FX.Modifiers.ModifierAbsorbDamage'];
 
 module.exports = ModifierAbsorbDamage;

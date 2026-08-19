@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,27 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/magmar-rampage/8452
 
 class MediumMagmarChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'MediumMagmarChallenge1';
-    this.prototype.type = 'MediumMagmarChallenge1';
-    this.prototype.categoryType = ChallengeCategory.vault1.type;
-
-    this.prototype.name = i18next.t('challenges.medium_magmar_1_title');
-    this.prototype.description = i18next.t('challenges.medium_magmar_1_description');
-    this.prototype.iconUrl = RSX.speech_portrait_magmar.img;
-
-    this.prototype._musicOverride = RSX.music_training.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_magmar_1_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.medium_magmar_1_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 6;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = CONFIG.MAX_MANA;
-    this.prototype.startingHandSizePlayer = 6;
-  }
+  static type = 'MediumMagmarChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -104,6 +83,19 @@ class MediumMagmarChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-MediumMagmarChallenge1.initClass();
+MediumMagmarChallenge1.prototype.type = 'MediumMagmarChallenge1';
+MediumMagmarChallenge1.prototype.categoryType = ChallengeCategory.vault1.type;
+MediumMagmarChallenge1.prototype.name = i18next.t('challenges.medium_magmar_1_title');
+MediumMagmarChallenge1.prototype.description = i18next.t('challenges.medium_magmar_1_description');
+MediumMagmarChallenge1.prototype.iconUrl = RSX.speech_portrait_magmar.img;
+MediumMagmarChallenge1.prototype._musicOverride = RSX.music_training.audio;
+MediumMagmarChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_magmar_1_start');
+MediumMagmarChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.medium_magmar_1_fail'),
+];
+MediumMagmarChallenge1.prototype.battleMapTemplateIndex = 6;
+MediumMagmarChallenge1.prototype.snapShotOnPlayerTurn = 0;
+MediumMagmarChallenge1.prototype.startingManaPlayer = CONFIG.MAX_MANA;
+MediumMagmarChallenge1.prototype.startingHandSizePlayer = 6;
 
 module.exports = MediumMagmarChallenge1;

@@ -5,7 +5,6 @@
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -13,10 +12,6 @@ const Spell = require('./spell');
 const CardType = require('app/sdk/cards/cardType');
 
 class SpellDrawArtifact extends Spell {
-  static initClass() {
-    this.prototype.numArtifacts = 1;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     return [this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition()];
   }
@@ -59,7 +54,7 @@ class SpellDrawArtifact extends Spell {
     }
   }
 }
-SpellDrawArtifact.initClass();
+SpellDrawArtifact.prototype.numArtifacts = 1;
 
 module.exports = SpellDrawArtifact;
 

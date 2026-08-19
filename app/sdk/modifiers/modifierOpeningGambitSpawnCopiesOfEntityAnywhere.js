@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,17 +14,9 @@ const CloneEntityAction = require('app/sdk/actions/cloneEntityAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitSpawnCopiesOfEntityAnywhere extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSpawnCopiesOfEntityAnywhere';
-    this.type = 'ModifierOpeningGambitSpawnCopiesOfEntityAnywhere';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpeningGambitSpawnCopiesOfEntityAnywhere';
+  static modifierName = 'Opening Gambit';
+  static description = 'Summon %X';
 
   static createContextObject(spawnDescription, spawnCount, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -76,6 +67,8 @@ class ModifierOpeningGambitSpawnCopiesOfEntityAnywhere extends ModifierOpeningGa
     }
   }
 }
-ModifierOpeningGambitSpawnCopiesOfEntityAnywhere.initClass();
+ModifierOpeningGambitSpawnCopiesOfEntityAnywhere.prototype.type = 'ModifierOpeningGambitSpawnCopiesOfEntityAnywhere';
+ModifierOpeningGambitSpawnCopiesOfEntityAnywhere.prototype.cardDataOrIndexToSpawn = null;
+ModifierOpeningGambitSpawnCopiesOfEntityAnywhere.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOpeningGambitSpawnCopiesOfEntityAnywhere;

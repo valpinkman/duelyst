@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Cards = require('app/sdk/cards/cardsLookup');
@@ -13,21 +12,7 @@ const i18next = require('i18next');
 const ModifierSummonWatchFromActionBar = require('./modifierSummonWatchFromActionBar');
 
 class ModifierSandPortal extends ModifierSummonWatchFromActionBar {
-  static initClass() {
-    this.prototype.type = 'ModifierSandPortal';
-    this.type = 'ModifierSandPortal';
-
-    this.modifierName = i18next.t('modifiers.exhuming_sand_name');
-    this.keywordDefinition = i18next.t('modifiers.exhuming_sand_def');
-    this.description = i18next.t('modifiers.exhuming_sand_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierShadowCreep'];
-  }
+  static type = 'ModifierSandPortal';
 
   static getDescription() {
     return this.description;
@@ -70,7 +55,15 @@ class ModifierSandPortal extends ModifierSummonWatchFromActionBar {
     }
   }
 }
-ModifierSandPortal.initClass();
+ModifierSandPortal.prototype.type = 'ModifierSandPortal';
+ModifierSandPortal.modifierName = i18next.t('modifiers.exhuming_sand_name');
+ModifierSandPortal.keywordDefinition = i18next.t('modifiers.exhuming_sand_def');
+ModifierSandPortal.description = i18next.t('modifiers.exhuming_sand_def');
+ModifierSandPortal.prototype.activeInHand = false;
+ModifierSandPortal.prototype.activeInDeck = false;
+ModifierSandPortal.prototype.activeInSignatureCards = false;
+ModifierSandPortal.prototype.activeOnBoard = true;
+ModifierSandPortal.prototype.fxResource = ['FX.Modifiers.ModifierShadowCreep'];
 
 module.exports = ModifierSandPortal;
 

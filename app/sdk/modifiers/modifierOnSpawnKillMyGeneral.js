@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,22 +11,10 @@ const SwapGeneralAction = require('app/sdk/actions/swapGeneralAction');
 const Modifier = require('./modifier');
 
 class ModifierOnSpawnKillMyGeneral extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOnSpawnKillMyGeneral';
-    this.type = 'ModifierOnSpawnKillMyGeneral';
-
-    this.modifierName = 'ModifierOnSpawnKillMyGeneral';
-    this.description = 'Kill your General';
-
-    this.isHiddenToUI = true;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOnSpawnKillMyGeneral';
+  static modifierName = 'ModifierOnSpawnKillMyGeneral';
+  static description = 'Kill your General';
+  static isHiddenToUI = true;
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -59,6 +46,11 @@ class ModifierOnSpawnKillMyGeneral extends Modifier {
     return this.getGameSession().executeAction(dieAction);
   }
 }
-ModifierOnSpawnKillMyGeneral.initClass();
+ModifierOnSpawnKillMyGeneral.prototype.type = 'ModifierOnSpawnKillMyGeneral';
+ModifierOnSpawnKillMyGeneral.prototype.activeInHand = false;
+ModifierOnSpawnKillMyGeneral.prototype.activeInDeck = false;
+ModifierOnSpawnKillMyGeneral.prototype.activeInSignatureCards = false;
+ModifierOnSpawnKillMyGeneral.prototype.activeOnBoard = true;
+ModifierOnSpawnKillMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOnSpawnKillMyGeneral;

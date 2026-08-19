@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,14 +9,7 @@ const Modifier = require('./modifier');
 const ModifierPortal = require('./modifierPortal');
 
 class ModifierToggleStructure extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierToggleStructure';
-    this.type = 'ModifierToggleStructure';
-
-    this.description = i18next.t('modifiers.toggle_structure_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierToggleStructure'];
-  }
+  static type = 'ModifierToggleStructure';
 
   onDeactivate() {
     super.onDeactivate();
@@ -39,6 +31,8 @@ class ModifierToggleStructure extends Modifier {
     }
   }
 }
-ModifierToggleStructure.initClass();
+ModifierToggleStructure.prototype.type = 'ModifierToggleStructure';
+ModifierToggleStructure.description = i18next.t('modifiers.toggle_structure_def');
+ModifierToggleStructure.prototype.fxResource = ['FX.Modifiers.ModifierToggleStructure'];
 
 module.exports = ModifierToggleStructure;

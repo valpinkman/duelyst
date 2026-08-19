@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,15 +15,7 @@ const _ = require('underscore');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishReSpawnEntityAnywhere extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishReSpawnEntityAnywhere';
-    this.type = 'ModifierDyingWishReSpawnEntityAnywhere';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-
-    this.prototype.spawnCount = 1;
-    this.prototype.spawnSilently = true;
-  }
+  static type = 'ModifierDyingWishReSpawnEntityAnywhere';
 
   static createContextObject(spawnCount, spawnSilently, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -62,6 +53,9 @@ class ModifierDyingWishReSpawnEntityAnywhere extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishReSpawnEntityAnywhere.initClass();
+ModifierDyingWishReSpawnEntityAnywhere.prototype.type = 'ModifierDyingWishReSpawnEntityAnywhere';
+ModifierDyingWishReSpawnEntityAnywhere.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierDyingWishReSpawnEntityAnywhere.prototype.spawnCount = 1;
+ModifierDyingWishReSpawnEntityAnywhere.prototype.spawnSilently = true;
 
 module.exports = ModifierDyingWishReSpawnEntityAnywhere;

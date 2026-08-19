@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,13 +11,9 @@ const ModifierMyMinionOrGeneralDamagedWatch = require('./modifierMyMinionOrGener
 const Modifier = require('./modifier');
 
 class ModifierMyMinionOrGeneralDamagedWatchBuffSelf extends ModifierMyMinionOrGeneralDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMinionOrGeneralDamagedWatchBuffSelf';
-    this.type = 'ModifierMyMinionOrGeneralDamagedWatchBuffSelf';
-
-    this.modifierName = 'My Minion or General Damaged Watch';
-    this.description = 'Each time a friendly minion or your General takes damage, gain %X';
-  }
+  static type = 'ModifierMyMinionOrGeneralDamagedWatchBuffSelf';
+  static modifierName = 'My Minion or General Damaged Watch';
+  static description = 'Each time a friendly minion or your General takes damage, gain %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -42,6 +37,6 @@ class ModifierMyMinionOrGeneralDamagedWatchBuffSelf extends ModifierMyMinionOrGe
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierMyMinionOrGeneralDamagedWatchBuffSelf.initClass();
+ModifierMyMinionOrGeneralDamagedWatchBuffSelf.prototype.type = 'ModifierMyMinionOrGeneralDamagedWatchBuffSelf';
 
 module.exports = ModifierMyMinionOrGeneralDamagedWatchBuffSelf;

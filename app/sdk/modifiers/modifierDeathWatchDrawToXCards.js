@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS104: Avoid inline assignments
  * DS204: Change includes calls to have a more natural evaluation order
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,9 @@ const Modifier = require('./modifier');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchDrawToXCards extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchDrawToXCards';
-    this.type = 'ModifierDeathWatchDrawToXCards';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'Draw until you have %X cards';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch'];
-  }
+  static type = 'ModifierDeathWatchDrawToXCards';
+  static modifierName = 'Deathwatch';
+  static description = 'Draw until you have %X cards';
 
   static createContextObject(cardCount, options) {
     if (cardCount == null) { cardCount = 0; }
@@ -52,6 +45,7 @@ class ModifierDeathWatchDrawToXCards extends ModifierDeathWatch {
     }
   }
 }
-ModifierDeathWatchDrawToXCards.initClass();
+ModifierDeathWatchDrawToXCards.prototype.type = 'ModifierDeathWatchDrawToXCards';
+ModifierDeathWatchDrawToXCards.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch'];
 
 module.exports = ModifierDeathWatchDrawToXCards;

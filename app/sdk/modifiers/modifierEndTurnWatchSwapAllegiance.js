@@ -1,24 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchSwapAllegiance extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchSwapAllegiance';
-    this.type = 'ModifierEndTurnWatchSwapAllegiance';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the end of your turn, swap owner';
-
-    this.prototype.isHiddenToUI = true; // don't show this modifier by default
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-  }
+  static type = 'ModifierEndTurnWatchSwapAllegiance';
+  static modifierName = 'Turn Watch';
+  static description = 'At the end of your turn, swap owner';
 
   onTurnWatch(action) {
     super.onTurnWatch(action);
@@ -28,6 +19,8 @@ class ModifierEndTurnWatchSwapAllegiance extends ModifierEndTurnWatch {
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierEndTurnWatchSwapAllegiance.initClass();
+ModifierEndTurnWatchSwapAllegiance.prototype.type = 'ModifierEndTurnWatchSwapAllegiance';
+ModifierEndTurnWatchSwapAllegiance.prototype.isHiddenToUI = true;
+ModifierEndTurnWatchSwapAllegiance.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
 
 module.exports = ModifierEndTurnWatchSwapAllegiance;

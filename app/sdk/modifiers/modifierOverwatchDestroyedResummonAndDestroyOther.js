@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,7 @@ const PlayCardSilentlyAction = require('../actions/playCardSilentlyAction');
 const ModifierOverwatchDestroyed = require('./modifierOverwatchDestroyed');
 
 class ModifierOverwatchDestroyedResummonAndDestroyOther extends ModifierOverwatchDestroyed {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchDestroyedResummonAndDestroyOther';
-    this.type = 'ModifierOverwatchDestroyedResummonAndDestroyOther';
-  }
+  static type = 'ModifierOverwatchDestroyedResummonAndDestroyOther';
 
   onOverwatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -47,6 +43,6 @@ class ModifierOverwatchDestroyedResummonAndDestroyOther extends ModifierOverwatc
     }
   }
 }
-ModifierOverwatchDestroyedResummonAndDestroyOther.initClass();
+ModifierOverwatchDestroyedResummonAndDestroyOther.prototype.type = 'ModifierOverwatchDestroyedResummonAndDestroyOther';
 
 module.exports = ModifierOverwatchDestroyedResummonAndDestroyOther;

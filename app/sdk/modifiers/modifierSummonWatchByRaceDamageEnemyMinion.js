@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomDamageAction = require('app/sdk/actions/randomDamageAction');
@@ -11,15 +10,9 @@ const Modifier = require('./modifier');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchByRaceDamageEnemyMinion extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchByRaceDamageEnemyMinion';
-    this.type = 'ModifierSummonWatchByRaceDamageEnemyMinion';
-
-    this.modifierName = 'Summon Watch (buff by race)';
-    this.description = 'Whenever you summon %X, deal %Y damage to a random enemy minion';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericDamageIce'];
-  }
+  static type = 'ModifierSummonWatchByRaceDamageEnemyMinion';
+  static modifierName = 'Summon Watch (buff by race)';
+  static description = 'Whenever you summon %X, deal %Y damage to a random enemy minion';
 
   static createContextObject(damageAmount, targetRaceId, raceName, options) {
     const contextObject = super.createContextObject(options);
@@ -49,6 +42,7 @@ class ModifierSummonWatchByRaceDamageEnemyMinion extends ModifierSummonWatch {
     return card.getBelongsToTribe(this.targetRaceId);
   }
 }
-ModifierSummonWatchByRaceDamageEnemyMinion.initClass();
+ModifierSummonWatchByRaceDamageEnemyMinion.prototype.type = 'ModifierSummonWatchByRaceDamageEnemyMinion';
+ModifierSummonWatchByRaceDamageEnemyMinion.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericDamageIce'];
 
 module.exports = ModifierSummonWatchByRaceDamageEnemyMinion;

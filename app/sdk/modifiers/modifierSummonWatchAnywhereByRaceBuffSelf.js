@@ -3,23 +3,12 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierSummonWatchByRaceBuffSelf = require('./modifierSummonWatchByRaceBuffSelf');
 
 class ModifierSummonWatchAnywhereByRaceBuffSelf extends ModifierSummonWatchByRaceBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchAnywhereByRaceBuffSelf';
-    this.type = 'ModifierSummonWatchAnywhereByRaceBuffSelf';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchAnywhereByRaceBuffSelf';
 
   onActivate() {
     // special check on activation in case this card is created mid-game
@@ -38,6 +27,11 @@ class ModifierSummonWatchAnywhereByRaceBuffSelf extends ModifierSummonWatchByRac
     })();
   }
 }
-ModifierSummonWatchAnywhereByRaceBuffSelf.initClass();
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.type = 'ModifierSummonWatchAnywhereByRaceBuffSelf';
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeInHand = true;
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeInDeck = true;
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeInSignatureCards = false;
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.activeOnBoard = true;
+ModifierSummonWatchAnywhereByRaceBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchAnywhereByRaceBuffSelf;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 
 class ModifierOpponentSummonWatchSwapGeneral extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchSwapGeneral';
-    this.type = 'ModifierOpponentSummonWatchSwapGeneral';
-
-    this.modifierName = 'Opponent Summon Watch';
-    this.description = 'Whenever an enemy summons a minion, it becomes their new General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpponentSummonWatchSwapGeneral';
+  static modifierName = 'Opponent Summon Watch';
+  static description = 'Whenever an enemy summons a minion, it becomes their new General';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -43,6 +36,7 @@ class ModifierOpponentSummonWatchSwapGeneral extends ModifierOpponentSummonWatch
     }
   }
 }
-ModifierOpponentSummonWatchSwapGeneral.initClass();
+ModifierOpponentSummonWatchSwapGeneral.prototype.type = 'ModifierOpponentSummonWatchSwapGeneral';
+ModifierOpponentSummonWatchSwapGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOpponentSummonWatchSwapGeneral;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,18 +14,9 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 // Play your first 20 Season Ranked games.
 
 class WartechGeneralFaction4Achievement extends Achievement {
-  static initClass() {
-    this.id = 'wartechGeneralFaction4Achievement';
-    this.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_4_abbreviated_name') });
-    this.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_4_abbreviated_name') });
-    this.progressRequired = 10;
-    this.rewards = {
-      cards: [
-        Cards.Faction4.ThirdGeneral,
-      ],
-    };
-    this.tracksProgress = true;
-  }
+  static id = 'wartechGeneralFaction4Achievement';
+  static progressRequired = 10;
+  static tracksProgress = true;
 
   static progressForGameDataForPlayerId(gameData, playerId, isUnscored, isDraw) {
     if (!GameType.isCompetitiveGameType(gameData.gameType)) {
@@ -68,6 +58,12 @@ class WartechGeneralFaction4Achievement extends Achievement {
     return `Win ${progressNeeded} more online matches with Abyssian to unlock.`;
   }
 }
-WartechGeneralFaction4Achievement.initClass();
+WartechGeneralFaction4Achievement.title = i18next.t('achievements.wartech_general_achievement_title', { faction_name: i18next.t('factions.faction_4_abbreviated_name') });
+WartechGeneralFaction4Achievement.description = i18next.t('achievements.wartech_general_achievement_desc', { faction_name: i18next.t('factions.faction_4_abbreviated_name') });
+WartechGeneralFaction4Achievement.rewards = {
+  cards: [
+    Cards.Faction4.ThirdGeneral,
+  ],
+};
 
 module.exports = WartechGeneralFaction4Achievement;

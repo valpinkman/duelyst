@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,21 +8,7 @@ const PlayerModifier = require('./playerModifier');
 const CardType = require('app/sdk/cards/cardType');
 
 class PlayerModifierManaModifier extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierManaModifier';
-    this.type = 'PlayerModifierManaModifier';
-
-    this.prototype.bonusMana = 0;
-    this.prototype.costChange = 0;
-    this.prototype.isAura = false; // mana modifiers may be auras, but only when they change the cost of cards
-    this.prototype.auraIncludeAlly = true;
-    this.prototype.auraIncludeBoard = false;
-    this.prototype.auraIncludeEnemy = false;
-    this.prototype.auraIncludeGeneral = false;
-    this.prototype.auraIncludeHand = true;
-    this.prototype.auraIncludeSelf = false;
-    this.prototype.auraIncludeSignatureCards = false;
-  }
+  static type = 'PlayerModifierManaModifier';
 
   static createContextObject(bonusMana, costChange, auraFilterByCardType, auraFilterByRaceIds, options) {
     if (bonusMana == null) { bonusMana = 0; }
@@ -57,6 +42,16 @@ class PlayerModifierManaModifier extends PlayerModifier {
     return beingUsedForBonusMana || super._filterPotentialCardInAura(card);
   }
 }
-PlayerModifierManaModifier.initClass();
+PlayerModifierManaModifier.prototype.type = 'PlayerModifierManaModifier';
+PlayerModifierManaModifier.prototype.bonusMana = 0;
+PlayerModifierManaModifier.prototype.costChange = 0;
+PlayerModifierManaModifier.prototype.isAura = false;
+PlayerModifierManaModifier.prototype.auraIncludeAlly = true;
+PlayerModifierManaModifier.prototype.auraIncludeBoard = false;
+PlayerModifierManaModifier.prototype.auraIncludeEnemy = false;
+PlayerModifierManaModifier.prototype.auraIncludeGeneral = false;
+PlayerModifierManaModifier.prototype.auraIncludeHand = true;
+PlayerModifierManaModifier.prototype.auraIncludeSelf = false;
+PlayerModifierManaModifier.prototype.auraIncludeSignatureCards = false;
 
 module.exports = PlayerModifierManaModifier;

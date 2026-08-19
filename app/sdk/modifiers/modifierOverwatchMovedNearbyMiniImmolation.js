@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,10 +12,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierOverwatchMovedNearby = require('./modifierOverwatchMovedNearby');
 
 class ModifierOverwatchMovedNearbyMiniImmolation extends ModifierOverwatchMovedNearby {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchMovedNearbyMiniImmolation';
-    this.type = 'ModifierOverwatchMovedNearbyMiniImmolation';
-  }
+  static type = 'ModifierOverwatchMovedNearbyMiniImmolation';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -49,6 +45,6 @@ class ModifierOverwatchMovedNearbyMiniImmolation extends ModifierOverwatchMovedN
     })();
   }
 }
-ModifierOverwatchMovedNearbyMiniImmolation.initClass();
+ModifierOverwatchMovedNearbyMiniImmolation.prototype.type = 'ModifierOverwatchMovedNearbyMiniImmolation';
 
 module.exports = ModifierOverwatchMovedNearbyMiniImmolation;

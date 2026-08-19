@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -11,12 +10,6 @@ const SpellFilterType = require('./spellFilterType');
 const DamageAction = require('app/sdk/actions/damageAction');
 
 class SpellDamage extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.EnemyDirect;
-    this.prototype.damageAmount = 0;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -30,6 +23,8 @@ class SpellDamage extends Spell {
     return this.getGameSession().executeAction(damageAction);
   }
 }
-SpellDamage.initClass();
+SpellDamage.prototype.targetType = CardType.Unit;
+SpellDamage.prototype.spellFilterType = SpellFilterType.EnemyDirect;
+SpellDamage.prototype.damageAmount = 0;
 
 module.exports = SpellDamage;

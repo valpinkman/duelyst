@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,9 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierKillWatch = require('./modifierKillWatch');
 
 class ModifierKillWatchBounceEnemyToActionBar extends ModifierKillWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchBounceEnemyToActionBar';
-    this.type = 'ModifierKillWatchBounceEnemyToActionBar';
-
-    this.modifierName = 'Kill Watch';
-    this.description = 'When this destroys a minion, bounce the enemy minion to its action bar.';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
-  }
+  static type = 'ModifierKillWatchBounceEnemyToActionBar';
+  static modifierName = 'Kill Watch';
+  static description = 'When this destroys a minion, bounce the enemy minion to its action bar.';
 
   onKillWatch(action) {
     super.onKillWatch(action);
@@ -31,6 +24,7 @@ class ModifierKillWatchBounceEnemyToActionBar extends ModifierKillWatch {
     }
   }
 }
-ModifierKillWatchBounceEnemyToActionBar.initClass();
+ModifierKillWatchBounceEnemyToActionBar.prototype.type = 'ModifierKillWatchBounceEnemyToActionBar';
+ModifierKillWatchBounceEnemyToActionBar.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
 
 module.exports = ModifierKillWatchBounceEnemyToActionBar;

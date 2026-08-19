@@ -1,20 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
 
 class SetExhaustionAction extends Action {
-  static initClass() {
-    this.type = 'SetExhaustionAction';
-
-    this.prototype.exhausted = null;
-    this.prototype.movesMade = null;
-    this.prototype.attacksMade = null;
-  }
+  static type = 'SetExhaustionAction';
 
   constructor() {
     super(...arguments);
@@ -55,6 +48,8 @@ class SetExhaustionAction extends Action {
     }
   }
 }
-SetExhaustionAction.initClass();
+SetExhaustionAction.prototype.exhausted = null;
+SetExhaustionAction.prototype.movesMade = null;
+SetExhaustionAction.prototype.attacksMade = null;
 
 module.exports = SetExhaustionAction;

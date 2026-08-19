@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierSituationalBuffSelf = require('./modifierSituationalBuffSelf');
 
 class ModifierSituationalBuffSelfIfHaveMech extends ModifierSituationalBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierSituationalBuffSelfIfHaveMech';
-    this.type = 'ModifierSituationalBuffSelfIfHaveMech';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierSituationalBuffSelfIfHaveMech';
 
   static createContextObject(modifierContextObjects, options) {
     const contextObject = super.createContextObject(options);
@@ -38,6 +29,10 @@ class ModifierSituationalBuffSelfIfHaveMech extends ModifierSituationalBuffSelf 
     return false;
   }
 }
-ModifierSituationalBuffSelfIfHaveMech.initClass();
+ModifierSituationalBuffSelfIfHaveMech.prototype.type = 'ModifierSituationalBuffSelfIfHaveMech';
+ModifierSituationalBuffSelfIfHaveMech.prototype.activeInHand = false;
+ModifierSituationalBuffSelfIfHaveMech.prototype.activeInDeck = false;
+ModifierSituationalBuffSelfIfHaveMech.prototype.activeInSignatureCards = false;
+ModifierSituationalBuffSelfIfHaveMech.prototype.activeOnBoard = true;
 
 module.exports = ModifierSituationalBuffSelfIfHaveMech;

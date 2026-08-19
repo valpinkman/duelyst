@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -39,22 +38,15 @@ const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlay
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
 
 class QuestsModule {
-  static initClass() {
-    // Quest Slot definitions
-    this.DAILY_QUEST_SLOTS = [0, 1];
-    this.CATCH_UP_QUEST_SLOT = 10;
-    this.SEASONAL_QUEST_SLOT = 20;
-    this.PROMOTIONAL_QUEST_SLOT = 30;
-
-    // control if seasonal / catchup quests should be active
-    this.SEASONAL_QUESTS_ACTIVE = true;
-    this.CATCH_UP_QUEST_ACTIVE = true;
-    this.PROMOTIONAL_QUEST_ACTIVE = true;
-
-    // Catch up quest reward definitions
-    this.CATCH_UP_CHARGE_GOLD_VALUE = 50;
-    this.CATCH_UP_MAX_GOLD_VALUE = 50;
-  }
+  static DAILY_QUEST_SLOTS = [0, 1];
+  static CATCH_UP_QUEST_SLOT = 10;
+  static SEASONAL_QUEST_SLOT = 20;
+  static PROMOTIONAL_QUEST_SLOT = 30;
+  static SEASONAL_QUESTS_ACTIVE = true;
+  static CATCH_UP_QUEST_ACTIVE = true;
+  static PROMOTIONAL_QUEST_ACTIVE = true;
+  static CATCH_UP_CHARGE_GOLD_VALUE = 50;
+  static CATCH_UP_MAX_GOLD_VALUE = 50;
 
   /**
    * Checks if a user needs daily quests.
@@ -1407,7 +1399,6 @@ class QuestsModule {
       });
   }
 }
-QuestsModule.initClass();
 
 module.exports = QuestsModule;
 

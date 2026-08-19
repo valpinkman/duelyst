@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,16 +16,8 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierBond = require('./modifierBond');
 
 class ModifierBondSpawnEntity extends ModifierBond {
-  static initClass() {
-    this.prototype.type = 'ModifierBondSpawnEntity';
-    this.type = 'ModifierBondSpawnEntity';
-
-    this.description = 'Summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierBondSpawnEntity';
+  static description = 'Summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -87,6 +78,8 @@ class ModifierBondSpawnEntity extends ModifierBond {
     }
   }
 }
-ModifierBondSpawnEntity.initClass();
+ModifierBondSpawnEntity.prototype.type = 'ModifierBondSpawnEntity';
+ModifierBondSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierBondSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierBondSpawnEntity;

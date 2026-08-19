@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchBuffMinionsInHand extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchBuffMinionsInHand';
-    this.type = 'ModifierDeathWatchBuffMinionsInHand';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.modifiersContextObjects = null;
-  }
+  static type = 'ModifierDeathWatchBuffMinionsInHand';
 
   static createContextObject(modifiersContextObjects, description, options) {
     const contextObject = super.createContextObject(options);
@@ -45,6 +37,8 @@ class ModifierDeathWatchBuffMinionsInHand extends ModifierDeathWatch {
     }
   }
 }
-ModifierDeathWatchBuffMinionsInHand.initClass();
+ModifierDeathWatchBuffMinionsInHand.prototype.type = 'ModifierDeathWatchBuffMinionsInHand';
+ModifierDeathWatchBuffMinionsInHand.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDeathWatchBuffMinionsInHand.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierDeathWatchBuffMinionsInHand;

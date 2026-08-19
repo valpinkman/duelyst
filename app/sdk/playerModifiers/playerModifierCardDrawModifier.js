@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -8,10 +7,7 @@ const PlayerModifier = require('app/sdk/playerModifiers/playerModifier');
 const CardType = require('app/sdk/cards/cardType');
 
 class PlayerModifierCardDrawModifier extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierCardDrawModifier';
-    this.type = 'PlayerModifierCardDrawModifier';
-  }
+  static type = 'PlayerModifierCardDrawModifier';
 
   static createContextObject(cardDrawChange, duration, options) {
     if (duration == null) { duration = 0; }
@@ -28,6 +24,6 @@ class PlayerModifierCardDrawModifier extends PlayerModifier {
     return 0;
   }
 }
-PlayerModifierCardDrawModifier.initClass();
+PlayerModifierCardDrawModifier.prototype.type = 'PlayerModifierCardDrawModifier';
 
 module.exports = PlayerModifierCardDrawModifier;

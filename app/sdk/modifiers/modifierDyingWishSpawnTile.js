@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -8,14 +7,8 @@ const UtilsPosition = require('app/common/utils/utils_position');
 const ModifierDyingWishSpawnEntity = require('./modifierDyingWishSpawnEntity');
 
 class ModifierDyingWishSpawnTile extends ModifierDyingWishSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnTile';
-    this.type = 'ModifierDyingWishSpawnTile';
-
-    this.description = 'Turn %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDyingWishSpawnTile';
+  static description = 'Turn %X';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
@@ -34,6 +27,7 @@ class ModifierDyingWishSpawnTile extends ModifierDyingWishSpawnEntity {
     return this.description;
   }
 }
-ModifierDyingWishSpawnTile.initClass();
+ModifierDyingWishSpawnTile.prototype.type = 'ModifierDyingWishSpawnTile';
+ModifierDyingWishSpawnTile.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDyingWishSpawnTile;

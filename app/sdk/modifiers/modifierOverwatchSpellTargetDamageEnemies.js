@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,10 +10,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOverwatchSpellTarget = require('./modifierOverwatchSpellTarget');
 
 class ModifierOverwatchSpellTargetDamageEnemies extends ModifierOverwatchSpellTarget {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchSpellTargetDamageEnemies';
-    this.type = 'ModifierOverwatchSpellTargetDamageEnemies';
-  }
+  static type = 'ModifierOverwatchSpellTargetDamageEnemies';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -39,6 +35,6 @@ class ModifierOverwatchSpellTargetDamageEnemies extends ModifierOverwatchSpellTa
     })();
   }
 }
-ModifierOverwatchSpellTargetDamageEnemies.initClass();
+ModifierOverwatchSpellTargetDamageEnemies.prototype.type = 'ModifierOverwatchSpellTargetDamageEnemies';
 
 module.exports = ModifierOverwatchSpellTargetDamageEnemies;

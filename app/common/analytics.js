@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
@@ -21,16 +20,6 @@ The above are all optional
 */
 
 class Analytics {
-  static initClass() {
-    this.EventPriority = AnalyticsEventPriority;
-    this.EventCategory = AnalyticsEventCategory;
-    // @_groupPriority - allows the user of a predefined priority for a group of hits,
-    // set with @setGroupPriority, and always clear with @clearGroupPriority after group is complete
-    this._groupPriority = undefined;
-    this._defaultPriority = AnalyticsEventPriority.High;
-    // The priority used for events tracked when there is no priority passed, or group priority set
-  }
-
   static _getAnalyticsModules() {
     const analyticsModules = [];
 
@@ -183,6 +172,9 @@ class Analytics {
     })();
   }
 }
-Analytics.initClass();
+Analytics.EventPriority = AnalyticsEventPriority;
+Analytics.EventCategory = AnalyticsEventCategory;
+Analytics._groupPriority = undefined;
+Analytics._defaultPriority = AnalyticsEventPriority.High;
 
 module.exports = Analytics;

@@ -1,18 +1,12 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchApplyTempArtifactModifier extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchApplyTempArtifactModifier';
-    this.type = 'ModifierStartTurnWatchApplyTempArtifactModifier';
-
-    this.prototype.modifierContextObject = null;
-  }
+  static type = 'ModifierStartTurnWatchApplyTempArtifactModifier';
 
   onActivate() {
     super.onActivate();
@@ -39,6 +33,7 @@ class ModifierStartTurnWatchApplyTempArtifactModifier extends ModifierStartTurnW
     return this.getGameSession().applyModifierContextObject(this.modifierContextObject, general, this);
   }
 }
-ModifierStartTurnWatchApplyTempArtifactModifier.initClass();
+ModifierStartTurnWatchApplyTempArtifactModifier.prototype.type = 'ModifierStartTurnWatchApplyTempArtifactModifier';
+ModifierStartTurnWatchApplyTempArtifactModifier.prototype.modifierContextObject = null;
 
 module.exports = ModifierStartTurnWatchApplyTempArtifactModifier;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,7 @@ const PutCardInHandAction = require('./putCardInHandAction');
 const HurtingDamageAction = require('./hurtingDamageAction');
 
 class DrawCardAction extends PutCardInHandAction {
-  static initClass() {
-    this.type = 'DrawCardAction';
-
-    this.prototype.cardIndexFromDeck = null;
-    // when set, card draw will not be random but will be a specific card from deck instead
-  }
+  static type = 'DrawCardAction';
 
   constructor() {
     super(...arguments);
@@ -80,6 +74,6 @@ class DrawCardAction extends PutCardInHandAction {
     return true;
   }
 }
-DrawCardAction.initClass();
+DrawCardAction.prototype.cardIndexFromDeck = null;
 
 module.exports = DrawCardAction;

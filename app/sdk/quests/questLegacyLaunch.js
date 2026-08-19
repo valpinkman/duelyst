@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -13,12 +12,7 @@ const QuestType = require('./questTypeLookup');
 const moment = require('moment');
 
 class QuestLegacyLaunch extends Quest {
-  static initClass() {
-    this.Identifier = 40003; // ID to use for this quest
-    this.prototype.isReplaceable = false; // whether a player can replace this quest
-    this.prototype.giftChests = [GiftCrateLookup.LegacyLaunch];
-    this.prototype.rewardDetails = 'Unlimited Mode Celebration Crate';
-  }
+  static Identifier = 40003;
 
   constructor() {
     super(QuestLegacyLaunch.Identifier, 'Unlimited Celebration', [QuestType.Promotional]);
@@ -47,6 +41,8 @@ class QuestLegacyLaunch extends Quest {
     return moment.utc('2018-03-14');
   }
 }
-QuestLegacyLaunch.initClass();
+QuestLegacyLaunch.prototype.isReplaceable = false;
+QuestLegacyLaunch.prototype.giftChests = [GiftCrateLookup.LegacyLaunch];
+QuestLegacyLaunch.prototype.rewardDetails = 'Unlimited Mode Celebration Crate';
 
 module.exports = QuestLegacyLaunch;

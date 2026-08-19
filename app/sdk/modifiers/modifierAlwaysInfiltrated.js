@@ -1,26 +1,19 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierInfiltrate = require('app/sdk/modifiers/modifierInfiltrate');
 const Modifier = require('./modifier');
 
 class ModifierAlwaysInfiltrated extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAlwaysInfiltrated';
-    this.type = 'ModifierAlwaysInfiltrated';
-
-    this.isHiddenToUI = true;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAlwaysInfiltrated'];
-  }
+  static type = 'ModifierAlwaysInfiltrated';
+  static isHiddenToUI = true;
 }
-ModifierAlwaysInfiltrated.initClass();
+ModifierAlwaysInfiltrated.prototype.type = 'ModifierAlwaysInfiltrated';
+ModifierAlwaysInfiltrated.prototype.activeInHand = false;
+ModifierAlwaysInfiltrated.prototype.activeInDeck = false;
+ModifierAlwaysInfiltrated.prototype.activeInSignatureCards = false;
+ModifierAlwaysInfiltrated.prototype.activeOnBoard = true;
+ModifierAlwaysInfiltrated.prototype.fxResource = ['FX.Modifiers.ModifierAlwaysInfiltrated'];
 
 module.exports = ModifierAlwaysInfiltrated;

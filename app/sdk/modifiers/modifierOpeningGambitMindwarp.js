@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,12 +9,8 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitMindwarp extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitMindwarp';
-    this.type = 'ModifierOpeningGambitMindwarp';
-
-    this.description = 'Gain a copy of a random spell from your opponent\'s action bar';
-  }
+  static type = 'ModifierOpeningGambitMindwarp';
+  static description = 'Gain a copy of a random spell from your opponent\'s action bar';
 
   onOpeningGambit() {
     super.onOpeningGambit();
@@ -47,6 +42,6 @@ class ModifierOpeningGambitMindwarp extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitMindwarp.initClass();
+ModifierOpeningGambitMindwarp.prototype.type = 'ModifierOpeningGambitMindwarp';
 
 module.exports = ModifierOpeningGambitMindwarp;

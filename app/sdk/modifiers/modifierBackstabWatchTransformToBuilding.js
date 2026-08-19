@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,13 +12,7 @@ const ModifierBuilding = require('./modifierBuilding');
 const ModifierBackstabWatch = require('./modifierBackstabWatch');
 
 class ModifierBackstabWatchTransformToBuilding extends ModifierBackstabWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierBackstabWatchTransformToBuilding';
-    this.type = 'ModifierBackstabWatchTransformToBuilding';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.buildModifierDescription = null;
-  }
+  static type = 'ModifierBackstabWatchTransformToBuilding';
 
   static createContextObject(buildingToSpawn, buildModifierDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -50,6 +43,8 @@ class ModifierBackstabWatchTransformToBuilding extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchTransformToBuilding.initClass();
+ModifierBackstabWatchTransformToBuilding.prototype.type = 'ModifierBackstabWatchTransformToBuilding';
+ModifierBackstabWatchTransformToBuilding.prototype.cardDataOrIndexToSpawn = null;
+ModifierBackstabWatchTransformToBuilding.prototype.buildModifierDescription = null;
 
 module.exports = ModifierBackstabWatchTransformToBuilding;

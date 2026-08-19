@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,14 +17,6 @@ const _ = require('underscore');
 const ModifierProvoke = require('app/sdk/modifiers/modifierProvoke');
 
 class SpellOnceMoreWithProvoke extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spawnSilently = true;
-    this.prototype.numUnits = 8;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction4.Wraithling };
-    // use Wraithling as default unit for checking spawn positions, etc
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -87,6 +78,9 @@ class SpellOnceMoreWithProvoke extends SpellSpawnEntity {
     return validPositions;
   }
 }
-SpellOnceMoreWithProvoke.initClass();
+SpellOnceMoreWithProvoke.prototype.targetType = CardType.Unit;
+SpellOnceMoreWithProvoke.prototype.spawnSilently = true;
+SpellOnceMoreWithProvoke.prototype.numUnits = 8;
+SpellOnceMoreWithProvoke.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction4.Wraithling };
 
 module.exports = SpellOnceMoreWithProvoke;

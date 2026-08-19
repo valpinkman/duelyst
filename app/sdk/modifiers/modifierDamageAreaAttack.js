@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -13,10 +12,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierDamageAreaAttack extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDamageAreaAttack';
-    this.type = 'ModifierDamageAreaAttack';
-  }
+  static type = 'ModifierDamageAreaAttack';
 
   onBeforeAction(actionEvent) {
     super.onBeforeAction(actionEvent);
@@ -40,6 +36,6 @@ class ModifierDamageAreaAttack extends Modifier {
     }
   }
 }
-ModifierDamageAreaAttack.initClass();
+ModifierDamageAreaAttack.prototype.type = 'ModifierDamageAreaAttack';
 
 module.exports = ModifierDamageAreaAttack;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SetExhaustionAction = require('app/sdk/actions/setExhaustionAction');
@@ -9,24 +8,10 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierSpawnedFromEgg extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSpawnedFromEgg';
-    this.type = 'ModifierSpawnedFromEgg';
-
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = 'Spawned From Egg';
-    this.description = 'Spawned From An Egg';
-
-    this.isHiddenToUI = true;
-    this.prototype.isRemovable = false;
-    this.prototype.isCloneable = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpawnedFromEgg'];
-  }
+  static type = 'ModifierSpawnedFromEgg';
+  static modifierName = 'Spawned From Egg';
+  static description = 'Spawned From An Egg';
+  static isHiddenToUI = true;
 
   onApplyToCard(card) {
     super.onApplyToCard(card);
@@ -50,6 +35,13 @@ class ModifierSpawnedFromEgg extends Modifier {
     }
   }
 }
-ModifierSpawnedFromEgg.initClass();
+ModifierSpawnedFromEgg.prototype.type = 'ModifierSpawnedFromEgg';
+ModifierSpawnedFromEgg.prototype.maxStacks = 1;
+ModifierSpawnedFromEgg.prototype.isRemovable = false;
+ModifierSpawnedFromEgg.prototype.isCloneable = false;
+ModifierSpawnedFromEgg.prototype.activeInDeck = false;
+ModifierSpawnedFromEgg.prototype.activeInHand = false;
+ModifierSpawnedFromEgg.prototype.activeInSignatureCards = false;
+ModifierSpawnedFromEgg.prototype.fxResource = ['FX.Modifiers.ModifierSpawnedFromEgg'];
 
 module.exports = ModifierSpawnedFromEgg;

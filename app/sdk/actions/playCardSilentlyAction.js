@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,9 +13,7 @@ Play a card on the board and bypass the active card flow (i.e. followups and ope
 */
 
 class PlayCardSilentlyAction extends ApplyCardToBoardAction {
-  static initClass() {
-    this.type = 'PlayCardSilentlyAction';
-  }
+  static type = 'PlayCardSilentlyAction';
 
   constructor() {
     super(...arguments);
@@ -36,6 +33,5 @@ class PlayCardSilentlyAction extends ApplyCardToBoardAction {
     return this._private.cachedCard;
   }
 }
-PlayCardSilentlyAction.initClass();
 
 module.exports = PlayCardSilentlyAction;

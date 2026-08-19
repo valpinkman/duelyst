@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,20 +14,9 @@ const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction')
 const TeleportAction = require('app/sdk/actions/teleportAction');
 
 class ModifierSpellWatchScientist extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchScientist';
-    this.type = 'ModifierSpellWatchScientist';
-
-    this.modifierName = 'Spell Watch (Scientist)';
-    this.description = 'Whenever you cast a spell that targets a friendly minion, draw a card';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierSpellWatchScientist';
+  static modifierName = 'Spell Watch (Scientist)';
+  static description = 'Whenever you cast a spell that targets a friendly minion, draw a card';
 
   onAction(event) {
     super.onAction(event);
@@ -51,7 +39,12 @@ class ModifierSpellWatchScientist extends Modifier {
     }
   }
 }
-ModifierSpellWatchScientist.initClass();
+ModifierSpellWatchScientist.prototype.type = 'ModifierSpellWatchScientist';
+ModifierSpellWatchScientist.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
+ModifierSpellWatchScientist.prototype.activeInHand = false;
+ModifierSpellWatchScientist.prototype.activeInDeck = false;
+ModifierSpellWatchScientist.prototype.activeInSignatureCards = false;
+ModifierSpellWatchScientist.prototype.activeOnBoard = true;
 
 module.exports = ModifierSpellWatchScientist;
 

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,13 +12,6 @@ const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceActi
 const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction');
 
 class SpellPsychicConduit extends SpellApplyModifiers {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.EnemyDirect;
-
-    this.prototype.maxAttack = -1;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -50,6 +42,8 @@ class SpellPsychicConduit extends SpellApplyModifiers {
     return validTargetPositions;
   }
 }
-SpellPsychicConduit.initClass();
+SpellPsychicConduit.prototype.targetType = CardType.Unit;
+SpellPsychicConduit.prototype.spellFilterType = SpellFilterType.EnemyDirect;
+SpellPsychicConduit.prototype.maxAttack = -1;
 
 module.exports = SpellPsychicConduit;

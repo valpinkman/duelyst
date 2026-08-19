@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,11 +9,6 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const _ = require('underscore');
 
 class SpellDamageAndApplyModifiers extends SpellApplyModifiers {
-  static initClass() {
-    this.prototype.applyToAllies = false;
-    this.prototype.applyToEnemy = false;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
     const unit = board.getUnitAtPosition(applyEffectPosition);
@@ -36,6 +30,7 @@ class SpellDamageAndApplyModifiers extends SpellApplyModifiers {
     }
   }
 }
-SpellDamageAndApplyModifiers.initClass();
+SpellDamageAndApplyModifiers.prototype.applyToAllies = false;
+SpellDamageAndApplyModifiers.prototype.applyToEnemy = false;
 
 module.exports = SpellDamageAndApplyModifiers;

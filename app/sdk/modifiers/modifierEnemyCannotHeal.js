@@ -2,27 +2,15 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const Modifier = require('./modifier');
 
 class ModifierEnemyCannotHeal extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyCannotHeal';
-    this.type = 'ModifierEnemyCannotHeal';
-
-    this.modifierName = 'ModifierEnemyCannotHeal';
-    this.description = 'Enemy minions and Generals cannot heal';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEnemyCannotHeal'];
-  }
+  static type = 'ModifierEnemyCannotHeal';
+  static modifierName = 'ModifierEnemyCannotHeal';
+  static description = 'Enemy minions and Generals cannot heal';
 
   // watch for enemy heals, and turn them into 0s
   onModifyActionForExecution(e) {
@@ -37,7 +25,12 @@ class ModifierEnemyCannotHeal extends Modifier {
     }
   }
 }
-ModifierEnemyCannotHeal.initClass();
+ModifierEnemyCannotHeal.prototype.type = 'ModifierEnemyCannotHeal';
+ModifierEnemyCannotHeal.prototype.activeInHand = false;
+ModifierEnemyCannotHeal.prototype.activeInDeck = false;
+ModifierEnemyCannotHeal.prototype.activeInSignatureCards = false;
+ModifierEnemyCannotHeal.prototype.activeOnBoard = true;
+ModifierEnemyCannotHeal.prototype.fxResource = ['FX.Modifiers.ModifierEnemyCannotHeal'];
 
 module.exports = ModifierEnemyCannotHeal;
 

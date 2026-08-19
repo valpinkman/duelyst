@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,8 @@ const BonusManaCoreAction = require('app/sdk/actions/bonusManaCoreAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishBonusManaCrystal extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishBonusManaCrystal';
-    this.type = 'ModifierDyingWishBonusManaCrystal';
-
-    this.description = 'Permanently gain 1 mana crystal';
-
-    this.prototype.giveToOwner = true; // if false, will give mana to OPPONENT of dying entity
-    this.prototype.amountToGain = 1;
-  }
+  static type = 'ModifierDyingWishBonusManaCrystal';
+  static description = 'Permanently gain 1 mana crystal';
 
   static createContextObject(giveToOwner, amountToGain, options) {
     if (giveToOwner == null) { giveToOwner = true; }
@@ -50,6 +42,8 @@ class ModifierDyingWishBonusManaCrystal extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishBonusManaCrystal.initClass();
+ModifierDyingWishBonusManaCrystal.prototype.type = 'ModifierDyingWishBonusManaCrystal';
+ModifierDyingWishBonusManaCrystal.prototype.giveToOwner = true;
+ModifierDyingWishBonusManaCrystal.prototype.amountToGain = 1;
 
 module.exports = ModifierDyingWishBonusManaCrystal;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,14 +12,6 @@ const SpellFilterType = require('./spellFilterType');
   Abstract class that should be the super class for ANY spell that applies entities to the board.
 */
 class SpellApplyEntityToBoard extends Spell {
-  static initClass() {
-    this.prototype.sourceType = CardType.Entity;
-    this.prototype.targetType = CardType.Entity;
-    this.prototype.spellFilterType = SpellFilterType.None;
-    this.prototype.filterPlayPositionsForEntity = true;
-    // by default SpellApplyEntity blocks play positions where the spawning entity would be obstructed
-  }
-
   getEntityToSpawn() {
     // override in subclasses and provide entity that will be applied to board
     return null;
@@ -43,6 +34,9 @@ class SpellApplyEntityToBoard extends Spell {
     return super._postFilterPlayPositions(validPositions);
   }
 }
-SpellApplyEntityToBoard.initClass();
+SpellApplyEntityToBoard.prototype.sourceType = CardType.Entity;
+SpellApplyEntityToBoard.prototype.targetType = CardType.Entity;
+SpellApplyEntityToBoard.prototype.spellFilterType = SpellFilterType.None;
+SpellApplyEntityToBoard.prototype.filterPlayPositionsForEntity = true;
 
 module.exports = SpellApplyEntityToBoard;

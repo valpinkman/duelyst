@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -9,10 +8,7 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierSpellDamageWatch = require('./modifierSpellDamageWatch');
 
 class ModifierSpellDamageWatchPutCardInHand extends ModifierSpellDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellDamageWatchPutCardInHand';
-    this.type = 'ModifierSpellDamageWatchPutCardInHand';
-  }
+  static type = 'ModifierSpellDamageWatchPutCardInHand';
 
   static createContextObject(cardDataOrIndexToPutInHand, options) {
     const contextObject = super.createContextObject(options);
@@ -25,6 +21,6 @@ class ModifierSpellDamageWatchPutCardInHand extends ModifierSpellDamageWatch {
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierSpellDamageWatchPutCardInHand.initClass();
+ModifierSpellDamageWatchPutCardInHand.prototype.type = 'ModifierSpellDamageWatchPutCardInHand';
 
 module.exports = ModifierSpellDamageWatchPutCardInHand;

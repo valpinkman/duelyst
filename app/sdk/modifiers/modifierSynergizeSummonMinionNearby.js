@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,13 +13,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizeSummonMinionNearby extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeSummonMinionNearby';
-    this.type = 'ModifierSynergizeSummonMinionNearby';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnCount = 1;
-  }
+  static type = 'ModifierSynergizeSummonMinionNearby';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -55,6 +48,8 @@ class ModifierSynergizeSummonMinionNearby extends ModifierSynergize {
     }
   }
 }
-ModifierSynergizeSummonMinionNearby.initClass();
+ModifierSynergizeSummonMinionNearby.prototype.type = 'ModifierSynergizeSummonMinionNearby';
+ModifierSynergizeSummonMinionNearby.prototype.cardDataOrIndexToSpawn = null;
+ModifierSynergizeSummonMinionNearby.prototype.spawnCount = 1;
 
 module.exports = ModifierSynergizeSummonMinionNearby;

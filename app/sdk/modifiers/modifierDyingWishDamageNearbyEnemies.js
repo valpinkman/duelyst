@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -12,16 +11,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDamageNearbyEnemies extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDamageNearbyEnemies';
-    this.type = 'ModifierDyingWishDamageNearbyEnemies';
-
-    this.description = 'This minion deals %X damage to all enemies around it';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWishDamageNearbyAllies', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierDyingWishDamageNearbyEnemies';
+  static description = 'This minion deals %X damage to all enemies around it';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -53,6 +44,8 @@ class ModifierDyingWishDamageNearbyEnemies extends ModifierDyingWish {
     })();
   }
 }
-ModifierDyingWishDamageNearbyEnemies.initClass();
+ModifierDyingWishDamageNearbyEnemies.prototype.type = 'ModifierDyingWishDamageNearbyEnemies';
+ModifierDyingWishDamageNearbyEnemies.prototype.damageAmount = 0;
+ModifierDyingWishDamageNearbyEnemies.prototype.fxResource = ['FX.Modifiers.ModifierDyingWishDamageNearbyAllies', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierDyingWishDamageNearbyEnemies;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,22 +10,10 @@ const ModifierSilence = require('app/sdk/modifiers/modifierSilence');
 const Modifier = require('./modifier');
 
 class ModifierOnSpawnCopyMyGeneral extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOnSpawnCopyMyGeneral';
-    this.type = 'ModifierOnSpawnCopyMyGeneral';
-
-    this.modifierName = 'ModifierOnSpawnCopyMyGeneral';
-    this.description = 'Become a copy of your General';
-
-    this.isHiddenToUI = true;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOnSpawnCopyMyGeneral';
+  static modifierName = 'ModifierOnSpawnCopyMyGeneral';
+  static description = 'Become a copy of your General';
+  static isHiddenToUI = true;
 
   onApplyToCardBeforeSyncState() {
     super.onApplyToCardBeforeSyncState();
@@ -68,6 +55,11 @@ class ModifierOnSpawnCopyMyGeneral extends Modifier {
     })();
   }
 }
-ModifierOnSpawnCopyMyGeneral.initClass();
+ModifierOnSpawnCopyMyGeneral.prototype.type = 'ModifierOnSpawnCopyMyGeneral';
+ModifierOnSpawnCopyMyGeneral.prototype.activeInHand = false;
+ModifierOnSpawnCopyMyGeneral.prototype.activeInDeck = false;
+ModifierOnSpawnCopyMyGeneral.prototype.activeInSignatureCards = false;
+ModifierOnSpawnCopyMyGeneral.prototype.activeOnBoard = true;
+ModifierOnSpawnCopyMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOnSpawnCopyMyGeneral;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,12 +11,6 @@ const SpellFilterType = require('./spellFilterType');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 
 class SpellDropLift extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
-    this.prototype.canTargetGeneral = true;
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     const enemyGeneral = this.getGameSession().getGeneralForOpponentOfPlayerId(this.getOwnerId());
     const myGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
@@ -69,6 +62,8 @@ class SpellDropLift extends Spell {
     return applyEffectPositions;
   }
 }
-SpellDropLift.initClass();
+SpellDropLift.prototype.targetType = CardType.Unit;
+SpellDropLift.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
+SpellDropLift.prototype.canTargetGeneral = true;
 
 module.exports = SpellDropLift;

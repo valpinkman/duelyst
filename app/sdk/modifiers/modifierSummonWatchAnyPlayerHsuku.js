@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,16 +17,7 @@ const ModifierBlastAttack = require('./modifierBlastAttack');
 const ModifierForcefield = require('./modifierForcefield');
 
 class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchAnyPlayerHsuku';
-    this.type = 'ModifierSummonWatchAnyPlayerHsuku';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.abilitiesToGain = null; // abilities for Hsuku to gain, abilities will be removed from this list
-    this.prototype.abilityMasterList = null;
-    // unchanging list of possible abilities
-  }
+  static type = 'ModifierSummonWatchAnyPlayerHsuku';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -128,6 +118,9 @@ class ModifierSummonWatchAnyPlayerHsuku extends ModifierSummonWatchAnyPlayer {
     return false;
   }
 }
-ModifierSummonWatchAnyPlayerHsuku.initClass();
+ModifierSummonWatchAnyPlayerHsuku.prototype.type = 'ModifierSummonWatchAnyPlayerHsuku';
+ModifierSummonWatchAnyPlayerHsuku.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierSummonWatchAnyPlayerHsuku.prototype.abilitiesToGain = null;
+ModifierSummonWatchAnyPlayerHsuku.prototype.abilityMasterList = null;
 
 module.exports = ModifierSummonWatchAnyPlayerHsuku;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -11,12 +10,8 @@ const Modifier = require('./modifier');
   Abstract modifier class that checks for a specific board state (situation) and when that situation is active applies modifiers from modifiers context objects to the card this modifier is applied to.
 */
 class ModifierSituationalBuffSelf extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSituationalBuffSelf';
-    this.type = 'ModifierSituationalBuffSelf';
-
-    this.description = 'Whenever %X';
-  }
+  static type = 'ModifierSituationalBuffSelf';
+  static description = 'Whenever %X';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -60,6 +55,6 @@ class ModifierSituationalBuffSelf extends Modifier {
     return false;
   }
 }
-ModifierSituationalBuffSelf.initClass();
+ModifierSituationalBuffSelf.prototype.type = 'ModifierSituationalBuffSelf';
 
 module.exports = ModifierSituationalBuffSelf;

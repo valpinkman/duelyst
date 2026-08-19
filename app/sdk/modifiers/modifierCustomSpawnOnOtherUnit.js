@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -13,15 +12,9 @@ const ModifierCustomSpawn = require('./modifierCustomSpawn');
 
 */
 class ModifierCustomSpawnOnOtherUnit extends ModifierCustomSpawn {
-  static initClass() {
-    this.prototype.type = 'ModifierCustomSpawnOnOtherUnit';
-    this.type = 'ModifierCustomSpawnOnOtherUnit';
-
-    this.modifierName = 'Custom Spawn';
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCustomSpawn'];
-  }
+  static type = 'ModifierCustomSpawnOnOtherUnit';
+  static modifierName = 'Custom Spawn';
+  static description = '';
 
   getCustomSpawnPositions() {
     const validSpawnLocations = [];
@@ -34,6 +27,7 @@ class ModifierCustomSpawnOnOtherUnit extends ModifierCustomSpawn {
     return validSpawnLocations;
   }
 }
-ModifierCustomSpawnOnOtherUnit.initClass();
+ModifierCustomSpawnOnOtherUnit.prototype.type = 'ModifierCustomSpawnOnOtherUnit';
+ModifierCustomSpawnOnOtherUnit.prototype.fxResource = ['FX.Modifiers.ModifierCustomSpawn'];
 
 module.exports = ModifierCustomSpawnOnOtherUnit;

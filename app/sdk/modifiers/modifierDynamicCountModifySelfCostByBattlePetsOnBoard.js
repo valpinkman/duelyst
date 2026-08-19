@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,8 @@ const ModifierDynamicCountModifySelf = require('./modifierDynamicCountModifySelf
 const ModifierManaCostChange = require('./modifierManaCostChange');
 
 class ModifierDynamicCountModifySelfCostByBattlePetsOnBoard extends ModifierDynamicCountModifySelf {
-  static initClass() {
-    this.prototype.type = 'ModifierDynamicCountModifySelfCostByBattlePetsOnBoard';
-    this.type = 'ModifierDynamicCountModifySelfCostByBattlePetsOnBoard';
-
-    this.description = 'Costs %X for each friendly Battle Pet on the field';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierDynamicCountModifySelfCostByBattlePetsOnBoard';
+  static description = 'Costs %X for each friendly Battle Pet on the field';
 
   static createContextObject(manaCostChange, description, appliedName, options) {
     if (manaCostChange == null) { manaCostChange = 0; }
@@ -50,6 +40,10 @@ class ModifierDynamicCountModifySelfCostByBattlePetsOnBoard extends ModifierDyna
     return battlePetCount;
   }
 }
-ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.initClass();
+ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.type = 'ModifierDynamicCountModifySelfCostByBattlePetsOnBoard';
+ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeInDeck = false;
+ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeInHand = true;
+ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeInSignatureCards = false;
+ModifierDynamicCountModifySelfCostByBattlePetsOnBoard.prototype.activeOnBoard = true;
 
 module.exports = ModifierDynamicCountModifySelfCostByBattlePetsOnBoard;

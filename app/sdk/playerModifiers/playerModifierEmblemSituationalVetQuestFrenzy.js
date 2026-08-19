@@ -1,26 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifierEmblem = require('./playerModifierEmblem');
 const ModifierFrenzy = require('app/sdk/modifiers/modifierFrenzy');
 
 class PlayerModifierEmblemSituationalVetQuestFrenzy extends PlayerModifierEmblem {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemSituationalVetQuestFrenzy';
-    this.type = 'PlayerModifierEmblemSituationalVetQuestFrenzy';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.numArtifactsRequired = 0;
-  }
+  static type = 'PlayerModifierEmblemSituationalVetQuestFrenzy';
 
   static createContextObject(numArtifactsRequired, options) {
     const contextObject = super.createContextObject(options);
@@ -72,6 +59,12 @@ class PlayerModifierEmblemSituationalVetQuestFrenzy extends PlayerModifierEmblem
     return false;
   }
 }
-PlayerModifierEmblemSituationalVetQuestFrenzy.initClass();
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.type = 'PlayerModifierEmblemSituationalVetQuestFrenzy';
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.activeInHand = false;
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.activeInDeck = false;
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.activeInSignatureCards = false;
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.activeOnBoard = true;
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.maxStacks = 1;
+PlayerModifierEmblemSituationalVetQuestFrenzy.prototype.numArtifactsRequired = 0;
 
 module.exports = PlayerModifierEmblemSituationalVetQuestFrenzy;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('app/sdk/modifiers/modifier');
@@ -8,17 +7,9 @@ const Modifier = require('app/sdk/modifiers/modifier');
 const i18next = require('i18next');
 
 class ModifierForgedArtifactDescription extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierForgedArtifactDescription';
-    this.type = 'ModifierForgedArtifactDescription';
-
-    this.modifierName = '';
-    this.isHiddenToUI = false;
-    this.prototype.isRemovable = false;
-    this.prototype.isInherent = true; // show description on card text
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierForgedArtifactDescription';
+  static modifierName = '';
+  static isHiddenToUI = false;
 
   static createContextObject(factionId, attack) {
     const contextObject = super.createContextObject();
@@ -46,6 +37,9 @@ class ModifierForgedArtifactDescription extends Modifier {
     }
   }
 }
-ModifierForgedArtifactDescription.initClass();
+ModifierForgedArtifactDescription.prototype.type = 'ModifierForgedArtifactDescription';
+ModifierForgedArtifactDescription.prototype.isRemovable = false;
+ModifierForgedArtifactDescription.prototype.isInherent = true;
+ModifierForgedArtifactDescription.prototype.maxStacks = 1;
 
 module.exports = ModifierForgedArtifactDescription;

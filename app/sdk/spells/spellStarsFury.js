@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,10 +10,6 @@ const SpellFilterType = require('./spellFilterType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 
 class SpellStarsFury extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const applyEffectPositions = [];
     const board = this.getGameSession().getBoard();
@@ -38,6 +33,6 @@ class SpellStarsFury extends SpellSpawnEntity {
     return true;
   }
 }
-SpellStarsFury.initClass();
+SpellStarsFury.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
 
 module.exports = SpellStarsFury;

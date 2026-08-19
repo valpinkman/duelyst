@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SetExhaustionAction = require('app/sdk/actions/setExhaustionAction');
@@ -10,21 +9,8 @@ const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction
 const Modifier = require('./modifier');
 
 class ModifierPseudoRush extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierPseudoRush';
-    this.type = 'ModifierPseudoRush';
-
-    this.prototype.maxStacks = 1;
-
-    this.isHiddenToUI = true;
-    this.prototype.isRemovable = false;
-    this.prototype.isCloneable = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpawnedFromEgg'];
-  }
+  static type = 'ModifierPseudoRush';
+  static isHiddenToUI = true;
 
   onActivate(card) {
     super.onActivate(card);
@@ -55,6 +41,13 @@ class ModifierPseudoRush extends Modifier {
     }
   }
 }
-ModifierPseudoRush.initClass();
+ModifierPseudoRush.prototype.type = 'ModifierPseudoRush';
+ModifierPseudoRush.prototype.maxStacks = 1;
+ModifierPseudoRush.prototype.isRemovable = false;
+ModifierPseudoRush.prototype.isCloneable = false;
+ModifierPseudoRush.prototype.activeInDeck = false;
+ModifierPseudoRush.prototype.activeInHand = false;
+ModifierPseudoRush.prototype.activeInSignatureCards = false;
+ModifierPseudoRush.prototype.fxResource = ['FX.Modifiers.ModifierSpawnedFromEgg'];
 
 module.exports = ModifierPseudoRush;

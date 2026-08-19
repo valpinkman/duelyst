@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -11,22 +10,9 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierDoubleDamageToEnemyMinions extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDoubleDamageToEnemyMinions';
-    this.type = 'ModifierDoubleDamageToEnemyMinions';
-
-    this.modifierName = 'Double Damage To Enemy Minions';
-    this.description = 'Deals double damage to enemy minions';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.damageBonus = 2;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
-  }
+  static type = 'ModifierDoubleDamageToEnemyMinions';
+  static modifierName = 'Double Damage To Enemy Minions';
+  static description = 'Deals double damage to enemy minions';
 
   onEvent(event) {
     super.onEvent(event);
@@ -62,7 +48,13 @@ class ModifierDoubleDamageToEnemyMinions extends Modifier {
     }
   }
 }
-ModifierDoubleDamageToEnemyMinions.initClass();
+ModifierDoubleDamageToEnemyMinions.prototype.type = 'ModifierDoubleDamageToEnemyMinions';
+ModifierDoubleDamageToEnemyMinions.prototype.activeInHand = false;
+ModifierDoubleDamageToEnemyMinions.prototype.activeInDeck = false;
+ModifierDoubleDamageToEnemyMinions.prototype.activeInSignatureCards = false;
+ModifierDoubleDamageToEnemyMinions.prototype.activeOnBoard = true;
+ModifierDoubleDamageToEnemyMinions.prototype.damageBonus = 2;
+ModifierDoubleDamageToEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
 
 module.exports = ModifierDoubleDamageToEnemyMinions;
 

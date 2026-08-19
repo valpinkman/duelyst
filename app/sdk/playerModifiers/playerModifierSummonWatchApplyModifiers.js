@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,7 @@ const PlayerModifierSummonWatch = require('./playerModifierSummonWatch');
   Summon watch that remains active whether the original entity dies or not.
 */
 class PlayerModifierSummonWatchApplyModifiers extends PlayerModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierSummonWatchApplyModifiers';
-    this.type = 'PlayerModifierSummonWatchApplyModifiers';
-  }
+  static type = 'PlayerModifierSummonWatchApplyModifiers';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -32,6 +28,6 @@ class PlayerModifierSummonWatchApplyModifiers extends PlayerModifierSummonWatch 
     }
   }
 }
-PlayerModifierSummonWatchApplyModifiers.initClass();
+PlayerModifierSummonWatchApplyModifiers.prototype.type = 'PlayerModifierSummonWatchApplyModifiers';
 
 module.exports = PlayerModifierSummonWatchApplyModifiers;

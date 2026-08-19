@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -11,15 +10,9 @@ const ModifierManaCostChange = require('./modifierManaCostChange');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishXho extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishXho';
-    this.type = 'ModifierDyingWishXho';
-
-    this.modifierName = 'Dying Wish';
-    this.description = 'Put a random Songhai spell into your action bar. It costs 1 less';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierDyingWishXho';
+  static modifierName = 'Dying Wish';
+  static description = 'Put a random Songhai spell into your action bar. It costs 1 less';
 
   onDyingWish() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -36,6 +29,7 @@ class ModifierDyingWishXho extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishXho.initClass();
+ModifierDyingWishXho.prototype.type = 'ModifierDyingWishXho';
+ModifierDyingWishXho.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierDyingWishXho;

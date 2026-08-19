@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RemoveAction = require('app/sdk/actions/removeAction');
@@ -9,10 +8,7 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const ModifierDyingWishDagona = require('./modifierDyingWishDagona');
 
 class ModifierOpeningGambitDagona extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDagona';
-    this.type = 'ModifierOpeningGambitDagona';
-  }
+  static type = 'ModifierOpeningGambitDagona';
 
   onOpeningGambit() {
     // consume original unit at spawn position (remove it from board)
@@ -34,6 +30,6 @@ class ModifierOpeningGambitDagona extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitDagona.initClass();
+ModifierOpeningGambitDagona.prototype.type = 'ModifierOpeningGambitDagona';
 
 module.exports = ModifierOpeningGambitDagona;

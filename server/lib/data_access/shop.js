@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -31,10 +30,7 @@ const RiftModule = require('./rift');
 const GiftCrateModule = require('./gift_crate');
 
 class ShopModule {
-  static initClass() {
-    this.SHOP_SALE_BUFFER_MINUTES = 5;
-    // Number of minutes passed a shop sale's expiration we will allow the purchase to work
-  }
+  static SHOP_SALE_BUFFER_MINUTES = 5;
 
   static _addChargeToUser(txPromise, tx, userRow, userId, sku, price, currencyCode, chargeId, chargeJson, paymentType, createdAt) {
     let allPromises = [];
@@ -532,7 +528,6 @@ class ShopModule {
     return trxPromise;
   }
 }
-ShopModule.initClass();
 
 module.exports = ShopModule;
 

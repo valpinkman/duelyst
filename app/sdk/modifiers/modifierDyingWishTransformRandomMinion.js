@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,17 +12,7 @@ const ModifierTransformed = require('app/sdk/modifiers/modifierTransformed');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishTransformRandomMinion';
-    this.type = 'ModifierDyingWishTransformRandomMinion';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.minionToTransformTo = null;
-    this.prototype.includeAllies = true;
-    this.prototype.includeEnemies = true;
-    this.prototype.race = null;
-  }
+  static type = 'ModifierDyingWishTransformRandomMinion';
 
   static createContextObject(minionToTransformTo, includeAllies, includeEnemies, race, options) {
     if (includeAllies == null) { includeAllies = true; }
@@ -80,6 +69,11 @@ class ModifierDyingWishTransformRandomMinion extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishTransformRandomMinion.initClass();
+ModifierDyingWishTransformRandomMinion.prototype.type = 'ModifierDyingWishTransformRandomMinion';
+ModifierDyingWishTransformRandomMinion.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDyingWishTransformRandomMinion.prototype.minionToTransformTo = null;
+ModifierDyingWishTransformRandomMinion.prototype.includeAllies = true;
+ModifierDyingWishTransformRandomMinion.prototype.includeEnemies = true;
+ModifierDyingWishTransformRandomMinion.prototype.race = null;
 
 module.exports = ModifierDyingWishTransformRandomMinion;

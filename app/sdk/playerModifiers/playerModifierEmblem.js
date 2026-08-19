@@ -1,21 +1,14 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifier = require('app/sdk/playerModifiers/playerModifier');
 
 class PlayerModifierEmblem extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblem';
-    this.type = 'PlayerModifierEmblem';
-
-    // emblems should be visible
-    this.isHiddenToUI = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEmblem'];
-  }
+  static type = 'PlayerModifierEmblem';
+  static isHiddenToUI = false;
 }
-PlayerModifierEmblem.initClass();
+PlayerModifierEmblem.prototype.type = 'PlayerModifierEmblem';
+PlayerModifierEmblem.prototype.fxResource = ['FX.Modifiers.ModifierEmblem'];
 
 module.exports = PlayerModifierEmblem;

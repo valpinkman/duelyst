@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,17 +11,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchDamageNearbyEnemy extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchDamageNearbyEnemy';
-    this.type = 'ModifierEndTurnWatchDamageNearbyEnemy';
-
-    this.modifierName = 'End Watch';
-    this.description = 'At the end of your turn, deal %X damage to all %Y';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
-  }
+  static type = 'ModifierEndTurnWatchDamageNearbyEnemy';
+  static modifierName = 'End Watch';
+  static description = 'At the end of your turn, deal %X damage to all %Y';
 
   static createContextObject(damageAmount, damageGenerals, options) {
     if (damageAmount == null) { damageAmount = 1; }
@@ -67,6 +58,8 @@ class ModifierEndTurnWatchDamageNearbyEnemy extends ModifierEndTurnWatch {
     })();
   }
 }
-ModifierEndTurnWatchDamageNearbyEnemy.initClass();
+ModifierEndTurnWatchDamageNearbyEnemy.prototype.type = 'ModifierEndTurnWatchDamageNearbyEnemy';
+ModifierEndTurnWatchDamageNearbyEnemy.prototype.damageAmount = 0;
+ModifierEndTurnWatchDamageNearbyEnemy.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericDamageNearby'];
 
 module.exports = ModifierEndTurnWatchDamageNearbyEnemy;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,20 +15,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchSpawnEntity extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchSpawnEntity';
-    this.type = 'ModifierEndTurnWatchSpawnEntity';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the end of your turn, summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnDescription = null;
-    this.prototype.spawnCount = null;
-    this.prototype.spawnPattern = null;
-    this.prototype.spawnSilently = false;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierEndTurnWatchSpawnEntity';
+  static modifierName = 'Turn Watch';
+  static description = 'At the end of your turn, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -94,6 +82,12 @@ class ModifierEndTurnWatchSpawnEntity extends ModifierEndTurnWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierEndTurnWatchSpawnEntity.initClass();
+ModifierEndTurnWatchSpawnEntity.prototype.type = 'ModifierEndTurnWatchSpawnEntity';
+ModifierEndTurnWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierEndTurnWatchSpawnEntity.prototype.spawnDescription = null;
+ModifierEndTurnWatchSpawnEntity.prototype.spawnCount = null;
+ModifierEndTurnWatchSpawnEntity.prototype.spawnPattern = null;
+ModifierEndTurnWatchSpawnEntity.prototype.spawnSilently = false;
+ModifierEndTurnWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierEndTurnWatchSpawnEntity;

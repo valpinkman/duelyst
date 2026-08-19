@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -10,22 +9,9 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierTakesDoubleDamage extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierTakesDoubleDamage';
-    this.type = 'ModifierTakesDoubleDamage';
-
-    this.modifierName = 'Takes double damage';
-    this.description = 'Whenever this takes damage, it takes double';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.damageBonus = 2;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
-  }
+  static type = 'ModifierTakesDoubleDamage';
+  static modifierName = 'Takes double damage';
+  static description = 'Whenever this takes damage, it takes double';
 
   onEvent(event) {
     super.onEvent(event);
@@ -61,6 +47,12 @@ class ModifierTakesDoubleDamage extends Modifier {
     }
   }
 }
-ModifierTakesDoubleDamage.initClass();
+ModifierTakesDoubleDamage.prototype.type = 'ModifierTakesDoubleDamage';
+ModifierTakesDoubleDamage.prototype.activeInHand = false;
+ModifierTakesDoubleDamage.prototype.activeInDeck = false;
+ModifierTakesDoubleDamage.prototype.activeInSignatureCards = false;
+ModifierTakesDoubleDamage.prototype.activeOnBoard = true;
+ModifierTakesDoubleDamage.prototype.damageBonus = 2;
+ModifierTakesDoubleDamage.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
 
 module.exports = ModifierTakesDoubleDamage;

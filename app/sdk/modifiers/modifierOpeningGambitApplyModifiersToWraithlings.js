@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -9,14 +8,8 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierOpeningGambitApplyModifiers = require('./modifierOpeningGambitApplyModifiers');
 
 class ModifierOpeningGambitApplyModifiersToWraithlings extends ModifierOpeningGambitApplyModifiers {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitApplyModifiersToWraithlings';
-    this.type = 'ModifierOpeningGambitApplyModifiersToWraithlings';
-
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitApplyModifiersToWraithlings';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, auraRadius, description, options) {
     const contextObject = super.createContextObject(modifiersContextObjects, false, false, true, false, false, auraRadius, description, options);
@@ -37,6 +30,7 @@ class ModifierOpeningGambitApplyModifiersToWraithlings extends ModifierOpeningGa
     return affectedEntities;
   }
 }
-ModifierOpeningGambitApplyModifiersToWraithlings.initClass();
+ModifierOpeningGambitApplyModifiersToWraithlings.prototype.type = 'ModifierOpeningGambitApplyModifiersToWraithlings';
+ModifierOpeningGambitApplyModifiersToWraithlings.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitApplyModifiersToWraithlings;

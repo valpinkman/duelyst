@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,8 @@ const ModifierManaCostChange = require('./modifierManaCostChange');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 
 class ModifierCostChangeIfMyGeneralDamagedLastTurn extends ModifierMyGeneralDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierCostChangeIfMyGeneralDamagedLastTurn';
-    this.type = 'ModifierCostChangeIfMyGeneralDamagedLastTurn';
-
-    this.modifierName = 'My General Damaged Watch';
-    this.description = i18next.t('modifiers.cost_change_if_my_general_damaged_last_turn_name_def');
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeOnBoard = false;
-  }
+  static type = 'ModifierCostChangeIfMyGeneralDamagedLastTurn';
+  static modifierName = 'My General Damaged Watch';
 
   static createContextObject(costChange, description, options) {
     if (costChange == null) { costChange = 0; }
@@ -53,7 +43,11 @@ class ModifierCostChangeIfMyGeneralDamagedLastTurn extends ModifierMyGeneralDama
     }
   }
 }
-ModifierCostChangeIfMyGeneralDamagedLastTurn.initClass();
+ModifierCostChangeIfMyGeneralDamagedLastTurn.prototype.type = 'ModifierCostChangeIfMyGeneralDamagedLastTurn';
+ModifierCostChangeIfMyGeneralDamagedLastTurn.description = i18next.t('modifiers.cost_change_if_my_general_damaged_last_turn_name_def');
+ModifierCostChangeIfMyGeneralDamagedLastTurn.prototype.activeInHand = true;
+ModifierCostChangeIfMyGeneralDamagedLastTurn.prototype.activeInDeck = true;
+ModifierCostChangeIfMyGeneralDamagedLastTurn.prototype.activeOnBoard = false;
 
 module.exports = ModifierCostChangeIfMyGeneralDamagedLastTurn;
 

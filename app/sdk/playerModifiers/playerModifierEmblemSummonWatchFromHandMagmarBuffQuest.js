@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
 
 class PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest extends PlayerModifierEmblemSummonWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest';
-    this.type = 'PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest';
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.modifiersContextObjects = null;
-  }
+  static type = 'PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest';
 
   static createContextObject(modifiersContextObjects, options) {
     const contextObject = super.createContextObject(options);
@@ -48,6 +40,8 @@ class PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest extends PlayerModif
     }
   }
 }
-PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.initClass();
+PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.type = 'PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest';
+PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.maxStacks = 1;
+PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest.prototype.modifiersContextObjects = null;
 
 module.exports = PlayerModifierEmblemSummonWatchFromHandMagmarBuffQuest;

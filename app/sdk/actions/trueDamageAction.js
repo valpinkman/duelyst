@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('./damageAction');
@@ -10,9 +9,7 @@ const _ = require('underscore');
   True damage actions cannot be modified in any way and always deals the exact damage initially set in the action.
 */
 class TrueDamageAction extends DamageAction {
-  static initClass() {
-    this.type = 'TrueDamageAction';
-  }
+  static type = 'TrueDamageAction';
 
   constructor() {
     super(...arguments);
@@ -22,6 +19,5 @@ class TrueDamageAction extends DamageAction {
     return this.getDamageAmount();
   }
 }
-TrueDamageAction.initClass();
 
 module.exports = TrueDamageAction;

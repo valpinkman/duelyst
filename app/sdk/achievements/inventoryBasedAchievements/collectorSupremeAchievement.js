@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,16 +13,12 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class CollectorSupremeAchievement extends Achievement {
-  static initClass() {
-    this.id = 'collectorSupreme';
-    this.title = i18next.t('achievements.collector_supreme_title');
-    this.description = i18next.t('achievements.collector_supreme_desc');
-    this.progressRequired = 1;
-    this.rewards = {
-      neutralEpicCard: 1,
-      neutralRareCard: 1,
-    };
-  }
+  static id = 'collectorSupreme';
+  static progressRequired = 1;
+  static rewards = {
+    neutralEpicCard: 1,
+    neutralRareCard: 1,
+  };
 
   static progressForCardCollection(cardCollection, allCards) {
     if ((cardCollection == null)) {
@@ -51,6 +46,7 @@ class CollectorSupremeAchievement extends Achievement {
     return 1;
   }
 }
-CollectorSupremeAchievement.initClass();
+CollectorSupremeAchievement.title = i18next.t('achievements.collector_supreme_title');
+CollectorSupremeAchievement.description = i18next.t('achievements.collector_supreme_desc');
 
 module.exports = CollectorSupremeAchievement;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,13 +13,6 @@ const TeleportAction = require('app/sdk/actions/teleportAction');
 const _ = require('underscore');
 
 class SpellFollowupTeleport extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.None;
-
-    this.prototype._postFilterApplyPositions = this.prototype._postFilterPlayPositions;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
     const applyEffectPosition = { x, y };
@@ -76,6 +68,8 @@ class SpellFollowupTeleport extends Spell {
     return followupCard.getTeleportSource(followupCard.getApplyEffectPosition());
   }
 }
-SpellFollowupTeleport.initClass();
+SpellFollowupTeleport.prototype.targetType = CardType.Unit;
+SpellFollowupTeleport.prototype.spellFilterType = SpellFilterType.None;
+SpellFollowupTeleport.prototype._postFilterApplyPositions = SpellFollowupTeleport.prototype._postFilterPlayPositions;
 
 module.exports = SpellFollowupTeleport;

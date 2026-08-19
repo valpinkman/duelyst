@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -10,19 +9,8 @@ const Modifier = require('./modifier');
 const ModifierBackstab = require('./modifierBackstab');
 
 class ModifierAlwaysBackstabbed extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAlwaysBackstabbed';
-    this.type = 'ModifierAlwaysBackstabbed';
-
-    this.isHiddenToUI = false;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAlwaysBackstabbed'];
-  }
+  static type = 'ModifierAlwaysBackstabbed';
+  static isHiddenToUI = false;
 
   onEvent(event) {
     super.onEvent(event);
@@ -58,6 +46,11 @@ class ModifierAlwaysBackstabbed extends Modifier {
     }
   }
 }
-ModifierAlwaysBackstabbed.initClass();
+ModifierAlwaysBackstabbed.prototype.type = 'ModifierAlwaysBackstabbed';
+ModifierAlwaysBackstabbed.prototype.activeInHand = false;
+ModifierAlwaysBackstabbed.prototype.activeInDeck = false;
+ModifierAlwaysBackstabbed.prototype.activeInSignatureCards = false;
+ModifierAlwaysBackstabbed.prototype.activeOnBoard = true;
+ModifierAlwaysBackstabbed.prototype.fxResource = ['FX.Modifiers.ModifierAlwaysBackstabbed'];
 
 module.exports = ModifierAlwaysBackstabbed;

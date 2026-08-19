@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchHealSelf extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchHealSelf';
-    this.type = 'ModifierEndTurnWatchHealSelf';
-
-    this.modifierName = 'End Turn Heal';
-    this.description = 'Restore %X Health to this minion at the end of your turn';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierEndTurnWatchHealSelf';
+  static modifierName = 'End Turn Heal';
+  static description = 'Restore %X Health to this minion at the end of your turn';
 
   static createContextObject(healAmount, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -43,6 +36,7 @@ class ModifierEndTurnWatchHealSelf extends ModifierEndTurnWatch {
     return this.getGameSession().executeAction(healAction1);
   }
 }
-ModifierEndTurnWatchHealSelf.initClass();
+ModifierEndTurnWatchHealSelf.prototype.type = 'ModifierEndTurnWatchHealSelf';
+ModifierEndTurnWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierEndTurnWatchHealSelf;

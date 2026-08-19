@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,14 +9,8 @@ const Modifier = require('./modifier');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchBuffSelf extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchBuffSelf';
-    this.type = 'ModifierDealDamageWatchBuffSelf';
-
-    this.description = 'Whenever this minion damages an enemy, this minion gains %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierDealDamageWatchBuffSelf';
+  static description = 'Whenever this minion damages an enemy, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, modAppliedName, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -46,6 +39,7 @@ class ModifierDealDamageWatchBuffSelf extends ModifierDealDamageWatch {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierDealDamageWatchBuffSelf.initClass();
+ModifierDealDamageWatchBuffSelf.prototype.type = 'ModifierDealDamageWatchBuffSelf';
+ModifierDealDamageWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierDealDamageWatchBuffSelf;

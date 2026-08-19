@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
@@ -13,13 +12,7 @@ const Modifier = require('./modifier');
       mechaz0r progress is (20%,40%,100%)
 */
 class ModifierCounter extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierCounter';
-    this.type = 'ModifierCounter';
-
-    this.prototype.isHiddenToUI = true;
-    this.prototype.isRemovable = false;
-  }
+  static type = 'ModifierCounter';
 
   static getDescription() {
     return this.description;
@@ -96,6 +89,8 @@ class ModifierCounter extends Modifier {
     return 0;
   }
 }
-ModifierCounter.initClass();
+ModifierCounter.prototype.type = 'ModifierCounter';
+ModifierCounter.prototype.isHiddenToUI = true;
+ModifierCounter.prototype.isRemovable = false;
 
 module.exports = ModifierCounter;

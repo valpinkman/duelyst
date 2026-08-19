@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,7 @@ const ModifierCustomSpawn = require('app/sdk/modifiers/modifierCustomSpawn');
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
 
 class ValidatorApplyCardToBoard extends Validator {
-  static initClass() {
-    this.prototype.type = 'ValidatorApplyCardToBoard';
-    this.type = 'ValidatorApplyCardToBoard';
-  }
+  static type = 'ValidatorApplyCardToBoard';
 
   onValidateAction(event) {
     super.onValidateAction(event);
@@ -41,6 +37,6 @@ class ValidatorApplyCardToBoard extends Validator {
     }
   }
 }
-ValidatorApplyCardToBoard.initClass();
+ValidatorApplyCardToBoard.prototype.type = 'ValidatorApplyCardToBoard';
 
 module.exports = ValidatorApplyCardToBoard;

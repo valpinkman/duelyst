@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,12 +8,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 
 class ModifierOpponentSummonWatchSummonMinionInFront extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchSummonMinionInFront';
-    this.type = 'ModifierOpponentSummonWatchSummonMinionInFront';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierOpponentSummonWatchSummonMinionInFront';
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -39,6 +33,7 @@ class ModifierOpponentSummonWatchSummonMinionInFront extends ModifierOpponentSum
     }
   }
 }
-ModifierOpponentSummonWatchSummonMinionInFront.initClass();
+ModifierOpponentSummonWatchSummonMinionInFront.prototype.type = 'ModifierOpponentSummonWatchSummonMinionInFront';
+ModifierOpponentSummonWatchSummonMinionInFront.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierOpponentSummonWatchSummonMinionInFront;

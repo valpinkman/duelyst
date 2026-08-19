@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,11 +11,6 @@ const SpellFilterType = require('./spellFilterType');
 const KillAction = require('app/sdk/actions/killAction');
 
 class SpellKillTarget extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -31,6 +25,7 @@ class SpellKillTarget extends Spell {
     }
   }
 }
-SpellKillTarget.initClass();
+SpellKillTarget.prototype.targetType = CardType.Unit;
+SpellKillTarget.prototype.spellFilterType = SpellFilterType.NeutralDirect;
 
 module.exports = SpellKillTarget;

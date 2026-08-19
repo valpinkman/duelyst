@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchDamageAllMinions extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchDamageAllMinions';
-    this.type = 'ModifierEndTurnWatchDamageAllMinions';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the end of your turn, deal %X damage to ALL other minions';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
-  }
+  static type = 'ModifierEndTurnWatchDamageAllMinions';
+  static modifierName = 'Turn Watch';
+  static description = 'At the end of your turn, deal %X damage to ALL other minions';
 
   static createContextObject(damageAmount, auraRadius, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -63,6 +56,7 @@ class ModifierEndTurnWatchDamageAllMinions extends ModifierEndTurnWatch {
     })();
   }
 }
-ModifierEndTurnWatchDamageAllMinions.initClass();
+ModifierEndTurnWatchDamageAllMinions.prototype.type = 'ModifierEndTurnWatchDamageAllMinions';
+ModifierEndTurnWatchDamageAllMinions.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
 
 module.exports = ModifierEndTurnWatchDamageAllMinions;

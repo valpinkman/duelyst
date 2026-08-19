@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,11 +14,6 @@ const GameFormat = require('app/sdk/gameFormat');
 const _ = require('underscore');
 
 class SpellMoltenRebirth extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Rex };
-    this.prototype.spawnSilently = true;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     // find unit that is to be killed (followup source)
     const targetUnit = board.getUnitAtPosition(this.getFollowupSourcePosition());
@@ -76,6 +70,7 @@ class SpellMoltenRebirth extends SpellSpawnEntity {
     }
   }
 }
-SpellMoltenRebirth.initClass();
+SpellMoltenRebirth.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction5.Rex };
+SpellMoltenRebirth.prototype.spawnSilently = true;
 
 module.exports = SpellMoltenRebirth;

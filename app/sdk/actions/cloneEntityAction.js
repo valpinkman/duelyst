@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,9 +11,7 @@ Clone an entity on the board silently.
 */
 
 class CloneEntityAction extends PlayCardSilentlyAction {
-  static initClass() {
-    this.type = 'CloneEntityAction';
-  }
+  static type = 'CloneEntityAction';
 
   constructor() {
     super(...arguments);
@@ -38,6 +35,5 @@ class CloneEntityAction extends PlayCardSilentlyAction {
     return this._private.cachedCard;
   }
 }
-CloneEntityAction.initClass();
 
 module.exports = CloneEntityAction;

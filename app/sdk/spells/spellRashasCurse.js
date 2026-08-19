@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,12 +15,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const RemoveRandomArtifactAction = require('app/sdk/actions/removeRandomArtifactAction');
 
 class SpellRashasCurse extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.EnemyIndirect;
-    this.prototype.canTargetGeneral = true;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -57,6 +50,8 @@ class SpellRashasCurse extends Spell {
     return applyEffectPositions;
   }
 }
-SpellRashasCurse.initClass();
+SpellRashasCurse.prototype.targetType = CardType.Unit;
+SpellRashasCurse.prototype.spellFilterType = SpellFilterType.EnemyIndirect;
+SpellRashasCurse.prototype.canTargetGeneral = true;
 
 module.exports = SpellRashasCurse;

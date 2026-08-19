@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -14,10 +13,7 @@ const _ = require('underscore');
 const ModifierOnDying = require('./modifierOnDying');
 
 class ModifierOnDyingResummonAnywhere extends ModifierOnDying {
-  static initClass() {
-    this.prototype.type = 'ModifierOnDyingResummonAnywhere';
-    this.type = 'ModifierOnDyingResummonAnywhere';
-  }
+  static type = 'ModifierOnDyingResummonAnywhere';
 
   onDying() {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -39,6 +35,6 @@ class ModifierOnDyingResummonAnywhere extends ModifierOnDying {
     }
   }
 }
-ModifierOnDyingResummonAnywhere.initClass();
+ModifierOnDyingResummonAnywhere.prototype.type = 'ModifierOnDyingResummonAnywhere';
 
 module.exports = ModifierOnDyingResummonAnywhere;

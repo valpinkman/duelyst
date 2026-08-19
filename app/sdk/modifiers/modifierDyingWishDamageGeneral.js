@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,20 +8,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDamageGeneral extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDamageGeneral';
-    this.type = 'ModifierDyingWishDamageGeneral';
-
-    this.prototype.name = 'Dying Wish: Damage General';
-    this.prototype.description = 'When this minion dies, deal damage to its general';
-
-    this.appliedName = 'Agonizing Death';
-    this.appliedDescription = '';
-
-    this.prototype.damageAmount = null; // if you want to deal a specific amount of damage, set it here, defaults to attack value of entity this modifier is attached to
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierDyingWishDamageGeneral';
+  static appliedName = 'Agonizing Death';
+  static appliedDescription = '';
 
   static getAppliedDescription(contextObject) {
     if (this.damageAmount) {
@@ -46,6 +34,10 @@ class ModifierDyingWishDamageGeneral extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDamageGeneral.initClass();
+ModifierDyingWishDamageGeneral.prototype.type = 'ModifierDyingWishDamageGeneral';
+ModifierDyingWishDamageGeneral.prototype.name = 'Dying Wish: Damage General';
+ModifierDyingWishDamageGeneral.prototype.description = 'When this minion dies, deal damage to its general';
+ModifierDyingWishDamageGeneral.prototype.damageAmount = null;
+ModifierDyingWishDamageGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierDyingWishDamageGeneral;

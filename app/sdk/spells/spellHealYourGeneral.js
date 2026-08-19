@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,6 @@ const SpellFilterType = require('./spellFilterType');
 const DamageAction = require('app/sdk/actions/damageAction');
 
 class SpellHealYourGeneral extends SpellHeal {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.None;
-    this.prototype.healModifier = 0;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const applyEffectPositions = [];
 
@@ -27,6 +20,8 @@ class SpellHealYourGeneral extends SpellHeal {
     return applyEffectPositions;
   }
 }
-SpellHealYourGeneral.initClass();
+SpellHealYourGeneral.prototype.targetType = CardType.Unit;
+SpellHealYourGeneral.prototype.spellFilterType = SpellFilterType.None;
+SpellHealYourGeneral.prototype.healModifier = 0;
 
 module.exports = SpellHealYourGeneral;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 const Modifier = require('./modifier');
 
 class ModifierSummonWatchBuffSelf extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchBuffSelf';
-    this.type = 'ModifierSummonWatchBuffSelf';
-
-    this.modifierName = 'Summon Watch';
-    this.description = 'Whenever you summon a minion, this minion gains %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchBuffSelf';
+  static modifierName = 'Summon Watch';
+  static description = 'Whenever you summon a minion, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, appliedName = null, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -46,6 +39,7 @@ class ModifierSummonWatchBuffSelf extends ModifierSummonWatch {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierSummonWatchBuffSelf.initClass();
+ModifierSummonWatchBuffSelf.prototype.type = 'ModifierSummonWatchBuffSelf';
+ModifierSummonWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchBuffSelf;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,12 +17,7 @@ const ModifierQuestStatusLyonar = require('./modifierQuestStatusLyonar');
 const ModifierFate = require('./modifierFate');
 
 class ModifierFateLyonarSmallMinionQuest extends ModifierFate {
-  static initClass() {
-    this.prototype.type = 'ModifierFateLyonarSmallMinionQuest';
-    this.type = 'ModifierFateLyonarSmallMinionQuest';
-
-    this.prototype.numMinionsRequired = 1;
-  }
+  static type = 'ModifierFateLyonarSmallMinionQuest';
 
   static createContextObject(numMinionsRequired, options) {
     const contextObject = super.createContextObject(options);
@@ -98,7 +92,8 @@ class ModifierFateLyonarSmallMinionQuest extends ModifierFate {
     return this.getGameSession().applyModifierContextObject(countModifier, general);
   }
 }
-ModifierFateLyonarSmallMinionQuest.initClass();
+ModifierFateLyonarSmallMinionQuest.prototype.type = 'ModifierFateLyonarSmallMinionQuest';
+ModifierFateLyonarSmallMinionQuest.prototype.numMinionsRequired = 1;
 
 module.exports = ModifierFateLyonarSmallMinionQuest;
 

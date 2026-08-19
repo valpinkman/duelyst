@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -17,19 +16,8 @@ const ModifierBandingHealSelfAndGeneral = require('./modifierBandingHealSelfAndG
 const ModifierDeathWatchDrawToXCards = require('./modifierDeathWatchDrawToXCards');
 
 class ModifierRook extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierRook';
-    this.type = 'ModifierRook';
-
-    this.description = 'At the end of your turn, this minion gains a random Faction ability';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierRook';
+  static description = 'At the end of your turn, this minion gains a random Faction ability';
 
   static createContextObject() {
     const contextObject = super.createContextObject();
@@ -56,6 +44,11 @@ class ModifierRook extends ModifierEndTurnWatch {
     }
   }
 }
-ModifierRook.initClass();
+ModifierRook.prototype.type = 'ModifierRook';
+ModifierRook.prototype.activeInHand = false;
+ModifierRook.prototype.activeInDeck = false;
+ModifierRook.prototype.activeInSignatureCards = false;
+ModifierRook.prototype.activeOnBoard = true;
+ModifierRook.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierRook;

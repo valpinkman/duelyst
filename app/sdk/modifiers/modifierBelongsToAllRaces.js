@@ -1,22 +1,16 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierBelongsToAllRaces extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBelongsToAllRaces';
-    this.type = 'ModifierBelongsToAllRaces';
-
-    this.modifierName = i18next.t('modifiers.belongs_to_all_races_name');
-    this.description = i18next.t('modifiers.belongs_to_all_races_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBelongsToAllRaces'];
-  }
+  static type = 'ModifierBelongsToAllRaces';
 }
-ModifierBelongsToAllRaces.initClass();
+ModifierBelongsToAllRaces.prototype.type = 'ModifierBelongsToAllRaces';
+ModifierBelongsToAllRaces.modifierName = i18next.t('modifiers.belongs_to_all_races_name');
+ModifierBelongsToAllRaces.description = i18next.t('modifiers.belongs_to_all_races_def');
+ModifierBelongsToAllRaces.prototype.fxResource = ['FX.Modifiers.ModifierBelongsToAllRaces'];
 
 module.exports = ModifierBelongsToAllRaces;

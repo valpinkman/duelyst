@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,18 +9,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchDamageEnemiesInRow extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchDamageEnemiesInRow';
-    this.type = 'ModifierStartTurnWatchDamageEnemiesInRow';
-
-    this.modifierName = 'Start Watch';
-    this.description = 'At the start of your turn, deal %X damage to enemies in row';
-
-    this.prototype.damageAmount = 0;
-    this.prototype.damageGeneral = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericDamageFire'];
-  }
+  static type = 'ModifierStartTurnWatchDamageEnemiesInRow';
+  static modifierName = 'Start Watch';
+  static description = 'At the start of your turn, deal %X damage to enemies in row';
 
   static createContextObject(damageAmount, damageGeneral, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -76,6 +66,9 @@ class ModifierStartTurnWatchDamageEnemiesInRow extends ModifierStartTurnWatch {
     })();
   }
 }
-ModifierStartTurnWatchDamageEnemiesInRow.initClass();
+ModifierStartTurnWatchDamageEnemiesInRow.prototype.type = 'ModifierStartTurnWatchDamageEnemiesInRow';
+ModifierStartTurnWatchDamageEnemiesInRow.prototype.damageAmount = 0;
+ModifierStartTurnWatchDamageEnemiesInRow.prototype.damageGeneral = false;
+ModifierStartTurnWatchDamageEnemiesInRow.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericDamageFire'];
 
 module.exports = ModifierStartTurnWatchDamageEnemiesInRow;

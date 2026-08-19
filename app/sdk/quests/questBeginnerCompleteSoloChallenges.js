@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const QuestBeginner = require('./questBeginner');
@@ -10,10 +9,7 @@ const GameType = require('app/sdk/gameType');
 const i18next = require('i18next');
 
 class QuestBeginnerCompleteSoloChallenges extends QuestBeginner {
-  static initClass() {
-    this.Identifier = 9904;
-    this.prototype.isRequired = false;
-  }
+  static Identifier = 9904;
 
   constructor() {
     super(QuestBeginnerCompleteSoloChallenges.Identifier, i18next.t('quests.quest_beginner_complete_solo_challenges_title'), [QuestType.Beginner], QuestBeginnerCompleteSoloChallenges.prototype.goldReward);
@@ -29,6 +25,6 @@ class QuestBeginnerCompleteSoloChallenges extends QuestBeginner {
     return 1;
   }
 }
-QuestBeginnerCompleteSoloChallenges.initClass();
+QuestBeginnerCompleteSoloChallenges.prototype.isRequired = false;
 
 module.exports = QuestBeginnerCompleteSoloChallenges;

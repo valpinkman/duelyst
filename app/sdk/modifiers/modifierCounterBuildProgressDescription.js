@@ -1,18 +1,12 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierCounterBuildProgressDescription extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierCounterBuildProgressDescription';
-    this.type = 'ModifierCounterBuildProgressDescription';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierCounterBuildProgressDescription';
 
   static createContextObject(turnsLeft) {
     const contextObject = super.createContextObject();
@@ -26,6 +20,7 @@ class ModifierCounterBuildProgressDescription extends Modifier {
     }
   }
 }
-ModifierCounterBuildProgressDescription.initClass();
+ModifierCounterBuildProgressDescription.prototype.type = 'ModifierCounterBuildProgressDescription';
+ModifierCounterBuildProgressDescription.prototype.maxStacks = 1;
 
 module.exports = ModifierCounterBuildProgressDescription;

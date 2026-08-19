@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -12,19 +11,7 @@ const ModifierStunned = require('app/sdk/modifiers/modifierStunned');
 const Modifier = require('./modifier');
 
 class ModifierDoubleDamageToStunnedEnemies extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDoubleDamageToStunnedEnemies';
-    this.type = 'ModifierDoubleDamageToStunnedEnemies';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.damageBonus = 2;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
-  }
+  static type = 'ModifierDoubleDamageToStunnedEnemies';
 
   onEvent(event) {
     super.onEvent(event);
@@ -60,7 +47,13 @@ class ModifierDoubleDamageToStunnedEnemies extends Modifier {
     }
   }
 }
-ModifierDoubleDamageToStunnedEnemies.initClass();
+ModifierDoubleDamageToStunnedEnemies.prototype.type = 'ModifierDoubleDamageToStunnedEnemies';
+ModifierDoubleDamageToStunnedEnemies.prototype.activeInHand = false;
+ModifierDoubleDamageToStunnedEnemies.prototype.activeInDeck = false;
+ModifierDoubleDamageToStunnedEnemies.prototype.activeInSignatureCards = false;
+ModifierDoubleDamageToStunnedEnemies.prototype.activeOnBoard = true;
+ModifierDoubleDamageToStunnedEnemies.prototype.damageBonus = 2;
+ModifierDoubleDamageToStunnedEnemies.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToEnemyMinions'];
 
 module.exports = ModifierDoubleDamageToStunnedEnemies;
 

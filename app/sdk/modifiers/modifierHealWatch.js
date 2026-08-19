@@ -1,27 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const Modifier = require('./modifier');
 
 class ModifierHealWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierHealWatch';
-    this.type = 'ModifierHealWatch';
-
-    this.modifierName = 'HealWatch';
-    this.description = 'HealWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch'];
-  }
+  static type = 'ModifierHealWatch';
+  static modifierName = 'HealWatch';
+  static description = 'HealWatch';
 
   // "heal watchers" are not allowed to proc if they die during the step
   onAfterCleanupAction(e) {
@@ -38,7 +26,12 @@ class ModifierHealWatch extends Modifier {
 
   onHealWatch(action) {}
 }
-ModifierHealWatch.initClass();
+ModifierHealWatch.prototype.type = 'ModifierHealWatch';
+ModifierHealWatch.prototype.activeInHand = false;
+ModifierHealWatch.prototype.activeInDeck = false;
+ModifierHealWatch.prototype.activeInSignatureCards = false;
+ModifierHealWatch.prototype.activeOnBoard = true;
+ModifierHealWatch.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierHealWatch;

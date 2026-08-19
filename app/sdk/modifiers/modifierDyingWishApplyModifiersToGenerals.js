@@ -3,23 +3,13 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishApplyModifiersToGenerals extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishApplyModifiersToGenerals';
-    this.type = 'ModifierDyingWishApplyModifiersToGenerals';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.modifiersContextObjects = null;
-    this.prototype.includeMyGeneral = true;
-    this.prototype.includeOppGeneral = true;
-  }
+  static type = 'ModifierDyingWishApplyModifiersToGenerals';
 
   static createContextObject(modifiersContextObjects, includeMyGeneral, includeOppGeneral, options) {
     const contextObject = super.createContextObject(options);
@@ -55,6 +45,10 @@ class ModifierDyingWishApplyModifiersToGenerals extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishApplyModifiersToGenerals.initClass();
+ModifierDyingWishApplyModifiersToGenerals.prototype.type = 'ModifierDyingWishApplyModifiersToGenerals';
+ModifierDyingWishApplyModifiersToGenerals.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDyingWishApplyModifiersToGenerals.prototype.modifiersContextObjects = null;
+ModifierDyingWishApplyModifiersToGenerals.prototype.includeMyGeneral = true;
+ModifierDyingWishApplyModifiersToGenerals.prototype.includeOppGeneral = true;
 
 module.exports = ModifierDyingWishApplyModifiersToGenerals;

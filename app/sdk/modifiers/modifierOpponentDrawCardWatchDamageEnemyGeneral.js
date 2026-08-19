@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOpponentDrawCardWatch = require('./modifierOpponentDrawCardWatch');
 
 class ModifierOpponentDrawCardWatchDamageEnemyGeneral extends ModifierOpponentDrawCardWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
-    this.type = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
-
-    this.modifierName = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
-    this.description = 'Whenever your opponent draws a card, deal %X damage to the enemy General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
+  static modifierName = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
+  static description = 'Whenever your opponent draws a card, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -48,6 +41,7 @@ class ModifierOpponentDrawCardWatchDamageEnemyGeneral extends ModifierOpponentDr
     }
   }
 }
-ModifierOpponentDrawCardWatchDamageEnemyGeneral.initClass();
+ModifierOpponentDrawCardWatchDamageEnemyGeneral.prototype.type = 'ModifierOpponentDrawCardWatchDamageEnemyGeneral';
+ModifierOpponentDrawCardWatchDamageEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierOpponentDrawCardWatchDamageEnemyGeneral;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -10,17 +9,9 @@ const ModifierDeathWatch = require('./modifierDeathWatch');
 const Modifier = require('./modifier');
 
 class ModifierDeathWatchGainAttackEqualToEnemyAttack extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchGainAttackEqualToEnemyAttack';
-    this.type = 'ModifierDeathWatchGainAttackEqualToEnemyAttack';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'When an enemy minion dies, gain attack equal to its attack';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierDeathWatchGainAttackEqualToEnemyAttack';
+  static modifierName = 'Deathwatch';
+  static description = 'When an enemy minion dies, gain attack equal to its attack';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -37,6 +28,8 @@ class ModifierDeathWatchGainAttackEqualToEnemyAttack extends ModifierDeathWatch 
     }
   }
 }
-ModifierDeathWatchGainAttackEqualToEnemyAttack.initClass();
+ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.type = 'ModifierDeathWatchGainAttackEqualToEnemyAttack';
+ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.damageAmount = 0;
+ModifierDeathWatchGainAttackEqualToEnemyAttack.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierDeathWatchGainAttackEqualToEnemyAttack;

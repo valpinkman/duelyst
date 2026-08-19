@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,9 +11,7 @@ const RSX = require('app/data/resources');
 const CodexChapters = require('./codexChapterLookup');
 
 class Codex {
-  static initClass() {
-    this.chapters = {};
-  }
+  static chapters = {};
 
   static chapterForIdentifier(identifier) {
     const chapter = this.chapters[identifier];
@@ -84,7 +81,6 @@ class Codex {
     return ownedChapterIds;
   }
 }
-Codex.initClass();
 
 // setup chapters data
 const c = Codex.chapters;

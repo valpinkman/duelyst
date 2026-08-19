@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -19,21 +18,16 @@ AgentActions - Creates agent style actions and later interprets them into sdk ac
 */
 
 class AgentActions {
-  static initClass() {
-    // Hard actions
-    this._moveUnitType = 'MoveUnit';
-    this._attackActionType = 'AttackWithUnit';
-    this._playCardActionType = 'PlayCard';
-    this._playCardFindPositionActionType = 'PlayCardFindPosition';
-    this._playFollowupActionType = 'PlayFollowup';
-
-    // Soft Actions
-    this._tagUnitActionType = 'TagUnit';
-    this._speechActionType = 'Speech';
-    this._instructionActionType = 'Instruction';
-    this._delayActionType = 'Delay';
-    this._showInstructionLabelsActionType = 'ShowInstructionLabels';
-  }
+  static _moveUnitType = 'MoveUnit';
+  static _attackActionType = 'AttackWithUnit';
+  static _playCardActionType = 'PlayCard';
+  static _playCardFindPositionActionType = 'PlayCardFindPosition';
+  static _playFollowupActionType = 'PlayFollowup';
+  static _tagUnitActionType = 'TagUnit';
+  static _speechActionType = 'Speech';
+  static _instructionActionType = 'Instruction';
+  static _delayActionType = 'Delay';
+  static _showInstructionLabelsActionType = 'ShowInstructionLabels';
 
   /**
    * @param {string} type - Type of
@@ -151,6 +145,5 @@ class AgentActions {
     }
   }
 }
-AgentActions.initClass();
 
 module.exports = AgentActions;

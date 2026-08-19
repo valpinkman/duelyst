@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,7 @@ const ModifierImmune = require('./modifierImmune');
 */
 
 class ModifierImmuneToAttacks extends ModifierImmune {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToAttacks';
-    this.type = 'ModifierImmuneToAttacks';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunityAttack'];
-  }
+  static type = 'ModifierImmuneToAttacks';
 
   onValidateAction(event) {
     const a = event.action;
@@ -33,6 +27,7 @@ class ModifierImmuneToAttacks extends ModifierImmune {
     return (this.getCard() != null) && a instanceof AttackAction && a.getIsValid() && !a.getIsImplicit() && (this.getCard() === a.getTarget());
   }
 }
-ModifierImmuneToAttacks.initClass();
+ModifierImmuneToAttacks.prototype.type = 'ModifierImmuneToAttacks';
+ModifierImmuneToAttacks.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunityAttack'];
 
 module.exports = ModifierImmuneToAttacks;

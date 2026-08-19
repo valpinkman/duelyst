@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,15 +9,8 @@ const ModifierDyingWish = require('app/sdk/modifiers/modifierDyingWish');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 
 class ModifierUnseven extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierUnseven';
-    this.type = 'ModifierUnseven';
-
-    this.description = 'Summon a minion with Dying Wish from your action bar';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-  }
+  static type = 'ModifierUnseven';
+  static description = 'Summon a minion with Dying Wish from your action bar';
 
   onDyingWish(action) {
     super.onDyingWish(action);
@@ -48,6 +40,8 @@ class ModifierUnseven extends ModifierDyingWish {
     }
   }
 }
-ModifierUnseven.initClass();
+ModifierUnseven.prototype.type = 'ModifierUnseven';
+ModifierUnseven.prototype.activeInDeck = false;
+ModifierUnseven.prototype.activeInHand = false;
 
 module.exports = ModifierUnseven;

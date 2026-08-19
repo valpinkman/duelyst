@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,20 +9,9 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierFriendlyDeathWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierFriendlyDeathWatch';
-    this.type = 'ModifierFriendlyDeathWatch';
-
-    this.modifierName = 'ModifierFriendlyDeathWatch';
-    this.description = 'Whenever a friendly minion dies...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyDeathwatch'];
-  }
+  static type = 'ModifierFriendlyDeathWatch';
+  static modifierName = 'ModifierFriendlyDeathWatch';
+  static description = 'Whenever a friendly minion dies...';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -41,7 +29,12 @@ class ModifierFriendlyDeathWatch extends Modifier {
 
   onFriendlyDeathWatch(action) {}
 }
-ModifierFriendlyDeathWatch.initClass();
+ModifierFriendlyDeathWatch.prototype.type = 'ModifierFriendlyDeathWatch';
+ModifierFriendlyDeathWatch.prototype.activeInHand = false;
+ModifierFriendlyDeathWatch.prototype.activeInDeck = false;
+ModifierFriendlyDeathWatch.prototype.activeInSignatureCards = false;
+ModifierFriendlyDeathWatch.prototype.activeOnBoard = true;
+ModifierFriendlyDeathWatch.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyDeathwatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierFriendlyDeathWatch;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,7 @@ const i18next = require('i18next');
 const ModifierSentinel = require('./modifierSentinel');
 
 class ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard extends ModifierSentinel {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
-    this.type = 'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
-
-    this.description = i18next.t('modifiers.sentinel_general_attack');
-  }
+  static type = 'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
 
   static createContextObject(description, transformCardId, healAmount, options) {
     if (healAmount == null) { healAmount = 5; }
@@ -61,6 +55,7 @@ class ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard extends Modi
     }
   }
 }
-ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.initClass();
+ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.prototype.type = 'ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard';
+ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard.description = i18next.t('modifiers.sentinel_general_attack');
 
 module.exports = ModifierSentinelOpponentGeneralAttackHealEnemyGeneralDrawCard;

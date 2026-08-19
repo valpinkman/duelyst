@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,20 +14,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishSpawnEntity extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnEntity';
-    this.type = 'ModifierDyingWishSpawnEntity';
-
-    this.modifierName = 'Dying Wish';
-    this.description = 'Summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnDescription = null;
-    this.prototype.spawnCount = null;
-    this.prototype.spawnPattern = null;
-    this.prototype.spawnSilently = true;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDyingWishSpawnEntity';
+  static modifierName = 'Dying Wish';
+  static description = 'Summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -93,6 +81,12 @@ class ModifierDyingWishSpawnEntity extends ModifierDyingWish {
     return this.getCard().getOwnerId();
   }
 }
-ModifierDyingWishSpawnEntity.initClass();
+ModifierDyingWishSpawnEntity.prototype.type = 'ModifierDyingWishSpawnEntity';
+ModifierDyingWishSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierDyingWishSpawnEntity.prototype.spawnDescription = null;
+ModifierDyingWishSpawnEntity.prototype.spawnCount = null;
+ModifierDyingWishSpawnEntity.prototype.spawnPattern = null;
+ModifierDyingWishSpawnEntity.prototype.spawnSilently = true;
+ModifierDyingWishSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDyingWishSpawnEntity;

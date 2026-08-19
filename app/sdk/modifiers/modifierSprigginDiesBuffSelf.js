@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,19 +11,8 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierSprigginDiesBuffSelf extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSprigginDiesBuffSelf';
-    this.type = 'ModifierSprigginDiesBuffSelf';
-
-    this.description = 'Whenever a Spriggin dies, give this +3/+3';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierSprigginDiesBuffSelf';
+  static description = 'Whenever a Spriggin dies, give this +3/+3';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -54,6 +42,11 @@ class ModifierSprigginDiesBuffSelf extends Modifier {
     }
   }
 }
-ModifierSprigginDiesBuffSelf.initClass();
+ModifierSprigginDiesBuffSelf.prototype.type = 'ModifierSprigginDiesBuffSelf';
+ModifierSprigginDiesBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
+ModifierSprigginDiesBuffSelf.prototype.activeInHand = false;
+ModifierSprigginDiesBuffSelf.prototype.activeInDeck = false;
+ModifierSprigginDiesBuffSelf.prototype.activeInSignatureCards = false;
+ModifierSprigginDiesBuffSelf.prototype.activeOnBoard = true;
 
 module.exports = ModifierSprigginDiesBuffSelf;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -17,14 +16,8 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const ModifierCollectableCard = require('app/sdk/modifiers/modifierCollectableCard');
 
 class GameSessionModifierFestiveSpirit extends GameSessionModifier {
-  static initClass() {
-    this.prototype.type = 'GameSessionModifierFestiveSpirit';
-    this.type = 'GameSessionModifierFestiveSpirit';
-
-    this.isHiddenToUI = true;
-
-    this.prototype.helperMinions = [Cards.Boss.FrostfireSnowchaser, Cards.Boss.FrostfireTiger, Cards.Boss.FrostfireImp];
-  }
+  static type = 'GameSessionModifierFestiveSpirit';
+  static isHiddenToUI = true;
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -115,7 +108,8 @@ class GameSessionModifierFestiveSpirit extends GameSessionModifier {
     }
   }
 }
-GameSessionModifierFestiveSpirit.initClass();
+GameSessionModifierFestiveSpirit.prototype.type = 'GameSessionModifierFestiveSpirit';
+GameSessionModifierFestiveSpirit.prototype.helperMinions = [Cards.Boss.FrostfireSnowchaser, Cards.Boss.FrostfireTiger, Cards.Boss.FrostfireImp];
 
 module.exports = GameSessionModifierFestiveSpirit;
 

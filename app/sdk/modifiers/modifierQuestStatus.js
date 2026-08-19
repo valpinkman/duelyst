@@ -1,19 +1,14 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
 
 class ModifierQuestStatus extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierQuestStatus';
-    this.type = 'ModifierQuestStatus';
-
-    this.prototype.maxStacks = 1;
-    this.prototype.isRemovable = false;
-  }
+  static type = 'ModifierQuestStatus';
 }
-ModifierQuestStatus.initClass();
+ModifierQuestStatus.prototype.type = 'ModifierQuestStatus';
+ModifierQuestStatus.prototype.maxStacks = 1;
+ModifierQuestStatus.prototype.isRemovable = false;
 
 module.exports = ModifierQuestStatus;

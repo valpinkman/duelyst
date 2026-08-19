@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,9 @@ const Modifier = require('./modifier');
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 
 class ModifierOpponentSummonWatchDamageBuffMinionInHand extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchDamageBuffMinionInHand';
-    this.type = 'ModifierOpponentSummonWatchDamageBuffMinionInHand';
-
-    this.modifierName = 'Opponent Summon Watch Buff Minion in Hand';
-    this.description = 'Whenever your opponent summons a minion, buff a minion in hand';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
-
-    this.prototype.statsBuff = null;
-  }
+  static type = 'ModifierOpponentSummonWatchDamageBuffMinionInHand';
+  static modifierName = 'Opponent Summon Watch Buff Minion in Hand';
+  static description = 'Whenever your opponent summons a minion, buff a minion in hand';
 
   static createContextObject(attackBuff, maxHPBuff, buffName, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -49,6 +40,8 @@ class ModifierOpponentSummonWatchDamageBuffMinionInHand extends ModifierOpponent
     }
   }
 }
-ModifierOpponentSummonWatchDamageBuffMinionInHand.initClass();
+ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.type = 'ModifierOpponentSummonWatchDamageBuffMinionInHand';
+ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch'];
+ModifierOpponentSummonWatchDamageBuffMinionInHand.prototype.statsBuff = null;
 
 module.exports = ModifierOpponentSummonWatchDamageBuffMinionInHand;

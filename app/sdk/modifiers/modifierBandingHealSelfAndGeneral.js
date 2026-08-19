@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,8 @@ const ModifierBanding = require('./modifierBanding');
 const ModifierEndTurnWatchHealSelfAndGeneral = require('./modifierEndTurnWatchHealSelfAndGeneral');
 
 class ModifierBandingHealSelfAndGeneral extends ModifierBanding {
-  static initClass() {
-    this.prototype.type = 'ModifierBandingHealSelfAndGeneral';
-    this.type = 'ModifierBandingHealSelfAndGeneral';
-
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
-  }
+  static type = 'ModifierBandingHealSelfAndGeneral';
+  static description = '';
 
   static createContextObject(healAmount, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -38,6 +31,7 @@ class ModifierBandingHealSelfAndGeneral extends ModifierBanding {
     return this.description;
   }
 }
-ModifierBandingHealSelfAndGeneral.initClass();
+ModifierBandingHealSelfAndGeneral.prototype.type = 'ModifierBandingHealSelfAndGeneral';
+ModifierBandingHealSelfAndGeneral.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
 
 module.exports = ModifierBandingHealSelfAndGeneral;

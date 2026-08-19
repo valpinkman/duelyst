@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,13 +14,6 @@ const HealAction = require('app/sdk/actions/healAction');
 const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction');
 
 class SpellFirestormOfAgony extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.None;
-    this.prototype.healMultiplier = 2;
-    this.prototype.damageMultiplier = 2;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -74,7 +66,10 @@ class SpellFirestormOfAgony extends Spell {
     return applyEffectPositions;
   }
 }
-SpellFirestormOfAgony.initClass();
+SpellFirestormOfAgony.prototype.targetType = CardType.Unit;
+SpellFirestormOfAgony.prototype.spellFilterType = SpellFilterType.None;
+SpellFirestormOfAgony.prototype.healMultiplier = 2;
+SpellFirestormOfAgony.prototype.damageMultiplier = 2;
 
 module.exports = SpellFirestormOfAgony;
 

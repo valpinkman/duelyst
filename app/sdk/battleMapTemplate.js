@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,24 +13,6 @@ const _ = require('underscore');
   Helper class that stores properties used to create the battle map environment a game is played in (map, weather, etc).
 */
 class BattleMapTemplate extends SDKObject {
-  static initClass() {
-    this.prototype.mapTemplate = {
-      map: 0,
-      weatherChance: 0.0,
-      rainChance: 0.0,
-      snowChance: 0.0,
-      blueDustChance: 0.0,
-      blueDustColor: null,
-      sunRaysChance: 0.0,
-      clouds: [],
-    };
-    this.prototype.hasWeather = false;
-    this.prototype.hasRain = false;
-    this.prototype.hasSnow = false;
-    this.prototype.hasBlueDust = false;
-    this.prototype.hasSunRays = false;
-  }
-
   // region INITIALIZATION
 
   constructor(gameSession, templateIndex) {
@@ -140,7 +121,21 @@ class BattleMapTemplate extends SDKObject {
     return UtilsJavascript.fastExtend(this, data);
   }
 }
-BattleMapTemplate.initClass();
+BattleMapTemplate.prototype.mapTemplate = {
+  map: 0,
+  weatherChance: 0.0,
+  rainChance: 0.0,
+  snowChance: 0.0,
+  blueDustChance: 0.0,
+  blueDustColor: null,
+  sunRaysChance: 0.0,
+  clouds: [],
+};
+BattleMapTemplate.prototype.hasWeather = false;
+BattleMapTemplate.prototype.hasRain = false;
+BattleMapTemplate.prototype.hasSnow = false;
+BattleMapTemplate.prototype.hasBlueDust = false;
+BattleMapTemplate.prototype.hasSunRays = false;
 
 // endregion SERIALIZATION
 

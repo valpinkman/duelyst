@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,16 +9,6 @@ const _ = require('underscore');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
 
 class Step extends SDKObject {
-  static initClass() {
-    this.prototype.action = null;
-    this.prototype.playerId = null;
-    this.prototype.timestamp = null;
-    this.prototype.index = null;
-    this.prototype.parentStepIndex = null;
-    this.prototype.childStepIndex = null;
-    this.prototype.transmitted = false;
-  }
-
   constructor(gameSession, playerId) {
     super(gameSession);
 
@@ -185,6 +174,12 @@ class Step extends SDKObject {
     return UtilsJavascript.fastExtend(this, data);
   }
 }
-Step.initClass();
+Step.prototype.action = null;
+Step.prototype.playerId = null;
+Step.prototype.timestamp = null;
+Step.prototype.index = null;
+Step.prototype.parentStepIndex = null;
+Step.prototype.childStepIndex = null;
+Step.prototype.transmitted = false;
 
 module.exports = Step;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,11 +9,6 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 
 class SpellSpawnNeutralEntity extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.tileAsUnit = true;
-    // true = treat tiles as units for valid spawn positions
-  }
-
   getEntityToSpawn() {
     if (!this.tileAsUnit) {
       return super.getEntityToSpawn();
@@ -42,6 +36,6 @@ class SpellSpawnNeutralEntity extends SpellSpawnEntity {
     return spawnEntityAction;
   }
 }
-SpellSpawnNeutralEntity.initClass();
+SpellSpawnNeutralEntity.prototype.tileAsUnit = true;
 
 module.exports = SpellSpawnNeutralEntity;

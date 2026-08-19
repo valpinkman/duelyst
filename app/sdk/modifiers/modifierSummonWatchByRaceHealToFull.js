@@ -1,22 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchByRaceHealToFull extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchByRaceHealToFull';
-    this.type = 'ModifierSummonWatchByRaceHealToFull';
-
-    this.modifierName = 'Summon Watch (by race heal to full)';
-    this.description = 'Whenever you summon %X, restore this minion to full health';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierSummonWatchByRaceHealToFull';
+  static modifierName = 'Summon Watch (by race heal to full)';
+  static description = 'Whenever you summon %X, restore this minion to full health';
 
   static createContextObject(targetRaceId, raceName, options) {
     const contextObject = super.createContextObject(options);
@@ -43,6 +36,7 @@ class ModifierSummonWatchByRaceHealToFull extends ModifierSummonWatch {
     return card.getBelongsToTribe(this.targetRaceId);
   }
 }
-ModifierSummonWatchByRaceHealToFull.initClass();
+ModifierSummonWatchByRaceHealToFull.prototype.type = 'ModifierSummonWatchByRaceHealToFull';
+ModifierSummonWatchByRaceHealToFull.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierSummonWatchByRaceHealToFull;

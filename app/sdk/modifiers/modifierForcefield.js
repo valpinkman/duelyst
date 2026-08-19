@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,25 +10,9 @@ const Modifier = require('./modifier');
 const ModifierForcefieldAbsorb = require('./modifierForcefieldAbsorb');
 
 class ModifierForcefield extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierForcefield';
-    this.type = 'ModifierForcefield';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.forcefield_def');
-
-    this.modifierName = i18next.t('modifiers.forcefield_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierForcefield'];
-  }
+  static type = 'ModifierForcefield';
+  static isKeyworded = true;
+  static description = null;
 
   onActivate() {
     // apply one-time absorb effect as soon when this modifier becomes active
@@ -46,6 +29,14 @@ class ModifierForcefield extends Modifier {
     return super.onStartTurn(actionEvent);
   }
 }
-ModifierForcefield.initClass();
+ModifierForcefield.prototype.type = 'ModifierForcefield';
+ModifierForcefield.keywordDefinition = i18next.t('modifiers.forcefield_def');
+ModifierForcefield.modifierName = i18next.t('modifiers.forcefield_name');
+ModifierForcefield.prototype.activeInHand = false;
+ModifierForcefield.prototype.activeInDeck = false;
+ModifierForcefield.prototype.activeInSignatureCards = false;
+ModifierForcefield.prototype.activeOnBoard = true;
+ModifierForcefield.prototype.maxStacks = 1;
+ModifierForcefield.prototype.fxResource = ['FX.Modifiers.ModifierForcefield'];
 
 module.exports = ModifierForcefield;

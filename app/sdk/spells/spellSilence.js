@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,11 +14,6 @@ const ModifierSilence = require('app/sdk/modifiers/modifierSilence');
 const _ = require('underscore');
 
 class SpellSilence extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Entity;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -54,6 +48,7 @@ class SpellSilence extends Spell {
     return silenceableEntities;
   }
 }
-SpellSilence.initClass();
+SpellSilence.prototype.targetType = CardType.Entity;
+SpellSilence.prototype.spellFilterType = SpellFilterType.NeutralDirect;
 
 module.exports = SpellSilence;

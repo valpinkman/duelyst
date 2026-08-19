@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
@@ -11,14 +10,8 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitAlabasterTitan extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitAlabasterTitan';
-    this.type = 'ModifierOpeningGambitAlabasterTitan';
-
-    this.description = 'If you have no spells in your deck, equip a full set of armor';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitAlabasterTitan';
+  static description = 'If you have no spells in your deck, equip a full set of armor';
 
   onOpeningGambit(action) {
     const gameSession = this.getGameSession();
@@ -53,7 +46,8 @@ class ModifierOpeningGambitAlabasterTitan extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitAlabasterTitan.initClass();
+ModifierOpeningGambitAlabasterTitan.prototype.type = 'ModifierOpeningGambitAlabasterTitan';
+ModifierOpeningGambitAlabasterTitan.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitAlabasterTitan;
 

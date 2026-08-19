@@ -1,17 +1,11 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierSummonWatchApplyModifiersToBoth = require('./modifierSummonWatchApplyModifiersToBoth');
 
 class ModifierSummonWatchNearbyApplyModifiersToBoth extends ModifierSummonWatchApplyModifiersToBoth {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchNearbyApplyModifiersToBoth';
-    this.type = 'ModifierSummonWatchNearbyApplyModifiersToBoth';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchNearbyApplyModifiersToBoth';
 
   static createContextObject(modifiersContextObjects, options) {
     const contextObject = super.createContextObject(options);
@@ -27,6 +21,7 @@ class ModifierSummonWatchNearbyApplyModifiersToBoth extends ModifierSummonWatchA
     return false;
   }
 }
-ModifierSummonWatchNearbyApplyModifiersToBoth.initClass();
+ModifierSummonWatchNearbyApplyModifiersToBoth.prototype.type = 'ModifierSummonWatchNearbyApplyModifiersToBoth';
+ModifierSummonWatchNearbyApplyModifiersToBoth.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchNearbyApplyModifiersToBoth;

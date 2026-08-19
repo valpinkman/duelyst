@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -11,14 +10,7 @@ const GameType = require('app/sdk/gameType');
 const i18next = require('i18next');
 
 class QuestCatchUp extends Quest {
-  static initClass() {
-    this.Identifier = 20000; // ID to use for this quest
-
-    this.prototype.isReplaceable = false; // whether a player can replace this quest
-    this.prototype.isCatchUp = true; // defines this as a catchup quest
-    this.prototype.goldReward = undefined;
-    // This is a changing quantity updated to the database when users gain charges
-  }
+  static Identifier = 20000;
 
   constructor() {
     super(QuestCatchUp.Identifier, i18next.t('quests.quest_welcome_back_title'), [QuestType.CatchUp]);
@@ -40,7 +32,9 @@ class QuestCatchUp extends Quest {
     return i18next.t('quests.quest_welcome_back_desc', { count: this.params.completionProgress });
   }
 }
-QuestCatchUp.initClass();
+QuestCatchUp.prototype.isReplaceable = false;
+QuestCatchUp.prototype.isCatchUp = true;
+QuestCatchUp.prototype.goldReward = undefined;
 // return "Play #{@params["completionProgress"]} Games."
 
 module.exports = QuestCatchUp;

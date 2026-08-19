@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const ModifierStackingShadows = require('./modifierStackingShadows');
 const Modifier = require('./modifier');
 
 class ModifierOpeningGambitBuffSelfByShadowTileCount extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitBuffSelfByShadowTileCount';
-    this.type = 'ModifierOpeningGambitBuffSelfByShadowTileCount';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Gains %X for each of your Shadow Creep';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitBuffSelfByShadowTileCount';
+  static modifierName = 'Opening Gambit';
+  static description = 'Gains %X for each of your Shadow Creep';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -61,7 +54,8 @@ class ModifierOpeningGambitBuffSelfByShadowTileCount extends ModifierOpeningGamb
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierOpeningGambitBuffSelfByShadowTileCount.initClass();
+ModifierOpeningGambitBuffSelfByShadowTileCount.prototype.type = 'ModifierOpeningGambitBuffSelfByShadowTileCount';
+ModifierOpeningGambitBuffSelfByShadowTileCount.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitBuffSelfByShadowTileCount;
 

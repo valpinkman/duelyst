@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
@@ -11,12 +10,8 @@ const Races = require('app/sdk/cards/racesLookup');
 const ModifierBond = require('./modifierBond');
 
 class ModifierBondNightshroud extends ModifierBond {
-  static initClass() {
-    this.prototype.type = 'ModifierBondNightshroud';
-    this.type = 'ModifierBondNightshroud';
-
-    this.description = 'Your General steals 1 Health from the enemy General for each friendly minion';
-  }
+  static type = 'ModifierBondNightshroud';
+  static description = 'Your General steals 1 Health from the enemy General for each friendly minion';
 
   onBond() {
     let numFriendlyArcanysts = 0;
@@ -43,6 +38,6 @@ class ModifierBondNightshroud extends ModifierBond {
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierBondNightshroud.initClass();
+ModifierBondNightshroud.prototype.type = 'ModifierBondNightshroud';
 
 module.exports = ModifierBondNightshroud;

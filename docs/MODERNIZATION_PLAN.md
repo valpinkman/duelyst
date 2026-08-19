@@ -294,6 +294,37 @@ mocha + vitest + both builds + wire-format tests.
   loads coffee but harmless). The `coffeescript` dependency itself goes when those do.
   — (this commit)
 
+### Phase 5T — JS → TypeScript (unblocked by 4.5: rolldown/vitest/tsx read `.ts` natively)
+
+- [x] 5T.0 TS toolchain: TypeScript 7, `tsx`, `@types/node`, `@typescript-eslint`.
+  `tsconfig.json` is now the **working** config (loose: allowJs, no strict, path aliases,
+  `noEmit` — Vite builds, tsx runs, vitest tests); the old strict config is preserved as
+  `tsconfig.strict.json`, the **destination** — `pnpm tsc:strict` measures the remaining
+  distance, `pnpm typecheck` is the working check. eslint parses ES2022 (class fields).
+  TS 7 notes: `baseUrl` and `moduleResolution: node` were removed; use relative `paths` and
+  `bundler`/`node16`.
+- [x] 5T.1 **Dissolved decaffeinate's `initClass()` in 1,183 files** —
+  `scripts/codemods/dissolve-init-class.mjs`. TypeScript cannot see through
+  `static initClass() { this.X = … }`, so statics were invisible. **Wire-format critical:**
+  the same method also carried `this.prototype.X = …`; the codemod keeps those as prototype
+  assignments after the class (turning them into class fields would move them onto instances
+  and change the serialized shape). Literal statics become real `static X = …` fields (2,344);
+  non-literal statics stay ordered post-class assignments (311); prototype assignments stay
+  prototype assignments (3,822). 12 files with non-assignment bodies were skipped for manual
+  handling. Two traps hit and fixed: `this` on the *right*-hand side must be rewritten too
+  (`this.prototype.getTarget = this.prototype.getCard`), and `Foo.initClass();` call sites can
+  carry trailing comments.
+  *Upstream bug preserved, not fixed:* `modifierImmuneToDamageOnEnemyTurn`'s **static** type is
+  `'ModifierImmModifierImmuneToDamageOnEnemyTurnuneToDamageByGeneral'` — a botched find/replace
+  present in the original CoffeeScript at `2843f240`, which makes that modifier undispatchable
+  by name. Reordering exposed it via the packages manifest, so `generate_packages.js` now
+  prefers the **prototype** type (what instances carry and asset lookup uses). Fixing the typo
+  is a behavior change and belongs in a correctness pass, not a mechanical migration step.
+  — (this commit)
+- [ ] 5T.2 Rename `.js` → `.ts` in batches (leaf lookups first), adding `declare` members for
+  prototype props so TS sees them without emitting instance fields.
+- [ ] 5T.3 Server `.ts` execution: `tsx` for dev/bin, a build step for Docker.
+
 ### Phase 6b — post-conversion correctness (found by playing the game)
 
 - [x] 6b.1 **Promise-chain state**: CoffeeScript thin-arrow `.then` callbacks compiled to

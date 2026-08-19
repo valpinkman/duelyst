@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishGoldenGuide extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishGoldenGuide';
-    this.type = 'ModifierDyingWishGoldenGuide';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
-  }
+  static type = 'ModifierDyingWishGoldenGuide';
 
   onDyingWish(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -45,6 +39,7 @@ class ModifierDyingWishGoldenGuide extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishGoldenGuide.initClass();
+ModifierDyingWishGoldenGuide.prototype.type = 'ModifierDyingWishGoldenGuide';
+ModifierDyingWishGoldenGuide.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
 
 module.exports = ModifierDyingWishGoldenGuide;

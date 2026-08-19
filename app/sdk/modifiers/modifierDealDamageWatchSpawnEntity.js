@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,15 +13,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchSpawnEntity extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchSpawnEntity';
-    this.type = 'ModifierDealDamageWatchSpawnEntity';
-
-    this.modifierName = 'Deal Damage Watch';
-    this.description = 'Whenever this minion damages an enemy, summon %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDealDamageWatchSpawnEntity';
+  static modifierName = 'Deal Damage Watch';
+  static description = 'Whenever this minion damages an enemy, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -85,6 +78,7 @@ class ModifierDealDamageWatchSpawnEntity extends ModifierDealDamageWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierDealDamageWatchSpawnEntity.initClass();
+ModifierDealDamageWatchSpawnEntity.prototype.type = 'ModifierDealDamageWatchSpawnEntity';
+ModifierDealDamageWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDealDamageWatchSpawnEntity;

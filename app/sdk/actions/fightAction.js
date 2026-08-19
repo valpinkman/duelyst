@@ -1,16 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
 const DamageAsAttackAction = require('./damageAsAttackAction');
 
 class FightAction extends Action {
-  static initClass() {
-    this.type = 'FightAction';
-  }
+  static type = 'FightAction';
 
   constructor(gameSession) {
     super(gameSession);
@@ -35,6 +32,5 @@ class FightAction extends Action {
     return this.getGameSession().executeAction(damageAction2);
   }
 }
-FightAction.initClass();
 
 module.exports = FightAction;

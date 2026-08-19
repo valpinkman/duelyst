@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,15 +15,8 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierHPThresholdGainModifiers extends ModifierHPChange {
-  static initClass() {
-    this.prototype.type = 'ModifierHPThresholdGainModifiers';
-    this.type = 'ModifierHPThresholdGainModifiers';
-
-    this.modifierName = 'Modifier HP Threshold Gain Modifiers';
-    this.description = i18next.t('modifiers.HP_threshold_gain_modifiers_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierHPThresholdGainModifiers';
+  static modifierName = 'Modifier HP Threshold Gain Modifiers';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -117,6 +109,8 @@ class ModifierHPThresholdGainModifiers extends ModifierHPChange {
     return modifiers;
   }
 }
-ModifierHPThresholdGainModifiers.initClass();
+ModifierHPThresholdGainModifiers.prototype.type = 'ModifierHPThresholdGainModifiers';
+ModifierHPThresholdGainModifiers.description = i18next.t('modifiers.HP_threshold_gain_modifiers_def');
+ModifierHPThresholdGainModifiers.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierHPThresholdGainModifiers;

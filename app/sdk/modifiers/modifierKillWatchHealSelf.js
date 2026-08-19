@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,12 +8,7 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierKillWatch = require('./modifierKillWatch');
 
 class ModifierKillWatchHealSelf extends ModifierKillWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchHealSelf';
-    this.type = 'ModifierKillWatchHealSelf';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierKillWatchHealSelf';
 
   static createContextObject(healAmount, includeAllies, includeGenerals, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -32,6 +26,7 @@ class ModifierKillWatchHealSelf extends ModifierKillWatch {
     return this.getCard().getGameSession().executeAction(healAction);
   }
 }
-ModifierKillWatchHealSelf.initClass();
+ModifierKillWatchHealSelf.prototype.type = 'ModifierKillWatchHealSelf';
+ModifierKillWatchHealSelf.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierKillWatchHealSelf;

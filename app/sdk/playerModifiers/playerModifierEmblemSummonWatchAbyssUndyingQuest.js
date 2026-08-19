@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,7 @@ const ModifierQuestBuffAbyssian = require('app/sdk/modifiers/modifierQuestBuffAb
 const CardType = require('app/sdk/cards/cardType');
 
 class PlayerModifierEmblemSummonWatchAbyssUndyingQuest extends PlayerModifierEmblemGainMinionOrLoseControlWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemSummonWatchAbyssUndyingQuest';
-    this.type = 'PlayerModifierEmblemSummonWatchAbyssUndyingQuest';
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.modifiersContextObjects = null;
-  }
+  static type = 'PlayerModifierEmblemSummonWatchAbyssUndyingQuest';
 
   static createContextObject(modifiersContextObjects, options) {
     const contextObject = super.createContextObject(options);
@@ -93,6 +85,8 @@ class PlayerModifierEmblemSummonWatchAbyssUndyingQuest extends PlayerModifierEmb
     }
   }
 }
-PlayerModifierEmblemSummonWatchAbyssUndyingQuest.initClass();
+PlayerModifierEmblemSummonWatchAbyssUndyingQuest.prototype.type = 'PlayerModifierEmblemSummonWatchAbyssUndyingQuest';
+PlayerModifierEmblemSummonWatchAbyssUndyingQuest.prototype.maxStacks = 1;
+PlayerModifierEmblemSummonWatchAbyssUndyingQuest.prototype.modifiersContextObjects = null;
 
 module.exports = PlayerModifierEmblemSummonWatchAbyssUndyingQuest;

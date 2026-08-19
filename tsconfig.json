@@ -1,28 +1,35 @@
 {
+  "//": [
+    "WORKING config for the CoffeeScript -> JS -> TypeScript migration.",
+    "Deliberately loose: files are renamed .js -> .ts in batches and typed",
+    "incrementally. tsconfig.strict.json is the DESTINATION - run",
+    "`pnpm tsc:strict` to see how far the codebase still is from it.",
+    "Nothing is emitted from here: Vite/rolldown builds the client, tsx runs",
+    "the server, vitest runs the tests. This config is for editors and",
+    "`pnpm typecheck` only."
+  ],
   "compilerOptions": {
-    "target": "es2015",
-    "module": "CommonJS",
-    "moduleResolution": "node16",
+    "target": "es2020",
+    "module": "commonjs",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "outDir": "dist",
-    "declaration": true,
-    "declarationDir": "types",
-    "strict": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "exactOptionalPropertyTypes": true,
+    "allowJs": true,
+    "checkJs": false,
+    "strict": false,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "importsNotUsedAsValues": "error",
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "app/*": ["./app/*"],
+      "server/*": ["./server/*"],
+      "worker/*": ["./worker/*"],
+      "config/*": ["./config/*"],
+      "test/*": ["./test/*"]
+    }
   },
-  "exclude": [
-    "./packages/chroma-js/"
-  ]
+  "include": ["app/**/*.ts", "server/**/*.ts", "worker/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["node_modules", "dist", "app/vendor", "app/resources", "app/original_resources", "packages/chroma-js", "desktop"]
 }

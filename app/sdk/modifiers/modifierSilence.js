@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -9,15 +8,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierSilence extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSilence';
-    this.type = 'ModifierSilence';
-
-    this.modifierName = i18next.t('modifiers.silence_name');
-    this.description = i18next.t('modifiers.silence_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDispel'];
-  }
+  static type = 'ModifierSilence';
 
   onApplyToCard(card) {
     let allowableSilenceTarget = true;
@@ -44,6 +35,9 @@ class ModifierSilence extends Modifier {
     }
   }
 }
-ModifierSilence.initClass();
+ModifierSilence.prototype.type = 'ModifierSilence';
+ModifierSilence.modifierName = i18next.t('modifiers.silence_name');
+ModifierSilence.description = i18next.t('modifiers.silence_def');
+ModifierSilence.prototype.fxResource = ['FX.Modifiers.ModifierDispel'];
 
 module.exports = ModifierSilence;

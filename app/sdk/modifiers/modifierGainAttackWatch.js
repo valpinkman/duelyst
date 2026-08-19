@@ -2,27 +2,15 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ApplyModifierAction = require('app/sdk/actions/applyModifierAction');
 const Modifier = require('./modifier');
 
 class ModifierGainAttackWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierGainAttackWatch';
-    this.type = 'ModifierGainAttackWatch';
-
-    this.modifierName = 'GainAttackWatch';
-    this.description = 'GainAttackWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGainAttackWatch'];
-  }
+  static type = 'ModifierGainAttackWatch';
+  static modifierName = 'GainAttackWatch';
+  static description = 'GainAttackWatch';
 
   onAction(e) {
     super.onAction(e);
@@ -42,7 +30,12 @@ class ModifierGainAttackWatch extends Modifier {
 
   onGainAttackWatch(action) {}
 }
-ModifierGainAttackWatch.initClass();
+ModifierGainAttackWatch.prototype.type = 'ModifierGainAttackWatch';
+ModifierGainAttackWatch.prototype.activeInHand = false;
+ModifierGainAttackWatch.prototype.activeInDeck = false;
+ModifierGainAttackWatch.prototype.activeInSignatureCards = false;
+ModifierGainAttackWatch.prototype.activeOnBoard = true;
+ModifierGainAttackWatch.prototype.fxResource = ['FX.Modifiers.ModifierGainAttackWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierGainAttackWatch;

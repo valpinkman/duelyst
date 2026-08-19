@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,16 +12,6 @@ const SpellFilterType = require('./spellFilterType');
 const _ = require('underscore');
 
 class SpellApplyModifiersToUnitsInHand extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
-    this.prototype.applyToOwnPlayer = false;
-    this.prototype.applyToEnemyPlayer = false;
-    this.prototype.cardTypeToTarget = CardType.Unit; // type of card to target
-    this.prototype.raceIdToTarget = null;
-    // race of cards to target
-  }
-
   onApplyToBoard(board, x, y, sourceAction) {
     super.onApplyToBoard(board, x, y, sourceAction);
 
@@ -50,6 +39,11 @@ class SpellApplyModifiersToUnitsInHand extends Spell {
     return _.filter(cards, (card) => (card != null) && (!cardType || (card.getType() === cardType)) && (!raceId || card.getBelongsToTribe(raceId)));
   }
 }
-SpellApplyModifiersToUnitsInHand.initClass();
+SpellApplyModifiersToUnitsInHand.prototype.targetType = CardType.Unit;
+SpellApplyModifiersToUnitsInHand.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
+SpellApplyModifiersToUnitsInHand.prototype.applyToOwnPlayer = false;
+SpellApplyModifiersToUnitsInHand.prototype.applyToEnemyPlayer = false;
+SpellApplyModifiersToUnitsInHand.prototype.cardTypeToTarget = CardType.Unit;
+SpellApplyModifiersToUnitsInHand.prototype.raceIdToTarget = null;
 
 module.exports = SpellApplyModifiersToUnitsInHand;

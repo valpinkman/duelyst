@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,18 +12,7 @@ const ModifierManaCostChange = require('./modifierManaCostChange');
 const ModifierSentinel = require('./modifierSentinel');
 
 class ModifierSentinelSetup extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelSetup';
-    this.type = 'ModifierSentinelSetup';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-    this.prototype.isRemovable = false;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierSentinelSetup';
 
   static createContextObject(sentinelCardData, options) {
     const contextObject = super.createContextObject(options);
@@ -65,6 +53,12 @@ class ModifierSentinelSetup extends Modifier {
     }
   }
 }
-ModifierSentinelSetup.initClass();
+ModifierSentinelSetup.prototype.type = 'ModifierSentinelSetup';
+ModifierSentinelSetup.prototype.activeInHand = true;
+ModifierSentinelSetup.prototype.activeInDeck = false;
+ModifierSentinelSetup.prototype.activeInSignatureCards = false;
+ModifierSentinelSetup.prototype.activeOnBoard = false;
+ModifierSentinelSetup.prototype.isRemovable = false;
+ModifierSentinelSetup.prototype.maxStacks = 1;
 
 module.exports = ModifierSentinelSetup;

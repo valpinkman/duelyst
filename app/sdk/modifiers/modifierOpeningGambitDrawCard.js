@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,14 +8,7 @@ const DrawCardAction = require('app/sdk/actions/drawCardAction');
 const ModifierOpeningGambit = require('app/sdk/modifiers/modifierOpeningGambit');
 
 class ModifierOpeningGambitDrawCard extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDrawCard';
-    this.type = 'ModifierOpeningGambitDrawCard';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-
-    this.prototype.numCards = 1;
-  }
+  static type = 'ModifierOpeningGambitDrawCard';
 
   static createContextObject(numCards, options) {
     if (numCards == null) { numCards = 1; }
@@ -30,7 +22,9 @@ class ModifierOpeningGambitDrawCard extends ModifierOpeningGambit {
       this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId())));
   }
 }
-ModifierOpeningGambitDrawCard.initClass();
+ModifierOpeningGambitDrawCard.prototype.type = 'ModifierOpeningGambitDrawCard';
+ModifierOpeningGambitDrawCard.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitDrawCard.prototype.numCards = 1;
 
 module.exports = ModifierOpeningGambitDrawCard;
 

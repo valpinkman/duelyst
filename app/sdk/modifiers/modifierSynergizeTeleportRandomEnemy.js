@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,16 +10,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizeTeleportRandomEnemy extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeTeleportRandomEnemy';
-    this.type = 'ModifierSynergizeTeleportRandomEnemy';
-
-    this.description = 'Teleport a random enemy to the space behind your General';
-
-    this.prototype.canTargetGenerals = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierSynergizeTeleportRandomEnemy';
+  static description = 'Teleport a random enemy to the space behind your General';
 
   onSynergize(action) {
     super.onSynergize(action);
@@ -45,6 +36,8 @@ class ModifierSynergizeTeleportRandomEnemy extends ModifierSynergize {
     }
   }
 }
-ModifierSynergizeTeleportRandomEnemy.initClass();
+ModifierSynergizeTeleportRandomEnemy.prototype.type = 'ModifierSynergizeTeleportRandomEnemy';
+ModifierSynergizeTeleportRandomEnemy.prototype.canTargetGenerals = true;
+ModifierSynergizeTeleportRandomEnemy.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 
 module.exports = ModifierSynergizeTeleportRandomEnemy;

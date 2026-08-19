@@ -1,17 +1,12 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellIntensify = require('./spellIntensify');
 const HealAction = require('app/sdk/actions/healAction');
 
 class SpellIntensifyHealMyGeneral extends SpellIntensify {
-  static initClass() {
-    this.prototype.healAmount = 0;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     return [this.getGameSession().getGeneralForPlayerId(this.getOwnerId()).getPosition()];
   }
@@ -29,6 +24,6 @@ class SpellIntensifyHealMyGeneral extends SpellIntensify {
     return this.getGameSession().executeAction(healAction);
   }
 }
-SpellIntensifyHealMyGeneral.initClass();
+SpellIntensifyHealMyGeneral.prototype.healAmount = 0;
 
 module.exports = SpellIntensifyHealMyGeneral;

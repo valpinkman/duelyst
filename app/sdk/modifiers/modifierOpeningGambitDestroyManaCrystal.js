@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,7 @@ const RemoveManaCoreAction = require('app/sdk/actions/removeManaCoreAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDestroyManaCrystal extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDestroyManaCrystal';
-    this.type = 'ModifierOpeningGambitDestroyManaCrystal';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-
-    this.prototype.amountToRemove = 1;
-    this.prototype.takeFromOwner = false;
-  }
+  static type = 'ModifierOpeningGambitDestroyManaCrystal';
 
   static createContextObject(takeFromOwner, amountToRemove, options) {
     if (takeFromOwner == null) { takeFromOwner = false; }
@@ -41,6 +32,9 @@ class ModifierOpeningGambitDestroyManaCrystal extends ModifierOpeningGambit {
     return this.getGameSession().executeAction(this.getGameSession().executeAction(removeManaCoreAction));
   }
 }
-ModifierOpeningGambitDestroyManaCrystal.initClass();
+ModifierOpeningGambitDestroyManaCrystal.prototype.type = 'ModifierOpeningGambitDestroyManaCrystal';
+ModifierOpeningGambitDestroyManaCrystal.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitDestroyManaCrystal.prototype.amountToRemove = 1;
+ModifierOpeningGambitDestroyManaCrystal.prototype.takeFromOwner = false;
 
 module.exports = ModifierOpeningGambitDestroyManaCrystal;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,12 +17,7 @@ const PutCardInDeckAction = require('app/sdk/actions/putCardInDeckAction');
 const ModifierKillWatchAndSurvive = require('./modifierKillWatchAndSurvive');
 
 class ModifierKillWatchAndSurviveScarzig extends ModifierKillWatchAndSurvive {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchAndSurviveScarzig';
-    this.type = 'ModifierKillWatchAndSurviveScarzig';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
-  }
+  static type = 'ModifierKillWatchAndSurviveScarzig';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(false, true, options);
@@ -78,6 +72,7 @@ class ModifierKillWatchAndSurviveScarzig extends ModifierKillWatchAndSurvive {
     })();
   }
 }
-ModifierKillWatchAndSurviveScarzig.initClass();
+ModifierKillWatchAndSurviveScarzig.prototype.type = 'ModifierKillWatchAndSurviveScarzig';
+ModifierKillWatchAndSurviveScarzig.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
 
 module.exports = ModifierKillWatchAndSurviveScarzig;

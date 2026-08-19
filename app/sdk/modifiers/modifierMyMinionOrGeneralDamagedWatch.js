@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -11,20 +10,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierMyMinionOrGeneralDamagedWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMinionOrGeneralDamagedWatch';
-    this.type = 'ModifierMyMinionOrGeneralDamagedWatch';
-
-    this.modifierName = 'My General Damaged Watch';
-    this.description = 'My General Damaged Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMinionOrGeneralDamagedWatch'];
-  }
+  static type = 'ModifierMyMinionOrGeneralDamagedWatch';
+  static modifierName = 'My General Damaged Watch';
+  static description = 'My General Damaged Watch';
 
   onAfterCleanupAction(actionEvent) {
     super.onAfterCleanupAction(actionEvent);
@@ -47,7 +35,12 @@ class ModifierMyMinionOrGeneralDamagedWatch extends Modifier {
 
   onDamageDealtToMinionOrGeneral(action) {}
 }
-ModifierMyMinionOrGeneralDamagedWatch.initClass();
+ModifierMyMinionOrGeneralDamagedWatch.prototype.type = 'ModifierMyMinionOrGeneralDamagedWatch';
+ModifierMyMinionOrGeneralDamagedWatch.prototype.activeInHand = false;
+ModifierMyMinionOrGeneralDamagedWatch.prototype.activeInDeck = false;
+ModifierMyMinionOrGeneralDamagedWatch.prototype.activeInSignatureCards = false;
+ModifierMyMinionOrGeneralDamagedWatch.prototype.activeOnBoard = true;
+ModifierMyMinionOrGeneralDamagedWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyMinionOrGeneralDamagedWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyMinionOrGeneralDamagedWatch;

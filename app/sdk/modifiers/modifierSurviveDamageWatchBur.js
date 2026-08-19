@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
@@ -12,16 +11,9 @@ const Races = require('app/sdk/cards/racesLookup');
 const ModifierSurviveDamageWatch = require('./modifierSurviveDamageWatch');
 
 class ModifierSurviveDamageWatchBur extends ModifierSurviveDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSurviveDamageWatchBur';
-    this.type = 'ModifierSurviveDamageWatchBur';
-
-    this.modifierName = '';
-    this.description = 'When this minion survives damage, transform it into a different Battle Pet';
-
-    this.prototype.triggeredOnActionIndex = -1;
-    // only trigger one time (since we will transform this minion after it survives damage, don't keep transforming on extra damage instances)
-  }
+  static type = 'ModifierSurviveDamageWatchBur';
+  static modifierName = '';
+  static description = 'When this minion survives damage, transform it into a different Battle Pet';
 
   onSurviveDamage(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative() && (this.triggeredOnActionIndex === -1)) {
@@ -54,6 +46,7 @@ class ModifierSurviveDamageWatchBur extends ModifierSurviveDamageWatch {
     }
   }
 }
-ModifierSurviveDamageWatchBur.initClass();
+ModifierSurviveDamageWatchBur.prototype.type = 'ModifierSurviveDamageWatchBur';
+ModifierSurviveDamageWatchBur.prototype.triggeredOnActionIndex = -1;
 
 module.exports = ModifierSurviveDamageWatchBur;

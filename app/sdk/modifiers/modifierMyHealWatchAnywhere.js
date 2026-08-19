@@ -2,27 +2,15 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const Modifier = require('./modifier');
 
 class ModifierMyHealWatchAnywhere extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyHealWatchAnywhere';
-    this.type = 'ModifierMyHealWatchAnywhere';
-
-    this.modifierName = 'MyHealWatchAnywhere';
-    this.description = 'MyHealWatchAnywhere';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyHealWatchAnywhere'];
-  }
+  static type = 'ModifierMyHealWatchAnywhere';
+  static modifierName = 'MyHealWatchAnywhere';
+  static description = 'MyHealWatchAnywhere';
 
   // "heal watchers" are not allowed to proc if they die during the step
   onAfterCleanupAction(e) {
@@ -55,6 +43,11 @@ class ModifierMyHealWatchAnywhere extends Modifier {
       this.onHealWatch(action));
   }
 }
-ModifierMyHealWatchAnywhere.initClass();
+ModifierMyHealWatchAnywhere.prototype.type = 'ModifierMyHealWatchAnywhere';
+ModifierMyHealWatchAnywhere.prototype.activeInHand = true;
+ModifierMyHealWatchAnywhere.prototype.activeInDeck = true;
+ModifierMyHealWatchAnywhere.prototype.activeInSignatureCards = false;
+ModifierMyHealWatchAnywhere.prototype.activeOnBoard = true;
+ModifierMyHealWatchAnywhere.prototype.fxResource = ['FX.Modifiers.ModifierMyHealWatchAnywhere'];
 
 module.exports = ModifierMyHealWatchAnywhere;

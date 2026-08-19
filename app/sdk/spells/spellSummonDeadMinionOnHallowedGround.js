@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,11 +10,6 @@ const CardType = require('app/sdk/cards/cardType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 
 class SpellSummonDeadMinionOnHallowedGround extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.canBeAppliedAnywhere = false;
-    this.prototype.spawnSilently = true;
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
     p.deadUnits = null;
@@ -63,6 +57,7 @@ class SpellSummonDeadMinionOnHallowedGround extends SpellSpawnEntity {
     return [];
   }
 }
-SpellSummonDeadMinionOnHallowedGround.initClass();
+SpellSummonDeadMinionOnHallowedGround.prototype.canBeAppliedAnywhere = false;
+SpellSummonDeadMinionOnHallowedGround.prototype.spawnSilently = true;
 
 module.exports = SpellSummonDeadMinionOnHallowedGround;

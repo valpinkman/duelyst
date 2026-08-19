@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -24,11 +23,6 @@ const ModifierRebirth = require('app/sdk/modifiers/modifierRebirth');
 const ModifierFirstBlood = require('app/sdk/modifiers/modifierFirstBlood');
 
 class SpellMoldingEarth extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.spawnSilently = true;
-    this.prototype.numUnits = 3;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const modifiersToObtain = [
       ModifierFrenzy.createContextObject(),
@@ -67,6 +61,7 @@ class SpellMoldingEarth extends SpellSpawnEntity {
     return validPositions;
   }
 }
-SpellMoldingEarth.initClass();
+SpellMoldingEarth.prototype.spawnSilently = true;
+SpellMoldingEarth.prototype.numUnits = 3;
 
 module.exports = SpellMoldingEarth;

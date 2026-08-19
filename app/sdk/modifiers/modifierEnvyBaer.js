@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomTeleportAction = require('app/sdk/actions/randomTeleportAction');
@@ -10,15 +9,9 @@ const _ = require('underscore');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierEnvyBaer extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnvyBaer';
-    this.type = 'ModifierEnvyBaer';
-
-    this.modifierName = 'Envybaer';
-    this.description = 'Whenever this minion damages an enemy, teleport that enemy to a random corner';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierEnvyBaer';
+  static modifierName = 'Envybaer';
+  static description = 'Whenever this minion damages an enemy, teleport that enemy to a random corner';
 
   onDealDamage(action) {
     if (action.getTarget().getOwnerId() !== this.getCard().getOwnerId()) {
@@ -31,6 +24,7 @@ class ModifierEnvyBaer extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierEnvyBaer.initClass();
+ModifierEnvyBaer.prototype.type = 'ModifierEnvyBaer';
+ModifierEnvyBaer.prototype.maxStacks = 1;
 
 module.exports = ModifierEnvyBaer;

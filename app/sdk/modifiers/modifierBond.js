@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,25 +10,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierBond extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBond';
-    this.type = 'ModifierBond';
-
-    // Duplicated below.
-    // @description: "Bond"
-
-    this.isKeyworded = true;
-    this.modifierName = i18next.t('modifiers.bond_name');
-    this.description = null;
-    this.keywordDefinition = i18next.t('modifiers.bond_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBond'];
-  }
+  static type = 'ModifierBond';
+  static isKeyworded = true;
+  static description = null;
 
   onActivate() {
     super.onActivate();
@@ -56,7 +39,14 @@ class ModifierBond extends Modifier {
 
   onBond() {}
 }
-ModifierBond.initClass();
+ModifierBond.prototype.type = 'ModifierBond';
+ModifierBond.modifierName = i18next.t('modifiers.bond_name');
+ModifierBond.keywordDefinition = i18next.t('modifiers.bond_def');
+ModifierBond.prototype.activeInHand = false;
+ModifierBond.prototype.activeInDeck = false;
+ModifierBond.prototype.activeInSignatureCards = false;
+ModifierBond.prototype.activeOnBoard = true;
+ModifierBond.prototype.fxResource = ['FX.Modifiers.ModifierBond'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierBond;

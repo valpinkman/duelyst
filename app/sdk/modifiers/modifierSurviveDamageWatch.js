@@ -1,27 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierSurviveDamageWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSurviveDamageWatch';
-    this.type = 'ModifierSurviveDamageWatch';
-
-    this.modifierName = 'Survive Damage Watch';
-    this.description = 'Survive Damage';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSurviveDamageWatch'];
-  }
+  static type = 'ModifierSurviveDamageWatch';
+  static modifierName = 'Survive Damage Watch';
+  static description = 'Survive Damage';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -37,7 +25,12 @@ class ModifierSurviveDamageWatch extends Modifier {
 
   onSurviveDamage(action) {}
 }
-ModifierSurviveDamageWatch.initClass();
+ModifierSurviveDamageWatch.prototype.type = 'ModifierSurviveDamageWatch';
+ModifierSurviveDamageWatch.prototype.activeInHand = false;
+ModifierSurviveDamageWatch.prototype.activeInDeck = false;
+ModifierSurviveDamageWatch.prototype.activeInSignatureCards = false;
+ModifierSurviveDamageWatch.prototype.activeOnBoard = true;
+ModifierSurviveDamageWatch.prototype.fxResource = ['FX.Modifiers.ModifierSurviveDamageWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierSurviveDamageWatch;

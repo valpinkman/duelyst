@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const BonusManaAction = require('app/sdk/actions/bonusManaAction');
 const ModifierBuilding = require('./modifierBuilding');
 
 class ModifierBuildCompleteGainTempMana extends ModifierBuilding {
-  static initClass() {
-    this.prototype.type = 'ModifierBuildCompleteGainTempMana';
-    this.type = 'ModifierBuildCompleteGainTempMana';
-
-    this.prototype.bonusMana = 0;
-  }
+  static type = 'ModifierBuildCompleteGainTempMana';
 
   static createContextObject(bonusMana, description, transformCardData, turnsToBuild, options) {
     const contextObject = super.createContextObject(description, transformCardData, turnsToBuild, options);
@@ -33,6 +27,7 @@ class ModifierBuildCompleteGainTempMana extends ModifierBuilding {
     return this.getGameSession().executeAction(action);
   }
 }
-ModifierBuildCompleteGainTempMana.initClass();
+ModifierBuildCompleteGainTempMana.prototype.type = 'ModifierBuildCompleteGainTempMana';
+ModifierBuildCompleteGainTempMana.prototype.bonusMana = 0;
 
 module.exports = ModifierBuildCompleteGainTempMana;

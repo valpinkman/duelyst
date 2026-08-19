@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,8 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class PlayerModifierEndTurnRespawnEntityAnywhere extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEndTurnRespawnEntityAnywhere';
-    this.type = 'PlayerModifierEndTurnRespawnEntityAnywhere';
-
-    this.isHiddenToUI = true;
-    this.prototype.durationEndTurn = 1;
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'PlayerModifierEndTurnRespawnEntityAnywhere';
+  static isHiddenToUI = true;
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -41,6 +34,8 @@ class PlayerModifierEndTurnRespawnEntityAnywhere extends PlayerModifier {
     }
   }
 }
-PlayerModifierEndTurnRespawnEntityAnywhere.initClass();
+PlayerModifierEndTurnRespawnEntityAnywhere.prototype.type = 'PlayerModifierEndTurnRespawnEntityAnywhere';
+PlayerModifierEndTurnRespawnEntityAnywhere.prototype.durationEndTurn = 1;
+PlayerModifierEndTurnRespawnEntityAnywhere.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = PlayerModifierEndTurnRespawnEntityAnywhere;

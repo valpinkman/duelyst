@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RemoveArtifactsAction = require('app/sdk/actions/removeArtifactsAction');
@@ -11,13 +10,9 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const ModifierSilence = require('./modifierSilence');
 
 class ModifierOpeningGambitGoleminate extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitGoleminate';
-    this.type = 'ModifierOpeningGambitGoleminate';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Dispel EVERYTHING and destroy ALL artifacts.';
-  }
+  static type = 'ModifierOpeningGambitGoleminate';
+  static modifierName = 'Opening Gambit';
+  static description = 'Dispel EVERYTHING and destroy ALL artifacts.';
 
   onOpeningGambit() {
     return (() => {
@@ -40,6 +35,6 @@ class ModifierOpeningGambitGoleminate extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitGoleminate.initClass();
+ModifierOpeningGambitGoleminate.prototype.type = 'ModifierOpeningGambitGoleminate';
 
 module.exports = ModifierOpeningGambitGoleminate;

@@ -1,0 +1,28 @@
+{
+  "//": [
+    "DESTINATION config for the TypeScript migration (was the repo's root",
+    "tsconfig.json before the migration started). Nothing satisfies it yet;",
+    "`pnpm tsc:strict` measures the remaining distance. As directories reach",
+    "strict-clean, move them from tsconfig.json into this config's include."
+  ],
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "es2015",
+    "moduleResolution": "node16",
+    "module": "CommonJS",
+    "allowJs": false,
+    "checkJs": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  }
+}

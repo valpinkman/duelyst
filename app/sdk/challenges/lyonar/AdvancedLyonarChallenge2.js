@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -24,27 +23,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/inspiring-presence-gate-7-slot-5/12982
 
 class AdvancedLyonarChallenge2 extends Challenge {
-  static initClass() {
-    this.type = 'AdvancedLyonarChallenge2';
-    this.prototype.type = 'AdvancedLyonarChallenge2';
-    this.prototype.categoryType = ChallengeCategory.expert.type;
-
-    this.prototype.name = i18next.t('challenges.advanced_lyonar_2_title');
-    this.prototype.description = i18next.t('challenges.advanced_lyonar_2_description');
-    this.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_lyonar_2_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.advanced_lyonar_2_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 1;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = CONFIG.MAX_MANA;
-    this.prototype.startingHandSizePlayer = 3;
-  }
+  static type = 'AdvancedLyonarChallenge2';
 
   constructor() {
     super();
@@ -117,6 +96,19 @@ class AdvancedLyonarChallenge2 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-AdvancedLyonarChallenge2.initClass();
+AdvancedLyonarChallenge2.prototype.type = 'AdvancedLyonarChallenge2';
+AdvancedLyonarChallenge2.prototype.categoryType = ChallengeCategory.expert.type;
+AdvancedLyonarChallenge2.prototype.name = i18next.t('challenges.advanced_lyonar_2_title');
+AdvancedLyonarChallenge2.prototype.description = i18next.t('challenges.advanced_lyonar_2_description');
+AdvancedLyonarChallenge2.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
+AdvancedLyonarChallenge2.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
+AdvancedLyonarChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_lyonar_2_start');
+AdvancedLyonarChallenge2.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.advanced_lyonar_2_fail'),
+];
+AdvancedLyonarChallenge2.prototype.battleMapTemplateIndex = 1;
+AdvancedLyonarChallenge2.prototype.snapShotOnPlayerTurn = 0;
+AdvancedLyonarChallenge2.prototype.startingManaPlayer = CONFIG.MAX_MANA;
+AdvancedLyonarChallenge2.prototype.startingHandSizePlayer = 3;
 
 module.exports = AdvancedLyonarChallenge2;

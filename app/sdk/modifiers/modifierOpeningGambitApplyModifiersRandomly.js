@@ -1,28 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
 const ModifierOpeningGambitApplyModifiers = require('./modifierOpeningGambitApplyModifiers');
 
 class ModifierOpeningGambitApplyModifiersRandomly extends ModifierOpeningGambitApplyModifiers {
-  static initClass() {
-    /*
-    This modifier is used to apply modifiers RANDOMLY to X entities around an entity on spawn.
-    examples:
-    2 random nearby friendly minions gain +1/+1
-    1 random friendly minion gains provoke
-    */
-
-    this.prototype.type = 'ModifierOpeningGambitApplyModifiersRandomly';
-    this.type = 'ModifierOpeningGambitApplyModifiersRandomly';
-
-    this.description = 'Nearby friendly minions gain %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitApplyModifiersRandomly';
+  static description = 'Nearby friendly minions gain %X';
 
   static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, numberOfApplications, description, options) {
     const contextObject = super.createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options);
@@ -43,6 +29,7 @@ class ModifierOpeningGambitApplyModifiersRandomly extends ModifierOpeningGambitA
     return affectedEntities;
   }
 }
-ModifierOpeningGambitApplyModifiersRandomly.initClass();
+ModifierOpeningGambitApplyModifiersRandomly.prototype.type = 'ModifierOpeningGambitApplyModifiersRandomly';
+ModifierOpeningGambitApplyModifiersRandomly.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitApplyModifiersRandomly;

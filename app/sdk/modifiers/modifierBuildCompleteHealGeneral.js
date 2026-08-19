@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const ModifierBuilding = require('./modifierBuilding');
 
 class ModifierBuildCompleteHealGeneral extends ModifierBuilding {
-  static initClass() {
-    this.prototype.type = 'ModifierBuildCompleteHealGeneral';
-    this.type = 'ModifierBuildCompleteHealGeneral';
-
-    this.prototype.healAmount = 0;
-  }
+  static type = 'ModifierBuildCompleteHealGeneral';
 
   static createContextObject(healAmount, description, transformCardData, turnsToBuild, options) {
     const contextObject = super.createContextObject(description, transformCardData, turnsToBuild, options);
@@ -32,6 +26,7 @@ class ModifierBuildCompleteHealGeneral extends ModifierBuilding {
     return this.getGameSession().executeAction(healAction);
   }
 }
-ModifierBuildCompleteHealGeneral.initClass();
+ModifierBuildCompleteHealGeneral.prototype.type = 'ModifierBuildCompleteHealGeneral';
+ModifierBuildCompleteHealGeneral.prototype.healAmount = 0;
 
 module.exports = ModifierBuildCompleteHealGeneral;

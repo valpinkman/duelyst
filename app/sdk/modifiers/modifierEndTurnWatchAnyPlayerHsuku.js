@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,16 +13,7 @@ const ModifierProvoke = require('./modifierProvoke');
 const Modifier = require('./modifier');
 
 class ModifierEndTurnWatchAnyPlayerHsuku extends ModifierEndTurnWatchAnyPlayer {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchAnyPlayerHsuku';
-    this.type = 'ModifierEndTurnWatchAnyPlayerHsuku';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.possibleBuffs = null;
-    this.prototype.possibleAbilities = null;
-    this.prototype.buffName = null;
-  }
+  static type = 'ModifierEndTurnWatchAnyPlayerHsuku';
 
   static createContextObject(buffName, options) {
     const contextObject = super.createContextObject(options);
@@ -67,6 +57,10 @@ class ModifierEndTurnWatchAnyPlayerHsuku extends ModifierEndTurnWatchAnyPlayer {
     }
   }
 }
-ModifierEndTurnWatchAnyPlayerHsuku.initClass();
+ModifierEndTurnWatchAnyPlayerHsuku.prototype.type = 'ModifierEndTurnWatchAnyPlayerHsuku';
+ModifierEndTurnWatchAnyPlayerHsuku.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
+ModifierEndTurnWatchAnyPlayerHsuku.prototype.possibleBuffs = null;
+ModifierEndTurnWatchAnyPlayerHsuku.prototype.possibleAbilities = null;
+ModifierEndTurnWatchAnyPlayerHsuku.prototype.buffName = null;
 
 module.exports = ModifierEndTurnWatchAnyPlayerHsuku;

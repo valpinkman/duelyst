@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
@@ -11,17 +10,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierCannot = require('./modifierCannot');
 
 class ModifierCannotCastBBS extends ModifierCannot {
-  static initClass() {
-    this.prototype.type = 'ModifierCannotCastBBS';
-    this.type = 'ModifierCannotCastBBS';
-
-    this.modifierName = 'Cannot Cast BBS';
-    this.description = 'Player can\'t cast Bloodbound Spell.';
-
-    this.prototype.manaCostPrevented = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCannotCastSpellsByCost'];
-  }
+  static type = 'ModifierCannotCastBBS';
+  static modifierName = 'Cannot Cast BBS';
+  static description = 'Player can\'t cast Bloodbound Spell.';
 
   static createContextObject() {
     const contextObject = super.createContextObject();
@@ -37,7 +28,9 @@ class ModifierCannotCastBBS extends ModifierCannot {
     }
   }
 }
-ModifierCannotCastBBS.initClass();
+ModifierCannotCastBBS.prototype.type = 'ModifierCannotCastBBS';
+ModifierCannotCastBBS.prototype.manaCostPrevented = 0;
+ModifierCannotCastBBS.prototype.fxResource = ['FX.Modifiers.ModifierCannotCastSpellsByCost'];
 
 module.exports = ModifierCannotCastBBS;
 

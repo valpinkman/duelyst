@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -13,20 +12,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierShatteringHeart extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierShatteringHeart';
-    this.type = 'ModifierShatteringHeart';
-
-    this.modifierName = i18next.t('modifiers.shattering_heart_name');
-    this.description = i18next.t('modifiers.shattering_heart_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierShatteringHeart';
 
   onEvent(event) {
     super.onEvent(event);
@@ -90,7 +76,14 @@ class ModifierShatteringHeart extends Modifier {
     }
   }
 }
-ModifierShatteringHeart.initClass();
+ModifierShatteringHeart.prototype.type = 'ModifierShatteringHeart';
+ModifierShatteringHeart.modifierName = i18next.t('modifiers.shattering_heart_name');
+ModifierShatteringHeart.description = i18next.t('modifiers.shattering_heart_def');
+ModifierShatteringHeart.prototype.activeInHand = false;
+ModifierShatteringHeart.prototype.activeInDeck = false;
+ModifierShatteringHeart.prototype.activeInSignatureCards = false;
+ModifierShatteringHeart.prototype.activeOnBoard = true;
+ModifierShatteringHeart.prototype.maxStacks = 1;
 
 module.exports = ModifierShatteringHeart;
 

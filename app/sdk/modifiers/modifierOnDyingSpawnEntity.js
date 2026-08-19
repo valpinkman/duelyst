@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,16 +14,7 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierOnDying = require('./modifierOnDying');
 
 class ModifierOnDyingSpawnEntity extends ModifierOnDying {
-  static initClass() {
-    this.prototype.type = 'ModifierOnDyingSpawnEntity';
-    this.type = 'ModifierOnDyingSpawnEntity';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnCount = null;
-    this.prototype.spawnPattern = null;
-    this.prototype.spawnSilently = true;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOnDyingSpawnEntity';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -70,6 +60,11 @@ class ModifierOnDyingSpawnEntity extends ModifierOnDying {
     return this.getCard().getOwnerId();
   }
 }
-ModifierOnDyingSpawnEntity.initClass();
+ModifierOnDyingSpawnEntity.prototype.type = 'ModifierOnDyingSpawnEntity';
+ModifierOnDyingSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierOnDyingSpawnEntity.prototype.spawnCount = null;
+ModifierOnDyingSpawnEntity.prototype.spawnPattern = null;
+ModifierOnDyingSpawnEntity.prototype.spawnSilently = true;
+ModifierOnDyingSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOnDyingSpawnEntity;

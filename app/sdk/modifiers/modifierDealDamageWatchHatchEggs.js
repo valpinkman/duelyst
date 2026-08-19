@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,13 +10,9 @@ const ModifierEgg = require('app/sdk/modifiers/modifierEgg');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchHatchEggs extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchHatchEggs';
-    this.type = 'ModifierDealDamageWatchHatchEggs';
-
-    this.modifierName = 'Deal Damage and hatch eggs';
-    this.description = 'Whenever this deals damage, hatch all friendly eggs';
-  }
+  static type = 'ModifierDealDamageWatchHatchEggs';
+  static modifierName = 'Deal Damage and hatch eggs';
+  static description = 'Whenever this deals damage, hatch all friendly eggs';
 
   onDealDamage(action) {
     return (() => {
@@ -36,6 +31,6 @@ class ModifierDealDamageWatchHatchEggs extends ModifierDealDamageWatch {
     })();
   }
 }
-ModifierDealDamageWatchHatchEggs.initClass();
+ModifierDealDamageWatchHatchEggs.prototype.type = 'ModifierDealDamageWatchHatchEggs';
 
 module.exports = ModifierDealDamageWatchHatchEggs;

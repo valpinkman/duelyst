@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -11,10 +10,7 @@ const GameFormat = require('app/sdk/gameFormat');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDrawEnemyLegendaryArtifact extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDrawEnemyLegendaryArtifact';
-    this.type = 'ModifierDyingWishDrawEnemyLegendaryArtifact';
-  }
+  static type = 'ModifierDyingWishDrawEnemyLegendaryArtifact';
 
   onDyingWish(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -49,6 +45,6 @@ class ModifierDyingWishDrawEnemyLegendaryArtifact extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDrawEnemyLegendaryArtifact.initClass();
+ModifierDyingWishDrawEnemyLegendaryArtifact.prototype.type = 'ModifierDyingWishDrawEnemyLegendaryArtifact';
 
 module.exports = ModifierDyingWishDrawEnemyLegendaryArtifact;

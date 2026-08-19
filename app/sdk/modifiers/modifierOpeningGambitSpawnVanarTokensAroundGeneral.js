@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -16,16 +15,8 @@ const Modifier = require('./modifier');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitSpawnVanarTokensAroundGeneral extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSpawnVanarTokensAroundGeneral';
-    this.type = 'ModifierOpeningGambitSpawnVanarTokensAroundGeneral';
-
-    this.description = 'Surround the enemy General with random Walls';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOpeningGambitSpawnVanarTokensAroundGeneral';
+  static description = 'Surround the enemy General with random Walls';
 
   onOpeningGambit(action) {
     super.onOpeningGambit(action);
@@ -52,6 +43,8 @@ class ModifierOpeningGambitSpawnVanarTokensAroundGeneral extends ModifierOpening
     }
   }
 }
-ModifierOpeningGambitSpawnVanarTokensAroundGeneral.initClass();
+ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.type = 'ModifierOpeningGambitSpawnVanarTokensAroundGeneral';
+ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.cardDataOrIndexToSpawn = null;
+ModifierOpeningGambitSpawnVanarTokensAroundGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOpeningGambitSpawnVanarTokensAroundGeneral;

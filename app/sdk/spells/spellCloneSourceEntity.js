@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,10 +12,6 @@ const CloneEntityAction = require('app/sdk/actions/cloneEntityAction');
   Spawns a new entity as clone of another entity.
 */
 class SpellCloneSourceEntity extends SpellApplyEntityToBoard {
-  static initClass() {
-    this.prototype.canBeAppliedAnywhere = false;
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -52,6 +47,6 @@ class SpellCloneSourceEntity extends SpellApplyEntityToBoard {
     }
   }
 }
-SpellCloneSourceEntity.initClass();
+SpellCloneSourceEntity.prototype.canBeAppliedAnywhere = false;
 
 module.exports = SpellCloneSourceEntity;

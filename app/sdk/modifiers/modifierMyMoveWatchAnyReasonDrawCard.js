@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierMyMoveWatchAnyReason = require('./modifierMyMoveWatchAnyReason');
 
 class ModifierMyMoveWatchAnyReasonDrawCard extends ModifierMyMoveWatchAnyReason {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMoveWatchAnyReasonDrawCard';
-    this.type = 'ModifierMyMoveWatchAnyReasonDrawCard';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-
-    this.prototype.drawAmount = 1;
-  }
+  static type = 'ModifierMyMoveWatchAnyReasonDrawCard';
 
   static createContextObject(drawAmount, options) {
     if (drawAmount == null) { drawAmount = 1; }
@@ -38,6 +30,8 @@ class ModifierMyMoveWatchAnyReasonDrawCard extends ModifierMyMoveWatchAnyReason 
     })();
   }
 }
-ModifierMyMoveWatchAnyReasonDrawCard.initClass();
+ModifierMyMoveWatchAnyReasonDrawCard.prototype.type = 'ModifierMyMoveWatchAnyReasonDrawCard';
+ModifierMyMoveWatchAnyReasonDrawCard.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
+ModifierMyMoveWatchAnyReasonDrawCard.prototype.drawAmount = 1;
 
 module.exports = ModifierMyMoveWatchAnyReasonDrawCard;

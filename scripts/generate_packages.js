@@ -812,7 +812,12 @@
   const parseModifier = function (file, content) {
     const fileName = helpers.getFileName(file);
     const className = fileName[0].toUpperCase() + fileName.slice(1);
-    let modifierType = content.match(/type\s*[:=]\s*['"](\w+?)['"]/);
+    // Prefer the PROTOTYPE type: that is what modifier instances carry and
+    // what asset lookup keys on. (Static and prototype type normally match;
+    // modifierImmuneToDamageOnEnemyTurn is an upstream exception where the
+    // static was mangled by an old find/replace - see MODERNIZATION_PLAN.md.)
+    let modifierType = content.match(/prototype\.type\s*=\s*['"](\w+?)['"]/)
+      || content.match(/type\s*[:=]\s*['"](\w+?)['"]/);
     if (modifierType != null) {
       modifierType = modifierType[1];
     } else {

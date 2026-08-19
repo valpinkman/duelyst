@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,14 +14,7 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierKillWatch = require('./modifierKillWatch');
 
 class ModifierKillWatchSpawnEntity extends ModifierKillWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchSpawnEntity';
-    this.type = 'ModifierKillWatchSpawnEntity';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierKillWatchSpawnEntity';
 
   static createContextObject(cardDataOrIndexToSpawn, includeAllies, includeGenerals, spawnCount, spawnPattern, spawnSilently, options) {
     if (includeAllies == null) { includeAllies = true; }
@@ -71,6 +63,8 @@ class ModifierKillWatchSpawnEntity extends ModifierKillWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierKillWatchSpawnEntity.initClass();
+ModifierKillWatchSpawnEntity.prototype.type = 'ModifierKillWatchSpawnEntity';
+ModifierKillWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierKillWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierKillWatchSpawnEntity;

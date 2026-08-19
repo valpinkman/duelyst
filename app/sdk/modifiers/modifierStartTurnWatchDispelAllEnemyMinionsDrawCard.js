@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -17,12 +16,8 @@ const ModifierSilence = require('./modifierSilence');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard';
-    this.type = 'ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard';
-
-    this.description = 'At the start of your turn, dispel all enemy minions and draw a card';
-  }
+  static type = 'ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard';
+  static description = 'At the start of your turn, dispel all enemy minions and draw a card';
 
   onTurnWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -36,6 +31,6 @@ class ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard extends ModifierStartT
     }
   }
 }
-ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard.initClass();
+ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard.prototype.type = 'ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard';
 
 module.exports = ModifierStartTurnWatchDispelAllEnemyMinionsDrawCard;

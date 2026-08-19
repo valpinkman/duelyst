@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,20 +9,9 @@ const KillAction = require('app/sdk/actions/killAction');
 const Modifier = require('./modifier');
 
 class ModifierATKThresholdDie extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierATKThresholdDie';
-    this.type = 'ModifierATKThresholdDie';
-
-    this.modifierName = 'Modifier ATK Threshold Die';
-    this.description = 'When this unit\'s attack is greater than %X it dies';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierATKThresholdDie';
+  static modifierName = 'Modifier ATK Threshold Die';
+  static description = 'When this unit\'s attack is greater than %X it dies';
 
   static createContextObject(atkThreshold, options) {
     const contextObject = super.createContextObject(options);
@@ -64,6 +52,11 @@ class ModifierATKThresholdDie extends Modifier {
     }
   }
 }
-ModifierATKThresholdDie.initClass();
+ModifierATKThresholdDie.prototype.type = 'ModifierATKThresholdDie';
+ModifierATKThresholdDie.prototype.activeInHand = false;
+ModifierATKThresholdDie.prototype.activeInDeck = false;
+ModifierATKThresholdDie.prototype.activeInSignatureCards = false;
+ModifierATKThresholdDie.prototype.activeOnBoard = true;
+ModifierATKThresholdDie.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierATKThresholdDie;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,12 +9,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierMyAttackMinionWatch = require('./modifierMyAttackMinionWatch');
 
 class ModifierMyAttackMinionWatchStealGeneralHealth extends ModifierMyAttackMinionWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackMinionWatchStealGeneralHealth';
-    this.type = 'ModifierMyAttackMinionWatchStealGeneralHealth';
-
-    this.prototype.stealAmount = 0;
-  }
+  static type = 'ModifierMyAttackMinionWatchStealGeneralHealth';
 
   static createContextObject(stealAmount, options) {
     if (stealAmount == null) { stealAmount = 0; }
@@ -42,6 +36,7 @@ class ModifierMyAttackMinionWatchStealGeneralHealth extends ModifierMyAttackMini
     return this.getGameSession().executeAction(damageAction);
   }
 }
-ModifierMyAttackMinionWatchStealGeneralHealth.initClass();
+ModifierMyAttackMinionWatchStealGeneralHealth.prototype.type = 'ModifierMyAttackMinionWatchStealGeneralHealth';
+ModifierMyAttackMinionWatchStealGeneralHealth.prototype.stealAmount = 0;
 
 module.exports = ModifierMyAttackMinionWatchStealGeneralHealth;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
@@ -8,9 +7,7 @@ const RSX = require('app/data/resources');
 const Ribbons = require('./ribbonLookup');
 
 class RibbonFactory {
-  static initClass() {
-    this.ribbons = {};
-  }
+  static ribbons = {};
 
   static ribbonForIdentifier(identifier) {
     const ribbon = this.ribbons[identifier];
@@ -22,7 +19,6 @@ class RibbonFactory {
     return undefined;
   }
 }
-RibbonFactory.initClass();
 
 // setup ribbon data
 RibbonFactory.ribbons[Ribbons.LyonarChampion] = {

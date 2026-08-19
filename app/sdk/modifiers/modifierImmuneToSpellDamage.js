@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,7 @@ const i18next = require('i18next');
 const ModifierImmuneToDamage = require('./modifierImmuneToDamage');
 
 class ModifierImmuneToSpellDamage extends ModifierImmuneToDamage {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToSpellDamage';
-    this.type = 'ModifierImmuneToSpellDamage';
-
-    this.modifierName = i18next.t('modifiers.immune_to_spell_damage_name');
-    this.description = i18next.t('modifiers.immune_to_spell_damage_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunitySpell'];
-  }
+  static type = 'ModifierImmuneToSpellDamage';
 
   getIsActionRelevant(a) {
     if ((this.getCard() != null) && a instanceof DamageAction && (this.getCard() === a.getTarget()) && !a.getCreatedByTriggeringModifier() && (__guard__(a.getSource(), (x) => x.getType()) === CardType.Spell)) {
@@ -34,7 +25,10 @@ class ModifierImmuneToSpellDamage extends ModifierImmuneToDamage {
     return false;
   }
 }
-ModifierImmuneToSpellDamage.initClass();
+ModifierImmuneToSpellDamage.prototype.type = 'ModifierImmuneToSpellDamage';
+ModifierImmuneToSpellDamage.modifierName = i18next.t('modifiers.immune_to_spell_damage_name');
+ModifierImmuneToSpellDamage.description = i18next.t('modifiers.immune_to_spell_damage_def');
+ModifierImmuneToSpellDamage.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunitySpell'];
 
 module.exports = ModifierImmuneToSpellDamage;
 

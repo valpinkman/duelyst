@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierFlying = require('app/sdk/modifiers/modifierFlying');
 
 class PlayerModifierSummonWatchIfFlyingDrawFlyingMinion extends PlayerModifierSummonWatchFromActionBar {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
-    this.type = 'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
-  }
+  static type = 'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
 
   onSummonWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -51,6 +47,6 @@ class PlayerModifierSummonWatchIfFlyingDrawFlyingMinion extends PlayerModifierSu
     }
   }
 }
-PlayerModifierSummonWatchIfFlyingDrawFlyingMinion.initClass();
+PlayerModifierSummonWatchIfFlyingDrawFlyingMinion.prototype.type = 'PlayerModifierSummonWatchIfFlyingDrawFlyingMinion';
 
 module.exports = PlayerModifierSummonWatchIfFlyingDrawFlyingMinion;

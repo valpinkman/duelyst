@@ -3,22 +3,13 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierBackstabWatch = require('./modifierBackstabWatch');
 
 class ModifierBackstabWatchApplyPlayerModifiers extends ModifierBackstabWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierBackstabWatchApplyPlayerModifiers';
-    this.type = 'ModifierBackstabWatchApplyPlayerModifiers';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-    this.prototype.managedByCard = false; // whether card with backstab should manage the modifiers applied, i.e. when the card is silenced/killed these modifiers are removed
-    this.prototype.applyToOwnPlayer = false;
-    this.prototype.applyToEnemyPlayer = false;
-  }
+  static type = 'ModifierBackstabWatchApplyPlayerModifiers';
 
   static createContextObject(modifiersContextObjects, managedByCard, applyToOwnPlayer, applyToEnemyPlayer, options) {
     if (managedByCard == null) { managedByCard = false; }
@@ -74,6 +65,10 @@ class ModifierBackstabWatchApplyPlayerModifiers extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchApplyPlayerModifiers.initClass();
+ModifierBackstabWatchApplyPlayerModifiers.prototype.type = 'ModifierBackstabWatchApplyPlayerModifiers';
+ModifierBackstabWatchApplyPlayerModifiers.prototype.modifiersContextObjects = null;
+ModifierBackstabWatchApplyPlayerModifiers.prototype.managedByCard = false;
+ModifierBackstabWatchApplyPlayerModifiers.prototype.applyToOwnPlayer = false;
+ModifierBackstabWatchApplyPlayerModifiers.prototype.applyToEnemyPlayer = false;
 
 module.exports = ModifierBackstabWatchApplyPlayerModifiers;

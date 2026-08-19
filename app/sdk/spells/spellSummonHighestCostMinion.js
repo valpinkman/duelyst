@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,11 +15,6 @@ const FactionFactory = require('app/sdk/cards/factionFactory');
 const _ = require('underscore');
 
 class SpellSummonHighestCostMinion extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.appliedName = null;
-    this.prototype.neutralOnly = true;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     let cardIndex;
     const gameSession = this.getGameSession();
@@ -85,7 +79,8 @@ class SpellSummonHighestCostMinion extends SpellSpawnEntity {
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
   }
 }
-SpellSummonHighestCostMinion.initClass();
+SpellSummonHighestCostMinion.prototype.appliedName = null;
+SpellSummonHighestCostMinion.prototype.neutralOnly = true;
 
 module.exports = SpellSummonHighestCostMinion;
 

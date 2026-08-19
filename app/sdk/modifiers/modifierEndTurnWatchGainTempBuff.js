@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,19 +8,9 @@ const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 const Modifier = require('./modifier');
 
 class ModifierEndTurnWatchGainTempBuff extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchGainTempBuff';
-    this.type = 'ModifierEndTurnWatchGainTempBuff';
-
-    this.modifierName = 'End Turn Watch Temp Buff';
-    this.description = 'Gain a buff on your opponent\'s turn';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-
-    this.prototype.attackBuff = 0;
-    this.prototype.healthBuff = 0;
-    this.prototype.modifierName = null;
-  }
+  static type = 'ModifierEndTurnWatchGainTempBuff';
+  static modifierName = 'End Turn Watch Temp Buff';
+  static description = 'Gain a buff on your opponent\'s turn';
 
   onActivate() {
     super.onActivate();
@@ -54,6 +43,10 @@ class ModifierEndTurnWatchGainTempBuff extends ModifierEndTurnWatch {
     return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
   }
 }
-ModifierEndTurnWatchGainTempBuff.initClass();
+ModifierEndTurnWatchGainTempBuff.prototype.type = 'ModifierEndTurnWatchGainTempBuff';
+ModifierEndTurnWatchGainTempBuff.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
+ModifierEndTurnWatchGainTempBuff.prototype.attackBuff = 0;
+ModifierEndTurnWatchGainTempBuff.prototype.healthBuff = 0;
+ModifierEndTurnWatchGainTempBuff.prototype.modifierName = null;
 
 module.exports = ModifierEndTurnWatchGainTempBuff;

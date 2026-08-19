@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -15,24 +14,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierFrenzy extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierFrenzy';
-    this.type = 'ModifierFrenzy';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.frenzy_def');
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.frenzy_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierFrenzy'];
-  }
+  static type = 'ModifierFrenzy';
+  static isKeyworded = true;
+  static description = null;
 
   onEvent(event) {
     super.onEvent(event);
@@ -101,6 +85,14 @@ class ModifierFrenzy extends Modifier {
     }
   }
 }
-ModifierFrenzy.initClass();
+ModifierFrenzy.prototype.type = 'ModifierFrenzy';
+ModifierFrenzy.keywordDefinition = i18next.t('modifiers.frenzy_def');
+ModifierFrenzy.prototype.maxStacks = 1;
+ModifierFrenzy.modifierName = i18next.t('modifiers.frenzy_name');
+ModifierFrenzy.prototype.activeInHand = false;
+ModifierFrenzy.prototype.activeInDeck = false;
+ModifierFrenzy.prototype.activeInSignatureCards = false;
+ModifierFrenzy.prototype.activeOnBoard = true;
+ModifierFrenzy.prototype.fxResource = ['FX.Modifiers.ModifierFrenzy'];
 
 module.exports = ModifierFrenzy;

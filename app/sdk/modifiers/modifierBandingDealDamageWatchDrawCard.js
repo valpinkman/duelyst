@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,8 @@ const ModifierBanding = require('./modifierBanding');
 const ModifierDealDamageWatchDrawCard = require('./modifierDealDamageWatchDrawCard');
 
 class ModifierBandingDealDamageWatchDrawCard extends ModifierBanding {
-  static initClass() {
-    this.prototype.type = 'ModifierBandingDealDamageWatchDrawCard';
-    this.type = 'ModifierBandingDealDamageWatchDrawCard';
-
-    // maxStacks: 1
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZeal'];
-  }
+  static type = 'ModifierBandingDealDamageWatchDrawCard';
+  static description = '';
 
   static createContextObject(options) {
     if (options == null) { options = undefined; }
@@ -34,6 +26,7 @@ class ModifierBandingDealDamageWatchDrawCard extends ModifierBanding {
     return this.description;
   }
 }
-ModifierBandingDealDamageWatchDrawCard.initClass();
+ModifierBandingDealDamageWatchDrawCard.prototype.type = 'ModifierBandingDealDamageWatchDrawCard';
+ModifierBandingDealDamageWatchDrawCard.prototype.fxResource = ['FX.Modifiers.ModifierZeal'];
 
 module.exports = ModifierBandingDealDamageWatchDrawCard;

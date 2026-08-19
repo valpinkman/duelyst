@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DieAction = require('app/sdk/actions/dieAction');
@@ -10,23 +9,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierDyingWish extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWish';
-    this.type = 'ModifierDyingWish';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.dying_wish_def');
-
-    this.modifierName = i18next.t('modifiers.dying_wish_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
-  }
+  static type = 'ModifierDyingWish';
+  static isKeyworded = true;
+  static description = null;
 
   onAction(e) {
     super.onAction(e);
@@ -43,7 +28,14 @@ class ModifierDyingWish extends Modifier {
 
   onDyingWish(action) {}
 }
-ModifierDyingWish.initClass();
+ModifierDyingWish.prototype.type = 'ModifierDyingWish';
+ModifierDyingWish.keywordDefinition = i18next.t('modifiers.dying_wish_def');
+ModifierDyingWish.modifierName = i18next.t('modifiers.dying_wish_name');
+ModifierDyingWish.prototype.activeInHand = false;
+ModifierDyingWish.prototype.activeInDeck = false;
+ModifierDyingWish.prototype.activeInSignatureCards = false;
+ModifierDyingWish.prototype.activeOnBoard = true;
+ModifierDyingWish.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierDyingWish;

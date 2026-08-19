@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,6 @@ const SpellFollowupTeleport = require('./spellFollowupTeleport');
 const SpellFilterType = require('./spellFilterType');
 
 class SpellFollowupTeleportToMe extends SpellFollowupTeleport {
-  static initClass() {
-    this.prototype._postFilterApplyPositions = this.prototype._postFilterPlayPositions;
-  }
-
   getTeleportSourcePosition(applyEffectPosition) {
     return applyEffectPosition;
   }
@@ -51,6 +46,6 @@ class SpellFollowupTeleportToMe extends SpellFollowupTeleport {
     return !followupCard.getTeleportTarget(followupCard.getApplyEffectPosition());
   }
 }
-SpellFollowupTeleportToMe.initClass();
+SpellFollowupTeleportToMe.prototype._postFilterApplyPositions = SpellFollowupTeleportToMe.prototype._postFilterPlayPositions;
 
 module.exports = SpellFollowupTeleportToMe;

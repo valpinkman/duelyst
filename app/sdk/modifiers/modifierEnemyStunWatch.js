@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ApplyModifierAction = require('app/sdk/actions/applyModifierAction');
@@ -11,17 +10,7 @@ const ModifierStun = require('app/sdk/modifiers/modifierStun');
 const Modifier = require('./modifier');
 
 class ModifierEnemyStunWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyStunWatch';
-    this.type = 'ModifierEnemyStunWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierEnemyStunWatch';
 
   onBeforeAction(e) {
     super.onBeforeAction(e);
@@ -38,7 +27,12 @@ class ModifierEnemyStunWatch extends Modifier {
 
   onEnemyStunWatch(action) {}
 }
-ModifierEnemyStunWatch.initClass();
+ModifierEnemyStunWatch.prototype.type = 'ModifierEnemyStunWatch';
+ModifierEnemyStunWatch.prototype.activeInHand = false;
+ModifierEnemyStunWatch.prototype.activeInDeck = false;
+ModifierEnemyStunWatch.prototype.activeInSignatureCards = false;
+ModifierEnemyStunWatch.prototype.activeOnBoard = true;
+ModifierEnemyStunWatch.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEnemyStunWatch;

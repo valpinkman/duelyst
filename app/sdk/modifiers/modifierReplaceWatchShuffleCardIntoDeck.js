@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,12 +11,7 @@ const PutCardInDeckAction = require('app/sdk/actions/putCardInDeckAction');
 const ModifierReplaceWatch = require('./modifierReplaceWatch');
 
 class ModifierReplaceWatchShuffleCardIntoDeck extends ModifierReplaceWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierReplaceWatchShuffleCardIntoDeck';
-    this.type = 'ModifierReplaceWatchShuffleCardIntoDeck';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierReplaceWatchShuffleCardIntoDeck';
 
   static createContextObject(cardDataOrIndexToSpawn, numOfCopies, options) {
     if (numOfCopies == null) { numOfCopies = 1; }
@@ -41,6 +35,7 @@ class ModifierReplaceWatchShuffleCardIntoDeck extends ModifierReplaceWatch {
     }
   }
 }
-ModifierReplaceWatchShuffleCardIntoDeck.initClass();
+ModifierReplaceWatchShuffleCardIntoDeck.prototype.type = 'ModifierReplaceWatchShuffleCardIntoDeck';
+ModifierReplaceWatchShuffleCardIntoDeck.prototype.fxResource = ['FX.Modifiers.ModifierReplaceWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierReplaceWatchShuffleCardIntoDeck;

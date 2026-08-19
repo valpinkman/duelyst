@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,7 @@ const ModifierHealWatch = require('./modifierHealWatch');
 const Modifier = require('./modifier');
 
 class ModifierHealWatchBuffSelf extends ModifierHealWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierHealWatchBuffSelf';
-    this.type = 'ModifierHealWatchBuffSelf';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierHealWatchBuffSelf';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -34,6 +28,7 @@ class ModifierHealWatchBuffSelf extends ModifierHealWatch {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierHealWatchBuffSelf.initClass();
+ModifierHealWatchBuffSelf.prototype.type = 'ModifierHealWatchBuffSelf';
+ModifierHealWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierHealWatchBuffSelf;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,7 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierKillWatch = require('./modifierKillWatch');
 
 class ModifierKillWatchDeceptibot extends ModifierKillWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchDeceptibot';
-    this.type = 'ModifierKillWatchDeceptibot';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
-  }
+  static type = 'ModifierKillWatchDeceptibot';
 
   onKillWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -56,6 +50,7 @@ class ModifierKillWatchDeceptibot extends ModifierKillWatch {
     }
   }
 }
-ModifierKillWatchDeceptibot.initClass();
+ModifierKillWatchDeceptibot.prototype.type = 'ModifierKillWatchDeceptibot';
+ModifierKillWatchDeceptibot.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
 
 module.exports = ModifierKillWatchDeceptibot;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,24 +12,9 @@ const ModifierManaCostChange = require('./modifierManaCostChange');
 const Modifier = require('./modifier');
 
 class ModifierPantheran extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierPantheran';
-    this.type = 'ModifierPantheran';
-
-    this.modifierName = 'Scion\'s Watch';
-    this.description = 'Costs 0 if you\'ve cast all three Scion\'s Wish spells this game';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.hasPlayedWish1 = false;
-    this.prototype.hasPlayedWish2 = false;
-    this.prototype.hasPlayedWish3 = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierPantheran'];
-  }
+  static type = 'ModifierPantheran';
+  static modifierName = 'Scion\'s Watch';
+  static description = 'Costs 0 if you\'ve cast all three Scion\'s Wish spells this game';
 
   onAction(e) {
     super.onAction(e);
@@ -79,6 +63,14 @@ class ModifierPantheran extends Modifier {
     return this.hasPlayedWish1 && this.hasPlayedWish2 && this.hasPlayedWish3;
   }
 }
-ModifierPantheran.initClass();
+ModifierPantheran.prototype.type = 'ModifierPantheran';
+ModifierPantheran.prototype.activeInHand = true;
+ModifierPantheran.prototype.activeInDeck = true;
+ModifierPantheran.prototype.activeInSignatureCards = false;
+ModifierPantheran.prototype.activeOnBoard = true;
+ModifierPantheran.prototype.hasPlayedWish1 = false;
+ModifierPantheran.prototype.hasPlayedWish2 = false;
+ModifierPantheran.prototype.hasPlayedWish3 = false;
+ModifierPantheran.prototype.fxResource = ['FX.Modifiers.ModifierPantheran'];
 
 module.exports = ModifierPantheran;

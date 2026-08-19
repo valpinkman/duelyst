@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,9 +8,7 @@ const _ = require('underscore');
 const moment = require('moment');
 
 class AnalyticsUtil {
-  static initClass() {
-    this.RecordedDaysSeenOn = [1, 3, 7, 15, 30, 60];
-  }
+  static RecordedDaysSeenOn = [1, 3, 7, 15, 30, 60];
 
   /**
    * Converts representation of the days a user was seen on from an array to an object
@@ -56,6 +53,5 @@ class AnalyticsUtil {
     return `seen_on_d${dayIndex}`;
   }
 }
-AnalyticsUtil.initClass();
 
 module.exports = AnalyticsUtil;

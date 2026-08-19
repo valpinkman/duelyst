@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,13 +15,7 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const _ = require('underscore');
 
 class DrawStartingHandAction extends Action {
-  static initClass() {
-    this.type = 'DrawStartingHandAction';
-
-    this.prototype.mulliganIndices = null;
-    this.prototype.mulliganedHandCardsData = null;
-    this.prototype.newHandCardsData = null;
-  }
+  static type = 'DrawStartingHandAction';
 
   constructor(gameSession, ownerId, mulliganIndices) {
     super(gameSession);
@@ -139,6 +132,8 @@ class DrawStartingHandAction extends Action {
     return actionData;
   }
 }
-DrawStartingHandAction.initClass();
+DrawStartingHandAction.prototype.mulliganIndices = null;
+DrawStartingHandAction.prototype.mulliganedHandCardsData = null;
+DrawStartingHandAction.prototype.newHandCardsData = null;
 
 module.exports = DrawStartingHandAction;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -13,14 +12,8 @@ const ModifierDyingWish = require('./modifierDyingWish');
 const ModifierSilence = require('./modifierSilence');
 
 class ModifierDyingWishDispelNearestEnemy extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDispelNearestEnemy';
-    this.type = 'ModifierDyingWishDispelNearestEnemy';
-
-    this.description = 'Dispel the nearest enemy minion';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
-  }
+  static type = 'ModifierDyingWishDispelNearestEnemy';
+  static description = 'Dispel the nearest enemy minion';
 
   onDyingWish(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -49,6 +42,7 @@ class ModifierDyingWishDispelNearestEnemy extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDispelNearestEnemy.initClass();
+ModifierDyingWishDispelNearestEnemy.prototype.type = 'ModifierDyingWishDispelNearestEnemy';
+ModifierDyingWishDispelNearestEnemy.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish'];
 
 module.exports = ModifierDyingWishDispelNearestEnemy;

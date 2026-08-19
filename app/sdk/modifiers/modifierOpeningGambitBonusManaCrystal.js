@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,13 +10,7 @@ const BonusManaCoreAction = require('app/sdk/actions/bonusManaCoreAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitBonusManaCrystal extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitBonusManaCrystal';
-    this.type = 'ModifierOpeningGambitBonusManaCrystal';
-
-    this.prototype.giveToOwner = true; // if false, will give mana to OPPONENT of entity
-    this.prototype.amountToGive = 1;
-  }
+  static type = 'ModifierOpeningGambitBonusManaCrystal';
 
   static createContextObject(giveToOwner, amountToGive, options) {
     if (giveToOwner == null) { giveToOwner = true; }
@@ -48,6 +41,8 @@ class ModifierOpeningGambitBonusManaCrystal extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitBonusManaCrystal.initClass();
+ModifierOpeningGambitBonusManaCrystal.prototype.type = 'ModifierOpeningGambitBonusManaCrystal';
+ModifierOpeningGambitBonusManaCrystal.prototype.giveToOwner = true;
+ModifierOpeningGambitBonusManaCrystal.prototype.amountToGive = 1;
 
 module.exports = ModifierOpeningGambitBonusManaCrystal;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,17 +9,7 @@ const ApplyModifierAction = require('app/sdk/actions/applyModifierAction');
 const Modifier = require('./modifier');
 
 class ModifierOnSummonFromHand extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOnSummonFromHand';
-    this.type = 'ModifierOnSummonFromHand';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.triggered = false;
-  }
+  static type = 'ModifierOnSummonFromHand';
 
   onActivate() {
     super.onActivate();
@@ -50,7 +39,12 @@ class ModifierOnSummonFromHand extends Modifier {
 
   onSummonFromHand() {}
 }
-ModifierOnSummonFromHand.initClass();
+ModifierOnSummonFromHand.prototype.type = 'ModifierOnSummonFromHand';
+ModifierOnSummonFromHand.prototype.activeInHand = false;
+ModifierOnSummonFromHand.prototype.activeInDeck = false;
+ModifierOnSummonFromHand.prototype.activeInSignatureCards = false;
+ModifierOnSummonFromHand.prototype.activeOnBoard = true;
+ModifierOnSummonFromHand.prototype.triggered = false;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierOnSummonFromHand;

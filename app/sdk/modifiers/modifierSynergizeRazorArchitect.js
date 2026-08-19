@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,10 +12,7 @@ const ModifierSynergize = require('./modifierSynergize');
 const ModifierStunnedVanar = require('./modifierStunnedVanar');
 
 class ModifierSynergizeRazorArchitect extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeRazorArchitect';
-    this.type = 'ModifierSynergizeRazorArchitect';
-  }
+  static type = 'ModifierSynergizeRazorArchitect';
 
   onSynergize(action) {
     super.onSynergize(action);
@@ -46,6 +42,6 @@ class ModifierSynergizeRazorArchitect extends ModifierSynergize {
     }
   }
 }
-ModifierSynergizeRazorArchitect.initClass();
+ModifierSynergizeRazorArchitect.prototype.type = 'ModifierSynergizeRazorArchitect';
 
 module.exports = ModifierSynergizeRazorArchitect;

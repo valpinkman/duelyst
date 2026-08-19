@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -15,14 +14,8 @@ const _ = require('underscore');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishSpawnTribal extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnTribal';
-    this.type = 'ModifierDyingWishSpawnTribal';
-
-    this.description = 'Summon a random Tribal nearby';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDyingWishSpawnTribal';
+  static description = 'Summon a random Tribal nearby';
 
   onDyingWish() {
     super.onDyingWish();
@@ -68,6 +61,7 @@ class ModifierDyingWishSpawnTribal extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishSpawnTribal.initClass();
+ModifierDyingWishSpawnTribal.prototype.type = 'ModifierDyingWishSpawnTribal';
+ModifierDyingWishSpawnTribal.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDyingWishSpawnTribal;

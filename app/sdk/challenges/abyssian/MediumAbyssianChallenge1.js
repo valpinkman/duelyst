@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,28 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/abyss-super-creep-medium/8970
 
 class MediumAbyssianChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'MediumAbyssianChallenge1';
-    this.prototype.type = 'MediumAbyssianChallenge1';
-    this.prototype.categoryType = ChallengeCategory.vault1.type;
-
-    this.prototype.name = i18next.t('challenges.medium_abyss_1_title');
-    this.prototype.description = i18next.t('challenges.medium_abyss_1_description');
-    this.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_abyss_1_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.medium_abyss_1_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = CONFIG.MAX_MANA;
-    this.prototype.startingHandSizePlayer = 6;
-    this.prototype.usesResetTurn = false;
-  }
+  static type = 'MediumAbyssianChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -107,6 +85,20 @@ class MediumAbyssianChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-MediumAbyssianChallenge1.initClass();
+MediumAbyssianChallenge1.prototype.type = 'MediumAbyssianChallenge1';
+MediumAbyssianChallenge1.prototype.categoryType = ChallengeCategory.vault1.type;
+MediumAbyssianChallenge1.prototype.name = i18next.t('challenges.medium_abyss_1_title');
+MediumAbyssianChallenge1.prototype.description = i18next.t('challenges.medium_abyss_1_description');
+MediumAbyssianChallenge1.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
+MediumAbyssianChallenge1.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
+MediumAbyssianChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_abyss_1_start');
+MediumAbyssianChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.medium_abyss_1_fail'),
+];
+MediumAbyssianChallenge1.prototype.battleMapTemplateIndex = 0;
+MediumAbyssianChallenge1.prototype.snapShotOnPlayerTurn = 0;
+MediumAbyssianChallenge1.prototype.startingManaPlayer = CONFIG.MAX_MANA;
+MediumAbyssianChallenge1.prototype.startingHandSizePlayer = 6;
+MediumAbyssianChallenge1.prototype.usesResetTurn = false;
 
 module.exports = MediumAbyssianChallenge1;

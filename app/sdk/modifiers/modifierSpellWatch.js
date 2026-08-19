@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
@@ -12,20 +11,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierSpellWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatch';
-    this.type = 'ModifierSpellWatch';
-
-    this.modifierName = 'Spell Watch';
-    this.description = 'Spell Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierSpellWatch';
+  static modifierName = 'Spell Watch';
+  static description = 'Spell Watch';
 
   onBeforeAction(e) {
     super.onBeforeAction(e);
@@ -42,7 +30,12 @@ class ModifierSpellWatch extends Modifier {
 
   onSpellWatch(action) {}
 }
-ModifierSpellWatch.initClass();
+ModifierSpellWatch.prototype.type = 'ModifierSpellWatch';
+ModifierSpellWatch.prototype.activeInHand = false;
+ModifierSpellWatch.prototype.activeInDeck = false;
+ModifierSpellWatch.prototype.activeInSignatureCards = false;
+ModifierSpellWatch.prototype.activeOnBoard = true;
+ModifierSpellWatch.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierSpellWatch;

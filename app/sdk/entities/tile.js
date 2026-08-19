@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -11,25 +10,6 @@ const CardType = require('app/sdk/cards/cardType');
 const _ = require('underscore');
 
 class Tile extends Entity {
-  static initClass() {
-    this.prototype.type = CardType.Tile;
-    this.type = CardType.Tile;
-    this.prototype.name = 'Tile';
-
-    this.prototype.hp = 0;
-    this.prototype.maxHP = 0;
-    this.prototype.manaCost = 0;
-    this.prototype.isTargetable = false;
-    this.prototype.isObstructing = false;
-    this.prototype.depleted = false;
-    this.prototype.dieOnDepleted = true; // whether tile dies once used up
-    this.prototype.obstructsOtherTiles = false;
-    this.prototype.canBeDispelled = true;
-
-    this.prototype.cleanse = this.prototype.silence;
-    this.prototype.dispel = this.prototype.silence;
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -88,6 +68,19 @@ class Tile extends Entity {
     return this.obstructsOtherTiles;
   }
 }
-Tile.initClass();
+Tile.prototype.type = CardType.Tile;
+Tile.type = CardType.Tile;
+Tile.prototype.name = 'Tile';
+Tile.prototype.hp = 0;
+Tile.prototype.maxHP = 0;
+Tile.prototype.manaCost = 0;
+Tile.prototype.isTargetable = false;
+Tile.prototype.isObstructing = false;
+Tile.prototype.depleted = false;
+Tile.prototype.dieOnDepleted = true;
+Tile.prototype.obstructsOtherTiles = false;
+Tile.prototype.canBeDispelled = true;
+Tile.prototype.cleanse = Tile.prototype.silence;
+Tile.prototype.dispel = Tile.prototype.silence;
 
 module.exports = Tile;

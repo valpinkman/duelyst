@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,10 +14,6 @@ const Cards = require('../cards/cardsLookupComplete');
 const UtilsGameSession = require('../../common/utils/utils_game_session');
 
 class SpellSilenceAndSpawnEntityNearby extends SpellSpawnEntityRandomlyAroundTarget {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -38,6 +33,6 @@ class SpellSilenceAndSpawnEntityNearby extends SpellSpawnEntityRandomlyAroundTar
     })();
   }
 }
-SpellSilenceAndSpawnEntityNearby.initClass();
+SpellSilenceAndSpawnEntityNearby.prototype.targetType = CardType.Unit;
 
 module.exports = SpellSilenceAndSpawnEntityNearby;

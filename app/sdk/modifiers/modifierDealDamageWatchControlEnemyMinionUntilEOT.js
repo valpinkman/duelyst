@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,13 +11,9 @@ const ModifierEndTurnWatchSwapAllegiance = require('app/sdk/modifiers/modifierEn
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchControlEnemyMinionUntilEOT extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
-    this.type = 'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
-
-    this.modifierName = 'Deal Damage to a minion and take control of it';
-    this.description = 'Whenever this minion deals damage to a minion, take control of it until end of turn';
-  }
+  static type = 'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
+  static modifierName = 'Deal Damage to a minion and take control of it';
+  static description = 'Whenever this minion deals damage to a minion, take control of it until end of turn';
 
   onDealDamage(action) {
     const target = action.getTarget();
@@ -46,6 +41,6 @@ class ModifierDealDamageWatchControlEnemyMinionUntilEOT extends ModifierDealDama
     }
   }
 }
-ModifierDealDamageWatchControlEnemyMinionUntilEOT.initClass();
+ModifierDealDamageWatchControlEnemyMinionUntilEOT.prototype.type = 'ModifierDealDamageWatchControlEnemyMinionUntilEOT';
 
 module.exports = ModifierDealDamageWatchControlEnemyMinionUntilEOT;

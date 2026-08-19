@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 
 class ModifierTakeDamageWatchDestroy extends ModifierTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierTakeDamageWatchDestroy';
-    this.type = 'ModifierTakeDamageWatchDestroy';
-
-    this.modifierName = 'Take Damage Watch';
-    this.description = 'Destroy any minion that deals damage to this one';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch'];
-  }
+  static type = 'ModifierTakeDamageWatchDestroy';
+  static modifierName = 'Take Damage Watch';
+  static description = 'Destroy any minion that deals damage to this one';
 
   onDamageTaken(action) {
     super.onDamageTaken(action);
@@ -38,7 +31,8 @@ class ModifierTakeDamageWatchDestroy extends ModifierTakeDamageWatch {
     }
   }
 }
-ModifierTakeDamageWatchDestroy.initClass();
+ModifierTakeDamageWatchDestroy.prototype.type = 'ModifierTakeDamageWatchDestroy';
+ModifierTakeDamageWatchDestroy.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch'];
 
 module.exports = ModifierTakeDamageWatchDestroy;
 

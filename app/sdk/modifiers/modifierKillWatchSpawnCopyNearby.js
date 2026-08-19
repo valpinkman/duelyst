@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -14,12 +13,7 @@ const Rarity = require('app/sdk/cards/rarityLookup');
 const ModifierKillWatch = require('./modifierKillWatch');
 
 class ModifierKillWatchSpawnCopyNearby extends ModifierKillWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatchSpawnCopyNearby';
-    this.type = 'ModifierKillWatchSpawnCopyNearby';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierKillWatchSpawnCopyNearby';
 
   onKillWatch(action) {
     super.onKillWatch(action);
@@ -42,6 +36,7 @@ class ModifierKillWatchSpawnCopyNearby extends ModifierKillWatch {
     }
   }
 }
-ModifierKillWatchSpawnCopyNearby.initClass();
+ModifierKillWatchSpawnCopyNearby.prototype.type = 'ModifierKillWatchSpawnCopyNearby';
+ModifierKillWatchSpawnCopyNearby.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierKillWatchSpawnCopyNearby;

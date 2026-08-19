@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,22 +9,8 @@ const i18next = require('i18next');
 const ModifierSituationalBuffSelf = require('./modifierSituationalBuffSelf');
 
 class ModifierBanding extends ModifierSituationalBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierBanding';
-    this.type = 'ModifierBanding';
-
-    this.isKeyworded = true;
-
-    this.modifierName = i18next.t('modifiers.zeal_name');
-    this.keywordDefinition = i18next.t('modifiers.zeal_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZeal'];
-  }
+  static type = 'ModifierBanding';
+  static isKeyworded = true;
 
   getIsSituationActiveForCache() {
     // banding aura is active when this entity is near its general
@@ -39,6 +24,13 @@ class ModifierBanding extends ModifierSituationalBuffSelf {
     return false;
   }
 }
-ModifierBanding.initClass();
+ModifierBanding.prototype.type = 'ModifierBanding';
+ModifierBanding.modifierName = i18next.t('modifiers.zeal_name');
+ModifierBanding.keywordDefinition = i18next.t('modifiers.zeal_def');
+ModifierBanding.prototype.activeInHand = false;
+ModifierBanding.prototype.activeInDeck = false;
+ModifierBanding.prototype.activeInSignatureCards = false;
+ModifierBanding.prototype.activeOnBoard = true;
+ModifierBanding.prototype.fxResource = ['FX.Modifiers.ModifierZeal'];
 
 module.exports = ModifierBanding;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,16 +16,7 @@ Abstract action to apply a card to the board. Do not use directly.
 */
 
 class ApplyCardToBoardAction extends Action {
-  static initClass() {
-    this.type = 'ApplyCardToBoardAction';
-    this.prototype.cardDataOrIndex = null; // card data or index for new card
-    this.prototype.cardOwnedByGameSession = false; // card being applied may need to be owned by gamesession (a mana tile for example)
-    this.prototype.isValidApplication = false;
-
-    // target should always be the card we've applied to the board, so we'll alias getCard
-    this.prototype.getTarget = this.prototype.getCard;
-    // whether application was valid
-  }
+  static type = 'ApplyCardToBoardAction';
 
   constructor(gameSession, ownerId, x, y, cardDataOrIndex, cardOwnedByGameSession) {
     if (cardOwnedByGameSession == null) { cardOwnedByGameSession = false; }
@@ -171,6 +161,9 @@ class ApplyCardToBoardAction extends Action {
     return actionData;
   }
 }
-ApplyCardToBoardAction.initClass();
+ApplyCardToBoardAction.prototype.cardDataOrIndex = null;
+ApplyCardToBoardAction.prototype.cardOwnedByGameSession = false;
+ApplyCardToBoardAction.prototype.isValidApplication = false;
+ApplyCardToBoardAction.prototype.getTarget = ApplyCardToBoardAction.prototype.getCard;
 
 module.exports = ApplyCardToBoardAction;

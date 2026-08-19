@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellIntensify = require('./spellIntensify');
@@ -9,10 +8,6 @@ const CardType = require('app/sdk/cards/cardType');
 const DamageAction = require('app/sdk/actions/damageAction');
 
 class SpellIntensifyDealDamage extends SpellIntensify {
-  static initClass() {
-    this.prototype.damageAmount = 0;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -27,6 +22,6 @@ class SpellIntensifyDealDamage extends SpellIntensify {
     return this.getGameSession().executeAction(damageAction);
   }
 }
-SpellIntensifyDealDamage.initClass();
+SpellIntensifyDealDamage.prototype.damageAmount = 0;
 
 module.exports = SpellIntensifyDealDamage;

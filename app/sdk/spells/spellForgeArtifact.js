@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -23,10 +22,6 @@ const ModifierForgedArtifactDescription = require('app/sdk/modifiers/modifierFor
 const i18next = require('i18next');
 
 class SpellForgeArtifact extends Spell {
-  static initClass() {
-    this.prototype.magmarModifierAppliedName = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const target = board.getCardAtPosition({ x, y }, CardType.Unit);
     if (target != null) {
@@ -78,6 +73,6 @@ class SpellForgeArtifact extends Spell {
     }
   }
 }
-SpellForgeArtifact.initClass();
+SpellForgeArtifact.prototype.magmarModifierAppliedName = null;
 
 module.exports = SpellForgeArtifact;

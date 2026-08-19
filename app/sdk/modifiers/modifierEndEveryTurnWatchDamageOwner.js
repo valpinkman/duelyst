@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierEndEveryTurnWatch = require('./modifierEndEveryTurnWatch');
 
 class ModifierEndEveryTurnWatchDamageOwner extends ModifierEndEveryTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndEveryTurnWatchDamageOwner';
-    this.type = 'ModifierEndEveryTurnWatchDamageOwner';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At end of EACH turn, deal %X damage to your General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericDamageEnergySmall'];
-  }
+  static type = 'ModifierEndEveryTurnWatchDamageOwner';
+  static modifierName = 'Turn Watch';
+  static description = 'At end of EACH turn, deal %X damage to your General';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -50,6 +43,7 @@ class ModifierEndEveryTurnWatchDamageOwner extends ModifierEndEveryTurnWatch {
     }
   }
 }
-ModifierEndEveryTurnWatchDamageOwner.initClass();
+ModifierEndEveryTurnWatchDamageOwner.prototype.type = 'ModifierEndEveryTurnWatchDamageOwner';
+ModifierEndEveryTurnWatchDamageOwner.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch', 'FX.Modifiers.ModifierGenericDamageEnergySmall'];
 
 module.exports = ModifierEndEveryTurnWatchDamageOwner;

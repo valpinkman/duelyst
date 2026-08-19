@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,13 +14,6 @@ const PlayCardAsTransformAction = require('app/sdk/actions/playCardAsTransformAc
 const _ = require('underscore');
 
 class SpellRemoveAndReplaceEntity extends SpellApplyEntityToBoard {
-  static initClass() {
-    this.prototype.targetType = CardType.Entity;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.cardDataOrIndexToSpawn = null;
-    // id of card to spawn
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -90,6 +82,8 @@ class SpellRemoveAndReplaceEntity extends SpellApplyEntityToBoard {
     return validPositions;
   }
 }
-SpellRemoveAndReplaceEntity.initClass();
+SpellRemoveAndReplaceEntity.prototype.targetType = CardType.Entity;
+SpellRemoveAndReplaceEntity.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellRemoveAndReplaceEntity.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = SpellRemoveAndReplaceEntity;

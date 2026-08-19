@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,20 +13,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchSpawnEntity extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchSpawnEntity';
-    this.type = 'ModifierDeathWatchSpawnEntity';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'Summon a %X on a random nearby space';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnCount = 1;
-    this.prototype.spawnSilently = true; // most reactive spawns should be silent, i.e. no followups and no opening gambits
-    this.prototype.spawnPattern = CONFIG.PATTERN_3x3;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDeathWatchSpawnEntity';
+  static modifierName = 'Deathwatch';
+  static description = 'Summon a %X on a random nearby space';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -81,6 +69,11 @@ class ModifierDeathWatchSpawnEntity extends ModifierDeathWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierDeathWatchSpawnEntity.initClass();
+ModifierDeathWatchSpawnEntity.prototype.type = 'ModifierDeathWatchSpawnEntity';
+ModifierDeathWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierDeathWatchSpawnEntity.prototype.spawnCount = 1;
+ModifierDeathWatchSpawnEntity.prototype.spawnSilently = true;
+ModifierDeathWatchSpawnEntity.prototype.spawnPattern = CONFIG.PATTERN_3x3;
+ModifierDeathWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDeathWatchSpawnEntity;

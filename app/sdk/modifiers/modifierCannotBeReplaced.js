@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ReplaceCardFromHandAction = require('app/sdk/actions/replaceCardFromHandAction');
@@ -10,17 +9,7 @@ const i18next = require('i18next');
 const ModifierCannot = require('./modifierCannot');
 
 class ModifierCannotBeReplaced extends ModifierCannot {
-  static initClass() {
-    this.prototype.type = 'ModifierCannotBeReplaced';
-    this.type = 'ModifierCannotBeReplaced';
-
-    this.prototype.activeInHand = true;
-
-    this.modifierName = i18next.t('modifiers.bound_name');
-    this.description = i18next.t('modifiers.bound_desc');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCannotBeReplaced'];
-  }
+  static type = 'ModifierCannotBeReplaced';
 
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
@@ -32,7 +21,11 @@ class ModifierCannotBeReplaced extends ModifierCannot {
     }
   }
 }
-ModifierCannotBeReplaced.initClass();
+ModifierCannotBeReplaced.prototype.type = 'ModifierCannotBeReplaced';
+ModifierCannotBeReplaced.prototype.activeInHand = true;
+ModifierCannotBeReplaced.modifierName = i18next.t('modifiers.bound_name');
+ModifierCannotBeReplaced.description = i18next.t('modifiers.bound_desc');
+ModifierCannotBeReplaced.prototype.fxResource = ['FX.Modifiers.ModifierCannotBeReplaced'];
 
 module.exports = ModifierCannotBeReplaced;
 

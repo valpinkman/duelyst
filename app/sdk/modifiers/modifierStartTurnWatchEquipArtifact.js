@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -20,15 +19,7 @@ const i18next = require('i18next');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchEquipArtifact extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchEquipArtifact';
-    this.type = 'ModifierStartTurnWatchEquipArtifact';
-
-    this.description = i18next.t('modifiers.start_turn_watch_equip_artifact_def');
-
-    this.prototype.amount = 1;
-    // number of artifacts to equip
-  }
+  static type = 'ModifierStartTurnWatchEquipArtifact';
 
   static createContextObject(amount, includedCards, options) {
     if (amount == null) { amount = 1; }
@@ -54,6 +45,8 @@ class ModifierStartTurnWatchEquipArtifact extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierStartTurnWatchEquipArtifact.initClass();
+ModifierStartTurnWatchEquipArtifact.prototype.type = 'ModifierStartTurnWatchEquipArtifact';
+ModifierStartTurnWatchEquipArtifact.description = i18next.t('modifiers.start_turn_watch_equip_artifact_def');
+ModifierStartTurnWatchEquipArtifact.prototype.amount = 1;
 
 module.exports = ModifierStartTurnWatchEquipArtifact;

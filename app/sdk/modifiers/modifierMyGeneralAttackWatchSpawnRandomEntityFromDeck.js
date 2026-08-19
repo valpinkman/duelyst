@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,7 @@ const CONFIG = require('app/common/config');
 const ModifierMyGeneralAttackWatch = require('./modifierMyGeneralAttackWatch');
 
 class ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck extends ModifierMyGeneralAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
-    this.type = 'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
-
-    this.prototype.manaCostLimit = 0;
-    this.prototype.spawnCount = 1;
-    this.prototype.onlyThisManaCost = false;
-  }
+  static type = 'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
 
   static createContextObject(manaCostLimit, onlyThisManaCost, spawnCount, options) {
     if (onlyThisManaCost == null) { onlyThisManaCost = false; }
@@ -63,6 +55,9 @@ class ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck extends ModifierMyGe
     }
   }
 }
-ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.initClass();
+ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.type = 'ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck';
+ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.manaCostLimit = 0;
+ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.spawnCount = 1;
+ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck.prototype.onlyThisManaCost = false;
 
 module.exports = ModifierMyGeneralAttackWatchSpawnRandomEntityFromDeck;

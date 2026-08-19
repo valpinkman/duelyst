@@ -1,21 +1,12 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
 
 class ModifierStartOpponentsTurnWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierStartOpponentsTurnWatch';
-    this.type = 'ModifierStartOpponentsTurnWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierStartOpponentsTurnWatch';
 
   onStartTurn(e) {
     super.onStartTurn(e);
@@ -28,7 +19,11 @@ class ModifierStartOpponentsTurnWatch extends Modifier {
 
   onTurnWatch(action) {}
 }
-ModifierStartOpponentsTurnWatch.initClass();
+ModifierStartOpponentsTurnWatch.prototype.type = 'ModifierStartOpponentsTurnWatch';
+ModifierStartOpponentsTurnWatch.prototype.activeInHand = false;
+ModifierStartOpponentsTurnWatch.prototype.activeInDeck = false;
+ModifierStartOpponentsTurnWatch.prototype.activeInSignatureCards = false;
+ModifierStartOpponentsTurnWatch.prototype.activeOnBoard = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierStartOpponentsTurnWatch;

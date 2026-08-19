@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Achievement = require('app/sdk/achievements/achievement');
@@ -9,15 +8,11 @@ const GiftCrateLookup = require('app/sdk/giftCrates/giftCrateLookup');
 const i18next = require('i18next');
 
 class SummerLoginAchievement extends Achievement {
-  static initClass() {
-    this.id = 'summerLoginAchievement';
-    this.title = 'SUMMER TIME CELEBRATION';
-    this.description = 'HERE\'S 3 UNEARTHED ORBS TO CELEBRATE';
-    this.progressRequired = 1;
-    this.rewards = { giftChests: [GiftCrateLookup.SummerLogin] };
-
-    this.enabled = true;
-  }
+  static id = 'summerLoginAchievement';
+  static title = 'SUMMER TIME CELEBRATION';
+  static description = 'HERE\'S 3 UNEARTHED ORBS TO CELEBRATE';
+  static progressRequired = 1;
+  static enabled = true;
 
   static progressForLoggingIn(currentLoginMoment) {
     if ((currentLoginMoment !== null) && currentLoginMoment.isAfter(moment.utc('2018-08-03T11:00-07:00')) && currentLoginMoment.isBefore(moment.utc('2018-08-10T11:00-07:00'))) {
@@ -30,6 +25,6 @@ class SummerLoginAchievement extends Achievement {
     return moment.utc('2018-08-03T11:00-07:00');
   }
 }
-SummerLoginAchievement.initClass();
+SummerLoginAchievement.rewards = { giftChests: [GiftCrateLookup.SummerLogin] };
 
 module.exports = SummerLoginAchievement;

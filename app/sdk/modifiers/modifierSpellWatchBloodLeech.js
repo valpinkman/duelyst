@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -12,15 +11,7 @@ const Modifier = require('./modifier');
 const ModifierSpellWatch = require('./modifierSpellWatch');
 
 class ModifierSpellWatchBloodLeech extends ModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchBloodLeech';
-    this.type = 'ModifierSpellWatchBloodLeech';
-
-    this.prototype.damageAmount = 0;
-    this.prototype.healAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierSpellWatchBloodLeech';
 
   static createContextObject(damageAmount, healAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -52,6 +43,9 @@ class ModifierSpellWatchBloodLeech extends ModifierSpellWatch {
     return this.getCard().getGameSession().executeAction(healAction);
   }
 }
-ModifierSpellWatchBloodLeech.initClass();
+ModifierSpellWatchBloodLeech.prototype.type = 'ModifierSpellWatchBloodLeech';
+ModifierSpellWatchBloodLeech.prototype.damageAmount = 0;
+ModifierSpellWatchBloodLeech.prototype.healAmount = 0;
+ModifierSpellWatchBloodLeech.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierSpellWatchBloodLeech;

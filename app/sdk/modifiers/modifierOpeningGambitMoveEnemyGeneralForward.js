@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,7 @@ const _ = require('underscore');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitMoveEnemyGeneralForward extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitMoveEnemyGeneralForward';
-    this.type = 'ModifierOpeningGambitMoveEnemyGeneralForward';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitMoveEnemyGeneralForward';
 
   onOpeningGambit() {
     let movePosition;
@@ -46,6 +40,7 @@ class ModifierOpeningGambitMoveEnemyGeneralForward extends ModifierOpeningGambit
     }
   }
 }
-ModifierOpeningGambitMoveEnemyGeneralForward.initClass();
+ModifierOpeningGambitMoveEnemyGeneralForward.prototype.type = 'ModifierOpeningGambitMoveEnemyGeneralForward';
+ModifierOpeningGambitMoveEnemyGeneralForward.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitMoveEnemyGeneralForward;

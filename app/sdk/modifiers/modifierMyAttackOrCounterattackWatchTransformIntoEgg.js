@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,10 +12,7 @@ const ModifierEgg = require('./modifierEgg');
 const ModifierTransformed = require('./modifierTransformed');
 
 class ModifierMyAttackOrCounterattackWatchTransformIntoEgg extends ModifierMyAttackOrCounterattackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackOrCounterattackWatchTransformIntoEgg';
-    this.type = 'ModifierMyAttackOrCounterattackWatchTransformIntoEgg';
-  }
+  static type = 'ModifierMyAttackOrCounterattackWatchTransformIntoEgg';
 
   onMyAttackOrCounterattackWatch(action) {
     const entity = this.getCard();
@@ -35,6 +31,6 @@ class ModifierMyAttackOrCounterattackWatchTransformIntoEgg extends ModifierMyAtt
     return this.getGameSession().executeAction(spawnEntityAction);
   }
 }
-ModifierMyAttackOrCounterattackWatchTransformIntoEgg.initClass();
+ModifierMyAttackOrCounterattackWatchTransformIntoEgg.prototype.type = 'ModifierMyAttackOrCounterattackWatchTransformIntoEgg';
 
 module.exports = ModifierMyAttackOrCounterattackWatchTransformIntoEgg;

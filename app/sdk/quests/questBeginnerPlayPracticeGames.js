@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const QuestBeginner = require('./questBeginner');
@@ -11,9 +10,7 @@ const GameType = require('app/sdk/gameType');
 const Logger = require('app/common/logger');
 
 class QuestBeginnerPlayPracticeGames extends QuestBeginner {
-  static initClass() {
-    this.Identifier = 9902;
-  }
+  static Identifier = 9902;
 
   constructor() {
     super(QuestBeginnerPlayPracticeGames.Identifier, 'Play 3 Practice Games', [QuestType.Beginner], QuestBeginnerPlayPracticeGames.prototype.goldReward);
@@ -34,6 +31,5 @@ class QuestBeginnerPlayPracticeGames extends QuestBeginner {
     return `Play ${this.params.completionProgress} games in practice mode.`;
   }
 }
-QuestBeginnerPlayPracticeGames.initClass();
 
 module.exports = QuestBeginnerPlayPracticeGames;

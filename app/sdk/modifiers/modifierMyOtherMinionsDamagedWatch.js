@@ -2,24 +2,13 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierMyOtherMinionsDamagedWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMyOtherMinionsDamagedWatch';
-    this.type = 'ModifierMyOtherMinionsDamagedWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyOtherMinionsDamagedWatch'];
-  }
+  static type = 'ModifierMyOtherMinionsDamagedWatch';
 
   onAfterCleanupAction(actionEvent) {
     super.onAfterCleanupAction(actionEvent);
@@ -42,7 +31,12 @@ class ModifierMyOtherMinionsDamagedWatch extends Modifier {
 
   onDamageDealtToMinion(action) {}
 }
-ModifierMyOtherMinionsDamagedWatch.initClass();
+ModifierMyOtherMinionsDamagedWatch.prototype.type = 'ModifierMyOtherMinionsDamagedWatch';
+ModifierMyOtherMinionsDamagedWatch.prototype.activeInHand = false;
+ModifierMyOtherMinionsDamagedWatch.prototype.activeInDeck = false;
+ModifierMyOtherMinionsDamagedWatch.prototype.activeInSignatureCards = false;
+ModifierMyOtherMinionsDamagedWatch.prototype.activeOnBoard = true;
+ModifierMyOtherMinionsDamagedWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyOtherMinionsDamagedWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierMyOtherMinionsDamagedWatch;

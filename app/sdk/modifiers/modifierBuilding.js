@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,27 +17,9 @@ const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 const Modifier = require('./modifier');
 
 class ModifierBuilding extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierBuilding';
-    this.type = 'ModifierBuilding';
-
-    this.modifierName = 'Build';
-    // @modifierName:i18next.t("modifiers.structure_name")
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.isRemovable = false;
-    this.prototype.turnsToBuild = 1; // build (X) - total turns it takes for this unit to finish building
-    this.prototype.turnsRemaining = 1; // counts down each turn
-    this.prototype.isInherent = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.Modifierbuilding'];
-  }
+  static type = 'ModifierBuilding';
+  static modifierName = 'Build';
+  static description = null;
 
   static createContextObject(description, transformCardData, turnsToBuild, options) {
     const contextObject = super.createContextObject(options);
@@ -113,6 +94,16 @@ class ModifierBuilding extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierBuilding.initClass();
+ModifierBuilding.prototype.type = 'ModifierBuilding';
+ModifierBuilding.prototype.activeInHand = false;
+ModifierBuilding.prototype.activeInDeck = false;
+ModifierBuilding.prototype.activeInSignatureCards = false;
+ModifierBuilding.prototype.activeOnBoard = true;
+ModifierBuilding.prototype.maxStacks = 1;
+ModifierBuilding.prototype.isRemovable = false;
+ModifierBuilding.prototype.turnsToBuild = 1;
+ModifierBuilding.prototype.turnsRemaining = 1;
+ModifierBuilding.prototype.isInherent = true;
+ModifierBuilding.prototype.fxResource = ['FX.Modifiers.Modifierbuilding'];
 
 module.exports = ModifierBuilding;

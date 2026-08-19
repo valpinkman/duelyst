@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,6 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('app/sdk/modifiers/modifier');
 
 class SpellDoubleAttributeBuffs extends Spell {
-  static initClass() {
-    this.prototype.appliedName = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -31,6 +26,6 @@ class SpellDoubleAttributeBuffs extends Spell {
     }
   }
 }
-SpellDoubleAttributeBuffs.initClass();
+SpellDoubleAttributeBuffs.prototype.appliedName = null;
 
 module.exports = SpellDoubleAttributeBuffs;

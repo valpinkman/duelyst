@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,14 +15,8 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishSpawnUnitFromOpponentsDeck extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnUnitFromOpponentsDeck';
-    this.type = 'ModifierDyingWishSpawnUnitFromOpponentsDeck';
-
-    this.description = 'Summon %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierDyingWishSpawnUnitFromOpponentsDeck';
+  static description = 'Summon %X';
 
   static createContextObject(spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = 'random minion'; }
@@ -119,6 +112,7 @@ class ModifierDyingWishSpawnUnitFromOpponentsDeck extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishSpawnUnitFromOpponentsDeck.initClass();
+ModifierDyingWishSpawnUnitFromOpponentsDeck.prototype.type = 'ModifierDyingWishSpawnUnitFromOpponentsDeck';
+ModifierDyingWishSpawnUnitFromOpponentsDeck.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierDyingWishSpawnUnitFromOpponentsDeck;

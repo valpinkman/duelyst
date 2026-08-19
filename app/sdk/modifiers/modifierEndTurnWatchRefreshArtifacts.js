@@ -1,20 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RefreshArtifactChargesAction = require('app/sdk/actions/refreshArtifactChargesAction');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchRefreshArtifacts extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchRefreshArtifacts';
-    this.type = 'ModifierEndTurnWatchRefreshArtifacts';
-
-    this.modifierName = 'End Turn Watch';
-    this.description = 'At the end of your turn, repair all of your artifacts to full durability';
-  }
+  static type = 'ModifierEndTurnWatchRefreshArtifacts';
+  static modifierName = 'End Turn Watch';
+  static description = 'At the end of your turn, repair all of your artifacts to full durability';
 
   onTurnWatch() {
     const refreshArtifactChargesAction = new RefreshArtifactChargesAction(this.getCard().getGameSession());
@@ -25,6 +20,6 @@ class ModifierEndTurnWatchRefreshArtifacts extends ModifierEndTurnWatch {
     return this.getCard().getGameSession().executeAction(refreshArtifactChargesAction);
   }
 }
-ModifierEndTurnWatchRefreshArtifacts.initClass();
+ModifierEndTurnWatchRefreshArtifacts.prototype.type = 'ModifierEndTurnWatchRefreshArtifacts';
 
 module.exports = ModifierEndTurnWatchRefreshArtifacts;

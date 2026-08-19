@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,11 +13,6 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const Factions = require('app/sdk/cards/factionsLookup');
 
 class SpellScionsSecondWish extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.EnemyDirect;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     let cardIndex; let
       i;
@@ -55,6 +49,7 @@ class SpellScionsSecondWish extends Spell {
     })();
   }
 }
-SpellScionsSecondWish.initClass();
+SpellScionsSecondWish.prototype.targetType = CardType.Unit;
+SpellScionsSecondWish.prototype.spellFilterType = SpellFilterType.EnemyDirect;
 
 module.exports = SpellScionsSecondWish;

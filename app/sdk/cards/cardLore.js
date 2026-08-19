@@ -1,17 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Cards = require('./cardsLookupComplete');
 
 class CardLore {
-  static initClass() {
-    this.loreByCardId = {};
-    this._cachedAllLore = null;
-  }
+  static loreByCardId = {};
+  static _cachedAllLore = null;
 
   static loreForIdentifier(identifier) {
     return this.loreByCardId[identifier];
@@ -28,7 +25,6 @@ class CardLore {
     return this._cachedAllLore;
   }
 }
-CardLore.initClass();
 
 // setup lore data
 const l = CardLore.loreByCardId;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const KillAction = require('app/sdk/actions/killAction');
@@ -9,18 +8,7 @@ const i18next = require('i18next');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierDoomed extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDoomed';
-    this.type = 'ModifierDoomed';
-
-    this.modifierName = i18next.t('modifiers.doomed_name');
-    this.description = i18next.t('modifiers.doomed_1_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDoomed'];
-
-    this.prototype.isRemovable = false;
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierDoomed';
 
   onTurnWatch() {
     super.onTurnWatch();
@@ -36,6 +24,11 @@ class ModifierDoomed extends ModifierEndTurnWatch {
     }
   }
 }
-ModifierDoomed.initClass();
+ModifierDoomed.prototype.type = 'ModifierDoomed';
+ModifierDoomed.modifierName = i18next.t('modifiers.doomed_name');
+ModifierDoomed.description = i18next.t('modifiers.doomed_1_def');
+ModifierDoomed.prototype.fxResource = ['FX.Modifiers.ModifierDoomed'];
+ModifierDoomed.prototype.isRemovable = false;
+ModifierDoomed.prototype.maxStacks = 1;
 
 module.exports = ModifierDoomed;

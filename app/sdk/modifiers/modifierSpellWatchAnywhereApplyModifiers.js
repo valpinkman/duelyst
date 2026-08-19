@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
@@ -12,17 +11,7 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierSpellWatchAnywhereApplyModifiers extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchAnywhereApplyModifiers';
-    this.type = 'ModifierSpellWatchAnywhereApplyModifiers';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = true;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierSpellWatchAnywhereApplyModifiers';
 
   static createContextObject(modifiers, options) {
     const contextObject = super.createContextObject(options);
@@ -59,7 +48,12 @@ class ModifierSpellWatchAnywhereApplyModifiers extends Modifier {
       this.onSpellWatch(action));
   }
 }
-ModifierSpellWatchAnywhereApplyModifiers.initClass();
+ModifierSpellWatchAnywhereApplyModifiers.prototype.type = 'ModifierSpellWatchAnywhereApplyModifiers';
+ModifierSpellWatchAnywhereApplyModifiers.prototype.activeInHand = true;
+ModifierSpellWatchAnywhereApplyModifiers.prototype.activeInDeck = true;
+ModifierSpellWatchAnywhereApplyModifiers.prototype.activeInSignatureCards = true;
+ModifierSpellWatchAnywhereApplyModifiers.prototype.activeOnBoard = false;
+ModifierSpellWatchAnywhereApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 
 module.exports = ModifierSpellWatchAnywhereApplyModifiers;
 

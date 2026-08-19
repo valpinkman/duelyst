@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierReplaceWatchSpawnEntity = require('./modifierReplaceWatchSpawnEntity');
 
 class ModifierInquisitorKron extends ModifierReplaceWatchSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierInquisitorKron';
-    this.type = 'ModifierInquisitorKron';
-
-    this.prototype.prisonerList = [{ id: Cards.Neutral.Prisoner1 }, { id: Cards.Neutral.Prisoner2 }, { id: Cards.Neutral.Prisoner3 }, { id: Cards.Neutral.Prisoner5 }, { id: Cards.Neutral.Prisoner6 }];
-  }
+  static type = 'ModifierInquisitorKron';
 
   onReplaceWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -22,6 +16,7 @@ class ModifierInquisitorKron extends ModifierReplaceWatchSpawnEntity {
     }
   }
 }
-ModifierInquisitorKron.initClass();
+ModifierInquisitorKron.prototype.type = 'ModifierInquisitorKron';
+ModifierInquisitorKron.prototype.prisonerList = [{ id: Cards.Neutral.Prisoner1 }, { id: Cards.Neutral.Prisoner2 }, { id: Cards.Neutral.Prisoner3 }, { id: Cards.Neutral.Prisoner5 }, { id: Cards.Neutral.Prisoner6 }];
 
 module.exports = ModifierInquisitorKron;

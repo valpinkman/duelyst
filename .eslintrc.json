@@ -3,7 +3,8 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "jquery": true
+    "jquery": true,
+    "es2022": true
   },
   "extends": [
     "airbnb-base",
@@ -768,6 +769,18 @@
         "operator-assignment": "warn",
         "prefer-spread": "warn"
       }
+    },
+    {
+      "files": [
+        "desktop/**/*.js"
+      ],
+      "parserOptions": {
+        "sourceType": "module"
+      }
     }
-  ]
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "script"
+  }
 }

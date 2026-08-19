@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,7 @@ const i18next = require('i18next');
 const ModifierImmuneToSpells = require('./modifierImmuneToSpells');
 
 class ModifierImmuneToSpellsByEnemy extends ModifierImmuneToSpells {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToSpellsByEnemy';
-    this.type = 'ModifierImmuneToSpellsByEnemy';
-
-    this.description = i18next.t('modifiers.immune_to_spells_by_enemy_def');
-  }
+  static type = 'ModifierImmuneToSpellsByEnemy';
 
   onValidateAction(event) {
     const a = event.action;
@@ -33,7 +27,8 @@ class ModifierImmuneToSpellsByEnemy extends ModifierImmuneToSpells {
     }
   }
 }
-ModifierImmuneToSpellsByEnemy.initClass();
+ModifierImmuneToSpellsByEnemy.prototype.type = 'ModifierImmuneToSpellsByEnemy';
+ModifierImmuneToSpellsByEnemy.description = i18next.t('modifiers.immune_to_spells_by_enemy_def');
 
 module.exports = ModifierImmuneToSpellsByEnemy;
 

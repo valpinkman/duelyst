@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
 
 class RemoveCardFromDeckAction extends Action {
-  static initClass() {
-    this.type = 'RemoveCardFromDeckAction';
-
-    this.prototype.targetPlayerId = null;
-    this.prototype.cardIndex = null;
-  }
+  static type = 'RemoveCardFromDeckAction';
 
   constructor(gameSession, cardIndex, targetPlayerId) {
     super(gameSession);
@@ -39,6 +33,7 @@ class RemoveCardFromDeckAction extends Action {
     return this.targetPlayerId;
   }
 }
-RemoveCardFromDeckAction.initClass();
+RemoveCardFromDeckAction.prototype.targetPlayerId = null;
+RemoveCardFromDeckAction.prototype.cardIndex = null;
 
 module.exports = RemoveCardFromDeckAction;

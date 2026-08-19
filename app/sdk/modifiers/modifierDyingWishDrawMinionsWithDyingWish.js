@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,14 +11,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDrawMinionsWithDyingWish';
-    this.type = 'ModifierDyingWishDrawMinionsWithDyingWish';
-
-    this.description = 'Draw minions with a Dying Wish';
-
-    this.prototype.numMinions = 0;
-  }
+  static type = 'ModifierDyingWishDrawMinionsWithDyingWish';
+  static description = 'Draw minions with a Dying Wish';
 
   static createContextObject(numMinions) {
     if (numMinions == null) { numMinions = 0; }
@@ -80,6 +73,7 @@ class ModifierDyingWishDrawMinionsWithDyingWish extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDrawMinionsWithDyingWish.initClass();
+ModifierDyingWishDrawMinionsWithDyingWish.prototype.type = 'ModifierDyingWishDrawMinionsWithDyingWish';
+ModifierDyingWishDrawMinionsWithDyingWish.prototype.numMinions = 0;
 
 module.exports = ModifierDyingWishDrawMinionsWithDyingWish;

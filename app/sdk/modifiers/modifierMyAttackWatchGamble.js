@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ForcedAttackAction = require('app/sdk/actions/forcedAttackAction');
@@ -11,15 +10,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 
 class ModifierMyAttackWatchGamble extends ModifierMyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackWatchGamble';
-    this.type = 'ModifierMyAttackWatchGamble';
-
-    this.modifierName = 'Attack Watch: Gamble';
-    this.description = 'Whenever this minion attacks, it has a 50% chance to attack again';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyAttackWatchGamble'];
-  }
+  static type = 'ModifierMyAttackWatchGamble';
+  static modifierName = 'Attack Watch: Gamble';
+  static description = 'Whenever this minion attacks, it has a 50% chance to attack again';
 
   onMyAttackWatch(action) {
     // 50% chance to attack again
@@ -49,6 +42,7 @@ class ModifierMyAttackWatchGamble extends ModifierMyAttackWatch {
     return super.getCanReactToAction() || (action instanceof ForcedAttackAction && this.getIsAncestorForAction(action));
   }
 }
-ModifierMyAttackWatchGamble.initClass();
+ModifierMyAttackWatchGamble.prototype.type = 'ModifierMyAttackWatchGamble';
+ModifierMyAttackWatchGamble.prototype.fxResource = ['FX.Modifiers.ModifierMyAttackWatchGamble'];
 
 module.exports = ModifierMyAttackWatchGamble;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -12,20 +11,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierSummonSelfOnReplace extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonSelfOnReplace';
-    this.type = 'ModifierSummonSelfOnReplace';
-
-    this.modifierName = 'Summon Self On Replace';
-    this.description = 'When you replace this card, summon it nearby.  Your General takes 2 damage';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierSummonSelfOnReplace';
+  static modifierName = 'Summon Self On Replace';
+  static description = 'When you replace this card, summon it nearby.  Your General takes 2 damage';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject) {
@@ -64,6 +52,11 @@ class ModifierSummonSelfOnReplace extends Modifier {
     }
   }
 }
-ModifierSummonSelfOnReplace.initClass();
+ModifierSummonSelfOnReplace.prototype.type = 'ModifierSummonSelfOnReplace';
+ModifierSummonSelfOnReplace.prototype.activeInHand = true;
+ModifierSummonSelfOnReplace.prototype.activeInDeck = true;
+ModifierSummonSelfOnReplace.prototype.activeInSignatureCards = false;
+ModifierSummonSelfOnReplace.prototype.activeOnBoard = false;
+ModifierSummonSelfOnReplace.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierSummonSelfOnReplace;

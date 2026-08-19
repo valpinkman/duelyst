@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
@@ -9,13 +8,8 @@ const ModifierEnemyAttackWatch = require('./modifierEnemyAttackWatch');
 const Modifier = require('./modifier');
 
 class ModifierWildTahr extends ModifierEnemyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierWildTahr';
-    this.type = 'ModifierWildTahr';
-
-    this.modifierName = 'ModifierWildTahr';
-    this.description = i18next.t('modifiers.wild_tahr_def');
-  }
+  static type = 'ModifierWildTahr';
+  static modifierName = 'ModifierWildTahr';
 
   onEnemyAttackWatch(action) {
     const statContextObject = Modifier.createContextObjectWithAttributeBuffs(3);
@@ -24,6 +18,7 @@ class ModifierWildTahr extends ModifierEnemyAttackWatch {
     return this.getGameSession().applyModifierContextObject(statContextObject, this.getCard());
   }
 }
-ModifierWildTahr.initClass();
+ModifierWildTahr.prototype.type = 'ModifierWildTahr';
+ModifierWildTahr.description = i18next.t('modifiers.wild_tahr_def');
 
 module.exports = ModifierWildTahr;

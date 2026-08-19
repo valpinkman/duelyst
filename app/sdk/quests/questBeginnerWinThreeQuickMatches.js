@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const QuestBeginner = require('./questBeginner');
@@ -10,10 +9,7 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const GameType = require('app/sdk/gameType');
 
 class QuestBeginnerWinThreeQuickMatches extends QuestBeginner {
-  static initClass() {
-    this.Identifier = 9908;
-    this.prototype.isRequired = false;
-  }
+  static Identifier = 9908;
 
   // TODO: needs to unlock codex somehow
   constructor() {
@@ -35,6 +31,6 @@ class QuestBeginnerWinThreeQuickMatches extends QuestBeginner {
     return `Win ${this.params.completionProgress} games in Quick Match.`;
   }
 }
-QuestBeginnerWinThreeQuickMatches.initClass();
+QuestBeginnerWinThreeQuickMatches.prototype.isRequired = false;
 
 module.exports = QuestBeginnerWinThreeQuickMatches;

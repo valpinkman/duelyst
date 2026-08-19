@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -25,24 +24,10 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class ModifierBattlePet extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBattlePet';
-    this.type = 'ModifierBattlePet';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.battle_pet_def');
-
-    this.modifierName = i18next.t('modifiers.battle_pet_name');
-    this.description = '';
-    this.isHiddenToUI = true;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.isRemovable = false;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierBattlePet';
+  static isKeyworded = true;
+  static description = '';
+  static isHiddenToUI = true;
 
   generateActions() {
     let attackAction; let target; let
@@ -272,6 +257,13 @@ class ModifierBattlePet extends Modifier {
     }
   }
 }
-ModifierBattlePet.initClass();
+ModifierBattlePet.prototype.type = 'ModifierBattlePet';
+ModifierBattlePet.keywordDefinition = i18next.t('modifiers.battle_pet_def');
+ModifierBattlePet.modifierName = i18next.t('modifiers.battle_pet_name');
+ModifierBattlePet.prototype.maxStacks = 1;
+ModifierBattlePet.prototype.isRemovable = false;
+ModifierBattlePet.prototype.activeInHand = false;
+ModifierBattlePet.prototype.activeInDeck = false;
+ModifierBattlePet.prototype.activeOnBoard = true;
 
 module.exports = ModifierBattlePet;

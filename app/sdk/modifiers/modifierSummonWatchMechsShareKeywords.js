@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -25,15 +24,7 @@ const ModifierSummonWatch = require('./modifierSummonWatch');
 // ModifierInvulnerable = require 'app/sdk/modifiers/modifierInvulnerable'
 
 class ModifierSummonWatchMechsShareKeywords extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchMechsShareKeywords';
-    this.type = 'ModifierSummonWatchMechsShareKeywords';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierSummonWatchMechsShareKeywords';
 
   onActivate() {
     super.onActivate();
@@ -200,6 +191,10 @@ class ModifierSummonWatchMechsShareKeywords extends ModifierSummonWatch {
     return card.getBelongsToTribe(Races.Mech);
   }
 }
-ModifierSummonWatchMechsShareKeywords.initClass();
+ModifierSummonWatchMechsShareKeywords.prototype.type = 'ModifierSummonWatchMechsShareKeywords';
+ModifierSummonWatchMechsShareKeywords.prototype.activeInHand = false;
+ModifierSummonWatchMechsShareKeywords.prototype.activeInDeck = false;
+ModifierSummonWatchMechsShareKeywords.prototype.activeInSignatureCards = false;
+ModifierSummonWatchMechsShareKeywords.prototype.activeOnBoard = true;
 
 module.exports = ModifierSummonWatchMechsShareKeywords;

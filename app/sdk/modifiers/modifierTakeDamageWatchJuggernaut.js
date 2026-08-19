@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,15 +17,9 @@ const GameFormat = require('app/sdk/gameFormat');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 
 class ModifierTakeDamageWatchJuggernaut extends ModifierTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierTakeDamageWatchJuggernaut';
-    this.type = 'ModifierTakeDamageWatchJuggernaut';
-
-    this.modifierName = 'Take Damage Watch';
-    this.description = 'When this takes damage, summon that many random Golem eggs';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierTakeDamageWatchJuggernaut';
+  static modifierName = 'Take Damage Watch';
+  static description = 'When this takes damage, summon that many random Golem eggs';
 
   onDamageTaken(action) {
     super.onDamageTaken(action);
@@ -75,6 +68,7 @@ class ModifierTakeDamageWatchJuggernaut extends ModifierTakeDamageWatch {
     }
   }
 }
-ModifierTakeDamageWatchJuggernaut.initClass();
+ModifierTakeDamageWatchJuggernaut.prototype.type = 'ModifierTakeDamageWatchJuggernaut';
+ModifierTakeDamageWatchJuggernaut.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierTakeDamageWatchJuggernaut;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -11,21 +10,9 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierDoubleDamageToGenerals extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDoubleDamageToGenerals';
-    this.type = 'ModifierDoubleDamageToGenerals';
-
-    this.modifierName = 'Double Damage To Generals';
-    this.description = 'Deals double damage to Generals';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.damageBonus = 2;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToGenerals'];
-  }
+  static type = 'ModifierDoubleDamageToGenerals';
+  static modifierName = 'Double Damage To Generals';
+  static description = 'Deals double damage to Generals';
 
   onEvent(event) {
     super.onEvent(event);
@@ -61,7 +48,12 @@ class ModifierDoubleDamageToGenerals extends Modifier {
     }
   }
 }
-ModifierDoubleDamageToGenerals.initClass();
+ModifierDoubleDamageToGenerals.prototype.type = 'ModifierDoubleDamageToGenerals';
+ModifierDoubleDamageToGenerals.prototype.activeInHand = false;
+ModifierDoubleDamageToGenerals.prototype.activeInDeck = false;
+ModifierDoubleDamageToGenerals.prototype.activeOnBoard = true;
+ModifierDoubleDamageToGenerals.prototype.damageBonus = 2;
+ModifierDoubleDamageToGenerals.prototype.fxResource = ['FX.Modifiers.ModifierDoubleDamageToGenerals'];
 
 module.exports = ModifierDoubleDamageToGenerals;
 

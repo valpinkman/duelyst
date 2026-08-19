@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,6 @@ const SpellFilterType = require('./spellFilterType');
 const DamageAction = require('app/sdk/actions/damageAction');
 
 class SpellDamageMinionAndGeneral extends SpellDamage {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.damageAmount = 0;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const applyEffectPositions = super._findApplyEffectPositions(position, sourceAction);
 
@@ -27,6 +20,8 @@ class SpellDamageMinionAndGeneral extends SpellDamage {
     return applyEffectPositions;
   }
 }
-SpellDamageMinionAndGeneral.initClass();
+SpellDamageMinionAndGeneral.prototype.targetType = CardType.Unit;
+SpellDamageMinionAndGeneral.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellDamageMinionAndGeneral.prototype.damageAmount = 0;
 
 module.exports = SpellDamageMinionAndGeneral;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction');
@@ -11,20 +10,9 @@ const PlayCardAsTransformAction = require('app/sdk/actions/playCardAsTransformAc
 const Modifier = require('./modifier');
 
 class ModifierApplyMinionToBoardWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierApplyMinionToBoardWatch';
-    this.type = 'ModifierApplyMinionToBoardWatch';
-
-    this.modifierName = 'Any ApplyToBoard Watch';
-    this.description = 'Any ApplyToBoard Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierApplyMinionToBoardWatch'];
-  }
+  static type = 'ModifierApplyMinionToBoardWatch';
+  static modifierName = 'Any ApplyToBoard Watch';
+  static description = 'Any ApplyToBoard Watch';
 
   onAction(e) {
     super.onAction(e);
@@ -43,7 +31,12 @@ class ModifierApplyMinionToBoardWatch extends Modifier {
 
   onApplyToBoardWatch(action) {}
 }
-ModifierApplyMinionToBoardWatch.initClass();
+ModifierApplyMinionToBoardWatch.prototype.type = 'ModifierApplyMinionToBoardWatch';
+ModifierApplyMinionToBoardWatch.prototype.activeInHand = false;
+ModifierApplyMinionToBoardWatch.prototype.activeInDeck = false;
+ModifierApplyMinionToBoardWatch.prototype.activeInSignatureCards = false;
+ModifierApplyMinionToBoardWatch.prototype.activeOnBoard = true;
+ModifierApplyMinionToBoardWatch.prototype.fxResource = ['FX.Modifiers.ModifierApplyMinionToBoardWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierApplyMinionToBoardWatch;

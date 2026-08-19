@@ -82,6 +82,9 @@
   },
   "devDependencies": {
     "@coffeelint/cli": "^5.2.9",
+    "@types/node": "^26.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "async": "^1.5.2",
     "autoprefixer": "^10.5.4",
     "benchmark": "^2.1.0",
@@ -109,7 +112,8 @@
     "sass": "^1.49.9",
     "string": "^3.3.3",
     "supertest": "^0.14.0",
-    "typescript": "^4.8.2",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2",
     "url": "^0.11.4",
     "vite": "^8.2.1",
     "vitest": "^4.1.11",
@@ -140,13 +144,14 @@
     "test:unit": "mocha -t 1000 --recursive test/unit",
     "test:unit:firebase": "mocha -t 1000 test/unit/firebase",
     "test:unit:sdk": "mocha -t 1000 --recursive test/unit/sdk",
-    "tsc": "tsc",
     "tsc:chroma-js": "tsc -p ./packages/chroma-js/tsconfig.json",
     "test:vitest": "vitest run",
     "test:vitest:watch": "vitest",
     "build:vite": "vite build --config vite.config.client.mjs",
     "build:client": "node scripts/build/build-client.mjs",
-    "build:client:watch": "vite build --config vite.config.client.mjs --watch"
+    "build:client:watch": "vite build --config vite.config.client.mjs --watch",
+    "typecheck": "tsc -p tsconfig.json",
+    "tsc:strict": "tsc -p tsconfig.strict.json"
   },
   "packageManager": "pnpm@10.12.1",
   "pnpm": {

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -19,16 +18,6 @@ StaticAgent - Takes a set of actions it's supposed to execute at a certain step 
 */
 
 class StaticAgent extends BaseAgent {
-  static initClass() {
-    this.prototype.name = 'StaticAgent';
-    this.prototype.actionsByTurn = null; // Map of turn indices to arrays containing the steps to be executed in order on that turn
-    this.prototype.currentTurnIndex = undefined; // players turn index, so it goes by 0,1,2,... instead of 0,2,4,6 like sdk turns would
-    this.prototype.currentActionIndexInTurn = undefined; // index into the agent actions for the current turn this agent is currently on
-    this.prototype.delayBetweenActions = 0; // milliseconds between agent firing actions
-    this.prototype.currentActions = undefined;
-    // array of actions to be taken, an empty array means end turn
-  }
-
   /**
    * ReactiveAgent constructor.
    * @public
@@ -118,6 +107,11 @@ class StaticAgent extends BaseAgent {
     return this.currentActionIndexInTurn++;
   }
 }
-StaticAgent.initClass();
+StaticAgent.prototype.name = 'StaticAgent';
+StaticAgent.prototype.actionsByTurn = null;
+StaticAgent.prototype.currentTurnIndex = undefined;
+StaticAgent.prototype.currentActionIndexInTurn = undefined;
+StaticAgent.prototype.delayBetweenActions = 0;
+StaticAgent.prototype.currentActions = undefined;
 
 module.exports = StaticAgent;

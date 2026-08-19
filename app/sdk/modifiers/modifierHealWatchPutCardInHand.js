@@ -1,22 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierHealWatch = require('./modifierHealWatch');
 
 class ModifierHealWatchPutCardInHand extends ModifierHealWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierHealWatchPutCardInHand';
-    this.type = 'ModifierHealWatchPutCardInHand';
-
-    this.modifierName = 'ModifierHealWatchPutCardInHand';
-    this.description = 'Whenever anything is healed, put %X into your action bar';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyMinionHealWatch'];
-  }
+  static type = 'ModifierHealWatchPutCardInHand';
+  static modifierName = 'ModifierHealWatchPutCardInHand';
+  static description = 'Whenever anything is healed, put %X into your action bar';
 
   static createContextObject(cardDataOrIndexToPutInHand, cardDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -37,6 +30,7 @@ class ModifierHealWatchPutCardInHand extends ModifierHealWatch {
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierHealWatchPutCardInHand.initClass();
+ModifierHealWatchPutCardInHand.prototype.type = 'ModifierHealWatchPutCardInHand';
+ModifierHealWatchPutCardInHand.prototype.fxResource = ['FX.Modifiers.ModifierFriendlyMinionHealWatch'];
 
 module.exports = ModifierHealWatchPutCardInHand;

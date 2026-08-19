@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
@@ -9,9 +8,7 @@ const Logger = require('app/common/logger');
 const AnalyticsEventPriority = require('./analyticsEventPriority');
 
 class LoggerAnalyticsModule {
-  static initClass() {
-    this._deactivate = true;
-  }
+  static _deactivate = true;
 
   static isActive() {
     if (!this._deactivate) {
@@ -40,6 +37,5 @@ class LoggerAnalyticsModule {
     return Logger.module('Analytics').log('reset().');
   }
 }
-LoggerAnalyticsModule.initClass();
 
 module.exports = LoggerAnalyticsModule;

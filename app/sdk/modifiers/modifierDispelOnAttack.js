@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -16,17 +15,7 @@ on beforeAction, rather than onAction
 */
 
 class ModifierDispelOnAttack extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDispelOnAttack';
-    this.type = 'ModifierDispelOnAttack';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierDispelOnAttack';
 
   onBeforeAction(actionEvent) {
     super.onBeforeAction(actionEvent);
@@ -38,6 +27,11 @@ class ModifierDispelOnAttack extends Modifier {
     }
   }
 }
-ModifierDispelOnAttack.initClass();
+ModifierDispelOnAttack.prototype.type = 'ModifierDispelOnAttack';
+ModifierDispelOnAttack.prototype.activeInHand = false;
+ModifierDispelOnAttack.prototype.activeInDeck = false;
+ModifierDispelOnAttack.prototype.activeInSignatureCards = false;
+ModifierDispelOnAttack.prototype.activeOnBoard = true;
+ModifierDispelOnAttack.prototype.maxStacks = 1;
 
 module.exports = ModifierDispelOnAttack;

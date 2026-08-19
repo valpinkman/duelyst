@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,15 +9,9 @@ const Modifier = require('./modifier');
 const ModifierHealWatch = require('./modifierHealWatch');
 
 class ModifierHealWatchDamageRandomEnemy extends ModifierHealWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierHealWatchDamageRandomEnemy';
-    this.type = 'ModifierHealWatchDamageRandomEnemy';
-
-    this.modifierName = 'Heal Watch Damage Random Enemy for X';
-    this.description = 'Whenever anything is healed, a random enemy takes damage';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericDamageSmall'];
-  }
+  static type = 'ModifierHealWatchDamageRandomEnemy';
+  static modifierName = 'Heal Watch Damage Random Enemy for X';
+  static description = 'Whenever anything is healed, a random enemy takes damage';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -46,6 +39,7 @@ class ModifierHealWatchDamageRandomEnemy extends ModifierHealWatch {
     }
   }
 }
-ModifierHealWatchDamageRandomEnemy.initClass();
+ModifierHealWatchDamageRandomEnemy.prototype.type = 'ModifierHealWatchDamageRandomEnemy';
+ModifierHealWatchDamageRandomEnemy.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch', 'FX.Modifiers.ModifierGenericDamageSmall'];
 
 module.exports = ModifierHealWatchDamageRandomEnemy;

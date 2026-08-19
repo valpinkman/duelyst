@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -11,21 +10,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierAttacksDealNoDamage extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAttacksDealNoDamage';
-    this.type = 'ModifierAttacksDealNoDamage';
-
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.attacks_deal_no_damage_name');
-    this.description = i18next.t('modifiers.attack_equals_health_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierAttacksDealNoDamage'];
-  }
+  static type = 'ModifierAttacksDealNoDamage';
 
   onEvent(event) {
     super.onEvent(event);
@@ -61,6 +46,13 @@ class ModifierAttacksDealNoDamage extends Modifier {
     }
   }
 }
-ModifierAttacksDealNoDamage.initClass();
+ModifierAttacksDealNoDamage.prototype.type = 'ModifierAttacksDealNoDamage';
+ModifierAttacksDealNoDamage.prototype.maxStacks = 1;
+ModifierAttacksDealNoDamage.modifierName = i18next.t('modifiers.attacks_deal_no_damage_name');
+ModifierAttacksDealNoDamage.description = i18next.t('modifiers.attack_equals_health_def');
+ModifierAttacksDealNoDamage.prototype.activeInHand = false;
+ModifierAttacksDealNoDamage.prototype.activeInDeck = false;
+ModifierAttacksDealNoDamage.prototype.activeOnBoard = true;
+ModifierAttacksDealNoDamage.prototype.fxResource = ['FX.Modifiers.ModifierAttacksDealNoDamage'];
 
 module.exports = ModifierAttacksDealNoDamage;

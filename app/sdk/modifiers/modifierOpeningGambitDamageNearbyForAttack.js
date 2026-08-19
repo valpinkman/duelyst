@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -12,17 +11,9 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const Modifier = require('./modifier');
 
 class ModifierOpeningGambitDamageNearbyForAttack extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDamageNearbyForAttack';
-    this.type = 'ModifierOpeningGambitDamageNearbyForAttack';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'ALL nearby minions deal damage to themselves equal to their Attack';
-
-    this.prototype.targetType = CardType.Unit;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearby'];
-  }
+  static type = 'ModifierOpeningGambitDamageNearbyForAttack';
+  static modifierName = 'Opening Gambit';
+  static description = 'ALL nearby minions deal damage to themselves equal to their Attack';
 
   onOpeningGambit() {
     return (() => {
@@ -44,6 +35,8 @@ class ModifierOpeningGambitDamageNearbyForAttack extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDamageNearbyForAttack.initClass();
+ModifierOpeningGambitDamageNearbyForAttack.prototype.type = 'ModifierOpeningGambitDamageNearbyForAttack';
+ModifierOpeningGambitDamageNearbyForAttack.prototype.targetType = CardType.Unit;
+ModifierOpeningGambitDamageNearbyForAttack.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearby'];
 
 module.exports = ModifierOpeningGambitDamageNearbyForAttack;

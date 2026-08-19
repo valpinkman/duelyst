@@ -1,24 +1,18 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const ModifierCannot = require('./modifierCannot');
 
 class ModifierCannotMove extends ModifierCannot {
-  static initClass() {
-    this.prototype.type = 'ModifierCantMove';
-    this.type = 'ModifierCantMove';
-
-    this.modifierName = i18next.t('modifiers.faction_3_spell_sand_trap_1');
-    this.description = i18next.t('modifiers.faction_3_spell_sand_trap_1');
-
-    this.prototype.attributeBuffs = { speed: 0 };
-    this.prototype.attributeBuffsAbsolute = ['speed'];
-    this.prototype.attributeBuffsFixed = ['speed'];
-  }
+  static type = 'ModifierCantMove';
 }
-ModifierCannotMove.initClass();
+ModifierCannotMove.prototype.type = 'ModifierCantMove';
+ModifierCannotMove.modifierName = i18next.t('modifiers.faction_3_spell_sand_trap_1');
+ModifierCannotMove.description = i18next.t('modifiers.faction_3_spell_sand_trap_1');
+ModifierCannotMove.prototype.attributeBuffs = { speed: 0 };
+ModifierCannotMove.prototype.attributeBuffsAbsolute = ['speed'];
+ModifierCannotMove.prototype.attributeBuffsFixed = ['speed'];
 
 module.exports = ModifierCannotMove;

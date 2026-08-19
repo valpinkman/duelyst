@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchByRaceSummonCopy extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchByRaceSummonCopy';
-    this.type = 'ModifierSummonWatchByRaceSummonCopy';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-
-    this.prototype.targetRaceId = null;
-  }
+  static type = 'ModifierSummonWatchByRaceSummonCopy';
 
   static createContextObject(targetRaceId, options) {
     const contextObject = super.createContextObject(options);
@@ -46,6 +38,8 @@ class ModifierSummonWatchByRaceSummonCopy extends ModifierSummonWatch {
     return card.getBelongsToTribe(this.targetRaceId);
   }
 }
-ModifierSummonWatchByRaceSummonCopy.initClass();
+ModifierSummonWatchByRaceSummonCopy.prototype.type = 'ModifierSummonWatchByRaceSummonCopy';
+ModifierSummonWatchByRaceSummonCopy.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
+ModifierSummonWatchByRaceSummonCopy.prototype.targetRaceId = null;
 
 module.exports = ModifierSummonWatchByRaceSummonCopy;

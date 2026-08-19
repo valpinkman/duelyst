@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,15 +16,7 @@ const Modifier = require('./modifier');
   after cards are played to board, rather than on any arbitrary action
 */
 class ModifierCounterIntensify extends ModifierCounter {
-  static initClass() {
-    this.prototype.type = 'ModifierCounterIntensify';
-    this.type = 'ModifierCounterIntensify';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierCounterIntensify';
 
   onActivate() {
     let intensifyCount = 1;
@@ -70,6 +61,9 @@ class ModifierCounterIntensify extends ModifierCounter {
     return false;
   }
 }
-ModifierCounterIntensify.initClass();
+ModifierCounterIntensify.prototype.type = 'ModifierCounterIntensify';
+ModifierCounterIntensify.prototype.activeInDeck = false;
+ModifierCounterIntensify.prototype.activeOnBoard = false;
+ModifierCounterIntensify.prototype.maxStacks = 1;
 
 module.exports = ModifierCounterIntensify;

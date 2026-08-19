@@ -1,37 +1,30 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 
 class Features {
-  static initClass() {
-    this.MainMenuCollection = 100;
-    this.MainMenuCodex = 101;
-    this.MainMenuCrates = 102;
-    this.MainMenuSpiritOrbs = 103;
-    this.MainMenuWatch = 104;
-
-    this.UtilityMenuFriends = 200;
-    this.UtilityMenuQuests = 201;
-    this.UtilityMenuProfile = 202;
-    this.UtilityMenuShop = 203;
-    this.UtilityMenuDailyChallenge = 204;
-    this.UtilityMenuFreeCardOfTheDay = 205;
-
-    this.PlayModeFriendly = 300;
-    this.PlayModePractice = 301;
-    this.PlayModeSoloChallenges = 302;
-    this.PlayModeCasual = 303;
-    this.PlayModeRanked = 304;
-    this.PlayModeGauntlet = 305;
-    this.PlayModeBossBattle = 306;
-    this.PlayModeSandbox = 399;
-
-    this.Announcements = 400;
-    this.FirstWinOfTheDay = 401;
-  }
+  static MainMenuCollection = 100;
+  static MainMenuCodex = 101;
+  static MainMenuCrates = 102;
+  static MainMenuSpiritOrbs = 103;
+  static MainMenuWatch = 104;
+  static UtilityMenuFriends = 200;
+  static UtilityMenuQuests = 201;
+  static UtilityMenuProfile = 202;
+  static UtilityMenuShop = 203;
+  static UtilityMenuDailyChallenge = 204;
+  static UtilityMenuFreeCardOfTheDay = 205;
+  static PlayModeFriendly = 300;
+  static PlayModePractice = 301;
+  static PlayModeSoloChallenges = 302;
+  static PlayModeCasual = 303;
+  static PlayModeRanked = 304;
+  static PlayModeGauntlet = 305;
+  static PlayModeBossBattle = 306;
+  static PlayModeSandbox = 399;
+  static Announcements = 400;
+  static FirstWinOfTheDay = 401;
 }
-Features.initClass();
 
 module.exports = Features;

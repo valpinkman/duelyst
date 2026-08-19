@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,7 @@ const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction')
 const DamageAction = require('app/sdk/actions/damageAction');
 
 class PlayerModifierDamageNextUnitPlayedFromHand extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierDamageNextUnitPlayedFromHand';
-    this.type = 'PlayerModifierDamageNextUnitPlayedFromHand';
-  }
+  static type = 'PlayerModifierDamageNextUnitPlayedFromHand';
 
   static createContextObject(damageAmount, duration, options) {
     if (duration == null) { duration = 0; }
@@ -54,7 +50,7 @@ class PlayerModifierDamageNextUnitPlayedFromHand extends PlayerModifier {
     }
   }
 }
-PlayerModifierDamageNextUnitPlayedFromHand.initClass();
+PlayerModifierDamageNextUnitPlayedFromHand.prototype.type = 'PlayerModifierDamageNextUnitPlayedFromHand';
 
 module.exports = PlayerModifierDamageNextUnitPlayedFromHand;
 

@@ -2,22 +2,15 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierMyTeamMoveWatchAnyReason = require('./modifierMyTeamMoveWatchAnyReason');
 
 class ModifierMyTeamMoveWatchAnyReasonBuffTarget extends ModifierMyTeamMoveWatchAnyReason {
-  static initClass() {
-    this.prototype.type = 'ModifierMyTeamMoveWatchAnyReasonBuffTarget';
-    this.type = 'ModifierMyTeamMoveWatchAnyReasonBuffTarget';
-
-    this.modifierName = 'My Team Move Watch Any Reason Buff Target';
-    this.description = 'Whenever a friendly minion is moved for any reason, %Y';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyTeamMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierMyTeamMoveWatchAnyReasonBuffTarget';
+  static modifierName = 'My Team Move Watch Any Reason Buff Target';
+  static description = 'Whenever a friendly minion is moved for any reason, %Y';
 
   static createContextObject(modContextObject, description, options) {
     if (options == null) { options = undefined; }
@@ -42,6 +35,7 @@ class ModifierMyTeamMoveWatchAnyReasonBuffTarget extends ModifierMyTeamMoveWatch
     }
   }
 }
-ModifierMyTeamMoveWatchAnyReasonBuffTarget.initClass();
+ModifierMyTeamMoveWatchAnyReasonBuffTarget.prototype.type = 'ModifierMyTeamMoveWatchAnyReasonBuffTarget';
+ModifierMyTeamMoveWatchAnyReasonBuffTarget.prototype.fxResource = ['FX.Modifiers.ModifierMyTeamMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierMyTeamMoveWatchAnyReasonBuffTarget;

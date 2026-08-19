@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,10 +10,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierWraithlingFury extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierWraithlingFury';
-    this.type = 'ModifierWraithlingFury';
-  }
+  static type = 'ModifierWraithlingFury';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -45,6 +41,6 @@ class ModifierWraithlingFury extends Modifier {
     return contextObject;
   }
 }
-ModifierWraithlingFury.initClass();
+ModifierWraithlingFury.prototype.type = 'ModifierWraithlingFury';
 
 module.exports = ModifierWraithlingFury;

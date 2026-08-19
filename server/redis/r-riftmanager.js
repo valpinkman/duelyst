@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -37,10 +36,7 @@ const expireAtTime = function (systemTime) {
  * ttl sets the expiration time of keys, defaults to 2 weeks
  */
 class RedisRiftManager {
-  static initClass() {
-    this.unitTestMode = false;
-    // This will change the way timeouts are handled so expires can more easily be tested
-  }
+  static unitTestMode = false;
 
   /**
    * Constructor
@@ -118,7 +114,6 @@ class RedisRiftManager {
     return this.redis.zremAsync(redisKey, userRunKey);
   }
 }
-RedisRiftManager.initClass();
 
 /**
  * Export a factory

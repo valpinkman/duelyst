@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,26 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/starter-lyonar-ranged/7930
 
 class BeginnerRangedChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerRangedChallenge1';
-    this.prototype.type = 'BeginnerRangedChallenge1';
-    this.prototype.categoryType = ChallengeCategory.advanced.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_ranged_challenge_title');
-    this.prototype.description = i18next.t('challenges.beginner_ranged_challenge_description');
-    this.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_ranged_challenge_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_ranged_challenge_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 3;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = CONFIG.MAX_MANA;
-  }
+  static type = 'BeginnerRangedChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -100,6 +80,18 @@ class BeginnerRangedChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerRangedChallenge1.initClass();
+BeginnerRangedChallenge1.prototype.type = 'BeginnerRangedChallenge1';
+BeginnerRangedChallenge1.prototype.categoryType = ChallengeCategory.advanced.type;
+BeginnerRangedChallenge1.prototype.name = i18next.t('challenges.beginner_ranged_challenge_title');
+BeginnerRangedChallenge1.prototype.description = i18next.t('challenges.beginner_ranged_challenge_description');
+BeginnerRangedChallenge1.prototype.iconUrl = RSX.speech_portrait_lyonar_side.img;
+BeginnerRangedChallenge1.prototype._musicOverride = RSX.music_battlemap_vanar.audio;
+BeginnerRangedChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_ranged_challenge_start');
+BeginnerRangedChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_ranged_challenge_fail'),
+];
+BeginnerRangedChallenge1.prototype.battleMapTemplateIndex = 3;
+BeginnerRangedChallenge1.prototype.snapShotOnPlayerTurn = 0;
+BeginnerRangedChallenge1.prototype.startingManaPlayer = CONFIG.MAX_MANA;
 
 module.exports = BeginnerRangedChallenge1;

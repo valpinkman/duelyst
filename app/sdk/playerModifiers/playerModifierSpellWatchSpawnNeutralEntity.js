@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,10 +17,7 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
   Summon watch that remains active whether the original entity dies or not.
 */
 class PlayerModifierSpellWatchSpawnNeutralEntity extends PlayerModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierSpellWatchSpawnNeutralEntity';
-    this.type = 'PlayerModifierSpellWatchSpawnNeutralEntity';
-  }
+  static type = 'PlayerModifierSpellWatchSpawnNeutralEntity';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -78,6 +74,6 @@ class PlayerModifierSpellWatchSpawnNeutralEntity extends PlayerModifierSpellWatc
     }
   }
 }
-PlayerModifierSpellWatchSpawnNeutralEntity.initClass();
+PlayerModifierSpellWatchSpawnNeutralEntity.prototype.type = 'PlayerModifierSpellWatchSpawnNeutralEntity';
 
 module.exports = PlayerModifierSpellWatchSpawnNeutralEntity;

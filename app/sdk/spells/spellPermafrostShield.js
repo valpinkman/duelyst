@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellApplyModifiers = require('./spellApplyModifiers');
@@ -12,14 +11,6 @@ const Modifier = require('app/sdk/modifiers/modifier');
 const _ = require('underscore');
 
 class SpellPermafrostShield extends SpellApplyModifiers {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.AllyDirect;
-
-    this.prototype.attackBuff = 0;
-    this.prototype.healthBuff = 0;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const applyEffectPosition = { x, y };
     const entity = board.getCardAtPosition(applyEffectPosition, this.targetType);
@@ -32,6 +23,9 @@ class SpellPermafrostShield extends SpellApplyModifiers {
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
   }
 }
-SpellPermafrostShield.initClass();
+SpellPermafrostShield.prototype.targetType = CardType.Unit;
+SpellPermafrostShield.prototype.spellFilterType = SpellFilterType.AllyDirect;
+SpellPermafrostShield.prototype.attackBuff = 0;
+SpellPermafrostShield.prototype.healthBuff = 0;
 
 module.exports = SpellPermafrostShield;

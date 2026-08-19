@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchHealorDamageGeneral extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchHealorDamageGeneral';
-    this.type = 'ModifierDealDamageWatchHealorDamageGeneral';
-
-    this.modifierName = 'Deal Damage Watch';
-    this.description = 'Whenever this minion deals damage, either deal %X damage to the enemy General OR restore %X Health to your General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
-  }
+  static type = 'ModifierDealDamageWatchHealorDamageGeneral';
+  static modifierName = 'Deal Damage Watch';
+  static description = 'Whenever this minion deals damage, either deal %X damage to the enemy General OR restore %X Health to your General';
 
   static createContextObject(healDamageAmount, options) {
     if (healDamageAmount == null) { healDamageAmount = 0; }
@@ -59,6 +52,7 @@ class ModifierDealDamageWatchHealorDamageGeneral extends ModifierDealDamageWatch
     }
   }
 }
-ModifierDealDamageWatchHealorDamageGeneral.initClass();
+ModifierDealDamageWatchHealorDamageGeneral.prototype.type = 'ModifierDealDamageWatchHealorDamageGeneral';
+ModifierDealDamageWatchHealorDamageGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
 
 module.exports = ModifierDealDamageWatchHealorDamageGeneral;

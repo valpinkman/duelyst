@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,17 +11,9 @@ const Modifier = require('./modifier');
   Modifier that applies player modifiers to either or both players and removes them when the applying card is silenced or removed.
 */
 class ModifierCardControlledPlayerModifiers extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierCardControlledPlayerModifiers';
-    this.type = 'ModifierCardControlledPlayerModifiers';
-
-    this.modifierName = '';
-    this.description = '';
-
-    this.prototype.modifiersContextObjects = null;
-    this.prototype.applyToOwnPlayer = false;
-    this.prototype.applyToEnemyPlayer = false;
-  }
+  static type = 'ModifierCardControlledPlayerModifiers';
+  static modifierName = '';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, applyToOwnPlayer, applyToEnemyPlayer, activeInHand, activeInDeck, activeInSignatureCards, activeOnBoard, description, options) {
     if (applyToOwnPlayer == null) { applyToOwnPlayer = false; }
@@ -106,6 +97,9 @@ class ModifierCardControlledPlayerModifiers extends Modifier {
     }
   }
 }
-ModifierCardControlledPlayerModifiers.initClass();
+ModifierCardControlledPlayerModifiers.prototype.type = 'ModifierCardControlledPlayerModifiers';
+ModifierCardControlledPlayerModifiers.prototype.modifiersContextObjects = null;
+ModifierCardControlledPlayerModifiers.prototype.applyToOwnPlayer = false;
+ModifierCardControlledPlayerModifiers.prototype.applyToEnemyPlayer = false;
 
 module.exports = ModifierCardControlledPlayerModifiers;

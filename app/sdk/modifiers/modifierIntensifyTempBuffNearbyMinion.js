@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const ModifierIntensify = require('./modifierIntensify');
 const Modifier = require('./modifier');
 
 class ModifierIntensifyTempBuffNearbyMinion extends ModifierIntensify {
-  static initClass() {
-    this.prototype.type = 'ModifierIntensifyTempBuffNearbyMinion';
-    this.type = 'ModifierIntensifyTempBuffNearbyMinion';
-
-    this.prototype.attackBuff = 0;
-    this.prototype.healthBuff = 0;
-    this.prototype.modifierName = null;
-  }
+  static type = 'ModifierIntensifyTempBuffNearbyMinion';
 
   static createContextObject(attackBuff, healthBuff, modifierName, options) {
     const contextObject = super.createContextObject(options);
@@ -51,6 +43,9 @@ class ModifierIntensifyTempBuffNearbyMinion extends ModifierIntensify {
     }
   }
 }
-ModifierIntensifyTempBuffNearbyMinion.initClass();
+ModifierIntensifyTempBuffNearbyMinion.prototype.type = 'ModifierIntensifyTempBuffNearbyMinion';
+ModifierIntensifyTempBuffNearbyMinion.prototype.attackBuff = 0;
+ModifierIntensifyTempBuffNearbyMinion.prototype.healthBuff = 0;
+ModifierIntensifyTempBuffNearbyMinion.prototype.modifierName = null;
 
 module.exports = ModifierIntensifyTempBuffNearbyMinion;

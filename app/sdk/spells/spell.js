@@ -6,7 +6,6 @@
  * DS202: Simplify dynamic range loops
  * DS204: Change includes calls to have a more natural evaluation order
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -19,27 +18,6 @@ const SpellFilterType = require('./spellFilterType');
 const _ = require('underscore');
 
 class Spell extends Card {
-  static initClass() {
-    this.prototype.type = CardType.Spell;
-    this.type = CardType.Spell;
-    this.prototype.name = 'Spell';
-
-    this.prototype.canBeAppliedAnywhere = true; // spells can usually be targetted anywhere
-    this.prototype.targetType = CardType.Entity;
-    this.prototype.spellFilterType = SpellFilterType.None;
-    this.prototype.filterCardIds = null; // array of card ids to filter for
-    this.prototype.filterRaceIds = null; // array of race ids to filter for
-    this.prototype.filterNearGeneral = false; // whether to only allow targets near general
-    this.prototype.canTargetGeneral = false;
-    this.prototype.radius = 0; // when multi-target, if radius > 0 it will get all targets in a radius around target position
-    this.prototype.drawCardsPostPlay = 0; // if non-zero, will immediately draw X cards for the player who played this spell (cantrips)
-    this.prototype.targetModifiersContextObjects = null; // just like entity modifier contexts objects, but used to create modifiers that are added to target of spell
-    this.prototype.applyEffectPosition = null; // last position spell effect was applied at, used for followup source positions
-    this.prototype.applyEffectPositions = null; // positions spell effect is being applied at
-    this.prototype.applyEffectPositionsCardIndices = null;
-    // indices of cards that were at apply effect positions when spell was cast
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -455,7 +433,22 @@ class Spell extends Card {
     return super.getTargetsSpace() || this.getTargetsAnywhere();
   }
 }
-Spell.initClass();
+Spell.prototype.type = CardType.Spell;
+Spell.type = CardType.Spell;
+Spell.prototype.name = 'Spell';
+Spell.prototype.canBeAppliedAnywhere = true;
+Spell.prototype.targetType = CardType.Entity;
+Spell.prototype.spellFilterType = SpellFilterType.None;
+Spell.prototype.filterCardIds = null;
+Spell.prototype.filterRaceIds = null;
+Spell.prototype.filterNearGeneral = false;
+Spell.prototype.canTargetGeneral = false;
+Spell.prototype.radius = 0;
+Spell.prototype.drawCardsPostPlay = 0;
+Spell.prototype.targetModifiersContextObjects = null;
+Spell.prototype.applyEffectPosition = null;
+Spell.prototype.applyEffectPositions = null;
+Spell.prototype.applyEffectPositionsCardIndices = null;
 
 // endregion ### FILTERS ###
 

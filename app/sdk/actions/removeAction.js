@@ -1,16 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
 const CardType = require('app/sdk/cards/cardType');
 
 class RemoveAction extends Action {
-  static initClass() {
-    this.type = 'RemoveAction';
-  }
+  static type = 'RemoveAction';
 
   constructor() {
     super(...arguments);
@@ -25,6 +22,5 @@ class RemoveAction extends Action {
     return this.getGameSession().removeCardFromBoard(target, targetPosition.x, targetPosition.y, this);
   }
 }
-RemoveAction.initClass();
 
 module.exports = RemoveAction;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,17 +10,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierDamageBothGeneralsOnReplace extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDamageBothGeneralsOnReplace';
-    this.type = 'ModifierDamageBothGeneralsOnReplace';
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = true;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierDamageBothGeneralsOnReplace';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 3; }
@@ -60,6 +49,11 @@ class ModifierDamageBothGeneralsOnReplace extends Modifier {
     }
   }
 }
-ModifierDamageBothGeneralsOnReplace.initClass();
+ModifierDamageBothGeneralsOnReplace.prototype.type = 'ModifierDamageBothGeneralsOnReplace';
+ModifierDamageBothGeneralsOnReplace.prototype.activeInHand = true;
+ModifierDamageBothGeneralsOnReplace.prototype.activeInDeck = true;
+ModifierDamageBothGeneralsOnReplace.prototype.activeInSignatureCards = false;
+ModifierDamageBothGeneralsOnReplace.prototype.activeOnBoard = false;
+ModifierDamageBothGeneralsOnReplace.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierDamageBothGeneralsOnReplace;

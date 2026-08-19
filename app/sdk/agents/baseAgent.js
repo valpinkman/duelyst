@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -16,12 +15,6 @@ BaseAgent - Base acting agent for taking actions in sdk game
 */
 
 class BaseAgent {
-  static initClass() {
-    this.prototype.name = 'BaseAgent';
-    this.prototype.unitIndicesByTag = null;
-    this.prototype.playerId = null;
-  }
-
   /**
    * BaseAgent constructor.
    * @public
@@ -60,7 +53,9 @@ class BaseAgent {
    */
   gatherAgentActionSequenceAfterStep(lastStep) {}
 }
-BaseAgent.initClass();
+BaseAgent.prototype.name = 'BaseAgent';
+BaseAgent.prototype.unitIndicesByTag = null;
+BaseAgent.prototype.playerId = null;
 // Does nothing - Override in subclass
 
 module.exports = BaseAgent;

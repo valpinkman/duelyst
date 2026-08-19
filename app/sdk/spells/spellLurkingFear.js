@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -15,13 +14,6 @@ const ModifierManaCostChange = require('app/sdk/modifiers/modifierManaCostChange
 const _ = require('underscore');
 
 class SpellLurkingFear extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
-    this.prototype.cardTypeToTarget = CardType.Unit;
-    // type of card to target
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
@@ -59,6 +51,8 @@ class SpellLurkingFear extends Spell {
     }
   }
 }
-SpellLurkingFear.initClass();
+SpellLurkingFear.prototype.targetType = CardType.Unit;
+SpellLurkingFear.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
+SpellLurkingFear.prototype.cardTypeToTarget = CardType.Unit;
 
 module.exports = SpellLurkingFear;

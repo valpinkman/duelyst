@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,14 +8,7 @@ const ModifierEquipFriendlyArtifactWatch = require('./modifierEquipFriendlyArtif
 const Modifier = require('./modifier');
 
 class ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost extends ModifierEquipFriendlyArtifactWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost';
-    this.type = 'ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.buffName = null;
-  }
+  static type = 'ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost';
 
   static createContextObject(buffName, options) {
     const contextObject = super.createContextObject(options);
@@ -35,6 +27,8 @@ class ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost extends ModifierEq
     }
   }
 }
-ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.initClass();
+ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.type = 'ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost';
+ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
+ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost.prototype.buffName = null;
 
 module.exports = ModifierEquipFriendlyArtifactWatchGainAttackEqualToCost;

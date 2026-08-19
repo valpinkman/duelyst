@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,18 +13,14 @@ const ModifierImmuneToDamage = require('./modifierImmuneToDamage');
 */
 
 class ModifierImmuneToDamageFromMinionsAndGenerals extends ModifierImmuneToDamage {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToDamageFromMinionsAndGenerals';
-    this.type = 'ModifierImmuneToDamageFromMinionsAndGenerals';
-
-    this.modifierName = i18next.t('modifiers.immune_to_damage_from_minions_and_generals_name');
-    this.description = i18next.t('modifiers.immune_to_damage_from_minions_and_generals_def');
-  }
+  static type = 'ModifierImmuneToDamageFromMinionsAndGenerals';
 
   getIsActionRelevant(a) {
     return (this.getCard() != null) && a instanceof DamageAction && a.getIsValid() && (this.getCard() === a.getTarget()) && (a.getSource().getRootCard().getType() === CardType.Unit);
   }
 }
-ModifierImmuneToDamageFromMinionsAndGenerals.initClass();
+ModifierImmuneToDamageFromMinionsAndGenerals.prototype.type = 'ModifierImmuneToDamageFromMinionsAndGenerals';
+ModifierImmuneToDamageFromMinionsAndGenerals.modifierName = i18next.t('modifiers.immune_to_damage_from_minions_and_generals_name');
+ModifierImmuneToDamageFromMinionsAndGenerals.description = i18next.t('modifiers.immune_to_damage_from_minions_and_generals_def');
 
 module.exports = ModifierImmuneToDamageFromMinionsAndGenerals;

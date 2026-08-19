@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,24 +13,7 @@ const ModifierStackingShadowsBonusDamage = require('./modifierStackingShadowsBon
 const ModifierCounterShadowCreep = require('./modifierCounterShadowCreep');
 
 class ModifierStackingShadows extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStackingShadows';
-    this.type = 'ModifierStackingShadows';
-
-    this.modifierName = i18next.t('modifiers.shadow_creep_name');
-    this.keywordDefinition = i18next.t('modifiers.shadow_creep_def');
-    this.description = i18next.t('modifiers.shadow_creep_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierShadowCreep'];
-
-    this.prototype.damageAmount = 1;
-    // shadow creep deal 1 damage by default
-  }
+  static type = 'ModifierStackingShadows';
 
   static getDescription() {
     return this.description;
@@ -128,6 +110,15 @@ class ModifierStackingShadows extends ModifierEndTurnWatch {
     }
   }
 }
-ModifierStackingShadows.initClass();
+ModifierStackingShadows.prototype.type = 'ModifierStackingShadows';
+ModifierStackingShadows.modifierName = i18next.t('modifiers.shadow_creep_name');
+ModifierStackingShadows.keywordDefinition = i18next.t('modifiers.shadow_creep_def');
+ModifierStackingShadows.description = i18next.t('modifiers.shadow_creep_def');
+ModifierStackingShadows.prototype.activeInHand = false;
+ModifierStackingShadows.prototype.activeInDeck = false;
+ModifierStackingShadows.prototype.activeInSignatureCards = false;
+ModifierStackingShadows.prototype.activeOnBoard = true;
+ModifierStackingShadows.prototype.fxResource = ['FX.Modifiers.ModifierShadowCreep'];
+ModifierStackingShadows.prototype.damageAmount = 1;
 
 module.exports = ModifierStackingShadows;

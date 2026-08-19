@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -21,13 +20,6 @@ const PlayerModifierCannotReplace = require('app/sdk/playerModifiers/playerModif
 const _ = require('underscore');
 
 class Deck extends SDKObject {
-  static initClass() {
-    this.prototype.numCardsReplacedThisTurn = 0; // counter of card replacements player has made, reset each turn
-    this.prototype.drawPile = null; // record of card indices still available to draw
-    this.prototype.hand = null; // record of card indices in hand
-    this.prototype.ownerId = null;
-  }
-
   constructor(gameSession, ownerId) {
     super(gameSession);
 
@@ -432,7 +424,10 @@ class Deck extends SDKObject {
     return this.hand.length = CONFIG.MAX_HAND_SIZE;
   }
 }
-Deck.initClass();
+Deck.prototype.numCardsReplacedThisTurn = 0;
+Deck.prototype.drawPile = null;
+Deck.prototype.hand = null;
+Deck.prototype.ownerId = null;
 
 // endregion SERIALIZATION
 

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,11 +14,6 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierStunnedVanar = require('app/sdk/modifiers/modifierStunnedVanar');
 
 class SpellLaceratingFrost extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.damageAmount = 2;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -51,6 +45,7 @@ class SpellLaceratingFrost extends Spell {
     return applyEffectPositions;
   }
 }
-SpellLaceratingFrost.initClass();
+SpellLaceratingFrost.prototype.targetType = CardType.Unit;
+SpellLaceratingFrost.prototype.damageAmount = 2;
 
 module.exports = SpellLaceratingFrost;

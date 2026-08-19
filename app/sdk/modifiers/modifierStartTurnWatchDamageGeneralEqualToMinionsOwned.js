@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,17 +11,8 @@ const CONFIG = require('app/common/config');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned';
-    this.type = 'ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned';
-
-    this.modifierName = 'Turn Watch';
-    this.description = i18next.t('modifiers.start_turn_watch_damage_general_equal_to_minions_owned_def');
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightningRed'];
-  }
+  static type = 'ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned';
+  static modifierName = 'Turn Watch';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -49,6 +39,9 @@ class ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned extends ModifierSta
     }
   }
 }
-ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.initClass();
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.type = 'ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned';
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.description = i18next.t('modifiers.start_turn_watch_damage_general_equal_to_minions_owned_def');
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.damageAmount = 0;
+ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightningRed'];
 
 module.exports = ModifierStartTurnWatchDamageGeneralEqualToMinionsOwned;

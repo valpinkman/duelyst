@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,7 @@ const ModifierAnyDrawCardWatch = require('./modifierAnyDrawCardWatch');
 const Modifier = require('./modifier');
 
 class ModifierAnyDrawCardWatchBuffSelf extends ModifierAnyDrawCardWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierAnyDrawCardWatchBuffSelf';
-    this.type = 'ModifierAnyDrawCardWatchBuffSelf';
-
-    this.modifierName = i18next.t('modifiers.any_draw_card_watch_buff_self_name');
-    this.description = i18next.t('modifiers.any_draw_card_watch_buff_self_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierAnyDrawCardWatchBuffSelf';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -50,6 +41,9 @@ class ModifierAnyDrawCardWatchBuffSelf extends ModifierAnyDrawCardWatch {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierAnyDrawCardWatchBuffSelf.initClass();
+ModifierAnyDrawCardWatchBuffSelf.prototype.type = 'ModifierAnyDrawCardWatchBuffSelf';
+ModifierAnyDrawCardWatchBuffSelf.modifierName = i18next.t('modifiers.any_draw_card_watch_buff_self_name');
+ModifierAnyDrawCardWatchBuffSelf.description = i18next.t('modifiers.any_draw_card_watch_buff_self_def');
+ModifierAnyDrawCardWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierAnyDrawCardWatchBuffSelf;

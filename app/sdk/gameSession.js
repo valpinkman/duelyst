@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,104 +12,10 @@ why is code organized int his weird fashion? check: https://coderwall.com/p/myzv
 */
 
 class GameSession {
-  static initClass() {
-    // region INSTANCE
-
-    this.instance = null;
-
-    // Injectable network hook (see app/networkManager). The SDK itself is
-    // network-agnostic: when a non-authoritative session submits an explicit
-    // action, the resulting step is handed to this callback for transmission.
-    // The browser client registers it at boot (application.coffee); servers and
-    // tests run authoritative sessions and never need it.
-    this._stepSubmitter = null;
-
-    // endregion INSTANCE
-
-    // region CACHES
-
-    this._cardsCachedAt = null; // When the card caches were last built.
-    this._cardCaches = null;
-
-    /**
-    * Map of keys to cache cards by. All keys will have own caches and then will cross cache in all possible combinations.
-    * NOTE: keys must not conflict with each other or any of the utility method names!
-    * @example
-    *  {
-    *    key: "keyName" # string name of key, where getter method is "getKeyName"
-    *    getGroupKey: (card) -> return card.getCardSetId() # method that returns a string, number, or boolean as a key to group card by
-    *    getGroupKeys: () -> return ["groupKey1", ..., "groupKeyN"] # method that returns an array of strings, numbers, or booleans that contains all possible group keys
-    *  }
-    * @see getCardCaches
-    */
-    this._cacheCardsBy = [
-      {
-        key: 'cardSet',
-        getGroupKey(card) { return card.getCardSetId(); },
-        getGroupKeys() { return _.map(_.filter(Object.keys(CardSet), (key) => !_.isObject(CardSet[key]) && !_.isFunction(CardSet[key])), (key) => CardSet[key]); },
-      },
-      {
-        key: 'faction',
-        getGroupKey(card) { return card.getFactionId(); },
-        getGroupKeys() { return _.map(_.filter(Object.keys(Factions), (key) => !_.isObject(Factions[key]) && !_.isFunction(Factions[key])), (key) => Factions[key]); },
-      },
-      {
-        key: 'rarity',
-        getGroupKey(card) { return card.getRarityId(); },
-        getGroupKeys() { return _.map(_.filter(Object.keys(Rarity), (key) => !_.isObject(Rarity[key]) && !_.isFunction(Rarity[key])), (key) => Rarity[key]); },
-      },
-      {
-        key: 'race',
-        getGroupKey(card) { return card.getRaceId(); },
-        getGroupKeys() { return _.map(_.filter(Object.keys(Races), (key) => !_.isObject(Races[key]) && !_.isFunction(Races[key])), (key) => Races[key]); },
-      },
-      {
-        key: 'isToken',
-        getGroupKey(card) { return card.getRarityId() === Rarity.TokenUnit; },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'type',
-        getGroupKey(card) { return card.getType(); },
-        getGroupKeys() { return _.map(_.filter(Object.keys(CardType), (key) => !_.isObject(CardType[key]) && !_.isFunction(CardType[key])), (key) => CardType[key]); },
-      },
-      {
-        key: 'isGeneral',
-        getGroupKey(card) { return card instanceof Entity && card.getIsGeneral(); },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'isCollectible',
-        getGroupKey(card) { return card.getIsCollectible(); },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'isUnlockable',
-        getGroupKey(card) { return card.getIsUnlockable(); },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'isHiddenInCollection',
-        getGroupKey(card) { return card.getIsHiddenInCollection(); },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'isPrismatic',
-        getGroupKey(card) { return Cards.getIsPrismaticCardId(card.getId()); },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'isSkinned',
-        getGroupKey(card) { return Cards.getIsSkinnedCardId(card.getId()); },
-        getGroupKeys() { return [true, false]; },
-      },
-      {
-        key: 'isLegacy',
-        getGroupKey(card) { return card.getIsLegacy() || (CardSetFactory.cardSetForIdentifier(card.getCardSetId()).isLegacy != null); },
-        getGroupKeys() { return [true, false]; },
-      },
-    ];
-  }
+  static instance = null;
+  static _stepSubmitter = null;
+  static _cardsCachedAt = null;
+  static _cardCaches = null;
 
   static create() {
     return new _GameSession();
@@ -312,7 +217,73 @@ class GameSession {
     }
   }
 }
-GameSession.initClass();
+GameSession._cacheCardsBy = [
+  {
+    key: 'cardSet',
+    getGroupKey(card) { return card.getCardSetId(); },
+    getGroupKeys() { return _.map(_.filter(Object.keys(CardSet), (key) => !_.isObject(CardSet[key]) && !_.isFunction(CardSet[key])), (key) => CardSet[key]); },
+  },
+  {
+    key: 'faction',
+    getGroupKey(card) { return card.getFactionId(); },
+    getGroupKeys() { return _.map(_.filter(Object.keys(Factions), (key) => !_.isObject(Factions[key]) && !_.isFunction(Factions[key])), (key) => Factions[key]); },
+  },
+  {
+    key: 'rarity',
+    getGroupKey(card) { return card.getRarityId(); },
+    getGroupKeys() { return _.map(_.filter(Object.keys(Rarity), (key) => !_.isObject(Rarity[key]) && !_.isFunction(Rarity[key])), (key) => Rarity[key]); },
+  },
+  {
+    key: 'race',
+    getGroupKey(card) { return card.getRaceId(); },
+    getGroupKeys() { return _.map(_.filter(Object.keys(Races), (key) => !_.isObject(Races[key]) && !_.isFunction(Races[key])), (key) => Races[key]); },
+  },
+  {
+    key: 'isToken',
+    getGroupKey(card) { return card.getRarityId() === Rarity.TokenUnit; },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'type',
+    getGroupKey(card) { return card.getType(); },
+    getGroupKeys() { return _.map(_.filter(Object.keys(CardType), (key) => !_.isObject(CardType[key]) && !_.isFunction(CardType[key])), (key) => CardType[key]); },
+  },
+  {
+    key: 'isGeneral',
+    getGroupKey(card) { return card instanceof Entity && card.getIsGeneral(); },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'isCollectible',
+    getGroupKey(card) { return card.getIsCollectible(); },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'isUnlockable',
+    getGroupKey(card) { return card.getIsUnlockable(); },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'isHiddenInCollection',
+    getGroupKey(card) { return card.getIsHiddenInCollection(); },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'isPrismatic',
+    getGroupKey(card) { return Cards.getIsPrismaticCardId(card.getId()); },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'isSkinned',
+    getGroupKey(card) { return Cards.getIsSkinnedCardId(card.getId()); },
+    getGroupKeys() { return [true, false]; },
+  },
+  {
+    key: 'isLegacy',
+    getGroupKey(card) { return card.getIsLegacy() || (CardSetFactory.cardSetForIdentifier(card.getCardSetId()).isLegacy != null); },
+    getGroupKeys() { return [true, false]; },
+  },
+];
 
 // endregion CACHES
 
@@ -391,30 +362,6 @@ const ValidatorReplaceCardFromHand = require('./validators/validatorReplaceCardF
 const ValidatorScheduledForRemoval = require('./validators/validatorScheduledForRemoval');
 
 class _GameSession extends SDKObject {
-  static initClass() {
-    this.prototype.aiDifficulty = null;
-    this.prototype.aiPlayerId = null;
-    this.prototype.board = null;
-    this.prototype.cardsByIndex = null; // master map of cards in this game
-    this.prototype.createdAt = null;
-    this.prototype.currentTurn = null; // the currently active turn
-    this.prototype.battleMapTemplate = null; // properties determining the battle map environment this game is payed in (map, weather, etc)
-    this.prototype.gameId = 'N/A';
-    this.prototype.gameType = null; // see GameType lookup
-    this.prototype.gameFormat = null; // see GameType lookup
-    this.prototype.index = 0;
-    this.prototype.lastActionTimestamp = null;
-    this.prototype.modifiersByIndex = null; // master map of modifiers played in this game
-    this.prototype.players = null; // master list of players in this game
-    this.prototype.gameSetupData = null; // sparse snapshot of player state after game was first setup, usually used for replays
-    this.prototype.status = null; // status of game (i.e. whether new, active, or over)
-    this.prototype.swapPlayersOnNewTurn = true; // normally true, but can be set false by certain effects (take another turn after this one)
-    this.prototype.turns = null; // master list of turns in this game, where each turn contains a list of steps played during its time
-    this.prototype.updatedAt = null;
-
-    this.prototype.getLocalPlayer = this.prototype.getMyPlayer;
-  }
-
   constructor() {
     // JS forbids referencing `this` in the super arguments; SDKObject only
     // stores it as _private.gameSession, so pass null and self-assign after.
@@ -4362,7 +4309,26 @@ class _GameSession extends SDKObject {
     }
   }
 }
-_GameSession.initClass();
+_GameSession.prototype.aiDifficulty = null;
+_GameSession.prototype.aiPlayerId = null;
+_GameSession.prototype.board = null;
+_GameSession.prototype.cardsByIndex = null;
+_GameSession.prototype.createdAt = null;
+_GameSession.prototype.currentTurn = null;
+_GameSession.prototype.battleMapTemplate = null;
+_GameSession.prototype.gameId = 'N/A';
+_GameSession.prototype.gameType = null;
+_GameSession.prototype.gameFormat = null;
+_GameSession.prototype.index = 0;
+_GameSession.prototype.lastActionTimestamp = null;
+_GameSession.prototype.modifiersByIndex = null;
+_GameSession.prototype.players = null;
+_GameSession.prototype.gameSetupData = null;
+_GameSession.prototype.status = null;
+_GameSession.prototype.swapPlayersOnNewTurn = true;
+_GameSession.prototype.turns = null;
+_GameSession.prototype.updatedAt = null;
+_GameSession.prototype.getLocalPlayer = _GameSession.prototype.getMyPlayer;
 
 // endregion serialization
 

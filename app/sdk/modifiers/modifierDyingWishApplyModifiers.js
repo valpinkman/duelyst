@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,21 +12,8 @@ const ModifierDyingWish = require('./modifierDyingWish');
 const Modifier = require('./modifier');
 
 class ModifierDyingWishApplyModifiers extends ModifierDyingWish {
-  static initClass() {
-    /*
-    This modifier is used to apply modifiers entities around an entity when that entity dies.
-    examples:
-    All nearby friendly minions gain strikeback
-    All nearby enemy minions gain -2 attack
-    */
-
-    this.prototype.type = 'ModifierDyingWishApplyModifiers';
-    this.type = 'ModifierDyingWishApplyModifiers';
-
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierDyingWishApplyModifiers';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraRadius, canTargetGeneral, description, options) {
     const contextObject = super.createContextObject(options);
@@ -62,6 +48,7 @@ class ModifierDyingWishApplyModifiers extends ModifierDyingWish {
     return affectedEntities;
   }
 }
-ModifierDyingWishApplyModifiers.initClass();
+ModifierDyingWishApplyModifiers.prototype.type = 'ModifierDyingWishApplyModifiers';
+ModifierDyingWishApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierDyingWishApplyModifiers;

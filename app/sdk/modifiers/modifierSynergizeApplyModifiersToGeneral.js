@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -19,16 +18,8 @@ Your General gains +2 Attack
 Enemy General gains -2 Attack
 */
 class ModifierSynergizeApplyModifiersToGeneral extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeApplyModifiersToGeneral';
-    this.type = 'ModifierSynergizeApplyModifiersToGeneral';
-
-    this.description = '';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSynergizeApplyModifiersToGeneral';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, applyToOwnGeneral, applyToEnemyGeneral, description, options) {
     if (applyToOwnGeneral == null) { applyToOwnGeneral = false; }
@@ -60,6 +51,8 @@ class ModifierSynergizeApplyModifiersToGeneral extends ModifierSynergize {
     return affectedEntities;
   }
 }
-ModifierSynergizeApplyModifiersToGeneral.initClass();
+ModifierSynergizeApplyModifiersToGeneral.prototype.type = 'ModifierSynergizeApplyModifiersToGeneral';
+ModifierSynergizeApplyModifiersToGeneral.prototype.modifiersContextObjects = null;
+ModifierSynergizeApplyModifiersToGeneral.prototype.fxResource = ['FX.Modifiers.ModifierSynergize', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSynergizeApplyModifiersToGeneral;

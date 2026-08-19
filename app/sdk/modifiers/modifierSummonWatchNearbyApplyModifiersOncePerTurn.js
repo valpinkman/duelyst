@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -9,16 +8,8 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const ModifierSummonWatchNearbyApplyModifiers = require('./modifierSummonWatchApplyModifiers');
 
 class ModifierSummonWatchNearbyApplyModifiersOncePerTurn extends ModifierSummonWatchNearbyApplyModifiers {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchNearbyApplyModifiersOncePerTurn';
-    this.type = 'ModifierSummonWatchNearbyApplyModifiersOncePerTurn';
-
-    this.description = 'The first friendly minion summoned nearby this minion each turn %X';
-
-    this.prototype.canApplyModifier = true; // can apply modifier once per turn
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSummonWatchNearbyApplyModifiersOncePerTurn';
+  static description = 'The first friendly minion summoned nearby this minion each turn %X';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -51,6 +42,8 @@ class ModifierSummonWatchNearbyApplyModifiersOncePerTurn extends ModifierSummonW
     return this.canApplyModifier = true;
   }
 }
-ModifierSummonWatchNearbyApplyModifiersOncePerTurn.initClass();
+ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.type = 'ModifierSummonWatchNearbyApplyModifiersOncePerTurn';
+ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.canApplyModifier = true;
+ModifierSummonWatchNearbyApplyModifiersOncePerTurn.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSummonWatchNearbyApplyModifiersOncePerTurn;

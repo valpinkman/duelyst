@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,27 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/stronger-scythe-otk-1/11401
 
 class AdvancedSonghaiChallenge1 extends Challenge {
-  static initClass() {
-    this.type = 'AdvancedSonghaiChallenge1';
-    this.prototype.type = 'AdvancedSonghaiChallenge1';
-    this.prototype.categoryType = ChallengeCategory.contest1.type;
-
-    this.prototype.name = i18next.t('challenges.advanced_songhai_1_title');
-    this.prototype.description = i18next.t('challenges.advanced_songhai_1_description');
-    this.prototype.iconUrl = RSX.speech_portrait_songhai.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_songhai_1_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.advanced_songhai_1_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 2;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 6;
-    this.prototype.startingHandSizePlayer = 6;
-  }
+  static type = 'AdvancedSonghaiChallenge1';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -104,6 +83,19 @@ class AdvancedSonghaiChallenge1 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-AdvancedSonghaiChallenge1.initClass();
+AdvancedSonghaiChallenge1.prototype.type = 'AdvancedSonghaiChallenge1';
+AdvancedSonghaiChallenge1.prototype.categoryType = ChallengeCategory.contest1.type;
+AdvancedSonghaiChallenge1.prototype.name = i18next.t('challenges.advanced_songhai_1_title');
+AdvancedSonghaiChallenge1.prototype.description = i18next.t('challenges.advanced_songhai_1_description');
+AdvancedSonghaiChallenge1.prototype.iconUrl = RSX.speech_portrait_songhai.img;
+AdvancedSonghaiChallenge1.prototype._musicOverride = RSX.music_battlemap_songhai.audio;
+AdvancedSonghaiChallenge1.prototype.otkChallengeStartMessage = i18next.t('challenges.advanced_songhai_1_start');
+AdvancedSonghaiChallenge1.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.advanced_songhai_1_fail'),
+];
+AdvancedSonghaiChallenge1.prototype.battleMapTemplateIndex = 2;
+AdvancedSonghaiChallenge1.prototype.snapShotOnPlayerTurn = 0;
+AdvancedSonghaiChallenge1.prototype.startingManaPlayer = 6;
+AdvancedSonghaiChallenge1.prototype.startingHandSizePlayer = 6;
 
 module.exports = AdvancedSonghaiChallenge1;

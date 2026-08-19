@@ -3,29 +3,16 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierPortal extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierPortal';
-    this.type = 'ModifierPortal';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.structure_def');
-    this.isHiddenToUI = true;
-
-    this.modifierName = i18next.t('modifiers.structure_name');
-    this.description = null;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.isRemovable = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierPortal'];
-  }
+  static type = 'ModifierPortal';
+  static isKeyworded = true;
+  static isHiddenToUI = true;
+  static description = null;
 
   onActivate() {
     super.onActivate();
@@ -86,6 +73,11 @@ class ModifierPortal extends Modifier {
     })();
   }
 }
-ModifierPortal.initClass();
+ModifierPortal.prototype.type = 'ModifierPortal';
+ModifierPortal.keywordDefinition = i18next.t('modifiers.structure_def');
+ModifierPortal.modifierName = i18next.t('modifiers.structure_name');
+ModifierPortal.prototype.maxStacks = 1;
+ModifierPortal.prototype.isRemovable = false;
+ModifierPortal.prototype.fxResource = ['FX.Modifiers.ModifierPortal'];
 
 module.exports = ModifierPortal;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Modifier = require('./modifier');
@@ -13,12 +12,8 @@ const Modifier = require('./modifier');
       costs 1 less for each Battle Pet on the board
 */
 class ModifierDynamicCountModifySelf extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDynamicCountModifySelf';
-    this.type = 'ModifierDynamicCountModifySelf';
-
-    this.description = 'Change stats based on count of something on board';
-  }
+  static type = 'ModifierDynamicCountModifySelf';
+  static description = 'Change stats based on count of something on board';
 
   static getDescription() {
     return this.description;
@@ -107,7 +102,7 @@ class ModifierDynamicCountModifySelf extends Modifier {
     return 0;
   }
 }
-ModifierDynamicCountModifySelf.initClass();
+ModifierDynamicCountModifySelf.prototype.type = 'ModifierDynamicCountModifySelf';
 
 module.exports = ModifierDynamicCountModifySelf;
 

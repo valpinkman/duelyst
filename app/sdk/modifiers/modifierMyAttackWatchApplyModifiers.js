@@ -3,21 +3,13 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 
 class ModifierMyAttackWatchApplyModifiers extends ModifierMyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackWatchApplyModifiers';
-    this.type = 'ModifierMyAttackWatchApplyModifiers';
-
-    this.prototype.modifiersContextObjects = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierMyAttackWatchApplyModifiers';
 
   static createContextObject(modifiersContextObjects, options) {
     const contextObject = super.createContextObject(options);
@@ -41,6 +33,8 @@ class ModifierMyAttackWatchApplyModifiers extends ModifierMyAttackWatch {
     }
   }
 }
-ModifierMyAttackWatchApplyModifiers.initClass();
+ModifierMyAttackWatchApplyModifiers.prototype.type = 'ModifierMyAttackWatchApplyModifiers';
+ModifierMyAttackWatchApplyModifiers.prototype.modifiersContextObjects = null;
+ModifierMyAttackWatchApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierMyAttackWatchApplyModifiers;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -16,16 +15,8 @@ const Modifier = require('./modifier');
 const ModifierSynergize = require('./modifierSynergize');
 
 class ModifierSynergizeSpawnVanarToken extends ModifierSynergize {
-  static initClass() {
-    this.prototype.type = 'ModifierSynergizeSpawnVanarToken';
-    this.type = 'ModifierSynergizeSpawnVanarToken';
-
-    this.description = 'Summon a random Wall nearby';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierSynergizeSpawnVanarToken';
+  static description = 'Summon a random Wall nearby';
 
   onSynergize(action) {
     super.onSynergize(action);
@@ -52,6 +43,8 @@ class ModifierSynergizeSpawnVanarToken extends ModifierSynergize {
     }
   }
 }
-ModifierSynergizeSpawnVanarToken.initClass();
+ModifierSynergizeSpawnVanarToken.prototype.type = 'ModifierSynergizeSpawnVanarToken';
+ModifierSynergizeSpawnVanarToken.prototype.cardDataOrIndexToSpawn = null;
+ModifierSynergizeSpawnVanarToken.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierSynergizeSpawnVanarToken;

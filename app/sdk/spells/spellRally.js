@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,10 +11,6 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierImmuneToSpellsByEnemy = require('app/sdk/modifiers/modifierImmuneToSpellsByEnemy');
 
 class SpellRally extends Spell {
-  static initClass() {
-    this.prototype.buffName = null;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const targetGeneral = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     const targetGeneralPosition = targetGeneral.getPosition();
@@ -44,6 +39,6 @@ class SpellRally extends Spell {
     }
   }
 }
-SpellRally.initClass();
+SpellRally.prototype.buffName = null;
 
 module.exports = SpellRally;

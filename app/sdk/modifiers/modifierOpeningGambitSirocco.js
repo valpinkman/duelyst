@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,15 +17,9 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitSirocco extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSirocco';
-    this.type = 'ModifierOpeningGambitSirocco';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Summon a 3/2 Skyrock Golem on random spaces for each Golem you\'ve summoned this game';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambitSirocco'];
-  }
+  static type = 'ModifierOpeningGambitSirocco';
+  static modifierName = 'Opening Gambit';
+  static description = 'Summon a 3/2 Skyrock Golem on random spaces for each Golem you\'ve summoned this game';
 
   getIsActionRelevant(a) {
     // triggers once for each Golem tribe minion this card's owner summoned previously
@@ -63,6 +56,7 @@ class ModifierOpeningGambitSirocco extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitSirocco.initClass();
+ModifierOpeningGambitSirocco.prototype.type = 'ModifierOpeningGambitSirocco';
+ModifierOpeningGambitSirocco.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambitSirocco'];
 
 module.exports = ModifierOpeningGambitSirocco;

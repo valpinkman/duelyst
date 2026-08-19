@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,16 +14,9 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 
 class ModifierMyAttackWatchSpawnMinionNearby extends ModifierMyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackWatchSpawnMinionNearby';
-    this.type = 'ModifierMyAttackWatchSpawnMinionNearby';
-
-    this.modifierName = 'Attack Watch and Spawn Minion';
-    this.description = 'Whenever this minion attacks, summon %X nearby';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierMyAttackWatchSpawnMinionNearby';
+  static modifierName = 'Attack Watch and Spawn Minion';
+  static description = 'Whenever this minion attacks, summon %X nearby';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -78,6 +70,8 @@ class ModifierMyAttackWatchSpawnMinionNearby extends ModifierMyAttackWatch {
     return this.getCard().getOwnerId();
   }
 }
-ModifierMyAttackWatchSpawnMinionNearby.initClass();
+ModifierMyAttackWatchSpawnMinionNearby.prototype.type = 'ModifierMyAttackWatchSpawnMinionNearby';
+ModifierMyAttackWatchSpawnMinionNearby.prototype.fxResource = ['FX.Modifiers.ModifierGenericSpawn'];
+ModifierMyAttackWatchSpawnMinionNearby.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierMyAttackWatchSpawnMinionNearby;

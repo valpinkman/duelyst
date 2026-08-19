@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,17 +13,9 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 Modifier = require('./modifier');
 
 class ModifierOpeningGambitSacrificeNearbyBuffSelf extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitSacrificeNearbyBuffSelf';
-    this.type = 'ModifierOpeningGambitSacrificeNearbyBuffSelf';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Destroy friendly minions around it and gain %X for each minion';
-
-    this.prototype.targetEnemies = false;
-    this.prototype.targetAllies = true;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearbyShadow'];
-  }
+  static type = 'ModifierOpeningGambitSacrificeNearbyBuffSelf';
+  static modifierName = 'Opening Gambit';
+  static description = 'Destroy friendly minions around it and gain %X for each minion';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -78,7 +69,10 @@ class ModifierOpeningGambitSacrificeNearbyBuffSelf extends ModifierOpeningGambit
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierOpeningGambitSacrificeNearbyBuffSelf.initClass();
+ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.type = 'ModifierOpeningGambitSacrificeNearbyBuffSelf';
+ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.targetEnemies = false;
+ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.targetAllies = true;
+ModifierOpeningGambitSacrificeNearbyBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearbyShadow'];
 
 module.exports = ModifierOpeningGambitSacrificeNearbyBuffSelf;
 

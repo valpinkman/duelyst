@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,15 +17,7 @@ Next turn, enemy spells cast 2 more to cast
 This turn, all your units cost 1 less to cast
 */
 class ModifierOpeningGambitApplyPlayerModifiers extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitApplyPlayerModifiers';
-    this.type = 'ModifierOpeningGambitApplyPlayerModifiers';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-    this.prototype.managedByCard = false; // whether card with opening gambit should manage the modifiers applied, i.e. when the card is silenced/killed these modifiers are removed
-    this.prototype.applyToOwnPlayer = false;
-    this.prototype.applyToEnemyPlayer = false;
-  }
+  static type = 'ModifierOpeningGambitApplyPlayerModifiers';
 
   static createContextObject(modifiersContextObjects, managedByCard, applyToOwnPlayer, applyToEnemyPlayer, options) {
     if (managedByCard == null) { managedByCard = false; }
@@ -82,6 +73,10 @@ class ModifierOpeningGambitApplyPlayerModifiers extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitApplyPlayerModifiers.initClass();
+ModifierOpeningGambitApplyPlayerModifiers.prototype.type = 'ModifierOpeningGambitApplyPlayerModifiers';
+ModifierOpeningGambitApplyPlayerModifiers.prototype.modifiersContextObjects = null;
+ModifierOpeningGambitApplyPlayerModifiers.prototype.managedByCard = false;
+ModifierOpeningGambitApplyPlayerModifiers.prototype.applyToOwnPlayer = false;
+ModifierOpeningGambitApplyPlayerModifiers.prototype.applyToEnemyPlayer = false;
 
 module.exports = ModifierOpeningGambitApplyPlayerModifiers;

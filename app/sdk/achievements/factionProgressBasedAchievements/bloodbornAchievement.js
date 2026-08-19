@@ -1,20 +1,15 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Achievement = require('app/sdk/achievements/achievement');
 const i18next = require('i18next');
 
 class BloodbornAchievement extends Achievement {
-  static initClass() {
-    this.id = 'bloodborn';
-    this.title = i18next.t('achievements.bloodborn_title');
-    this.description = i18next.t('achievements.bloodborn_desc');
-    this.progressRequired = 1;
-    this.rewards = { spiritOrb: 1 };
-    this.enabled = false;
-  }
+  static id = 'bloodborn';
+  static progressRequired = 1;
+  static rewards = { spiritOrb: 1 };
+  static enabled = false;
 
   // returns progress made by reaching a state of faction progression
   static progressForFactionProgression(factionProgressionData) {
@@ -30,6 +25,7 @@ class BloodbornAchievement extends Achievement {
     return 0;
   }
 }
-BloodbornAchievement.initClass();
+BloodbornAchievement.title = i18next.t('achievements.bloodborn_title');
+BloodbornAchievement.description = i18next.t('achievements.bloodborn_desc');
 
 module.exports = BloodbornAchievement;

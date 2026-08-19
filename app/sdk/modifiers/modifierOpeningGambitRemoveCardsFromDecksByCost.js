@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitRemoveCardsFromDecksByCost extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitRemoveCardsFromDecksByCost';
-    this.type = 'ModifierOpeningGambitRemoveCardsFromDecksByCost';
-
-    this.prototype.manaCost = null;
-    this.prototype.affectMyDeck = true;
-    this.prototype.affectOppDeck = true;
-  }
+  static type = 'ModifierOpeningGambitRemoveCardsFromDecksByCost';
 
   static createContextObject(manaCost, affectMyDeck, affectOppDeck, options) {
     if (affectMyDeck == null) { affectMyDeck = true; }
@@ -68,6 +60,9 @@ class ModifierOpeningGambitRemoveCardsFromDecksByCost extends ModifierOpeningGam
     }
   }
 }
-ModifierOpeningGambitRemoveCardsFromDecksByCost.initClass();
+ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.type = 'ModifierOpeningGambitRemoveCardsFromDecksByCost';
+ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.manaCost = null;
+ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.affectMyDeck = true;
+ModifierOpeningGambitRemoveCardsFromDecksByCost.prototype.affectOppDeck = true;
 
 module.exports = ModifierOpeningGambitRemoveCardsFromDecksByCost;

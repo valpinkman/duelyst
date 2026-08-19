@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -93,11 +92,8 @@ const MythronOrb7Achievement = require('./orbOpeningAchievements/mythronOrb7Achi
 const _ = require('underscore');
 
 class AchievementsFactory {
-  static initClass() {
-    // global cache for quick access
-    this._achievementsCache = null;
-    this._enabledAchievementsCache = null;
-  }
+  static _achievementsCache = null;
+  static _enabledAchievementsCache = null;
 
   // TODO: Could be more performant by separating achievements by what they respond to in bucketed caches
 
@@ -207,6 +203,5 @@ class AchievementsFactory {
     return this._enabledAchievementsCache;
   }
 }
-AchievementsFactory.initClass();
 
 module.exports = AchievementsFactory;

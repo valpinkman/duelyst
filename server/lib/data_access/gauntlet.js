@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -29,26 +28,8 @@ const SDK = require('../../../app/sdk');
 const UtilsGameSession = require('../../../app/common/utils/utils_game_session');
 
 class GauntletModule {
-  static initClass() {
-    /**
-     * GOLD cost for a GAUNTLET Ticket.
-     * @public
-     */
-    this.GAUNTLET_TICKET_GOLD_PRICE = 0; // was 150
-
-    /**
-     * Maximum win count for gauntlet.
-     * @public
-     */
-    this.GAUNTLET_MAX_WINS = 12;
-
-    /**
-     * Orb sets that can be part of the Gauntlet rewards
-     * Equal chance for any of these orbs to be chosen
-     * @private
-     */
-    this._GAUNTLET_SPIRIT_ORB_REWARD_SETS = [SDK.CardSet.Core, SDK.CardSet.Shimzar, SDK.CardSet.FirstWatch, SDK.CardSet.Wartech, SDK.CardSet.CombinedUnlockables, SDK.CardSet.Coreshatter];
-  }
+  static GAUNTLET_TICKET_GOLD_PRICE = 0;
+  static GAUNTLET_MAX_WINS = 12;
 
   /**
    * Use soft currency (gold) to buy an arena ticket for a user.
@@ -1510,6 +1491,6 @@ class GauntletModule {
     return this.rewardMap;
   }
 }
-GauntletModule.initClass();
+GauntletModule._GAUNTLET_SPIRIT_ORB_REWARD_SETS = [SDK.CardSet.Core, SDK.CardSet.Shimzar, SDK.CardSet.FirstWatch, SDK.CardSet.Wartech, SDK.CardSet.CombinedUnlockables, SDK.CardSet.Coreshatter];
 
 module.exports = GauntletModule;

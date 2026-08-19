@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const QuestBeginner = require('./questBeginner');
@@ -12,12 +11,7 @@ const Logger = require('app/common/logger');
 const i18next = require('i18next');
 
 class QuestBeginnerWinPracticeGames extends QuestBeginner {
-  static initClass() {
-    this.Identifier = 9901;
-    this.prototype.spiritOrbsReward = 1;
-    this.prototype.goldReward = null;
-    // Awards a Spirit Orb instead of Gold. Adding gold messes up the UI.
-  }
+  static Identifier = 9901;
 
   constructor() {
     super(QuestBeginnerWinPracticeGames.Identifier, i18next.t('quests.quest_beginner_win_practice_games_title', { count: 1 }), [QuestType.Beginner], QuestBeginnerWinPracticeGames.prototype.goldReward);
@@ -39,6 +33,7 @@ class QuestBeginnerWinPracticeGames extends QuestBeginner {
     return i18next.t('quests.quest_beginner_win_practice_games_description', { count: this.params.completionProgress });
   }
 }
-QuestBeginnerWinPracticeGames.initClass();
+QuestBeginnerWinPracticeGames.prototype.spiritOrbsReward = 1;
+QuestBeginnerWinPracticeGames.prototype.goldReward = null;
 
 module.exports = QuestBeginnerWinPracticeGames;

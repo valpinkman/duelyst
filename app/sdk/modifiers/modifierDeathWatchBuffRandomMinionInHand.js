@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,16 +9,8 @@ const Modifier = require('./modifier');
 const ModifierDeathWatch = require('./modifierDeathWatch');
 
 class ModifierDeathWatchBuffRandomMinionInHand extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchBuffRandomMinionInHand';
-    this.type = 'ModifierDeathWatchBuffRandomMinionInHand';
-
-    this.description = 'Give a minion in your hand %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
-
-    this.prototype.modifiersContextObjects = null;
-  }
+  static type = 'ModifierDeathWatchBuffRandomMinionInHand';
+  static description = 'Give a minion in your hand %X';
 
   static createContextObject(modifiersContextObjects, description, options) {
     const contextObject = super.createContextObject(options);
@@ -51,6 +42,8 @@ class ModifierDeathWatchBuffRandomMinionInHand extends ModifierDeathWatch {
     }
   }
 }
-ModifierDeathWatchBuffRandomMinionInHand.initClass();
+ModifierDeathWatchBuffRandomMinionInHand.prototype.type = 'ModifierDeathWatchBuffRandomMinionInHand';
+ModifierDeathWatchBuffRandomMinionInHand.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
+ModifierDeathWatchBuffRandomMinionInHand.prototype.modifiersContextObjects = null;
 
 module.exports = ModifierDeathWatchBuffRandomMinionInHand;

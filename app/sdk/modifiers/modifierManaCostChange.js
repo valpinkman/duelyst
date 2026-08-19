@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,18 +10,7 @@ const Modifier = require('./modifier');
 const ApplyCardToBoardAction = require('../actions/applyCardToBoardAction');
 
 class ModifierManaCostChange extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierManaCostChange';
-    this.type = 'ModifierManaCostChange';
-
-    this.modifierName = i18next.t('modifiers.mana_shift_name');
-
-    this.prototype.attributeBuffs = {
-      manaCost: 0,
-    };
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierManaCostChange'];
-  }
+  static type = 'ModifierManaCostChange';
 
   static createContextObject(costChange, options) {
     if (costChange == null) { costChange = 0; }
@@ -61,6 +49,11 @@ class ModifierManaCostChange extends Modifier {
     return super._onAfterAction(event);
   }
 }
-ModifierManaCostChange.initClass();
+ModifierManaCostChange.prototype.type = 'ModifierManaCostChange';
+ModifierManaCostChange.modifierName = i18next.t('modifiers.mana_shift_name');
+ModifierManaCostChange.prototype.attributeBuffs = {
+  manaCost: 0,
+};
+ModifierManaCostChange.prototype.fxResource = ['FX.Modifiers.ModifierManaCostChange'];
 
 module.exports = ModifierManaCostChange;

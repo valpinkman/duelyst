@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DrawCardAction = require('app/sdk/actions/drawCardAction');
 const ModifierMyBuildWatch = require('./modifierMyBuildWatch');
 
 class ModifierMyBuildWatchDrawCards extends ModifierMyBuildWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyBuildWatchDrawCards';
-    this.type = 'ModifierMyBuildWatchDrawCards';
-
-    this.prototype.drawAmount = 0;
-  }
+  static type = 'ModifierMyBuildWatchDrawCards';
 
   static createContextObject(drawAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -28,7 +22,8 @@ class ModifierMyBuildWatchDrawCards extends ModifierMyBuildWatch {
       this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), this.getCard().getOwnerId())));
   }
 }
-ModifierMyBuildWatchDrawCards.initClass();
+ModifierMyBuildWatchDrawCards.prototype.type = 'ModifierMyBuildWatchDrawCards';
+ModifierMyBuildWatchDrawCards.prototype.drawAmount = 0;
 
 module.exports = ModifierMyBuildWatchDrawCards;
 

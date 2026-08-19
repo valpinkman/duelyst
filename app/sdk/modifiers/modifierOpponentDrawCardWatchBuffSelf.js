@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,15 +9,9 @@ const ModifierOpponentDrawCardWatch = require('./modifierOpponentDrawCardWatch')
 const Modifier = require('./modifier');
 
 class ModifierOpponentDrawCardWatchBuffSelf extends ModifierOpponentDrawCardWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentDrawCardWatchBuffSelf';
-    this.type = 'ModifierOpponentDrawCardWatchBuffSelf';
-
-    this.modifierName = 'ModifierOpponentDrawCardWatchBuffSelf';
-    this.description = 'Whenever your opponent draws a card, this minion gains %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierOpponentDrawCardWatchBuffSelf';
+  static modifierName = 'ModifierOpponentDrawCardWatchBuffSelf';
+  static description = 'Whenever your opponent draws a card, this minion gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -46,6 +39,7 @@ class ModifierOpponentDrawCardWatchBuffSelf extends ModifierOpponentDrawCardWatc
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierOpponentDrawCardWatchBuffSelf.initClass();
+ModifierOpponentDrawCardWatchBuffSelf.prototype.type = 'ModifierOpponentDrawCardWatchBuffSelf';
+ModifierOpponentDrawCardWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierOpponentDrawCardWatchBuffSelf;

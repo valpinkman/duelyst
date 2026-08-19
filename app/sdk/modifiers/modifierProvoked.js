@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,25 +13,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierProvoked extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierProvoked';
-    this.type = 'ModifierProvoked';
-
-    this.modifierName = i18next.t('modifiers.provoked_name');
-    this.description = i18next.t('modifiers.provoked_desc');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    // attributeBuffs:
-    //  speed: 0
-    // attributeBuffsAbsolute: ["speed"]
-    // attributeBuffsFixed: ["speed"]
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierProvoked'];
-  }
+  static type = 'ModifierProvoked';
 
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
@@ -61,6 +42,13 @@ class ModifierProvoked extends Modifier {
     }
   }
 }
-ModifierProvoked.initClass();
+ModifierProvoked.prototype.type = 'ModifierProvoked';
+ModifierProvoked.modifierName = i18next.t('modifiers.provoked_name');
+ModifierProvoked.description = i18next.t('modifiers.provoked_desc');
+ModifierProvoked.prototype.activeInHand = false;
+ModifierProvoked.prototype.activeInDeck = false;
+ModifierProvoked.prototype.activeInSignatureCards = false;
+ModifierProvoked.prototype.activeOnBoard = true;
+ModifierProvoked.prototype.fxResource = ['FX.Modifiers.ModifierProvoked'];
 
 module.exports = ModifierProvoked;

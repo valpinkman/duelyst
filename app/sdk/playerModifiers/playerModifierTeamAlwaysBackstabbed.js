@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifier = require('./playerModifier');
@@ -8,24 +7,8 @@ const ModifierAlwaysBackstabbed = require('app/sdk/modifiers/modifierAlwaysBacks
 const CONFIG = require('app/common/config');
 
 class PlayerModifierTeamAlwaysBackstabbed extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierTeamAlwaysBackstabbed';
-    this.type = 'PlayerModifierTeamAlwaysBackstabbed';
-    this.isHiddenToUI = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.isAura = true;
-    this.prototype.auraIncludeAlly = true;
-    this.prototype.auraIncludeBoard = true;
-    this.prototype.auraIncludeEnemy = false;
-    this.prototype.auraIncludeGeneral = true;
-    this.prototype.auraIncludeHand = false;
-    this.prototype.auraIncludeSelf = true;
-    this.prototype.auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
-
-    this.prototype.modifiersContextObjects = null;
-  }
+  static type = 'PlayerModifierTeamAlwaysBackstabbed';
+  static isHiddenToUI = true;
 
   static createContextObject(auraModifierAppliedName, auraModifierAppliedDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +19,16 @@ class PlayerModifierTeamAlwaysBackstabbed extends PlayerModifier {
     return contextObject;
   }
 }
-PlayerModifierTeamAlwaysBackstabbed.initClass();
+PlayerModifierTeamAlwaysBackstabbed.prototype.type = 'PlayerModifierTeamAlwaysBackstabbed';
+PlayerModifierTeamAlwaysBackstabbed.prototype.maxStacks = 1;
+PlayerModifierTeamAlwaysBackstabbed.prototype.isAura = true;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraIncludeAlly = true;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraIncludeBoard = true;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraIncludeEnemy = false;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraIncludeGeneral = true;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraIncludeHand = false;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraIncludeSelf = true;
+PlayerModifierTeamAlwaysBackstabbed.prototype.auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
+PlayerModifierTeamAlwaysBackstabbed.prototype.modifiersContextObjects = null;
 
 module.exports = PlayerModifierTeamAlwaysBackstabbed;

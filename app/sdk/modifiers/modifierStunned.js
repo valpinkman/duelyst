@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -17,25 +16,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierStunned extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierStunned';
-    this.type = 'ModifierStunned';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.stunned_def');
-
-    this.modifierName = i18next.t('modifiers.stunned_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.durationEndTurn = 2; // stun effect lasts until end of owner's next turn
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStunned'];
-  }
+  static type = 'ModifierStunned';
+  static isKeyworded = true;
+  static description = null;
 
   onApplyToCardBeforeSyncState() {
     super.onApplyToCardBeforeSyncState();
@@ -64,6 +47,15 @@ class ModifierStunned extends Modifier {
     }
   }
 }
-ModifierStunned.initClass();
+ModifierStunned.prototype.type = 'ModifierStunned';
+ModifierStunned.keywordDefinition = i18next.t('modifiers.stunned_def');
+ModifierStunned.modifierName = i18next.t('modifiers.stunned_name');
+ModifierStunned.prototype.activeInHand = false;
+ModifierStunned.prototype.activeInDeck = false;
+ModifierStunned.prototype.activeInSignatureCards = false;
+ModifierStunned.prototype.activeOnBoard = true;
+ModifierStunned.prototype.maxStacks = 1;
+ModifierStunned.prototype.durationEndTurn = 2;
+ModifierStunned.prototype.fxResource = ['FX.Modifiers.ModifierStunned'];
 
 module.exports = ModifierStunned;

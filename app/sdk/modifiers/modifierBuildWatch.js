@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -11,20 +10,9 @@ const ModifierOpeningGambitProgressBuild = require('app/sdk/modifiers/modifierOp
 const Modifier = require('./modifier');
 
 class ModifierBuildWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBuildWatch';
-    this.type = 'ModifierBuildWatch';
-
-    this.modifierName = 'Build Watch';
-    this.description = 'Build Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuildWatch'];
-  }
+  static type = 'ModifierBuildWatch';
+  static modifierName = 'Build Watch';
+  static description = 'Build Watch';
 
   onAfterCleanupAction(e) {
     super.onAfterCleanupAction(e);
@@ -50,6 +38,12 @@ class ModifierBuildWatch extends Modifier {
     return true;
   }
 }
-ModifierBuildWatch.initClass(); // override me in sub classes to implement special behavior
+ModifierBuildWatch.prototype.type = 'ModifierBuildWatch';
+ModifierBuildWatch.prototype.activeInHand = false;
+ModifierBuildWatch.prototype.activeInDeck = false;
+ModifierBuildWatch.prototype.activeInSignatureCards = false;
+ModifierBuildWatch.prototype.activeOnBoard = true;
+ModifierBuildWatch.prototype.fxResource = ['FX.Modifiers.ModifierBuildWatch'];
+// override me in sub classes to implement special behavior
 
 module.exports = ModifierBuildWatch;

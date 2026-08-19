@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -9,13 +8,9 @@ const Modifier = require('./modifier');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 
 class ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard extends ModifierMyGeneralDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard';
-    this.type = 'ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard';
-
-    this.modifierName = 'My General Damaged Watch';
-    this.description = 'Whenever your General takes damage, give this minion %X and draw a card';
-  }
+  static type = 'ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard';
+  static modifierName = 'My General Damaged Watch';
+  static description = 'Whenever your General takes damage, give this minion %X and draw a card';
 
   static createContextObject(statContextObject, description, options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +31,6 @@ class ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard extends ModifierMyGenera
     return this.getGameSession().executeAction(this.getCard().getOwner().getDeck().actionDrawCard());
   }
 }
-ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard.initClass();
+ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard.prototype.type = 'ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard';
 
 module.exports = ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard;

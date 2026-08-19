@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const MoveAction = require('app/sdk/actions/moveAction');
@@ -11,20 +10,9 @@ const SwapUnitsAction = require('app/sdk/actions/swapUnitsAction');
 const Modifier = require('./modifier');
 
 class ModifierEnemyTeamMoveWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyTeamMoveWatch';
-    this.type = 'ModifierEnemyTeamMoveWatch';
-
-    this.modifierName = 'Any Move Watch: Enemy';
-    this.description = 'Whenever an enemy minion is moved for any reason...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-  }
+  static type = 'ModifierEnemyTeamMoveWatch';
+  static modifierName = 'Any Move Watch: Enemy';
+  static description = 'Whenever an enemy minion is moved for any reason...';
 
   onAction(event) {
     super.onAction(event);
@@ -45,7 +33,12 @@ class ModifierEnemyTeamMoveWatch extends Modifier {
 
   onEnemyTeamMoveWatch(action, movingTarget) {}
 }
-ModifierEnemyTeamMoveWatch.initClass();
+ModifierEnemyTeamMoveWatch.prototype.type = 'ModifierEnemyTeamMoveWatch';
+ModifierEnemyTeamMoveWatch.prototype.activeInHand = false;
+ModifierEnemyTeamMoveWatch.prototype.activeInDeck = false;
+ModifierEnemyTeamMoveWatch.prototype.activeInSignatureCards = false;
+ModifierEnemyTeamMoveWatch.prototype.activeOnBoard = true;
+ModifierEnemyTeamMoveWatch.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEnemyTeamMoveWatch;

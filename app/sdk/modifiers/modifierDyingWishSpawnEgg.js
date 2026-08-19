@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,18 +14,11 @@ const _ = require('underscore');
 const ModifierDyingWishSpawnEntity = require('./modifierDyingWishSpawnEntity');
 
 class ModifierDyingWishSpawnEgg extends ModifierDyingWishSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishSpawnEgg';
-    this.type = 'ModifierDyingWishSpawnEgg';
-
-    this.isKeyworded = false;
-    this.keywordDefinition = 'When this dies, it leaves behind a 0/1 Egg that hatches into %X';
-
-    this.modifierName = 'Rebirth: Serpenti';
-    this.description = 'Will leave behind a Serpenti egg when killed';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierRebirth'];
-  }
+  static type = 'ModifierDyingWishSpawnEgg';
+  static isKeyworded = false;
+  static keywordDefinition = 'When this dies, it leaves behind a 0/1 Egg that hatches into %X';
+  static modifierName = 'Rebirth: Serpenti';
+  static description = 'Will leave behind a Serpenti egg when killed';
 
   static createContextObject(cardDataOrIndexToSpawnAsEgg, spawnDescription, options) {
     let spawnCount; let spawnPattern; let
@@ -82,6 +74,7 @@ class ModifierDyingWishSpawnEgg extends ModifierDyingWishSpawnEntity {
     }
   }
 }
-ModifierDyingWishSpawnEgg.initClass();
+ModifierDyingWishSpawnEgg.prototype.type = 'ModifierDyingWishSpawnEgg';
+ModifierDyingWishSpawnEgg.prototype.fxResource = ['FX.Modifiers.ModifierRebirth'];
 
 module.exports = ModifierDyingWishSpawnEgg;

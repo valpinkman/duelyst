@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,10 +8,6 @@ const SpellApplyModifiers = require('./spellApplyModifiers');
 const Modifier = require('app/sdk/modifiers/modifier');
 
 class SpellEffulgentInfusion extends SpellApplyModifiers {
-  static initClass() {
-    this.prototype.appliedName = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     if (general != null) {
@@ -26,6 +21,6 @@ class SpellEffulgentInfusion extends SpellApplyModifiers {
     }
   }
 }
-SpellEffulgentInfusion.initClass();
+SpellEffulgentInfusion.prototype.appliedName = null;
 
 module.exports = SpellEffulgentInfusion;

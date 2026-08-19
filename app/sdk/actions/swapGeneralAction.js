@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,11 +12,7 @@ const PlayerModifier = require('app/sdk/playerModifiers/playerModifier');
 const PlayerModifierBattlePetManager = require('app/sdk/playerModifiers/playerModifierBattlePetManager');
 
 class SwapGeneralAction extends Action {
-  static initClass() {
-    this.type = 'SwapGeneralAction';
-    this.prototype.isDepthFirst = true;
-    // swapping generals must be depth first to ensure general modifiers are preserved
-  }
+  static type = 'SwapGeneralAction';
 
   constructor() {
     super(...arguments);
@@ -71,6 +66,6 @@ class SwapGeneralAction extends Action {
     }
   }
 }
-SwapGeneralAction.initClass();
+SwapGeneralAction.prototype.isDepthFirst = true;
 
 module.exports = SwapGeneralAction;

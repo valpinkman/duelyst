@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -9,15 +8,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierCannot = require('./modifierCannot');
 
 class ModifierCannotDamageGenerals extends ModifierCannot {
-  static initClass() {
-    this.prototype.type = 'ModifierCannotDamageGenerals';
-    this.type = 'ModifierCannotDamageGenerals';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierCannotDamageGenerals';
 
   onEvent(event) {
     super.onEvent(event);
@@ -54,6 +45,10 @@ class ModifierCannotDamageGenerals extends ModifierCannot {
     }
   }
 }
-ModifierCannotDamageGenerals.initClass();
+ModifierCannotDamageGenerals.prototype.type = 'ModifierCannotDamageGenerals';
+ModifierCannotDamageGenerals.prototype.activeInHand = false;
+ModifierCannotDamageGenerals.prototype.activeInDeck = false;
+ModifierCannotDamageGenerals.prototype.activeInSignatureCards = false;
+ModifierCannotDamageGenerals.prototype.activeOnBoard = true;
 
 module.exports = ModifierCannotDamageGenerals;

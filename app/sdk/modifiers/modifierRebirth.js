@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,17 +16,8 @@ const i18next = require('i18next');
 const ModifierOnDyingSpawnEntity = require('./modifierOnDyingSpawnEntity');
 
 class ModifierRebirth extends ModifierOnDyingSpawnEntity {
-  static initClass() {
-    this.prototype.type = 'ModifierRebirth';
-    this.type = 'ModifierRebirth';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.rebirth_def');
-
-    this.modifierName = i18next.t('modifiers.rebirth_name');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierRebirth'];
-  }
+  static type = 'ModifierRebirth';
+  static isKeyworded = true;
 
   static createContextObject(options) {
     let spawnCount; let spawnPattern; let
@@ -60,6 +50,9 @@ class ModifierRebirth extends ModifierOnDyingSpawnEntity {
     }
   }
 }
-ModifierRebirth.initClass();
+ModifierRebirth.prototype.type = 'ModifierRebirth';
+ModifierRebirth.keywordDefinition = i18next.t('modifiers.rebirth_def');
+ModifierRebirth.modifierName = i18next.t('modifiers.rebirth_name');
+ModifierRebirth.prototype.fxResource = ['FX.Modifiers.ModifierRebirth'];
 
 module.exports = ModifierRebirth;

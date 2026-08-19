@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,16 +16,8 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierReplaceWatch = require('./modifierReplaceWatch');
 
 class ModifierReplaceWatchSpawnEntity extends ModifierReplaceWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierReplaceWatchSpawnEntity';
-    this.type = 'ModifierReplaceWatchSpawnEntity';
-
-    this.description = 'Whenever you replace a card, summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierReplaceWatchSpawnEntity';
+  static description = 'Whenever you replace a card, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -89,6 +80,8 @@ class ModifierReplaceWatchSpawnEntity extends ModifierReplaceWatch {
     }
   }
 }
-ModifierReplaceWatchSpawnEntity.initClass();
+ModifierReplaceWatchSpawnEntity.prototype.type = 'ModifierReplaceWatchSpawnEntity';
+ModifierReplaceWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierReplaceWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierReplaceWatchSpawnEntity;

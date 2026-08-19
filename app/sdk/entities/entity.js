@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -42,31 +41,6 @@ const PlayerModifierChangeSignatureCard = require('app/sdk/playerModifiers/playe
 const _ = require('underscore');
 
 class Entity extends Card {
-  static initClass() {
-    this.prototype.type = CardType.Entity;
-    this.type = CardType.Entity;
-    this.prototype.name = 'Entity';
-
-    this.prototype.atk = 0; // attack damage
-    this.prototype.attacks = 1; // max attacks this entity can make
-    this.prototype.attacksMade = 0; // number of attacks this entity has made this turn
-    this.prototype.damage = 0; // current damage
-    this.prototype.exhausted = true; // whether an entity is exhausted regardless of how many moves/attacks it has made
-    this.prototype.isGeneral = false; // whether entity is a general
-    this.prototype.isObstructing = false; // whether the entity takes up an entire board position and blocks view for units that need LOS
-    this.prototype.isTargetable = true; // whether the entity can be targeted
-    this.prototype.lastDmg = 0; // value of last damage taken
-    this.prototype.lastHeal = 0; // value of last heal
-    this.prototype.maxHP = 1; // max HP
-    this.prototype.moves = 1; // max moves this entity can make
-    this.prototype.movesMade = 0; // number of moves this entity has made this turn
-    this.prototype.reach = 0; // how far the entity can attack
-    this.prototype.speed = 0; // how far the entity can go per move
-    this.prototype.wasGeneral = false; // whether this entity was a general at some time during game
-    this.prototype.signatureCardData = null;
-    // normally this will be null, but will be populated for Generals
-  }
-
   constructor(gameSession) {
     // super constructor
     super(gameSession);
@@ -798,7 +772,26 @@ class Entity extends Card {
     return properties;
   }
 }
-Entity.initClass();
+Entity.prototype.type = CardType.Entity;
+Entity.type = CardType.Entity;
+Entity.prototype.name = 'Entity';
+Entity.prototype.atk = 0;
+Entity.prototype.attacks = 1;
+Entity.prototype.attacksMade = 0;
+Entity.prototype.damage = 0;
+Entity.prototype.exhausted = true;
+Entity.prototype.isGeneral = false;
+Entity.prototype.isObstructing = false;
+Entity.prototype.isTargetable = true;
+Entity.prototype.lastDmg = 0;
+Entity.prototype.lastHeal = 0;
+Entity.prototype.maxHP = 1;
+Entity.prototype.moves = 1;
+Entity.prototype.movesMade = 0;
+Entity.prototype.reach = 0;
+Entity.prototype.speed = 0;
+Entity.prototype.wasGeneral = false;
+Entity.prototype.signatureCardData = null;
 
 // endregion ACTION STATE RECORD
 

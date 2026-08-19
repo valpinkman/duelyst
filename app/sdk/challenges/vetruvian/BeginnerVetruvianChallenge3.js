@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -23,27 +22,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/starter-challenge-vanar/7519
 
 class BeginnerVetruvianChallenge3 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerVetruvianChallenge3';
-    this.prototype.type = 'BeginnerVetruvianChallenge3';
-    this.prototype.categoryType = ChallengeCategory.keywords.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_vetruvian_3_title');
-    this.prototype.description = i18next.t('challenges.beginner_vetruvian_3_description');
-    this.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vetruvian_3_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_vetruvian_3_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 4;
-    this.prototype.startingHandSizePlayer = 4;
-  }
+  static type = 'BeginnerVetruvianChallenge3';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -104,6 +83,19 @@ class BeginnerVetruvianChallenge3 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerVetruvianChallenge3.initClass();
+BeginnerVetruvianChallenge3.prototype.type = 'BeginnerVetruvianChallenge3';
+BeginnerVetruvianChallenge3.prototype.categoryType = ChallengeCategory.keywords.type;
+BeginnerVetruvianChallenge3.prototype.name = i18next.t('challenges.beginner_vetruvian_3_title');
+BeginnerVetruvianChallenge3.prototype.description = i18next.t('challenges.beginner_vetruvian_3_description');
+BeginnerVetruvianChallenge3.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
+BeginnerVetruvianChallenge3.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
+BeginnerVetruvianChallenge3.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_vetruvian_3_start');
+BeginnerVetruvianChallenge3.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_vetruvian_3_fail'),
+];
+BeginnerVetruvianChallenge3.prototype.battleMapTemplateIndex = 0;
+BeginnerVetruvianChallenge3.prototype.snapShotOnPlayerTurn = 0;
+BeginnerVetruvianChallenge3.prototype.startingManaPlayer = 4;
+BeginnerVetruvianChallenge3.prototype.startingHandSizePlayer = 4;
 
 module.exports = BeginnerVetruvianChallenge3;

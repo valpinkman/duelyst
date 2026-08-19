@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,13 +12,6 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const Rarity = require('app/sdk/cards/rarityLookup');
 
 class SpellFollowupKeeper extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.canBeAppliedAnywhere = false;
-    this.prototype.spawnSilently = true;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Neutral.KeeperOfTheVale };
-    // default unit for spell positioning
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -56,6 +48,8 @@ class SpellFollowupKeeper extends SpellSpawnEntity {
     return [];
   }
 }
-SpellFollowupKeeper.initClass();
+SpellFollowupKeeper.prototype.canBeAppliedAnywhere = false;
+SpellFollowupKeeper.prototype.spawnSilently = true;
+SpellFollowupKeeper.prototype.cardDataOrIndexToSpawn = { id: Cards.Neutral.KeeperOfTheVale };
 
 module.exports = SpellFollowupKeeper;

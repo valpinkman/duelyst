@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Spell = require('./spell');
@@ -11,10 +10,6 @@ const ModifierOverwatch = require('app/sdk/modifiers/modifierOverwatch');
   Generic spell used to hide the true overwatch spell from an opponent.
 */
 class SpellOverwatch extends Spell {
-  static initClass() {
-    this.prototype.name = 'Overwatch';
-  }
-
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
 
@@ -47,6 +42,6 @@ class SpellOverwatch extends Spell {
     return this.setBaseManaCost(source.getBaseManaCost());
   }
 }
-SpellOverwatch.initClass();
+SpellOverwatch.prototype.name = 'Overwatch';
 
 module.exports = SpellOverwatch;

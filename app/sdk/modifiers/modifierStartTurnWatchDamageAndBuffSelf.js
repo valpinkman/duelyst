@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const CONFIG = require('app/common/config');
 const ModifierStartTurnWatchBuffSelf = require('./modifierStartTurnWatchBuffSelf');
 
 class ModifierStartTurnWatchDamageAndBuffSelf extends ModifierStartTurnWatchBuffSelf {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchDamageAndBuffSelf';
-    this.type = 'ModifierStartTurnWatchDamageAndBuffSelf';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the start of your turn, take %X damage but gain %Y';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
-  }
+  static type = 'ModifierStartTurnWatchDamageAndBuffSelf';
+  static modifierName = 'Turn Watch';
+  static description = 'At the start of your turn, take %X damage but gain %Y';
 
   static createContextObject(attackBuff, maxHPBuff, damageAmount, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -54,6 +47,8 @@ class ModifierStartTurnWatchDamageAndBuffSelf extends ModifierStartTurnWatchBuff
     return super.onTurnWatch(action);
   }
 }
-ModifierStartTurnWatchDamageAndBuffSelf.initClass(); // then buff self
+ModifierStartTurnWatchDamageAndBuffSelf.prototype.type = 'ModifierStartTurnWatchDamageAndBuffSelf';
+ModifierStartTurnWatchDamageAndBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch', 'FX.Modifiers.ModifierGenericChainLightning'];
+// then buff self
 
 module.exports = ModifierStartTurnWatchDamageAndBuffSelf;

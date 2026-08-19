@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,12 +14,7 @@ const ModifierQuestStatusSonghai = require('./modifierQuestStatusSonghai');
 const ModifierFate = require('./modifierFate');
 
 class ModifierFateSonghaiMinionQuest extends ModifierFate {
-  static initClass() {
-    this.prototype.type = 'ModifierFateSonghaiMinionQuest';
-    this.type = 'ModifierFateSonghaiMinionQuest';
-
-    this.prototype.numDifferentCostsRequired = 1;
-  }
+  static type = 'ModifierFateSonghaiMinionQuest';
 
   static createContextObject(numDifferentCostsRequired, options) {
     const contextObject = super.createContextObject(options);
@@ -108,6 +102,7 @@ class ModifierFateSonghaiMinionQuest extends ModifierFate {
     return num;
   }
 }
-ModifierFateSonghaiMinionQuest.initClass();
+ModifierFateSonghaiMinionQuest.prototype.type = 'ModifierFateSonghaiMinionQuest';
+ModifierFateSonghaiMinionQuest.prototype.numDifferentCostsRequired = 1;
 
 module.exports = ModifierFateSonghaiMinionQuest;

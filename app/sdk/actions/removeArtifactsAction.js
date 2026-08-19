@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,9 +9,7 @@ const Action = require('./action');
 const CardType = require('app/sdk/cards/cardType');
 
 class RemoveArtifactsAction extends Action {
-  static initClass() {
-    this.type = 'RemoveArtifactsAction';
-  }
+  static type = 'RemoveArtifactsAction';
 
   constructor() {
     super(...arguments);
@@ -40,6 +37,5 @@ class RemoveArtifactsAction extends Action {
     }
   }
 }
-RemoveArtifactsAction.initClass();
 
 module.exports = RemoveArtifactsAction;

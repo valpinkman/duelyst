@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
@@ -10,15 +9,9 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchPutCardInHand extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchPutCardInHand';
-    this.type = 'ModifierSummonWatchPutCardInHand';
-
-    this.modifierName = 'Summon Watch (put card in hand)';
-    this.description = 'Whenever you summon a minion, you gain a %X in your Action bar';
-
-    this.prototype.cardDataOrIndexToPutInHand = null;
-  }
+  static type = 'ModifierSummonWatchPutCardInHand';
+  static modifierName = 'Summon Watch (put card in hand)';
+  static description = 'Whenever you summon a minion, you gain a %X in your Action bar';
 
   static createContextObject(cardDataOrIndexToPutInHand, cardDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -39,6 +32,7 @@ class ModifierSummonWatchPutCardInHand extends ModifierSummonWatch {
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierSummonWatchPutCardInHand.initClass();
+ModifierSummonWatchPutCardInHand.prototype.type = 'ModifierSummonWatchPutCardInHand';
+ModifierSummonWatchPutCardInHand.prototype.cardDataOrIndexToPutInHand = null;
 
 module.exports = ModifierSummonWatchPutCardInHand;

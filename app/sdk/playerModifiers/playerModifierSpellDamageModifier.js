@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,13 +11,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const CardType = require('app/sdk/cards/cardType');
 
 class PlayerModifierSpellDamageModifier extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierSpellDamageModifier';
-    this.type = 'PlayerModifierSpellDamageModifier';
-
-    this.prototype.spellDamageChange = null;
-    this.prototype.spellDamageMultiplier = null;
-  }
+  static type = 'PlayerModifierSpellDamageModifier';
 
   setSpellDamageChange(damageChange) {
     return this.spellDamageChange = damageChange;
@@ -48,7 +41,9 @@ class PlayerModifierSpellDamageModifier extends PlayerModifier {
     }
   }
 }
-PlayerModifierSpellDamageModifier.initClass();
+PlayerModifierSpellDamageModifier.prototype.type = 'PlayerModifierSpellDamageModifier';
+PlayerModifierSpellDamageModifier.prototype.spellDamageChange = null;
+PlayerModifierSpellDamageModifier.prototype.spellDamageMultiplier = null;
 
 module.exports = PlayerModifierSpellDamageModifier;
 

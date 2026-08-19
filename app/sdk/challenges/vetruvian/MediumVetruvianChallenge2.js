@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -22,27 +21,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/winds-of-change-gate-5-slot-4/12215
 
 class MediumVetruvianChallenge2 extends Challenge {
-  static initClass() {
-    this.type = 'MediumVetruvianChallenge2';
-    this.prototype.type = 'MediumVetruvianChallenge2';
-    this.prototype.categoryType = ChallengeCategory.advanced.type;
-
-    this.prototype.name = i18next.t('challenges.medium_vetruvian_2_title');
-    this.prototype.description = i18next.t('challenges.medium_vetruvian_2_description');
-    this.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_vetruvian_2_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.medium_vetruvian_2_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 6;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 9;
-    this.prototype.startingHandSizePlayer = 4;
-  }
+  static type = 'MediumVetruvianChallenge2';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -102,6 +81,19 @@ class MediumVetruvianChallenge2 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-MediumVetruvianChallenge2.initClass();
+MediumVetruvianChallenge2.prototype.type = 'MediumVetruvianChallenge2';
+MediumVetruvianChallenge2.prototype.categoryType = ChallengeCategory.advanced.type;
+MediumVetruvianChallenge2.prototype.name = i18next.t('challenges.medium_vetruvian_2_title');
+MediumVetruvianChallenge2.prototype.description = i18next.t('challenges.medium_vetruvian_2_description');
+MediumVetruvianChallenge2.prototype.iconUrl = RSX.speech_portrait_vetruvian.img;
+MediumVetruvianChallenge2.prototype._musicOverride = RSX.music_battlemap_vetruv.audio;
+MediumVetruvianChallenge2.prototype.otkChallengeStartMessage = i18next.t('challenges.medium_vetruvian_2_start');
+MediumVetruvianChallenge2.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.medium_vetruvian_2_fail'),
+];
+MediumVetruvianChallenge2.prototype.battleMapTemplateIndex = 6;
+MediumVetruvianChallenge2.prototype.snapShotOnPlayerTurn = 0;
+MediumVetruvianChallenge2.prototype.startingManaPlayer = 9;
+MediumVetruvianChallenge2.prototype.startingHandSizePlayer = 4;
 
 module.exports = MediumVetruvianChallenge2;

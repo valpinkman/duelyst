@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,10 +14,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const CONFIG = require('app/common/config');
 
 class SpellIntensifyShadowBlossom extends SpellIntensify {
-  static initClass() {
-    this.prototype.spawnCount = 1;
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
@@ -61,6 +56,6 @@ class SpellIntensifyShadowBlossom extends SpellIntensify {
     }
   }
 }
-SpellIntensifyShadowBlossom.initClass();
+SpellIntensifyShadowBlossom.prototype.spawnCount = 1;
 
 module.exports = SpellIntensifyShadowBlossom;

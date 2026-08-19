@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,11 +12,7 @@ const CardType = require('app/sdk/cards/cardType');
 const _ = require('underscore');
 
 class DamageAction extends Action {
-  static initClass() {
-    this.type = 'DamageAction';
-    this.prototype.damageAmount = 0;
-    // base damage amount, should be set when action first made and then never modified
-  }
+  static type = 'DamageAction';
 
   constructor(gameSession) {
     super(gameSession);
@@ -131,7 +126,7 @@ class DamageAction extends Action {
     }
   }
 }
-DamageAction.initClass();
+DamageAction.prototype.damageAmount = 0;
 
 module.exports = DamageAction;
 

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,10 +17,6 @@ const ModifierManaCostChange = require('app/sdk/modifiers/modifierManaCostChange
 const ModifierCannotBeRemovedFromHand = require('app/sdk/modifiers/modifierCannotBeRemovedFromHand');
 
 class SpellKoanOfHorns extends Spell {
-  static initClass() {
-    this.prototype.cardDataOrIndex = { id: Cards.Faction2.GoreHorn };
-  }
-
   onApplyOneEffectToBoard(board, x, y, sourceAction) {
     let card;
     super.onApplyOneEffectToBoard(board, x, y, sourceAction);
@@ -57,6 +52,6 @@ class SpellKoanOfHorns extends Spell {
     })();
   }
 }
-SpellKoanOfHorns.initClass();
+SpellKoanOfHorns.prototype.cardDataOrIndex = { id: Cards.Faction2.GoreHorn };
 
 module.exports = SpellKoanOfHorns;

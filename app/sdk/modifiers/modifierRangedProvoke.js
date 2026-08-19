@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,29 +14,7 @@ const ModifierRangedProvoked = require('./modifierRangedProvoked');
 const ModifierRanged = require('./modifierRanged');
 
 class ModifierRangedProvoke extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierRangedProvoke';
-    this.type = 'ModifierRangedProvoke';
-
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.ranged_provoke_name');
-    this.description = i18next.t('modifiers.ranged_provoke_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.isAura = true;
-    this.prototype.auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
-    this.prototype.auraIncludeSelf = false;
-    this.prototype.auraIncludeAlly = false;
-    this.prototype.auraIncludeEnemy = true;
-
-    this.prototype.modifiersContextObjects = [ModifierRangedProvoked.createContextObject()];
-    this.prototype.fxResource = ['FX.Modifiers.ModifierProvoke'];
-  }
+  static type = 'ModifierRangedProvoke';
 
   onValidateAction(actionEvent) {
     const a = actionEvent.action;
@@ -53,6 +30,20 @@ class ModifierRangedProvoke extends Modifier {
     return card.hasActiveModifierClass(ModifierRanged) && super._filterPotentialCardInAura(card);
   }
 }
-ModifierRangedProvoke.initClass();
+ModifierRangedProvoke.prototype.type = 'ModifierRangedProvoke';
+ModifierRangedProvoke.prototype.maxStacks = 1;
+ModifierRangedProvoke.modifierName = i18next.t('modifiers.ranged_provoke_name');
+ModifierRangedProvoke.description = i18next.t('modifiers.ranged_provoke_def');
+ModifierRangedProvoke.prototype.activeInHand = false;
+ModifierRangedProvoke.prototype.activeInDeck = false;
+ModifierRangedProvoke.prototype.activeInSignatureCards = false;
+ModifierRangedProvoke.prototype.activeOnBoard = true;
+ModifierRangedProvoke.prototype.isAura = true;
+ModifierRangedProvoke.prototype.auraRadius = CONFIG.WHOLE_BOARD_RADIUS;
+ModifierRangedProvoke.prototype.auraIncludeSelf = false;
+ModifierRangedProvoke.prototype.auraIncludeAlly = false;
+ModifierRangedProvoke.prototype.auraIncludeEnemy = true;
+ModifierRangedProvoke.prototype.modifiersContextObjects = [ModifierRangedProvoked.createContextObject()];
+ModifierRangedProvoke.prototype.fxResource = ['FX.Modifiers.ModifierProvoke'];
 
 module.exports = ModifierRangedProvoke;

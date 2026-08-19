@@ -1,21 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchPutCardInOpponentsHand extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchPutCardInOpponentsHand';
-    this.type = 'ModifierStartTurnWatchPutCardInOpponentsHand';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.description = 'Add a card to your opponent\'s hand at start of turn';
-  }
+  static type = 'ModifierStartTurnWatchPutCardInOpponentsHand';
+  static description = 'Add a card to your opponent\'s hand at start of turn';
 
   static createContextObject(cardDataOrIndexToSpawn, options) {
     const contextObject = super.createContextObject(options);
@@ -32,6 +25,7 @@ class ModifierStartTurnWatchPutCardInOpponentsHand extends ModifierStartTurnWatc
     }
   }
 }
-ModifierStartTurnWatchPutCardInOpponentsHand.initClass();
+ModifierStartTurnWatchPutCardInOpponentsHand.prototype.type = 'ModifierStartTurnWatchPutCardInOpponentsHand';
+ModifierStartTurnWatchPutCardInOpponentsHand.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierStartTurnWatchPutCardInOpponentsHand;

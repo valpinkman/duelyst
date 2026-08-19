@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,17 +16,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierSummonWatch = require('./modifierSummonWatch');
 
 class ModifierSummonWatchSpawnEntity extends ModifierSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchSpawnEntity';
-    this.type = 'ModifierSummonWatchSpawnEntity';
-
-    this.modifierName = 'Summon Watch';
-    this.description = 'Whenever you summon a minion, summon %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierSummonWatchSpawnEntity';
+  static modifierName = 'Summon Watch';
+  static description = 'Whenever you summon a minion, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -96,6 +87,9 @@ class ModifierSummonWatchSpawnEntity extends ModifierSummonWatch {
     return true;
   }
 }
-ModifierSummonWatchSpawnEntity.initClass(); // default when no card restrictions are needed
+ModifierSummonWatchSpawnEntity.prototype.type = 'ModifierSummonWatchSpawnEntity';
+ModifierSummonWatchSpawnEntity.prototype.cardDataOrIndexToSpawn = null;
+ModifierSummonWatchSpawnEntity.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch', 'FX.Modifiers.ModifierGenericSpawn'];
+// default when no card restrictions are needed
 
 module.exports = ModifierSummonWatchSpawnEntity;

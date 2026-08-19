@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,18 +12,14 @@ const i18next = require('i18next');
 const ModifierImmuneToDamage = require('./modifierImmuneToDamage');
 
 class ModifierImmuneToDamageBySpells extends ModifierImmuneToDamage {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToDamageBySpells';
-    this.type = 'ModifierImmuneToDamageBySpells';
-
-    this.description = i18next.t('modifiers.immune_to_damage_by_spells_def');
-  }
+  static type = 'ModifierImmuneToDamageBySpells';
 
   getIsActionRelevant(a) {
     return (this.getCard() != null) && a instanceof DamageAction && a.getIsValid() && (this.getCard() === a.getTarget()) && a.getParentAction() instanceof ApplyCardToBoardAction && (__guard__(a.getParentAction().getCard(), (x) => x.type) === CardType.Spell);
   }
 }
-ModifierImmuneToDamageBySpells.initClass();
+ModifierImmuneToDamageBySpells.prototype.type = 'ModifierImmuneToDamageBySpells';
+ModifierImmuneToDamageBySpells.description = i18next.t('modifiers.immune_to_damage_by_spells_def');
 
 module.exports = ModifierImmuneToDamageBySpells;
 

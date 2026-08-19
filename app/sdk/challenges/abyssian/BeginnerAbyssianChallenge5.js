@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -23,27 +22,7 @@ const i18next = require('i18next');
 // http://forums.duelyst.com/t/gifts-ungiven-basic-otk-gate-2-slot-3/12429
 
 class BeginnerAbyssianChallenge5 extends Challenge {
-  static initClass() {
-    this.type = 'BeginnerAbyssianChallenge5';
-    this.prototype.type = 'BeginnerAbyssianChallenge5';
-    this.prototype.categoryType = ChallengeCategory.beginner.type;
-
-    this.prototype.name = i18next.t('challenges.beginner_abyss_5_title');
-    this.prototype.description = i18next.t('challenges.beginner_abyss_5_description');
-    this.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
-
-    this.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
-
-    this.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_abyss_5_start');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('challenges.beginner_abyss_5_fail'),
-    ];
-
-    this.prototype.battleMapTemplateIndex = 0;
-    this.prototype.snapShotOnPlayerTurn = 0;
-    this.prototype.startingManaPlayer = 9;
-    this.prototype.startingHandSizePlayer = 1;
-  }
+  static type = 'BeginnerAbyssianChallenge5';
 
   getMyPlayerDeckData(gameSession) {
     return [
@@ -97,6 +76,19 @@ class BeginnerAbyssianChallenge5 extends Challenge {
     return this._opponentAgent.addActionForTurn(0, AgentActions.createAgentActionPlayCardFindPosition(0, () => [GameSession.getInstance().getGeneralForPlayer1().getPosition()]));
   }
 }
-BeginnerAbyssianChallenge5.initClass();
+BeginnerAbyssianChallenge5.prototype.type = 'BeginnerAbyssianChallenge5';
+BeginnerAbyssianChallenge5.prototype.categoryType = ChallengeCategory.beginner.type;
+BeginnerAbyssianChallenge5.prototype.name = i18next.t('challenges.beginner_abyss_5_title');
+BeginnerAbyssianChallenge5.prototype.description = i18next.t('challenges.beginner_abyss_5_description');
+BeginnerAbyssianChallenge5.prototype.iconUrl = RSX.speech_portrait_abyssian.img;
+BeginnerAbyssianChallenge5.prototype._musicOverride = RSX.music_battlemap_abyssian.audio;
+BeginnerAbyssianChallenge5.prototype.otkChallengeStartMessage = i18next.t('challenges.beginner_abyss_5_start');
+BeginnerAbyssianChallenge5.prototype.otkChallengeFailureMessages = [
+  i18next.t('challenges.beginner_abyss_5_fail'),
+];
+BeginnerAbyssianChallenge5.prototype.battleMapTemplateIndex = 0;
+BeginnerAbyssianChallenge5.prototype.snapShotOnPlayerTurn = 0;
+BeginnerAbyssianChallenge5.prototype.startingManaPlayer = 9;
+BeginnerAbyssianChallenge5.prototype.startingHandSizePlayer = 1;
 
 module.exports = BeginnerAbyssianChallenge5;

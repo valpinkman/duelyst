@@ -1,21 +1,13 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierHallowedGroundBuff extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierHallowedGroundBuff';
-    this.type = 'ModifierHallowedGroundBuff';
-
-    this.modifierName = i18next.t('modifiers.hallowed_ground_buff_name');
-    this.description = i18next.t('modifiers.hallowed_ground_buff_def');
-
-    this.isHiddenToUI = true;
-  }
+  static type = 'ModifierHallowedGroundBuff';
+  static isHiddenToUI = true;
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +28,8 @@ class ModifierHallowedGroundBuff extends Modifier {
     return contextObject;
   }
 }
-ModifierHallowedGroundBuff.initClass();
+ModifierHallowedGroundBuff.prototype.type = 'ModifierHallowedGroundBuff';
+ModifierHallowedGroundBuff.modifierName = i18next.t('modifiers.hallowed_ground_buff_name');
+ModifierHallowedGroundBuff.description = i18next.t('modifiers.hallowed_ground_buff_def');
 
 module.exports = ModifierHallowedGroundBuff;

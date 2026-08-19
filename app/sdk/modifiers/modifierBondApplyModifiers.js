@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,22 +16,8 @@ const Modifier = require('./modifier');
 This modifier is used to apply modifiers to other entities when Bond activates
 */
 class ModifierBondApplyModifiers extends ModifierBond {
-  static initClass() {
-    this.prototype.type = 'ModifierBondApplyModifiers';
-    this.type = 'ModifierBondApplyModifiers';
-
-    this.description = '';
-
-    this.prototype.modifiersContextObjects = null; // modifier context objects for modifiers to apply
-    this.prototype.managedByCard = false; // whether card with opening gambit should manage the modifiers applied, i.e. when the card is silenced/killed these modifiers are removed
-    this.prototype.auraIncludeSelf = true; // whether modifiers should target card with opening gambit
-    this.prototype.auraIncludeAlly = true; // whether modifiers should target allied units
-    this.prototype.auraIncludeEnemy = true; // whether modifiers should target enemy units
-    this.prototype.auraIncludeGeneral = true; // whether modifiers should target enemy units
-    this.prototype.auraRadius = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierBondApplyModifiers';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options) {
     if (managedByCard == null) { managedByCard = false; }
@@ -108,6 +93,14 @@ class ModifierBondApplyModifiers extends ModifierBond {
     return affectedEntities;
   }
 }
-ModifierBondApplyModifiers.initClass();
+ModifierBondApplyModifiers.prototype.type = 'ModifierBondApplyModifiers';
+ModifierBondApplyModifiers.prototype.modifiersContextObjects = null;
+ModifierBondApplyModifiers.prototype.managedByCard = false;
+ModifierBondApplyModifiers.prototype.auraIncludeSelf = true;
+ModifierBondApplyModifiers.prototype.auraIncludeAlly = true;
+ModifierBondApplyModifiers.prototype.auraIncludeEnemy = true;
+ModifierBondApplyModifiers.prototype.auraIncludeGeneral = true;
+ModifierBondApplyModifiers.prototype.auraRadius = 1;
+ModifierBondApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierBondApplyModifiers;

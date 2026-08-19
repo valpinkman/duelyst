@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,12 +11,7 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const ModifierBuilding = require('./modifierBuilding');
 
 class ModifierBuildCompleteReplicateAndSummonDervish extends ModifierBuilding {
-  static initClass() {
-    this.prototype.type = 'ModifierBuildCompleteReplicateAndSummonDervish';
-    this.type = 'ModifierBuildCompleteReplicateAndSummonDervish';
-
-    this.prototype.buildingMinion = null;
-  }
+  static type = 'ModifierBuildCompleteReplicateAndSummonDervish';
 
   onBuildComplete() {
     super.onBuildComplete(); // finish build
@@ -49,6 +43,7 @@ class ModifierBuildCompleteReplicateAndSummonDervish extends ModifierBuilding {
     }
   }
 }
-ModifierBuildCompleteReplicateAndSummonDervish.initClass();
+ModifierBuildCompleteReplicateAndSummonDervish.prototype.type = 'ModifierBuildCompleteReplicateAndSummonDervish';
+ModifierBuildCompleteReplicateAndSummonDervish.prototype.buildingMinion = null;
 
 module.exports = ModifierBuildCompleteReplicateAndSummonDervish;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,7 @@ const i18next = require('i18next');
 const ModifierSentinel = require('./modifierSentinel');
 
 class ModifierSentinelOpponentSummon extends ModifierSentinel {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentSummon';
-    this.type = 'ModifierSentinelOpponentSummon';
-
-    this.description = i18next.t('modifiers.sentinel_summon');
-  }
+  static type = 'ModifierSentinelOpponentSummon';
 
   static getDescription(modifierContextObject) {
     if (modifierContextObject != null) {
@@ -43,7 +37,8 @@ class ModifierSentinelOpponentSummon extends ModifierSentinel {
     return false;
   }
 }
-ModifierSentinelOpponentSummon.initClass();
+ModifierSentinelOpponentSummon.prototype.type = 'ModifierSentinelOpponentSummon';
+ModifierSentinelOpponentSummon.description = i18next.t('modifiers.sentinel_summon');
 
 module.exports = ModifierSentinelOpponentSummon;
 

@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,19 +11,8 @@ const CONFIG = require('app/common/config');
 const UtilsPosition = require('app/common/utils/utils_position');
 
 class Range {
-  static initClass() {
-    // shared pool of patterns and maps by distance
-    // if the range sub class's pattern step changes, override "getPatternByDistance" and "getPatternMapByDistance"
-    this.patternsByDistance = {};
-    this.patternMapsByDistance = {};
-
-    // the pattern step used to auto generate the final range pattern
-    // think of it like a stamp that fills out the final pattern until it reaches the max distance
-
-    // cached valid positions
-    this.prototype._validPositions = null;
-    this.prototype._positionsTestedForValidByIndex = null;
-  }
+  static patternsByDistance = {};
+  static patternMapsByDistance = {};
 
   constructor(gameSession) {
     this._gameSession = gameSession;
@@ -198,6 +186,7 @@ class Range {
     })();
   }
 }
-Range.initClass();
+Range.prototype._validPositions = null;
+Range.prototype._positionsTestedForValidByIndex = null;
 
 module.exports = Range;

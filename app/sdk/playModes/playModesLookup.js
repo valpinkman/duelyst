@@ -1,22 +1,18 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 class PlayModes {
-  static initClass() {
-    this.Practice = 'practice';
-    this.Challenges = 'challenges';
-    this.Ranked = 'ranked';
-    this.Casual = 'casual';
-    this.Gauntlet = 'gauntlet';
-    this.BossBattle = 'boss_battle';
-    this.Sandbox = 'sandbox';
-    this.Developer = 'developer';
-    this.Friend = 'friendly';
-    this.Rift = 'rift';
-  }
+  static Practice = 'practice';
+  static Challenges = 'challenges';
+  static Ranked = 'ranked';
+  static Casual = 'casual';
+  static Gauntlet = 'gauntlet';
+  static BossBattle = 'boss_battle';
+  static Sandbox = 'sandbox';
+  static Developer = 'developer';
+  static Friend = 'friendly';
+  static Rift = 'rift';
 }
-PlayModes.initClass();
 
 module.exports = PlayModes;

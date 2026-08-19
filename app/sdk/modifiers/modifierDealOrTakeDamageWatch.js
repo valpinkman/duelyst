@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -9,22 +8,9 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierDealOrTakeDamageWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDealOrTakeDamageWatch';
-    this.type = 'ModifierDealOrTakeDamageWatch';
-
-    this.modifierName = 'Deal Or Take Damage Watch';
-    this.description = 'Each time this unit takes damage or damages an enemy unit...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.enemyOnly = false; // whether this should trigger ONLY on damage dealt to enemies, or on ANY damage dealt
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
-  }
+  static type = 'ModifierDealOrTakeDamageWatch';
+  static modifierName = 'Deal Or Take Damage Watch';
+  static description = 'Each time this unit takes damage or damages an enemy unit...';
 
   onAction(actionEvent) {
     super.onAction(actionEvent);
@@ -46,7 +32,13 @@ class ModifierDealOrTakeDamageWatch extends Modifier {
 
   onDealOrTakeDamage(action) {}
 }
-ModifierDealOrTakeDamageWatch.initClass();
+ModifierDealOrTakeDamageWatch.prototype.type = 'ModifierDealOrTakeDamageWatch';
+ModifierDealOrTakeDamageWatch.prototype.activeInHand = false;
+ModifierDealOrTakeDamageWatch.prototype.activeInDeck = false;
+ModifierDealOrTakeDamageWatch.prototype.activeInSignatureCards = false;
+ModifierDealOrTakeDamageWatch.prototype.activeOnBoard = true;
+ModifierDealOrTakeDamageWatch.prototype.enemyOnly = false;
+ModifierDealOrTakeDamageWatch.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
 // override me in sub classes to implement special behavior
 // use this for most on damage triggers
 

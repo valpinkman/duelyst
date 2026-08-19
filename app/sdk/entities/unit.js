@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -14,19 +13,6 @@ const PlayerModifierBattlePetManager = require('app/sdk/playerModifiers/playerMo
 const _ = require('underscore');
 
 class Unit extends Entity {
-  static initClass() {
-    this.prototype.type = CardType.Unit;
-    this.type = CardType.Unit;
-    this.prototype.name = 'Unit';
-
-    this.prototype.isTargetable = true;
-    this.prototype.isObstructing = true;
-    this.prototype.hp = 1;
-    this.prototype.maxHP = 1;
-    this.prototype.speed = CONFIG.SPEED_BASE;
-    this.prototype.reach = CONFIG.REACH_MELEE;
-  }
-
   onApplyToBoard(board, x, y, sourceAction) {
     super.onApplyToBoard(board, x, y, sourceAction);
 
@@ -59,6 +45,14 @@ class Unit extends Entity {
     return super.onApplyModifiersForApplyToNewLocation();
   }
 }
-Unit.initClass();
+Unit.prototype.type = CardType.Unit;
+Unit.type = CardType.Unit;
+Unit.prototype.name = 'Unit';
+Unit.prototype.isTargetable = true;
+Unit.prototype.isObstructing = true;
+Unit.prototype.hp = 1;
+Unit.prototype.maxHP = 1;
+Unit.prototype.speed = CONFIG.SPEED_BASE;
+Unit.prototype.reach = CONFIG.REACH_MELEE;
 
 module.exports = Unit;

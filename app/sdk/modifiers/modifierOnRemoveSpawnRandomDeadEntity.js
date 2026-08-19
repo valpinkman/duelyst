@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -10,19 +9,9 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const Modifier = require('./modifier');
 
 class ModifierOnRemoveSpawnRandomDeadEntity extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierOnRemoveSpawnRandomDeadEntity';
-    this.type = 'ModifierOnRemoveSpawnRandomDeadEntity';
-
-    this.modifierName = 'ModifierOnRemoveSpawnRandomDeadEntity';
-    this.description = 'When this artifact breaks, summon the last friendly minion destroyed this game nearby';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOnRemoveSpawnRandomDeadEntity';
+  static modifierName = 'ModifierOnRemoveSpawnRandomDeadEntity';
+  static description = 'When this artifact breaks, summon the last friendly minion destroyed this game nearby';
 
   onRemoveFromCard(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -42,6 +31,10 @@ class ModifierOnRemoveSpawnRandomDeadEntity extends Modifier {
     return super.onRemoveFromCard(action);
   }
 }
-ModifierOnRemoveSpawnRandomDeadEntity.initClass();
+ModifierOnRemoveSpawnRandomDeadEntity.prototype.type = 'ModifierOnRemoveSpawnRandomDeadEntity';
+ModifierOnRemoveSpawnRandomDeadEntity.prototype.activeInDeck = false;
+ModifierOnRemoveSpawnRandomDeadEntity.prototype.activeInHand = false;
+ModifierOnRemoveSpawnRandomDeadEntity.prototype.activeInSignatureCards = false;
+ModifierOnRemoveSpawnRandomDeadEntity.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOnRemoveSpawnRandomDeadEntity;

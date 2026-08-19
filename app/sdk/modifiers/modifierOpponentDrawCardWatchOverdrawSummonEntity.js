@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,15 +15,9 @@ const UtilsPosition = require('app/common/utils/utils_position');
 const ModifierOpponentDrawCardWatch = require('./modifierOpponentDrawCardWatch');
 
 class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponentDrawCardWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
-    this.type = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
-
-    this.modifierName = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
-    this.description = 'Whenever your opponent overdraws, summon %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
+  static modifierName = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
+  static description = 'Whenever your opponent overdraws, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -87,6 +80,7 @@ class ModifierOpponentDrawCardWatchOverdrawSummonEntity extends ModifierOpponent
     return this.getCard().getOwnerId();
   }
 }
-ModifierOpponentDrawCardWatchOverdrawSummonEntity.initClass();
+ModifierOpponentDrawCardWatchOverdrawSummonEntity.prototype.type = 'ModifierOpponentDrawCardWatchOverdrawSummonEntity';
+ModifierOpponentDrawCardWatchOverdrawSummonEntity.prototype.fxResource = ['FX.Modifiers.ModifierOpponentDrawCardWatchBuffSelf', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierOpponentDrawCardWatchOverdrawSummonEntity;

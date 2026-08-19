@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const KillAction = require('app/sdk/actions/killAction');
@@ -11,12 +10,7 @@ const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchBounceToActionBar extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchBounceToActionBar';
-    this.type = 'ModifierStartTurnWatchBounceToActionBar';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierStartTurnWatchBounceToActionBar';
 
   onTurnWatch(action) {
     const thisEntity = this.getCard();
@@ -32,7 +26,8 @@ class ModifierStartTurnWatchBounceToActionBar extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierStartTurnWatchBounceToActionBar.initClass();
+ModifierStartTurnWatchBounceToActionBar.prototype.type = 'ModifierStartTurnWatchBounceToActionBar';
+ModifierStartTurnWatchBounceToActionBar.prototype.maxStacks = 1;
 
 module.exports = ModifierStartTurnWatchBounceToActionBar;
 

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,15 +14,9 @@ const ModifierHPChange = require('app/sdk/modifiers/modifierHPChange');
 const _ = require('underscore');
 
 class ModifierHPChangeSummonEntity extends ModifierHPChange {
-  static initClass() {
-    this.prototype.type = 'ModifierHPChangeSummonEntity';
-    this.type = 'ModifierHPChangeSummonEntity';
-
-    this.modifierName = 'Modifier HP Change Summon Entity';
-    this.description = 'When this falls below %X health, summon %Y on a random space';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierHPChangeSummonEntity';
+  static modifierName = 'Modifier HP Change Summon Entity';
+  static description = 'When this falls below %X health, summon %Y on a random space';
 
   static createContextObject(cardDataOrIndexToSpawn, healthThreshold, spawnDescription, spawnCount, spawnSilently, options) {
     if (spawnCount == null) { spawnCount = 1; }
@@ -83,6 +76,7 @@ class ModifierHPChangeSummonEntity extends ModifierHPChange {
     return this.getCard().getOwnerId();
   }
 }
-ModifierHPChangeSummonEntity.initClass();
+ModifierHPChangeSummonEntity.prototype.type = 'ModifierHPChangeSummonEntity';
+ModifierHPChangeSummonEntity.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 
 module.exports = ModifierHPChangeSummonEntity;

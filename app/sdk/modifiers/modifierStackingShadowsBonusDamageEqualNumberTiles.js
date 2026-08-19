@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Cards = require('app/sdk/cards/cardsLookupComplete');
@@ -11,17 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierStackingShadowsBonusDamage = require('./modifierStackingShadowsBonusDamage');
 
 class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackingShadowsBonusDamage {
-  static initClass() {
-    this.prototype.type = 'ModifierStackingShadowsBonusDamageEqualNumberTiles';
-    this.type = 'ModifierStackingShadowsBonusDamageEqualNumberTiles';
-
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInHand = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierStackingShadowsBonusDamageEqualNumberTiles';
 
   static createContextObject() {
     const contextObject = super.createContextObject(0, 1);
@@ -125,7 +114,12 @@ class ModifierStackingShadowsBonusDamageEqualNumberTiles extends ModifierStackin
     return 0;
   }
 }
-ModifierStackingShadowsBonusDamageEqualNumberTiles.initClass();
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.type = 'ModifierStackingShadowsBonusDamageEqualNumberTiles';
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeInDeck = false;
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeInHand = false;
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeInSignatureCards = false;
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.activeOnBoard = true;
+ModifierStackingShadowsBonusDamageEqualNumberTiles.prototype.maxStacks = 1;
 
 module.exports = ModifierStackingShadowsBonusDamageEqualNumberTiles;
 

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('../../common/config');
@@ -11,13 +10,6 @@ const UtilsGameSession = require('../../common/utils/utils_game_session');
 const _ = require('underscore');
 
 class SpellSpawnEntityRandomlyAroundTarget extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spawnSilently = true;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
-    // spawns dervishes
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const card = this.getEntityToSpawn();
     const generalPosition = this.getGameSession().getGeneralForPlayerId(this.ownerId).getPosition();
@@ -33,6 +25,8 @@ class SpellSpawnEntityRandomlyAroundTarget extends SpellSpawnEntity {
     return validPositions;
   }
 }
-SpellSpawnEntityRandomlyAroundTarget.initClass();
+SpellSpawnEntityRandomlyAroundTarget.prototype.targetType = CardType.Unit;
+SpellSpawnEntityRandomlyAroundTarget.prototype.spawnSilently = true;
+SpellSpawnEntityRandomlyAroundTarget.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction3.Dervish };
 
 module.exports = SpellSpawnEntityRandomlyAroundTarget;

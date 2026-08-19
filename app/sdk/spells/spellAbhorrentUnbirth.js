@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -25,10 +24,6 @@ const ModifierAirdrop = require('app/sdk/modifiers/modifierAirdrop');
 const ModifierInvulnerable = require('app/sdk/modifiers/modifierInvulnerable');
 
 class SpellAbhorrentUnbirth extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.appliedName = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     const general = this.getGameSession().getGeneralForPlayerId(this.getOwnerId());
     const friendlyMinions = board.getFriendlyEntitiesForEntity(general, CardType.Unit, true, false);
@@ -140,6 +135,6 @@ class SpellAbhorrentUnbirth extends SpellSpawnEntity {
     return super.onApplyEffectToBoardTile(board, x, y, sourceAction);
   }
 }
-SpellAbhorrentUnbirth.initClass();
+SpellAbhorrentUnbirth.prototype.appliedName = null;
 
 module.exports = SpellAbhorrentUnbirth;

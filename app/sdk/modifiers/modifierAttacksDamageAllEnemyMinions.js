@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -12,20 +11,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierAttacksDamageAllEnemyMinions extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAttacksDamageAllEnemyMinions';
-    this.type = 'ModifierAttacksDamageAllEnemyMinions';
-
-    this.modifierName = 'Attacks Damage All Enemy Minions';
-    this.description = 'Attacks damage all enemy minions';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierAttacksDamageAllEnemyMinions';
+  static modifierName = 'Attacks Damage All Enemy Minions';
+  static description = 'Attacks damage all enemy minions';
 
   onBeforeAction(actionEvent) {
     super.onBeforeAction(actionEvent);
@@ -52,6 +40,11 @@ class ModifierAttacksDamageAllEnemyMinions extends Modifier {
     }
   }
 }
-ModifierAttacksDamageAllEnemyMinions.initClass();
+ModifierAttacksDamageAllEnemyMinions.prototype.type = 'ModifierAttacksDamageAllEnemyMinions';
+ModifierAttacksDamageAllEnemyMinions.prototype.activeInHand = false;
+ModifierAttacksDamageAllEnemyMinions.prototype.activeInDeck = false;
+ModifierAttacksDamageAllEnemyMinions.prototype.activeInSignatureCards = false;
+ModifierAttacksDamageAllEnemyMinions.prototype.activeOnBoard = true;
+ModifierAttacksDamageAllEnemyMinions.prototype.maxStacks = 1;
 
 module.exports = ModifierAttacksDamageAllEnemyMinions;

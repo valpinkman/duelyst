@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
@@ -9,20 +8,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierHPChange extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierHPChange';
-    this.type = 'ModifierHPChange';
-
-    this.modifierName = 'Modifier HP Change';
-    this.description = 'Whenever this card\'s HP changes';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
-  }
+  static type = 'ModifierHPChange';
+  static modifierName = 'Modifier HP Change';
+  static description = 'Whenever this card\'s HP changes';
 
   onAction(e) {
     super.onAction(e);
@@ -38,6 +26,11 @@ class ModifierHPChange extends Modifier {
 
   onHPChange(e) {}
 }
-ModifierHPChange.initClass();
+ModifierHPChange.prototype.type = 'ModifierHPChange';
+ModifierHPChange.prototype.activeInHand = false;
+ModifierHPChange.prototype.activeInDeck = false;
+ModifierHPChange.prototype.activeInSignatureCards = false;
+ModifierHPChange.prototype.activeOnBoard = true;
+ModifierHPChange.prototype.fxResource = ['FX.Modifiers.ModifierBuffSelfOnReplace'];
 // override in sub-class
 module.exports = ModifierHPChange;

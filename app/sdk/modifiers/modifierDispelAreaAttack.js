@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -18,20 +17,9 @@ on beforeAction, rather than onAction
 */
 
 class ModifierDispelAreaAttack extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDispelAreaAttack';
-    this.type = 'ModifierDispelAreaAttack';
-
-    this.modifierName = 'Magic Buster Cannon';
-    this.description = 'Whenever this attacks or counterattacks, it damages and dispels the enemy and all enemies nearby that target';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierDispelAreaAttack';
+  static modifierName = 'Magic Buster Cannon';
+  static description = 'Whenever this attacks or counterattacks, it damages and dispels the enemy and all enemies nearby that target';
 
   onBeforeAction(actionEvent) {
     super.onBeforeAction(actionEvent);
@@ -59,6 +47,11 @@ class ModifierDispelAreaAttack extends Modifier {
     }
   }
 }
-ModifierDispelAreaAttack.initClass();
+ModifierDispelAreaAttack.prototype.type = 'ModifierDispelAreaAttack';
+ModifierDispelAreaAttack.prototype.activeInHand = false;
+ModifierDispelAreaAttack.prototype.activeInDeck = false;
+ModifierDispelAreaAttack.prototype.activeInSignatureCards = false;
+ModifierDispelAreaAttack.prototype.activeOnBoard = true;
+ModifierDispelAreaAttack.prototype.maxStacks = 1;
 
 module.exports = ModifierDispelAreaAttack;

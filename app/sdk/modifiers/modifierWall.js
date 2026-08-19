@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RemoveAction = require('app/sdk/actions/removeAction');
@@ -11,20 +10,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierWall extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierWall';
-    this.type = 'ModifierWall';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.wall_def');
-
-    this.modifierName = i18next.t('modifiers.wall_name');
-    this.description = null;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierWall'];
-  }
+  static type = 'ModifierWall';
+  static isKeyworded = true;
+  static description = null;
 
   onActivate() {
     // apply "cannot move" speed modifier as a submodifier of this
@@ -60,6 +48,10 @@ class ModifierWall extends Modifier {
       this.getGameSession().removeModifier(subMod));
   }
 }
-ModifierWall.initClass();
+ModifierWall.prototype.type = 'ModifierWall';
+ModifierWall.keywordDefinition = i18next.t('modifiers.wall_def');
+ModifierWall.modifierName = i18next.t('modifiers.wall_name');
+ModifierWall.prototype.maxStacks = 1;
+ModifierWall.prototype.fxResource = ['FX.Modifiers.ModifierWall'];
 
 module.exports = ModifierWall;

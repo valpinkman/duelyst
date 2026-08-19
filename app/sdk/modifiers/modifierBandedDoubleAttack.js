@@ -1,22 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierBanded = require('./modifierBanded');
 const Modifier = require('./modifier');
 
 class ModifierBandedDoubleAttack extends ModifierBanded {
-  static initClass() {
-    this.prototype.type = 'ModifierBandedDoubleAttack';
-    this.type = 'ModifierBandedDoubleAttack';
-
-    this.modifierName = 'Zealed: Lion\'s Growth';
-    this.description = 'Double this minion\'s Attack at the end of your turn';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZealed', 'FX.Modifiers.ModifierZealedDoubleAttack'];
-  }
+  static type = 'ModifierBandedDoubleAttack';
+  static modifierName = 'Zealed: Lion\'s Growth';
+  static description = 'Double this minion\'s Attack at the end of your turn';
 
   onEndTurn() {
     super.onEndTurn();
@@ -33,6 +26,7 @@ class ModifierBandedDoubleAttack extends ModifierBanded {
     }
   }
 }
-ModifierBandedDoubleAttack.initClass();
+ModifierBandedDoubleAttack.prototype.type = 'ModifierBandedDoubleAttack';
+ModifierBandedDoubleAttack.prototype.fxResource = ['FX.Modifiers.ModifierZealed', 'FX.Modifiers.ModifierZealedDoubleAttack'];
 
 module.exports = ModifierBandedDoubleAttack;

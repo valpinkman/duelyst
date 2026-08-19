@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Spell = require('./spell');
@@ -10,10 +9,6 @@ const PlayerModifierBattlePetManager = require('app/sdk/playerModifiers/playerMo
 const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction');
 
 class SpellFollowupActivateBattlePet extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -30,6 +25,6 @@ class SpellFollowupActivateBattlePet extends Spell {
     }
   }
 }
-SpellFollowupActivateBattlePet.initClass();
+SpellFollowupActivateBattlePet.prototype.targetType = CardType.Unit;
 
 module.exports = SpellFollowupActivateBattlePet;

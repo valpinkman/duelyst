@@ -1,21 +1,13 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierStackingShadowsDebuff extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierStackingShadowsDebuff';
-    this.type = 'ModifierStackingShadowsDebuff';
-
-    this.modifierName = i18next.t('modifiers.stacking_shadows_debuff_name');
-    this.description = i18next.t('modifiers.stacking_shadows_debuff_def');
-
-    this.isHiddenToUI = true;
-  }
+  static type = 'ModifierStackingShadowsDebuff';
+  static isHiddenToUI = true;
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(options);
@@ -36,6 +28,8 @@ class ModifierStackingShadowsDebuff extends Modifier {
     return contextObject;
   }
 }
-ModifierStackingShadowsDebuff.initClass();
+ModifierStackingShadowsDebuff.prototype.type = 'ModifierStackingShadowsDebuff';
+ModifierStackingShadowsDebuff.modifierName = i18next.t('modifiers.stacking_shadows_debuff_name');
+ModifierStackingShadowsDebuff.description = i18next.t('modifiers.stacking_shadows_debuff_def');
 
 module.exports = ModifierStackingShadowsDebuff;

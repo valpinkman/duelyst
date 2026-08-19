@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,15 +8,9 @@ const HealAction = require('app/sdk/actions/healAction');
 const ModifierEnemyTakeDamageWatch = require('./modifierEnemyTakeDamageWatch');
 
 class ModifierEnemyTakeDamageWatchHealMyGeneral extends ModifierEnemyTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyTakeDamageWatchHealMyGeneral';
-    this.type = 'ModifierEnemyTakeDamageWatchHealMyGeneral';
-
-    this.modifierName = 'Enemy Take Damage Watch Heal My General';
-    this.description = 'Whenever an enemy minion or General takes damage, restore %X Health to your General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEnemyTakeDamageWatchHealMyGeneral'];
-  }
+  static type = 'ModifierEnemyTakeDamageWatchHealMyGeneral';
+  static modifierName = 'Enemy Take Damage Watch Heal My General';
+  static description = 'Whenever an enemy minion or General takes damage, restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
     if (healAmount == null) { healAmount = 0; }
@@ -44,6 +37,7 @@ class ModifierEnemyTakeDamageWatchHealMyGeneral extends ModifierEnemyTakeDamageW
     }
   }
 }
-ModifierEnemyTakeDamageWatchHealMyGeneral.initClass();
+ModifierEnemyTakeDamageWatchHealMyGeneral.prototype.type = 'ModifierEnemyTakeDamageWatchHealMyGeneral';
+ModifierEnemyTakeDamageWatchHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierEnemyTakeDamageWatchHealMyGeneral'];
 
 module.exports = ModifierEnemyTakeDamageWatchHealMyGeneral;

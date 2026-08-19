@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,12 +11,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOnDying = require('./modifierOnDying');
 
 class ModifierOnDyingInfest extends ModifierOnDying {
-  static initClass() {
-    this.prototype.type = 'ModifierOnDyingInfest';
-    this.type = 'ModifierOnDyingInfest';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierInfest', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierOnDyingInfest';
 
   onDying() {
     const general = this.getCard().getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
@@ -46,6 +40,7 @@ class ModifierOnDyingInfest extends ModifierOnDying {
     })();
   }
 }
-ModifierOnDyingInfest.initClass();
+ModifierOnDyingInfest.prototype.type = 'ModifierOnDyingInfest';
+ModifierOnDyingInfest.prototype.fxResource = ['FX.Modifiers.ModifierInfest', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierOnDyingInfest;

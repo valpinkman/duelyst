@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -10,17 +9,7 @@ const i18next = require('i18next');
 const ModifierCollectable = require('./modifierCollectable');
 
 class ModifierCollectableCard extends ModifierCollectable {
-  static initClass() {
-    this.prototype.type = 'ModifierCollectableCard';
-    this.type = 'ModifierCollectableCard';
-
-    // @modifierName: i18next.t("modifiers.bonus_mana_name")
-    // @description: i18next.t("modifiers.bonus_mana_def")
-
-    this.prototype.isRemovable = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCollectableCard'];
-  }
+  static type = 'ModifierCollectableCard';
 
   static createContextObject(cardDataOrIndex, options) {
     const contextObject = super.createContextObject(options);
@@ -35,6 +24,8 @@ class ModifierCollectableCard extends ModifierCollectable {
     return this.getGameSession().executeAction(a);
   }
 }
-ModifierCollectableCard.initClass();
+ModifierCollectableCard.prototype.type = 'ModifierCollectableCard';
+ModifierCollectableCard.prototype.isRemovable = false;
+ModifierCollectableCard.prototype.fxResource = ['FX.Modifiers.ModifierCollectableCard'];
 
 module.exports = ModifierCollectableCard;

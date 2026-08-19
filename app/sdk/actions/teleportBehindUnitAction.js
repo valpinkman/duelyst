@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,9 +8,7 @@ const Logger = require('app/common/logger');
 const TeleportAction = require('./teleportAction');
 
 class TeleportBehindUnitAction extends TeleportAction {
-  static initClass() {
-    this.type = 'TeleportBehindUnitAction';
-  }
+  static type = 'TeleportBehindUnitAction';
 
   constructor(gameSession, behindUnit, targetUnit) {
     super(gameSession);
@@ -43,6 +40,6 @@ class TeleportBehindUnitAction extends TeleportAction {
     }
   }
 }
-TeleportBehindUnitAction.initClass(); // when not running as authoritative, use authoritative source action's data
+// when not running as authoritative, use authoritative source action's data
 
 module.exports = TeleportBehindUnitAction;

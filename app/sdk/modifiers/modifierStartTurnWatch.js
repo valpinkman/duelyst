@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DieAction = require('app/sdk/actions/dieAction');
@@ -10,20 +9,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierStartTurnWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatch';
-    this.type = 'ModifierStartTurnWatch';
-
-    this.modifierName = 'Start Turn Watch';
-    this.description = 'Start Turn Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch'];
-  }
+  static type = 'ModifierStartTurnWatch';
+  static modifierName = 'Start Turn Watch';
+  static description = 'Start Turn Watch';
 
   onStartTurn(e) {
     super.onStartTurn(e);
@@ -36,7 +24,12 @@ class ModifierStartTurnWatch extends Modifier {
 
   onTurnWatch(action) {}
 }
-ModifierStartTurnWatch.initClass();
+ModifierStartTurnWatch.prototype.type = 'ModifierStartTurnWatch';
+ModifierStartTurnWatch.prototype.activeInHand = false;
+ModifierStartTurnWatch.prototype.activeInDeck = false;
+ModifierStartTurnWatch.prototype.activeInSignatureCards = false;
+ModifierStartTurnWatch.prototype.activeOnBoard = true;
+ModifierStartTurnWatch.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierStartTurnWatch;

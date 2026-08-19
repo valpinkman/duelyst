@@ -122,6 +122,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — TS toolchain in (loose tsconfig working, strict one is the destination);
+  decaffeinate initClass dissolved in 1,183 files with prototype props kept off instances.
 - 2026-08-19 — GULP DELETED (4.5). Gate met against a real Firebase RTDB: registered, logged in,
   played a practice game vs the AI, conceded; then rebuilt from scratch gulp-free (0 console
   errors). pnpm build = scripts/build/build-client.mjs.

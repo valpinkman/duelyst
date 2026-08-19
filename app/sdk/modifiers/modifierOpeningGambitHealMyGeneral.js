@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
@@ -11,17 +10,9 @@ const Modifier = require('./modifier');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitHealMyGeneral extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitHealMyGeneral';
-    this.type = 'ModifierOpeningGambitHealMyGeneral';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Restore %X Health to your General';
-
-    this.prototype.healAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericHeal'];
-  }
+  static type = 'ModifierOpeningGambitHealMyGeneral';
+  static modifierName = 'Opening Gambit';
+  static description = 'Restore %X Health to your General';
 
   static createContextObject(healAmount, options) {
     const contextObject = super.createContextObject();
@@ -46,6 +37,8 @@ class ModifierOpeningGambitHealMyGeneral extends ModifierOpeningGambit {
     return this.getGameSession().executeAction(healAction);
   }
 }
-ModifierOpeningGambitHealMyGeneral.initClass();
+ModifierOpeningGambitHealMyGeneral.prototype.type = 'ModifierOpeningGambitHealMyGeneral';
+ModifierOpeningGambitHealMyGeneral.prototype.healAmount = 0;
+ModifierOpeningGambitHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericHeal'];
 
 module.exports = ModifierOpeningGambitHealMyGeneral;

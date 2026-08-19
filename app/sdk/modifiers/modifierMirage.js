@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const AttackAction = require('app/sdk/actions/attackAction');
@@ -12,21 +11,7 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierMirage extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierMirage';
-    this.type = 'ModifierMirage';
-
-    this.modifierName = i18next.t('modifiers.mirage_name');
-    this.description = i18next.t('modifiers.mirage_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-    this.prototype.isRemovable = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMirage'];
-  }
+  static type = 'ModifierMirage';
 
   onBeforeAction(event) {
     super.onBeforeAction(event);
@@ -52,7 +37,15 @@ class ModifierMirage extends Modifier {
     }
   }
 }
-ModifierMirage.initClass();
+ModifierMirage.prototype.type = 'ModifierMirage';
+ModifierMirage.modifierName = i18next.t('modifiers.mirage_name');
+ModifierMirage.description = i18next.t('modifiers.mirage_def');
+ModifierMirage.prototype.activeInHand = false;
+ModifierMirage.prototype.activeInDeck = false;
+ModifierMirage.prototype.activeInSignatureCards = false;
+ModifierMirage.prototype.activeOnBoard = true;
+ModifierMirage.prototype.isRemovable = false;
+ModifierMirage.prototype.fxResource = ['FX.Modifiers.ModifierMirage'];
 
 module.exports = ModifierMirage;
 

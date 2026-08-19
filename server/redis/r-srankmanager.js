@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -40,10 +39,7 @@ const expireAtTimeForSeasonStart = function (seasonStartMoment) {
  * ttl sets the expiration time of keys, defaults to 72 hours
  */
 class RedisSRankManager {
-  static initClass() {
-    this.unitTestMode = false;
-    // This will change the way timeouts are handled so different seasons can be unit tested
-  }
+  static unitTestMode = false;
 
   /**
    * Constructor
@@ -130,7 +126,6 @@ class RedisSRankManager {
     return this.redis.zremAsync(redisSeasonKey, userId);
   }
 }
-RedisSRankManager.initClass();
 
 /**
  * Export a factory

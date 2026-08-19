@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,24 +11,10 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierRemoveAndReplaceEntity extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierRemoveAndReplaceEntity';
-    this.type = 'ModifierRemoveAndReplaceEntity';
-
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = '';
-    this.description = '';
-    this.isHiddenToUI = false;
-    this.prototype.isRemovable = false;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'ModifierRemoveAndReplaceEntity';
+  static modifierName = '';
+  static description = '';
+  static isHiddenToUI = false;
 
   static createContextObject(cardDataOrIndexToSpawn, originalCardId) {
     if (originalCardId == null) { originalCardId = undefined; }
@@ -68,6 +53,13 @@ class ModifierRemoveAndReplaceEntity extends Modifier {
     return this.getGameSession().executeAction(spawnEntityAction);
   }
 }
-ModifierRemoveAndReplaceEntity.initClass();
+ModifierRemoveAndReplaceEntity.prototype.type = 'ModifierRemoveAndReplaceEntity';
+ModifierRemoveAndReplaceEntity.prototype.maxStacks = 1;
+ModifierRemoveAndReplaceEntity.prototype.isRemovable = false;
+ModifierRemoveAndReplaceEntity.prototype.activeInHand = false;
+ModifierRemoveAndReplaceEntity.prototype.activeInDeck = false;
+ModifierRemoveAndReplaceEntity.prototype.activeInSignatureCards = false;
+ModifierRemoveAndReplaceEntity.prototype.activeOnBoard = true;
+ModifierRemoveAndReplaceEntity.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = ModifierRemoveAndReplaceEntity;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -18,12 +17,7 @@ const GameFormat = require('app/sdk/gameFormat');
 const _ = require('underscore');
 
 class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModifierEmblemEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest';
-    this.type = 'PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest';
 
   static createContextObject(options) {
     const contextObject = super.createContextObject(true, false, options);
@@ -114,6 +108,7 @@ class PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest extends PlayerModif
     }
   }
 }
-PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.initClass();
+PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.prototype.type = 'PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest';
+PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest.prototype.maxStacks = 1;
 
 module.exports = PlayerModifierEmblemEndTurnWatchLyonarSmallMinionQuest;

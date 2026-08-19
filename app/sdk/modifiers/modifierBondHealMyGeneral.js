@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -13,16 +12,8 @@ const ModifierBond = require('./modifierBond');
 const Modifier = require('./modifier');
 
 class ModifierBondHealMyGeneral extends ModifierBond {
-  static initClass() {
-    this.prototype.type = 'ModifierBondHealMyGeneral';
-    this.type = 'ModifierBondHealMyGeneral';
-
-    this.description = 'Heal your General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBond'];
-
-    this.prototype.healAmount = 0;
-  }
+  static type = 'ModifierBondHealMyGeneral';
+  static description = 'Heal your General';
 
   static createContextObject(healAmount) {
     const contextObject = super.createContextObject();
@@ -39,6 +30,8 @@ class ModifierBondHealMyGeneral extends ModifierBond {
     return this.getGameSession().executeAction(healAction);
   }
 }
-ModifierBondHealMyGeneral.initClass();
+ModifierBondHealMyGeneral.prototype.type = 'ModifierBondHealMyGeneral';
+ModifierBondHealMyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierBond'];
+ModifierBondHealMyGeneral.prototype.healAmount = 0;
 
 module.exports = ModifierBondHealMyGeneral;

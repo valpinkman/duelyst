@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,12 +13,7 @@ const PutCardInHandAction = require('./putCardInHandAction');
 const _ = require('underscore');
 
 class ReplaceCardFromHandAction extends PutCardInHandAction {
-  static initClass() {
-    this.type = 'ReplaceCardFromHandAction';
-    this.prototype.replacedCardIndex = null; // index of card replaced
-    this.prototype.forcedReplace = false;
-    // if this is a forced replace, we won't count it against the player's normal replaces allowed per turn
-  }
+  static type = 'ReplaceCardFromHandAction';
 
   constructor(gameSession, ownerId, indexOfCardInHand) {
     super(gameSession, ownerId, null, indexOfCardInHand);
@@ -85,6 +79,7 @@ class ReplaceCardFromHandAction extends PutCardInHandAction {
     return this.forcedReplace;
   }
 }
-ReplaceCardFromHandAction.initClass();
+ReplaceCardFromHandAction.prototype.replacedCardIndex = null;
+ReplaceCardFromHandAction.prototype.forcedReplace = false;
 
 module.exports = ReplaceCardFromHandAction;

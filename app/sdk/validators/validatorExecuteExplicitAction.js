@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -23,10 +22,7 @@ const EndFollowupAction = require('app/sdk/actions/endFollowupAction');
 const i18next = require('i18next');
 
 class ValidatorExecuteExplicitAction extends Validator {
-  static initClass() {
-    this.prototype.type = 'ValidatorExecuteExplicitAction';
-    this.type = 'ValidatorExecuteExplicitAction';
-  }
+  static type = 'ValidatorExecuteExplicitAction';
 
   onValidateAction(event) {
     super.onValidateAction(event);
@@ -75,7 +71,7 @@ class ValidatorExecuteExplicitAction extends Validator {
     }
   }
 }
-ValidatorExecuteExplicitAction.initClass();
+ValidatorExecuteExplicitAction.prototype.type = 'ValidatorExecuteExplicitAction';
 
 module.exports = ValidatorExecuteExplicitAction;
 

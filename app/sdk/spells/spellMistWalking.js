@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -14,11 +13,6 @@ const CONFIG = require('app/common/config');
 const _ = require('underscore');
 
 class SpellMistWalking extends Spell {
-  static initClass() {
-    this.prototype.spellFilterType = SpellFilterType.None;
-    this.prototype.targetType = CardType.Unit;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
     const applyEffectPosition = { x, y };
@@ -46,6 +40,7 @@ class SpellMistWalking extends Spell {
     return validPositions;
   }
 }
-SpellMistWalking.initClass();
+SpellMistWalking.prototype.spellFilterType = SpellFilterType.None;
+SpellMistWalking.prototype.targetType = CardType.Unit;
 
 module.exports = SpellMistWalking;

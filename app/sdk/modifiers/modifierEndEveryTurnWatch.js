@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,20 +10,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierEndEveryTurnWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEndEveryTurnWatch';
-    this.type = 'ModifierEndEveryTurnWatch';
-
-    this.modifierName = 'End Every Turn Watch';
-    this.description = 'End Every Turn Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndEveryTurnWatch'];
-  }
+  static type = 'ModifierEndEveryTurnWatch';
+  static modifierName = 'End Every Turn Watch';
+  static description = 'End Every Turn Watch';
 
   onActivate() {
     super.onActivate();
@@ -53,7 +41,12 @@ class ModifierEndEveryTurnWatch extends Modifier {
 
   onTurnWatch(action) {}
 }
-ModifierEndEveryTurnWatch.initClass();
+ModifierEndEveryTurnWatch.prototype.type = 'ModifierEndEveryTurnWatch';
+ModifierEndEveryTurnWatch.prototype.activeInHand = false;
+ModifierEndEveryTurnWatch.prototype.activeInDeck = false;
+ModifierEndEveryTurnWatch.prototype.activeInSignatureCards = false;
+ModifierEndEveryTurnWatch.prototype.activeOnBoard = true;
+ModifierEndEveryTurnWatch.prototype.fxResource = ['FX.Modifiers.ModifierEndEveryTurnWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEndEveryTurnWatch;

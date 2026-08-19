@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DrawCardAction = require('app/sdk/actions/drawCardAction');
@@ -9,20 +8,9 @@ const BurnCardAction = require('app/sdk/actions/burnCardAction');
 const Modifier = require('./modifier');
 
 class ModifierDrawCardWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDrawCardWatch';
-    this.type = 'ModifierDrawCardWatch';
-
-    this.modifierName = 'DrawCardWatch';
-    this.description = 'Whenever you draw a card ...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch'];
-  }
+  static type = 'ModifierDrawCardWatch';
+  static modifierName = 'DrawCardWatch';
+  static description = 'Whenever you draw a card ...';
 
   onAction(e) {
     super.onAction(e);
@@ -39,7 +27,12 @@ class ModifierDrawCardWatch extends Modifier {
 
   onDrawCardWatch(action) {}
 }
-ModifierDrawCardWatch.initClass();
+ModifierDrawCardWatch.prototype.type = 'ModifierDrawCardWatch';
+ModifierDrawCardWatch.prototype.activeInHand = false;
+ModifierDrawCardWatch.prototype.activeInDeck = false;
+ModifierDrawCardWatch.prototype.activeInSignatureCards = false;
+ModifierDrawCardWatch.prototype.activeOnBoard = true;
+ModifierDrawCardWatch.prototype.fxResource = ['FX.Modifiers.ModifierDrawCardWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierDrawCardWatch;

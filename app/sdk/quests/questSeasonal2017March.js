@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -13,12 +12,7 @@ const QuestType = require('./questTypeLookup');
 const moment = require('moment');
 
 class QuestSeasonal2017March extends Quest {
-  static initClass() {
-    this.Identifier = 30003; // ID to use for this quest
-    this.prototype.isReplaceable = false; // whether a player can replace this quest
-    this.prototype.cosmeticKeys = [CosmeticsChestTypeLookup.Common];
-    this.prototype.rewardDetails = '1 Common Crate Key.';
-  }
+  static Identifier = 30003;
 
   constructor() {
     super(QuestSeasonal2017March.Identifier, 'Monthly Quest', [QuestType.Seasonal]);
@@ -37,6 +31,8 @@ class QuestSeasonal2017March extends Quest {
     return momentUtc.isAfter(moment.utc('2017-03-01')) && momentUtc.isBefore(moment.utc('2017-04-01'));
   }
 }
-QuestSeasonal2017March.initClass();
+QuestSeasonal2017March.prototype.isReplaceable = false;
+QuestSeasonal2017March.prototype.cosmeticKeys = [CosmeticsChestTypeLookup.Common];
+QuestSeasonal2017March.prototype.rewardDetails = '1 Common Crate Key.';
 
 module.exports = QuestSeasonal2017March;

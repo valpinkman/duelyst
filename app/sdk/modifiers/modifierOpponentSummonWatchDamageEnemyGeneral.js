@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,17 +8,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOpponentSummonWatch = require('./modifierOpponentSummonWatch');
 
 class ModifierOpponentSummonWatchDamageEnemyGeneral extends ModifierOpponentSummonWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOpponentSummonWatchDamageEnemyGeneral';
-    this.type = 'ModifierOpponentSummonWatchDamageEnemyGeneral';
-
-    this.modifierName = 'Opponent Summon Watch';
-    this.description = 'Whenever your opponent summons a minion, deal %X damage to the enemy General';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierOpponentSummonWatchDamageEnemyGeneral';
+  static modifierName = 'Opponent Summon Watch';
+  static description = 'Whenever your opponent summons a minion, deal %X damage to the enemy General';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -50,6 +41,8 @@ class ModifierOpponentSummonWatchDamageEnemyGeneral extends ModifierOpponentSumm
     }
   }
 }
-ModifierOpponentSummonWatchDamageEnemyGeneral.initClass();
+ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.type = 'ModifierOpponentSummonWatchDamageEnemyGeneral';
+ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.damageAmount = 0;
+ModifierOpponentSummonWatchDamageEnemyGeneral.prototype.fxResource = ['FX.Modifiers.ModifierOpponentSummonWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierOpponentSummonWatchDamageEnemyGeneral;

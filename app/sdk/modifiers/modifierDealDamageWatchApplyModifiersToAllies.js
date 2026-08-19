@@ -3,19 +3,12 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchApplyModifiersToAllies extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchApplyModifiersToAllies';
-    this.type = 'ModifierDealDamageWatchApplyModifiersToAllies';
-
-    this.prototype.modifierContextObjects = null;
-    this.prototype.includeGeneral = false;
-  }
+  static type = 'ModifierDealDamageWatchApplyModifiersToAllies';
 
   static createContextObject(modifiers, includeGeneral, options) {
     const contextObject = super.createContextObject(options);
@@ -54,6 +47,8 @@ class ModifierDealDamageWatchApplyModifiersToAllies extends ModifierDealDamageWa
     })();
   }
 }
-ModifierDealDamageWatchApplyModifiersToAllies.initClass();
+ModifierDealDamageWatchApplyModifiersToAllies.prototype.type = 'ModifierDealDamageWatchApplyModifiersToAllies';
+ModifierDealDamageWatchApplyModifiersToAllies.prototype.modifierContextObjects = null;
+ModifierDealDamageWatchApplyModifiersToAllies.prototype.includeGeneral = false;
 
 module.exports = ModifierDealDamageWatchApplyModifiersToAllies;

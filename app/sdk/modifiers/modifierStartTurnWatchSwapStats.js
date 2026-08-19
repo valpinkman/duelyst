@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -9,14 +8,8 @@ const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 const Modifier = require('./modifier');
 
 class ModifierStartTurnWatchSwapStats extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchSwapStats';
-    this.type = 'ModifierStartTurnWatchSwapStats';
-
-    this.description = 'At the start of your turn, fully heal this minion and switch its Attack and Health';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch'];
-  }
+  static type = 'ModifierStartTurnWatchSwapStats';
+  static description = 'At the start of your turn, fully heal this minion and switch its Attack and Health';
 
   onTurnWatch(action) {
     super.onTurnWatch();
@@ -39,6 +32,7 @@ class ModifierStartTurnWatchSwapStats extends ModifierStartTurnWatch {
     return this.getCard().getGameSession().applyModifierContextObject(contextObject, this.getCard());
   }
 }
-ModifierStartTurnWatchSwapStats.initClass();
+ModifierStartTurnWatchSwapStats.prototype.type = 'ModifierStartTurnWatchSwapStats';
+ModifierStartTurnWatchSwapStats.prototype.fxResource = ['FX.Modifiers.ModifierStartTurnWatch'];
 
 module.exports = ModifierStartTurnWatchSwapStats;

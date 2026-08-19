@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -60,19 +59,8 @@ const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/n
 ({ Redis, Jobs } = require('../../redis'));
 
 class UsersModule {
-  static initClass() {
-    /**
-     * MAX number of daily games to count for play rewards.
-     * @public
-     */
-    this.DAILY_REWARD_GAME_CAP = 200;
-
-    /**
-     * Hours until FWOTD is available again.
-     * @public
-     */
-    this.DAILY_WIN_CYCLE_HOURS = 22;
-  }
+  static DAILY_REWARD_GAME_CAP = 200;
+  static DAILY_WIN_CYCLE_HOURS = 22;
 
   /**
    * Retrieve an active and valid global referral code.
@@ -3314,7 +3302,6 @@ class UsersModule {
       });
   }
 }
-UsersModule.initClass();
 
 module.exports = UsersModule;
 

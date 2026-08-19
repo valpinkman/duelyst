@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,15 +13,9 @@ const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierEnemyTeamMoveWatch = require('./modifierEnemyTeamMoveWatch');
 
 class ModifierEnemyTeamMoveWatchSummonEntityBehind extends ModifierEnemyTeamMoveWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyTeamMoveWatchSummonEntityBehind';
-    this.type = 'ModifierEnemyTeamMoveWatchSummonEntityBehind';
-
-    this.modifierName = 'Enemy Team Move Watch Buff Target';
-    this.description = 'Whenever an enemy minion is moved for any reason, summon %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyTeamMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierEnemyTeamMoveWatchSummonEntityBehind';
+  static modifierName = 'Enemy Team Move Watch Buff Target';
+  static description = 'Whenever an enemy minion is moved for any reason, summon %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = ''; }
@@ -84,6 +77,7 @@ class ModifierEnemyTeamMoveWatchSummonEntityBehind extends ModifierEnemyTeamMove
     return this.getCard().getOwnerId();
   }
 }
-ModifierEnemyTeamMoveWatchSummonEntityBehind.initClass();
+ModifierEnemyTeamMoveWatchSummonEntityBehind.prototype.type = 'ModifierEnemyTeamMoveWatchSummonEntityBehind';
+ModifierEnemyTeamMoveWatchSummonEntityBehind.prototype.fxResource = ['FX.Modifiers.ModifierMyTeamMoveWatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierEnemyTeamMoveWatchSummonEntityBehind;

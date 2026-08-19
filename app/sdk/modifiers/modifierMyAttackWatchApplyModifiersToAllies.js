@@ -3,21 +3,12 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierMyAttackWatch = require('./modifierMyAttackWatch');
 
 class ModifierMyAttackWatchApplyModifiersToAllies extends ModifierMyAttackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackWatchApplyModifiersToAllies';
-    this.type = 'ModifierMyAttackWatchApplyModifiersToAllies';
-
-    this.prototype.modifierContextObjects = null;
-    this.prototype.includeGeneral = false;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierMyAttackWatchApplyModifiersToAllies';
 
   static createContextObject(modifiers, includeGeneral, options) {
     const contextObject = super.createContextObject(options);
@@ -42,6 +33,9 @@ class ModifierMyAttackWatchApplyModifiersToAllies extends ModifierMyAttackWatch 
     })();
   }
 }
-ModifierMyAttackWatchApplyModifiersToAllies.initClass();
+ModifierMyAttackWatchApplyModifiersToAllies.prototype.type = 'ModifierMyAttackWatchApplyModifiersToAllies';
+ModifierMyAttackWatchApplyModifiersToAllies.prototype.modifierContextObjects = null;
+ModifierMyAttackWatchApplyModifiersToAllies.prototype.includeGeneral = false;
+ModifierMyAttackWatchApplyModifiersToAllies.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierMyAttackWatchApplyModifiersToAllies;

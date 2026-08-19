@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -17,12 +16,8 @@ const _ = require('underscore');
 const ModifierStartTurnWatch = require('./modifierStartTurnWatch');
 
 class ModifierStartTurnWatchPlaySpell extends ModifierStartTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierStartTurnWatchPlaySpell';
-    this.type = 'ModifierStartTurnWatchPlaySpell';
-
-    this.description = 'At the start of your turn, cast %X';
-  }
+  static type = 'ModifierStartTurnWatchPlaySpell';
+  static description = 'At the start of your turn, cast %X';
 
   static createContextObject(cardDataOrIndexToCast, cardDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -46,6 +41,6 @@ class ModifierStartTurnWatchPlaySpell extends ModifierStartTurnWatch {
     }
   }
 }
-ModifierStartTurnWatchPlaySpell.initClass();
+ModifierStartTurnWatchPlaySpell.prototype.type = 'ModifierStartTurnWatchPlaySpell';
 
 module.exports = ModifierStartTurnWatchPlaySpell;

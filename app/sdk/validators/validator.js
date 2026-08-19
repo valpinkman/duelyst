@@ -1,19 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
 
 class Validator {
-  static initClass() {
-    this.prototype.type = 'Validator';
-    this.type = 'Validator';
-
-    this.prototype._gameSession = null;
-  }
+  static type = 'Validator';
 
   // region INITIALIZE
 
@@ -70,7 +64,8 @@ class Validator {
 
   onValidateAction(event) {}
 }
-Validator.initClass();
+Validator.prototype.type = 'Validator';
+Validator.prototype._gameSession = null;
 // override in sub-class and set action's isValid state
 
 // endregion EVENTS

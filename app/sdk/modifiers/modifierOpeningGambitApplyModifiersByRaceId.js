@@ -1,28 +1,14 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
 const ModifierOpeningGambitApplyModifiers = require('./modifierOpeningGambitApplyModifiers');
 
 class ModifierOpeningGambitApplyModifiersByRaceId extends ModifierOpeningGambitApplyModifiers {
-  static initClass() {
-    /*
-    This modifier is used to apply modifiers RANDOMLY to X entities around an entity on spawn.
-    examples:
-    2 random nearby friendly minions gain +1/+1
-    1 random friendly minion gains provoke
-    */
-
-    this.prototype.type = 'ModifierOpeningGambitApplyModifiersByRaceId';
-    this.type = 'ModifierOpeningGambitApplyModifiersByRaceId';
-
-    this.description = '';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierOpeningGambitApplyModifiersByRaceId';
+  static description = '';
 
   static createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, raceId, description, options) {
     const contextObject = super.createContextObject(modifiersContextObjects, managedByCard, auraIncludeSelf, auraIncludeAlly, auraIncludeEnemy, auraIncludeGeneral, auraRadius, description, options);
@@ -43,6 +29,7 @@ class ModifierOpeningGambitApplyModifiersByRaceId extends ModifierOpeningGambitA
     return affectedEntities;
   }
 }
-ModifierOpeningGambitApplyModifiersByRaceId.initClass();
+ModifierOpeningGambitApplyModifiersByRaceId.prototype.type = 'ModifierOpeningGambitApplyModifiersByRaceId';
+ModifierOpeningGambitApplyModifiersByRaceId.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierOpeningGambitApplyModifiersByRaceId;

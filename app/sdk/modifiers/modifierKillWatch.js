@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,20 +10,7 @@ const DieAction = require('app/sdk/actions/dieAction');
 const Modifier = require('./modifier');
 
 class ModifierKillWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierKillWatch';
-    this.type = 'ModifierKillWatch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
-
-    this.prototype.includeAllies = true;
-    this.prototype.includeGenerals = true;
-  }
+  static type = 'ModifierKillWatch';
 
   static createContextObject(includeAllies, includeGenerals, options) {
     if (includeAllies == null) { includeAllies = true; }
@@ -61,7 +47,14 @@ class ModifierKillWatch extends Modifier {
 
   onKillWatch(action) {}
 }
-ModifierKillWatch.initClass();
+ModifierKillWatch.prototype.type = 'ModifierKillWatch';
+ModifierKillWatch.prototype.activeInHand = false;
+ModifierKillWatch.prototype.activeInDeck = false;
+ModifierKillWatch.prototype.activeInSignatureCards = false;
+ModifierKillWatch.prototype.activeOnBoard = true;
+ModifierKillWatch.prototype.fxResource = ['FX.Modifiers.ModifierKillWatch'];
+ModifierKillWatch.prototype.includeAllies = true;
+ModifierKillWatch.prototype.includeGenerals = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierKillWatch;

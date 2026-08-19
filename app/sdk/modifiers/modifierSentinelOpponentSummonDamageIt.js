@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,10 +8,7 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierSentinelOpponentSummon = require('./modifierSentinelOpponentSummon');
 
 class ModifierSentinelOpponentSummonDamageIt extends ModifierSentinelOpponentSummon {
-  static initClass() {
-    this.prototype.type = 'ModifierSentinelOpponentSummonDamageIt';
-    this.type = 'ModifierSentinelOpponentSummonDamageIt';
-  }
+  static type = 'ModifierSentinelOpponentSummonDamageIt';
 
   static createContextObject(description, transformCardId, damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -34,6 +30,6 @@ class ModifierSentinelOpponentSummonDamageIt extends ModifierSentinelOpponentSum
     }
   }
 }
-ModifierSentinelOpponentSummonDamageIt.initClass();
+ModifierSentinelOpponentSummonDamageIt.prototype.type = 'ModifierSentinelOpponentSummonDamageIt';
 
 module.exports = ModifierSentinelOpponentSummonDamageIt;

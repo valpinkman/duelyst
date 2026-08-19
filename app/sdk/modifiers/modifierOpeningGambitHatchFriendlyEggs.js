@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,8 @@ const ModifierEgg = require('app/sdk/modifiers/modifierEgg');
 const ModifierOpeningGambit = require('app/sdk/modifiers/modifierOpeningGambit');
 
 class ModifierOpeningGambitHatchFriendlyEggs extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitHatchFriendlyEggs';
-    this.type = 'ModifierOpeningGambitHatchFriendlyEggs';
-
-    this.description = 'Hatch all friendly eggs';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitHatchFriendlyEggs';
+  static description = 'Hatch all friendly eggs';
 
   onOpeningGambit() {
     return (() => {
@@ -37,6 +30,7 @@ class ModifierOpeningGambitHatchFriendlyEggs extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitHatchFriendlyEggs.initClass();
+ModifierOpeningGambitHatchFriendlyEggs.prototype.type = 'ModifierOpeningGambitHatchFriendlyEggs';
+ModifierOpeningGambitHatchFriendlyEggs.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitHatchFriendlyEggs;

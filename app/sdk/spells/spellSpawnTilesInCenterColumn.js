@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,6 @@ const CONFIG = require('app/common/config');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
 
 class SpellSpawnTilesInCenterColumn extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     const board = this.getGameSession().getBoard();
     const centerPosition = { x: 4, y: 2 };
@@ -32,6 +27,6 @@ class SpellSpawnTilesInCenterColumn extends SpellSpawnEntity {
     return true;
   }
 }
-SpellSpawnTilesInCenterColumn.initClass();
+SpellSpawnTilesInCenterColumn.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = SpellSpawnTilesInCenterColumn;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -63,13 +62,10 @@ const BeginnerVanarChallenge5 = require('./vanar/BeginnerVanarChallenge5');
 const BeginnerLyonarChallenge4 = require('./lyonar/BeginnerLyonarChallenge4');
 
 class ChallengeFactory {
-  static initClass() {
-    this._challengeCardRewards = null; // {Array} card ids to give user 3 copies of
-    this._challengeGoldRewards = null; // {integer} quantity of gold to give user
-    this._challengeSpiritRewards = null; // {integer} quantity of spirit to give user
-    // {array} contains a quantity of booster packs to give the user, each element is the additional properties the booster should have, for a basic pack use {}
-    this._challengeBoosterPackRewards = null;
-  }
+  static _challengeCardRewards = null;
+  static _challengeGoldRewards = null;
+  static _challengeSpiritRewards = null;
+  static _challengeBoosterPackRewards = null;
 
   static challengeForType(type) {
     if (type === Sandbox.type) {
@@ -308,6 +304,5 @@ class ChallengeFactory {
     };
   }
 }
-ChallengeFactory.initClass();
 
 module.exports = ChallengeFactory;

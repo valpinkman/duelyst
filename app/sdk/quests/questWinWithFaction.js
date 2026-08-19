@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -10,11 +9,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 const GameType = require('app/sdk/gameType');
 
 class QuestWinWithFaction extends Quest {
-  static initClass() {
-    this.prototype.factionId = null;
-    this.prototype.factionName = null;
-  }
-
   constructor(id, name, typesIn, reward, factionId, factionName) {
     super(id, name, typesIn, reward);
     this.factionId = factionId;
@@ -41,6 +35,7 @@ class QuestWinWithFaction extends Quest {
     return `Win ${this.params.completionProgress} games with a ${this.factionName} Deck.`;
   }
 }
-QuestWinWithFaction.initClass();
+QuestWinWithFaction.prototype.factionId = null;
+QuestWinWithFaction.prototype.factionName = null;
 
 module.exports = QuestWinWithFaction;

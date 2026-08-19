@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,15 +10,9 @@ const _ = require('underscore');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDrawFactionCards extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDrawFactionCards';
-    this.type = 'ModifierOpeningGambitDrawFactionCards';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Add 2 random cards from your Faction to your action bar';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitDrawFactionCards';
+  static modifierName = 'Opening Gambit';
+  static description = 'Add 2 random cards from your Faction to your action bar';
 
   onOpeningGambit(action) {
     super.onOpeningGambit(action);
@@ -62,6 +55,7 @@ class ModifierOpeningGambitDrawFactionCards extends ModifierOpeningGambit {
     }
   }
 }
-ModifierOpeningGambitDrawFactionCards.initClass();
+ModifierOpeningGambitDrawFactionCards.prototype.type = 'ModifierOpeningGambitDrawFactionCards';
+ModifierOpeningGambitDrawFactionCards.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitDrawFactionCards;

@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,7 @@ const _ = require('underscore');
 const ModifierEndTurnWatchAnyPlayer = require('./modifierEndTurnWatchAnyPlayer');
 
 class ModifierEndTurnWatchAnyPlayerPullRandomUnits extends ModifierEndTurnWatchAnyPlayer {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchAnyPlayerPullRandomUnits';
-    this.type = 'ModifierEndTurnWatchAnyPlayerPullRandomUnits';
-  }
+  static type = 'ModifierEndTurnWatchAnyPlayerPullRandomUnits';
 
   onTurnWatch() {
     super.onTurnWatch();
@@ -61,6 +57,6 @@ class ModifierEndTurnWatchAnyPlayerPullRandomUnits extends ModifierEndTurnWatchA
     return false;
   }
 }
-ModifierEndTurnWatchAnyPlayerPullRandomUnits.initClass();
+ModifierEndTurnWatchAnyPlayerPullRandomUnits.prototype.type = 'ModifierEndTurnWatchAnyPlayerPullRandomUnits';
 
 module.exports = ModifierEndTurnWatchAnyPlayerPullRandomUnits;

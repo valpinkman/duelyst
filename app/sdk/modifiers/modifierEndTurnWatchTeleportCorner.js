@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomTeleportAction = require('app/sdk/actions/randomTeleportAction');
@@ -10,17 +9,9 @@ const _ = require('underscore');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchTeleportCorner extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchTeleportCorner';
-    this.type = 'ModifierEndTurnWatchTeleportCorner';
-
-    this.modifierName = 'Turn Watch';
-    this.description = 'At the end of your turn, teleport to a random corner';
-
-    this.prototype.isHiddenToUI = true; // don't show this modifier by default
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-  }
+  static type = 'ModifierEndTurnWatchTeleportCorner';
+  static modifierName = 'Turn Watch';
+  static description = 'At the end of your turn, teleport to a random corner';
 
   onTurnWatch(action) {
     super.onTurnWatch(action);
@@ -33,6 +24,8 @@ class ModifierEndTurnWatchTeleportCorner extends ModifierEndTurnWatch {
     return this.getGameSession().executeAction(randomTeleportAction);
   }
 }
-ModifierEndTurnWatchTeleportCorner.initClass();
+ModifierEndTurnWatchTeleportCorner.prototype.type = 'ModifierEndTurnWatchTeleportCorner';
+ModifierEndTurnWatchTeleportCorner.prototype.isHiddenToUI = true;
+ModifierEndTurnWatchTeleportCorner.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
 
 module.exports = ModifierEndTurnWatchTeleportCorner;

@@ -2,25 +2,15 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierEnemyDealDamageWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierEnemyDealDamageWatch';
-    this.type = 'ModifierEnemyDealDamageWatch';
-
-    this.modifierName = 'Enemy Deal Damage Watch';
-    this.description = 'Whenever an enemy deals damage...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierEnemyDealDamageWatch';
+  static modifierName = 'Enemy Deal Damage Watch';
+  static description = 'Whenever an enemy deals damage...';
 
   onAction(actionEvent) {
     super.onAction(actionEvent);
@@ -43,7 +33,11 @@ class ModifierEnemyDealDamageWatch extends Modifier {
 
   onEnemyDamageDealt(action) {}
 }
-ModifierEnemyDealDamageWatch.initClass();
+ModifierEnemyDealDamageWatch.prototype.type = 'ModifierEnemyDealDamageWatch';
+ModifierEnemyDealDamageWatch.prototype.activeInHand = false;
+ModifierEnemyDealDamageWatch.prototype.activeInDeck = false;
+ModifierEnemyDealDamageWatch.prototype.activeInSignatureCards = false;
+ModifierEnemyDealDamageWatch.prototype.activeOnBoard = true;
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierEnemyDealDamageWatch;

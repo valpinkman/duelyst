@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const RandomTeleportAction = require('app/sdk/actions/randomTeleportAction');
@@ -10,13 +9,9 @@ const _ = require('underscore');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchTeleportEnemyToYourSide extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchTeleportEnemyToYourSide';
-    this.type = 'ModifierDealDamageWatchTeleportEnemyToYourSide';
-
-    this.modifierName = 'Deal Damage Teleport Enemy';
-    this.description = 'Whenever this minion deals damage to an enemy, teleport it to your starting side of the battlefield';
-  }
+  static type = 'ModifierDealDamageWatchTeleportEnemyToYourSide';
+  static modifierName = 'Deal Damage Teleport Enemy';
+  static description = 'Whenever this minion deals damage to an enemy, teleport it to your starting side of the battlefield';
 
   onDealDamage(action) {
     const enemy = action.getTarget();
@@ -35,6 +30,6 @@ class ModifierDealDamageWatchTeleportEnemyToYourSide extends ModifierDealDamageW
     }
   }
 }
-ModifierDealDamageWatchTeleportEnemyToYourSide.initClass();
+ModifierDealDamageWatchTeleportEnemyToYourSide.prototype.type = 'ModifierDealDamageWatchTeleportEnemyToYourSide';
 
 module.exports = ModifierDealDamageWatchTeleportEnemyToYourSide;

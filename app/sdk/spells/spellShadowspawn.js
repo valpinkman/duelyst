@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('../../common/config');
@@ -11,14 +10,6 @@ const UtilsGameSession = require('../../common/utils/utils_game_session');
 const _ = require('underscore');
 
 class SpellShadowspawn extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spawnSilently = true;
-    this.prototype.numUnits = 2;
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction4.Wraithling };
-    // spawns wraithlings
-  }
-
   _findApplyEffectPositions(position, sourceAction) {
     let applyEffectPositions;
     const card = this.getEntityToSpawn();
@@ -43,6 +34,9 @@ class SpellShadowspawn extends SpellSpawnEntity {
     return validPositions;
   }
 }
-SpellShadowspawn.initClass();
+SpellShadowspawn.prototype.targetType = CardType.Unit;
+SpellShadowspawn.prototype.spawnSilently = true;
+SpellShadowspawn.prototype.numUnits = 2;
+SpellShadowspawn.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction4.Wraithling };
 
 module.exports = SpellShadowspawn;

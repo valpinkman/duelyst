@@ -5,7 +5,6 @@
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,11 +16,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishEquipArtifactFromDeck';
-    this.type = 'ModifierDyingWishEquipArtifactFromDeck';
-    this.description = 'Equip %X from your deck';
-  }
+  static type = 'ModifierDyingWishEquipArtifactFromDeck';
+  static description = 'Equip %X from your deck';
 
   static createContextObject(numArtifacts) {
     if (numArtifacts == null) { numArtifacts = 1; }
@@ -101,7 +97,7 @@ class ModifierDyingWishEquipArtifactFromDeck extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishEquipArtifactFromDeck.initClass();
+ModifierDyingWishEquipArtifactFromDeck.prototype.type = 'ModifierDyingWishEquipArtifactFromDeck';
 
 module.exports = ModifierDyingWishEquipArtifactFromDeck;
 

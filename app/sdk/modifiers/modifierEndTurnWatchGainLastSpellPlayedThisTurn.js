@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,12 +12,7 @@ const ApplyCardToBoardAction = require('app/sdk/actions/applyCardToBoardAction')
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierEndTurnWatchGainLastSpellPlayedThisTurn extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierEndTurnWatchGainLastSpellPlayedThisTurn';
-    this.type = 'ModifierEndTurnWatchGainLastSpellPlayedThisTurn';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
-  }
+  static type = 'ModifierEndTurnWatchGainLastSpellPlayedThisTurn';
 
   onTurnWatch(action) {
     let actions = [];
@@ -45,7 +39,8 @@ class ModifierEndTurnWatchGainLastSpellPlayedThisTurn extends ModifierEndTurnWat
     }
   }
 }
-ModifierEndTurnWatchGainLastSpellPlayedThisTurn.initClass();
+ModifierEndTurnWatchGainLastSpellPlayedThisTurn.prototype.type = 'ModifierEndTurnWatchGainLastSpellPlayedThisTurn';
+ModifierEndTurnWatchGainLastSpellPlayedThisTurn.prototype.fxResource = ['FX.Modifiers.ModifierEndTurnWatch'];
 
 module.exports = ModifierEndTurnWatchGainLastSpellPlayedThisTurn;
 

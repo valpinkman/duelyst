@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,6 @@ const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction')
 const _ = require('underscore');
 
 class SpellPandaJail extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction2.OnyxBear };
-  }
-
   getCardDataOrIndexToSpawn(x, y) {
     let cardDataOrIndexToSpawn = super.getCardDataOrIndexToSpawn(x, y);
     if ((cardDataOrIndexToSpawn != null) && !_.isObject(cardDataOrIndexToSpawn)) { cardDataOrIndexToSpawn = this.getGameSession().getCardByIndex(cardDataOrIndexToSpawn).createNewCardData(); }
@@ -39,6 +34,6 @@ class SpellPandaJail extends SpellSpawnEntity {
     return true;
   }
 }
-SpellPandaJail.initClass();
+SpellPandaJail.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction2.OnyxBear };
 
 module.exports = SpellPandaJail;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,16 +11,8 @@ const CONFIG = require('app/common/config');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishDamageEnemyGeneralHealGeneral extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishDamageEnemyGeneralHealGeneral';
-    this.type = 'ModifierDyingWishDamageEnemyGeneralHealGeneral';
-
-    this.description = 'Deal %X damage to the enemy General. Restore %X Health to your General';
-
-    this.prototype.healthChangeAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericChain'];
-  }
+  static type = 'ModifierDyingWishDamageEnemyGeneralHealGeneral';
+  static description = 'Deal %X damage to the enemy General. Restore %X Health to your General';
 
   static createContextObject(healthChangeAmount) {
     if (healthChangeAmount == null) { healthChangeAmount = 0; }
@@ -58,6 +49,8 @@ class ModifierDyingWishDamageEnemyGeneralHealGeneral extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishDamageEnemyGeneralHealGeneral.initClass();
+ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.type = 'ModifierDyingWishDamageEnemyGeneralHealGeneral';
+ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.healthChangeAmount = 0;
+ModifierDyingWishDamageEnemyGeneralHealGeneral.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericChain'];
 
 module.exports = ModifierDyingWishDamageEnemyGeneralHealGeneral;

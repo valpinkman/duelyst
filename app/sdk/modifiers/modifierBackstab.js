@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,22 +14,8 @@ const ModifierAlwaysBackstabbed = require('./modifierAlwaysBackstabbed');
 const Modifier = require('./modifier');
 
 class ModifierBackstab extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBackstab';
-    this.type = 'ModifierBackstab';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.backstab_def');
-
-    this.modifierName = i18next.t('modifiers.backstab_name');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBackstab'];
-  }
+  static type = 'ModifierBackstab';
+  static isKeyworded = true;
 
   onEvent(event) {
     super.onEvent(event);
@@ -78,7 +63,14 @@ class ModifierBackstab extends Modifier {
     return this.backstabBonus;
   }
 }
-ModifierBackstab.initClass();
+ModifierBackstab.prototype.type = 'ModifierBackstab';
+ModifierBackstab.keywordDefinition = i18next.t('modifiers.backstab_def');
+ModifierBackstab.modifierName = i18next.t('modifiers.backstab_name');
+ModifierBackstab.prototype.activeInHand = false;
+ModifierBackstab.prototype.activeInDeck = false;
+ModifierBackstab.prototype.activeInSignatureCards = false;
+ModifierBackstab.prototype.activeOnBoard = true;
+ModifierBackstab.prototype.fxResource = ['FX.Modifiers.ModifierBackstab'];
 
 module.exports = ModifierBackstab;
 

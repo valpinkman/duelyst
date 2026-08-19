@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDamageEnemiesNearShadowCreep extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDamageEnemiesNearShadowCreep';
-    this.type = 'ModifierOpeningGambitDamageEnemiesNearShadowCreep';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Deal %X damage to each enemy on or near friendly Shadow Creep';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierOpeningGambitDamageEnemiesNearShadowCreep';
+  static modifierName = 'Opening Gambit';
+  static description = 'Deal %X damage to each enemy on or near friendly Shadow Creep';
 
   static createContextObject(damageAmount, options) {
     if (damageAmount == null) { damageAmount = 0; }
@@ -70,6 +63,7 @@ class ModifierOpeningGambitDamageEnemiesNearShadowCreep extends ModifierOpeningG
     })();
   }
 }
-ModifierOpeningGambitDamageEnemiesNearShadowCreep.initClass();
+ModifierOpeningGambitDamageEnemiesNearShadowCreep.prototype.type = 'ModifierOpeningGambitDamageEnemiesNearShadowCreep';
+ModifierOpeningGambitDamageEnemiesNearShadowCreep.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierOpeningGambitDamageEnemiesNearShadowCreep;

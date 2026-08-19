@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -14,13 +13,6 @@ const UtilsGameSession = require('app/common/utils/utils_game_session');
 */
 
 class QuestGameGoal extends Quest {
-  static initClass() {
-    this.prototype.description = undefined; // user visible description of quest
-    // goalTester format : (gameSessionData,playerIdString) -> return questProgress
-    this.prototype.goalTester = undefined;
-    // see format above
-  }
-
   // numGamesRequiredToSatisfyQuest - how many times the goal must be met to award quest gold
   constructor(id, name, typesIn, reward, numGamesRequiredToSatisfyQuest, description, goalTester) {
     super(id, name, typesIn, reward);
@@ -43,6 +35,7 @@ class QuestGameGoal extends Quest {
     return this.description;
   }
 }
-QuestGameGoal.initClass();
+QuestGameGoal.prototype.description = undefined;
+QuestGameGoal.prototype.goalTester = undefined;
 
 module.exports = QuestGameGoal;

@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -13,15 +12,9 @@ const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 const Modifier = require('./modifier');
 
 class ModifierDealDamageWatchKillTargetAndSelf extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchKillTargetAndSelf';
-    this.type = 'ModifierDealDamageWatchKillTargetAndSelf';
-
-    this.modifierName = 'Clumsy Assassin';
-    this.description = 'Whenever this unit deals damage to an enemy minion, destroy itself and the enemy minion';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
-  }
+  static type = 'ModifierDealDamageWatchKillTargetAndSelf';
+  static modifierName = 'Clumsy Assassin';
+  static description = 'Whenever this unit deals damage to an enemy minion, destroy itself and the enemy minion';
 
   onEvent(event) {
     super.onEvent(event);
@@ -75,7 +68,8 @@ class ModifierDealDamageWatchKillTargetAndSelf extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierDealDamageWatchKillTargetAndSelf.initClass();
+ModifierDealDamageWatchKillTargetAndSelf.prototype.type = 'ModifierDealDamageWatchKillTargetAndSelf';
+ModifierDealDamageWatchKillTargetAndSelf.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
 
 module.exports = ModifierDealDamageWatchKillTargetAndSelf;
 

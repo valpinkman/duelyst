@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('app/sdk/challenges/challenge');
@@ -21,36 +20,7 @@ const ChallengeCategory = require('app/sdk/challenges/challengeCategory');
 const i18next = require('i18next');
 
 class LessonThree extends Challenge {
-  static initClass() {
-    this.type = 'LessonThree';
-    this.prototype.type = 'LessonThree';
-    this.prototype.categoryType = ChallengeCategory.tutorial.type;
-
-    this.prototype.name = i18next.t('tutorial.lesson_3_title');
-    this.prototype.description = i18next.t('tutorial.lesson_3_description');
-    this.prototype.difficulty = i18next.t('tutorial.lesson_3_difficulty');
-    this.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_3_start_message');
-    this.prototype.otkChallengeFailureMessages = [
-      i18next.t('tutorial.lesson_3_failure_message'),
-    ];
-
-    // name:"Power Comes from Within"
-    // description:"Learn the innate abilities of your minions: Ranged, Provoke, Flying, Opening Gambit."
-    // difficulty:"2 Minutes"
-    // otkChallengeStartMessage: "Finish off enemy General in ONE turn!"
-    // otkChallengeFailureMessages: [
-    //   "Finish off the Vaath in ONE turn."
-    // ]
-
-    this.prototype.iconUrl = RSX.speech_portrait_magmar.img;
-    this.prototype._musicOverride = RSX.music_battlemap_bluemonolith.audio;
-
-    this.prototype.userIsPlayer1 = false;
-    this.prototype.battleMapTemplateIndex = 5;
-    this.prototype.customBoard = false;
-    this.prototype.startingHandSizeOpponent = 6;
-    this.prototype.usesResetTurn = false;
-  }
+  static type = 'LessonThree';
 
   constructor() {
     super();
@@ -697,6 +667,21 @@ class LessonThree extends Challenge {
     return this._opponentAgent.addActionForTurn(4, AgentActions.createAgentActionAttackWithUnit('provoker2', { x: 1, y: 0 }, false));
   }
 }
-LessonThree.initClass();
+LessonThree.prototype.type = 'LessonThree';
+LessonThree.prototype.categoryType = ChallengeCategory.tutorial.type;
+LessonThree.prototype.name = i18next.t('tutorial.lesson_3_title');
+LessonThree.prototype.description = i18next.t('tutorial.lesson_3_description');
+LessonThree.prototype.difficulty = i18next.t('tutorial.lesson_3_difficulty');
+LessonThree.prototype.otkChallengeStartMessage = i18next.t('tutorial.lesson_3_start_message');
+LessonThree.prototype.otkChallengeFailureMessages = [
+  i18next.t('tutorial.lesson_3_failure_message'),
+];
+LessonThree.prototype.iconUrl = RSX.speech_portrait_magmar.img;
+LessonThree.prototype._musicOverride = RSX.music_battlemap_bluemonolith.audio;
+LessonThree.prototype.userIsPlayer1 = false;
+LessonThree.prototype.battleMapTemplateIndex = 5;
+LessonThree.prototype.customBoard = false;
+LessonThree.prototype.startingHandSizeOpponent = 6;
+LessonThree.prototype.usesResetTurn = false;
 
 module.exports = LessonThree;

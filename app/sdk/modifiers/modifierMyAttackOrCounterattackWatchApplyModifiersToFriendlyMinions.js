@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,13 +10,7 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierMyAttackOrCounterattackWatch = require('./modifierMyAttackOrCounterattackWatch');
 
 class ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions extends ModifierMyAttackOrCounterattackWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions';
-    this.type = 'ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions';
-
-    this.prototype.modifierContextObjects = null;
-    this.prototype.raceId = null;
-  }
+  static type = 'ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions';
 
   static createContextObject(modifierContextObjects, raceId = null, options) {
     const contextObject = super.createContextObject(options);
@@ -45,6 +38,8 @@ class ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions extend
     }
   }
 }
-ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.initClass();
+ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.type = 'ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions';
+ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.modifierContextObjects = null;
+ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions.prototype.raceId = null;
 
 module.exports = ModifierMyAttackOrCounterattackWatchApplyModifiersToFriendlyMinions;

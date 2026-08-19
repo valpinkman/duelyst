@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -34,55 +33,14 @@ const UtilsGameSession = require('../../../app/common/utils/utils_game_session')
 const RiftHelper = require('app/sdk/rift/riftHelper');
 
 class RiftModule {
-  static initClass() {
-    /**
-     * Max wins for matchmaking purposes.
-     * @public
-     */
-    this.RIFT_MAX_WINS_FOR_MATCHMAKING = 200;
-
-    /**
-     * Initial rating a rift deck starts at
-     * @public
-     */
-    this.RIFT_DEFAULT_RATING = 400;
-
-    /**
-     * The max rating a rift deck gains/loses a percentage of per match
-     * @public
-     */
-    this.RIFT_MAX_RATING_DELTA = 30;
-
-    /**
-     * The min rating a rift deck gains/loses a percentage of per match
-     * @public
-     */
-    this.RIFT_MIN_RATING_DELTA = 10;
-
-    /**
-     * The max rating difference between two players before rating gain/loss is reduced
-     * @public
-     */
-    this.RIFT_RATING_DIFFERENCE_FOR_MAX_RATING_GAIN = 100;
-
-    /**
-     * The max rating difference between two players before rating gain/loss is reduced
-     * @public
-     */
-    this.RIFT_RATING_DIFFERENCE_FOR_MIN_RATING_GAIN = 500;
-
-    /**
-     * The max rift upgrades a player can store up for later use
-     * @public
-     */
-    this.RIFT_MAX_STORED_UPGRADES = 10;
-
-    /**
-     * The amount of rift upgrades a user gets for their first rift run
-     * @public
-     */
-    this.RIFT_FIRST_RUN_FREE_UPGRADES = 5;
-  }
+  static RIFT_MAX_WINS_FOR_MATCHMAKING = 200;
+  static RIFT_DEFAULT_RATING = 400;
+  static RIFT_MAX_RATING_DELTA = 30;
+  static RIFT_MIN_RATING_DELTA = 10;
+  static RIFT_RATING_DIFFERENCE_FOR_MAX_RATING_GAIN = 100;
+  static RIFT_RATING_DIFFERENCE_FOR_MIN_RATING_GAIN = 500;
+  static RIFT_MAX_STORED_UPGRADES = 10;
+  static RIFT_FIRST_RUN_FREE_UPGRADES = 5;
 
   /**
    * Use soft currency (gold) to buy an rift ticket for a user.
@@ -1555,7 +1513,6 @@ class RiftModule {
     */
   }
 }
-RiftModule.initClass();
 
 module.exports = RiftModule;
 

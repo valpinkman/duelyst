@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,21 +14,9 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierOnOpponentDeathWatch = require('./modifierOnOpponentDeathWatch');
 
 class ModifierOnOpponentDeathWatchSpawnEntityOnSpace extends ModifierOnOpponentDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierOnOpponentDeathWatchSpawnEntityOnSpace';
-    this.type = 'ModifierOnOpponentDeathWatchSpawnEntityOnSpace';
-
-    this.modifierName = 'Deathwatch';
-    this.description = 'Whenever an enemy minion dies, summon a %X';
-
-    this.prototype.cardDataOrIndexToSpawn = null;
-    this.prototype.spawnCount = 1;
-    this.prototype.spawnSilently = true; // most reactive spawns should be silent, i.e. no followups and no opening gambits
-    this.prototype.spawnPattern = CONFIG.PATTERN_1x1;
-    this.prototype.prisonerList = [{ id: Cards.Neutral.Prisoner1 }, { id: Cards.Neutral.Prisoner2 }, { id: Cards.Neutral.Prisoner3 }, { id: Cards.Neutral.Prisoner4 }, { id: Cards.Neutral.Prisoner5 }, { id: Cards.Neutral.Prisoner6 }];
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
-  }
+  static type = 'ModifierOnOpponentDeathWatchSpawnEntityOnSpace';
+  static modifierName = 'Deathwatch';
+  static description = 'Whenever an enemy minion dies, summon a %X';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnDescription, spawnCount, spawnPattern, spawnSilently, options) {
     if (spawnDescription == null) { spawnDescription = 'prisoner'; }
@@ -88,6 +75,12 @@ class ModifierOnOpponentDeathWatchSpawnEntityOnSpace extends ModifierOnOpponentD
     return this.getCard().getOwnerId();
   }
 }
-ModifierOnOpponentDeathWatchSpawnEntityOnSpace.initClass();
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.type = 'ModifierOnOpponentDeathWatchSpawnEntityOnSpace';
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.cardDataOrIndexToSpawn = null;
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.spawnCount = 1;
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.spawnSilently = true;
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.spawnPattern = CONFIG.PATTERN_1x1;
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.prisonerList = [{ id: Cards.Neutral.Prisoner1 }, { id: Cards.Neutral.Prisoner2 }, { id: Cards.Neutral.Prisoner3 }, { id: Cards.Neutral.Prisoner4 }, { id: Cards.Neutral.Prisoner5 }, { id: Cards.Neutral.Prisoner6 }];
+ModifierOnOpponentDeathWatchSpawnEntityOnSpace.prototype.fxResource = ['FX.Modifiers.ModifierDeathWatch', 'FX.Modifiers.ModifierGenericSpawn'];
 
 module.exports = ModifierOnOpponentDeathWatchSpawnEntityOnSpace;

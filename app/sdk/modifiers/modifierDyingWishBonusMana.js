@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,16 +10,9 @@ const BonusManaAction = require('app/sdk/actions/bonusManaAction');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierDyingWishBonusMana extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierDyingWishBonusMana';
-    this.type = 'ModifierDyingWishBonusMana';
-
-    this.modifierName = 'Bonus Mana';
-    this.description = 'When this entity dies, its owner gains bonus mana';
-
-    this.prototype.bonusMana = 1;
-    this.prototype.bonusDuration = 1;
-  }
+  static type = 'ModifierDyingWishBonusMana';
+  static modifierName = 'Bonus Mana';
+  static description = 'When this entity dies, its owner gains bonus mana';
 
   onDyingWish() {
     super.onDyingWish();
@@ -37,6 +29,8 @@ class ModifierDyingWishBonusMana extends ModifierDyingWish {
     }
   }
 }
-ModifierDyingWishBonusMana.initClass();
+ModifierDyingWishBonusMana.prototype.type = 'ModifierDyingWishBonusMana';
+ModifierDyingWishBonusMana.prototype.bonusMana = 1;
+ModifierDyingWishBonusMana.prototype.bonusDuration = 1;
 
 module.exports = ModifierDyingWishBonusMana;

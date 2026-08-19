@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Quest = require('./quest');
@@ -13,12 +12,7 @@ const QuestType = require('./questTypeLookup');
 const moment = require('moment');
 
 class QuestAnniversary2017 extends Quest {
-  static initClass() {
-    this.Identifier = 40001; // ID to use for this quest
-    this.prototype.isReplaceable = false; // whether a player can replace this quest
-    this.prototype.giftChests = [GiftCrateLookup.Anniversary2017];
-    this.prototype.rewardDetails = 'Gift Box contains: Some sweet rewards!';
-  }
+  static Identifier = 40001;
 
   constructor() {
     super(QuestAnniversary2017.Identifier, 'Anniversary', [QuestType.Promotional]);
@@ -48,6 +42,8 @@ class QuestAnniversary2017 extends Quest {
     return moment.utc('2017-05-12');
   }
 }
-QuestAnniversary2017.initClass();
+QuestAnniversary2017.prototype.isReplaceable = false;
+QuestAnniversary2017.prototype.giftChests = [GiftCrateLookup.Anniversary2017];
+QuestAnniversary2017.prototype.rewardDetails = 'Gift Box contains: Some sweet rewards!';
 
 module.exports = QuestAnniversary2017;

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Logger = require('app/common/logger');
@@ -10,17 +9,8 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier');
 
 class ModifierHealSelfWhenDealingDamage extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierHealSelfWhenDealingDamage';
-    this.type = 'ModifierHealSelfWhenDealingDamage';
-
-    this.description = 'Whenever this deals damage, restore that much Health to it';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-  }
+  static type = 'ModifierHealSelfWhenDealingDamage';
+  static description = 'Whenever this deals damage, restore that much Health to it';
 
   onBeforeAction(event) {
     super.onBeforeAction(event);
@@ -41,6 +31,10 @@ class ModifierHealSelfWhenDealingDamage extends Modifier {
     }
   }
 }
-ModifierHealSelfWhenDealingDamage.initClass();
+ModifierHealSelfWhenDealingDamage.prototype.type = 'ModifierHealSelfWhenDealingDamage';
+ModifierHealSelfWhenDealingDamage.prototype.activeInHand = false;
+ModifierHealSelfWhenDealingDamage.prototype.activeInDeck = false;
+ModifierHealSelfWhenDealingDamage.prototype.activeInSignatureCards = false;
+ModifierHealSelfWhenDealingDamage.prototype.activeOnBoard = true;
 
 module.exports = ModifierHealSelfWhenDealingDamage;

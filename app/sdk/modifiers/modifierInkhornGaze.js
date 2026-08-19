@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -11,18 +10,7 @@ const i18next = require('i18next');
 const ModifierDyingWish = require('./modifierDyingWish');
 
 class ModifierInkhornGaze extends ModifierDyingWish {
-  static initClass() {
-    this.prototype.type = 'ModifierInkhornGaze';
-    this.type = 'ModifierInkhornGaze';
-
-    // @isKeyworded: false
-    this.modifierName = i18next.t('modifiers.inkhorn_gaze_name');
-    this.description = i18next.t('modifiers.inkhorn_gaze_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
-    this.prototype.spawnOwnerId = null;
-    // dying wish spawn entity will spawn for player with this ID
-  }
+  static type = 'ModifierInkhornGaze';
 
   static createContextObject(cardDataOrIndexToSpawn, spawnOwnerId, options) {
     const contextObject = super.createContextObject(options);
@@ -52,6 +40,10 @@ class ModifierInkhornGaze extends ModifierDyingWish {
     }
   }
 }
-ModifierInkhornGaze.initClass();
+ModifierInkhornGaze.prototype.type = 'ModifierInkhornGaze';
+ModifierInkhornGaze.modifierName = i18next.t('modifiers.inkhorn_gaze_name');
+ModifierInkhornGaze.description = i18next.t('modifiers.inkhorn_gaze_def');
+ModifierInkhornGaze.prototype.fxResource = ['FX.Modifiers.ModifierDyingWish', 'FX.Modifiers.ModifierGenericSpawn'];
+ModifierInkhornGaze.prototype.spawnOwnerId = null;
 
 module.exports = ModifierInkhornGaze;

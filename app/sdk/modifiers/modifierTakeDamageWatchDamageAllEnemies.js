@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -12,15 +11,9 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 
 class ModifierTakeDamageWatchDamageAllEnemies extends ModifierTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierTakeDamageWatchDamageAllEnemies';
-    this.type = 'ModifierTakeDamageWatchDamageAllEnemies';
-
-    this.modifierName = 'Take Damage Watch';
-    this.description = 'Whenever this minion takes damage, deal %X damage to all enemies';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierTakeDamageWatchDamageAllEnemies';
+  static modifierName = 'Take Damage Watch';
+  static description = 'Whenever this minion takes damage, deal %X damage to all enemies';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject(options);
@@ -50,6 +43,7 @@ class ModifierTakeDamageWatchDamageAllEnemies extends ModifierTakeDamageWatch {
     })();
   }
 }
-ModifierTakeDamageWatchDamageAllEnemies.initClass();
+ModifierTakeDamageWatchDamageAllEnemies.prototype.type = 'ModifierTakeDamageWatchDamageAllEnemies';
+ModifierTakeDamageWatchDamageAllEnemies.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierTakeDamageWatchDamageAllEnemies;

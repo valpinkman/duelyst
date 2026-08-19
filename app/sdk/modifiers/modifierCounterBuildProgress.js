@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -15,12 +14,7 @@ const Modifier = require('./modifier');
   Counts current build progress on the unit it is applied to and displays as a panel attached to the card
 */
 class ModifierCounterBuildProgress extends ModifierCounter {
-  static initClass() {
-    this.prototype.type = 'ModifierCounterBuildProgress';
-    this.type = 'ModifierCounterBuildProgress';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierCounterBuildProgress';
 
   static createContextObject(modTypeToTrack) {
     const contextObject = super.createContextObject();
@@ -54,6 +48,7 @@ class ModifierCounterBuildProgress extends ModifierCounter {
     return 0;
   }
 }
-ModifierCounterBuildProgress.initClass();
+ModifierCounterBuildProgress.prototype.type = 'ModifierCounterBuildProgress';
+ModifierCounterBuildProgress.prototype.maxStacks = 1;
 
 module.exports = ModifierCounterBuildProgress;

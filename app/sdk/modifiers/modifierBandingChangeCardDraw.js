@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,7 @@ const ModifierBanding = require('./modifierBanding');
 const ModifierCardControlledPlayerModifiers = require('./modifierCardControlledPlayerModifiers');
 
 class ModifierBandingChangeCardDraw extends ModifierBanding {
-  static initClass() {
-    this.prototype.type = 'ModifierBandingChangeCardDraw';
-    this.type = 'ModifierBandingChangeCardDraw';
-
-    this.description = i18next.t('modifiers.banding_change_card_draw_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
-  }
+  static type = 'ModifierBandingChangeCardDraw';
 
   static createContextObject(cardDraw, options) {
     if (cardDraw == null) { cardDraw = 0; }
@@ -56,6 +48,8 @@ class ModifierBandingChangeCardDraw extends ModifierBanding {
     return this.applyManagedModifiersFromModifiersContextObjectsOnce(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierBandingChangeCardDraw.initClass();
+ModifierBandingChangeCardDraw.prototype.type = 'ModifierBandingChangeCardDraw';
+ModifierBandingChangeCardDraw.description = i18next.t('modifiers.banding_change_card_draw_def');
+ModifierBandingChangeCardDraw.prototype.fxResource = ['FX.Modifiers.ModifierZeal', 'FX.Modifiers.ModifierZealHeal'];
 
 module.exports = ModifierBandingChangeCardDraw;

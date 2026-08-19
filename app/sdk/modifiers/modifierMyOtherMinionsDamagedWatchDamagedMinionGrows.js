@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,10 +9,7 @@ const ModifierMyOtherMinionsDamagedWatch = require('./modifierMyOtherMinionsDama
 const ModifierGrow = require('./modifierGrow');
 
 class ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows extends ModifierMyOtherMinionsDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows';
-    this.type = 'ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows';
-  }
+  static type = 'ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows';
 
   onDamageDealtToMinion(action) {
     const minion = action.getTarget();
@@ -23,6 +19,7 @@ class ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows extends ModifierMyOth
     }
   }
 }
-ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows.initClass(); // activate each instance of Grow on the minion
+ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows.prototype.type = 'ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows';
+// activate each instance of Grow on the minion
 
 module.exports = ModifierMyOtherMinionsDamagedWatchDamagedMinionGrows;

@@ -4,7 +4,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -19,15 +18,10 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class FactionFactory {
-  static initClass() {
-    this.factionMap = {};
-
-    this._allFactions = null;
-
-    this._playableFactions = null;
-
-    this._enabledFactions = null;
-  }
+  static factionMap = {};
+  static _allFactions = null;
+  static _playableFactions = null;
+  static _enabledFactions = null;
 
   static factionForPlayer1(gameSession) {
     return this.factionForPlayer(gameSession, gameSession.getPlayer1());
@@ -273,7 +267,6 @@ class FactionFactory {
     return response;
   }
 }
-FactionFactory.initClass();
 
 // setup map for general order
 FactionFactory.GeneralOrder = {

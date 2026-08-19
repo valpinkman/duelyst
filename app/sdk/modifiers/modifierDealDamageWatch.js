@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
@@ -9,22 +8,9 @@ const CardType = require('app/sdk/cards/cardType');
 const Modifier = require('./modifier');
 
 class ModifierDealDamageWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatch';
-    this.type = 'ModifierDealDamageWatch';
-
-    this.modifierName = 'Deal Damage Watch';
-    this.description = 'Each time this unit damages an enemy unit...';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.enemyOnly = false; // whether this should trigger ONLY on damage dealt to enemies, or on ANY damage dealt
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
-  }
+  static type = 'ModifierDealDamageWatch';
+  static modifierName = 'Deal Damage Watch';
+  static description = 'Each time this unit damages an enemy unit...';
 
   onAction(actionEvent) {
     super.onAction(actionEvent);
@@ -62,7 +48,13 @@ class ModifierDealDamageWatch extends Modifier {
 
   onAfterDealDamage(action) {}
 }
-ModifierDealDamageWatch.initClass();
+ModifierDealDamageWatch.prototype.type = 'ModifierDealDamageWatch';
+ModifierDealDamageWatch.prototype.activeInHand = false;
+ModifierDealDamageWatch.prototype.activeInDeck = false;
+ModifierDealDamageWatch.prototype.activeInSignatureCards = false;
+ModifierDealDamageWatch.prototype.activeOnBoard = true;
+ModifierDealDamageWatch.prototype.enemyOnly = false;
+ModifierDealDamageWatch.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch'];
 // override me in sub classes to implement special behavior
 // use this for on deal damage triggers that MUST happen last
 // - careful! if the unit dies during this step, this method will not be called!

@@ -1,21 +1,13 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayerModifierEndTurnWatchRevertBBS = require('app/sdk/playerModifiers/playerModifierEndTurnWatchRevertBBS');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitChangeSignatureCardForThisTurn extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitChangeSignatureCardForThisTurn';
-    this.type = 'ModifierOpeningGambitChangeSignatureCardForThisTurn';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-
-    this.prototype.cardData = null;
-  }
+  static type = 'ModifierOpeningGambitChangeSignatureCardForThisTurn';
 
   static createContextObject(cardData) {
     const contextObject = super.createContextObject();
@@ -40,6 +32,8 @@ class ModifierOpeningGambitChangeSignatureCardForThisTurn extends ModifierOpenin
     return this.getGameSession().executeAction(general.getOwner().actionGenerateSignatureCard());
   }
 }
-ModifierOpeningGambitChangeSignatureCardForThisTurn.initClass();
+ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.type = 'ModifierOpeningGambitChangeSignatureCardForThisTurn';
+ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+ModifierOpeningGambitChangeSignatureCardForThisTurn.prototype.cardData = null;
 
 module.exports = ModifierOpeningGambitChangeSignatureCardForThisTurn;

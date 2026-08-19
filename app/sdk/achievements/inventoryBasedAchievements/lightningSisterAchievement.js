@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,19 +15,8 @@ const _ = require('underscore');
 const i18next = require('i18next');
 
 class SisterAchievement extends Achievement {
-  static initClass() {
-    this.id = 'lightningSister';
-    this.title = i18next.t('achievements.storm_sister_title');
-    this.description = i18next.t('achievements.storm_sister_desc');
-    this.progressRequired = 1;
-    this.rewards = {
-      cards: [
-        Cards.Faction2.LightningSister,
-        Cards.Faction2.LightningSister,
-        Cards.Faction2.LightningSister,
-      ],
-    };
-  }
+  static id = 'lightningSister';
+  static progressRequired = 1;
 
   static progressForCardCollection(cardCollection, allCards) {
     if ((cardCollection == null)) {
@@ -66,6 +54,14 @@ class SisterAchievement extends Achievement {
     return 0;
   }
 }
-SisterAchievement.initClass();
+SisterAchievement.title = i18next.t('achievements.storm_sister_title');
+SisterAchievement.description = i18next.t('achievements.storm_sister_desc');
+SisterAchievement.rewards = {
+  cards: [
+    Cards.Faction2.LightningSister,
+    Cards.Faction2.LightningSister,
+    Cards.Faction2.LightningSister,
+  ],
+};
 
 module.exports = SisterAchievement;

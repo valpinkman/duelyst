@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -16,26 +15,9 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierBlastAttack extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierBlastAttack';
-    this.type = 'ModifierBlastAttack';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.blast_def');
-
-    this.modifierName = i18next.t('modifiers.blast_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierBlast'];
-    this.prototype.cardFXResource = ['FX.Cards.Faction3.Blast'];
-  }
+  static type = 'ModifierBlastAttack';
+  static isKeyworded = true;
+  static description = null;
 
   onEvent(event) {
     super.onEvent(event);
@@ -120,6 +102,15 @@ class ModifierBlastAttack extends Modifier {
     }
   }
 }
-ModifierBlastAttack.initClass();
+ModifierBlastAttack.prototype.type = 'ModifierBlastAttack';
+ModifierBlastAttack.keywordDefinition = i18next.t('modifiers.blast_def');
+ModifierBlastAttack.modifierName = i18next.t('modifiers.blast_name');
+ModifierBlastAttack.prototype.activeInHand = false;
+ModifierBlastAttack.prototype.activeInDeck = false;
+ModifierBlastAttack.prototype.activeInSignatureCards = false;
+ModifierBlastAttack.prototype.activeOnBoard = true;
+ModifierBlastAttack.prototype.maxStacks = 1;
+ModifierBlastAttack.prototype.fxResource = ['FX.Modifiers.ModifierBlast'];
+ModifierBlastAttack.prototype.cardFXResource = ['FX.Cards.Faction3.Blast'];
 
 module.exports = ModifierBlastAttack;

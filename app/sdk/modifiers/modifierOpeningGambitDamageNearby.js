@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -13,17 +12,9 @@ const ModifierOpeningGambit = require('./modifierOpeningGambit');
 const Modifier = require('./modifier');
 
 class ModifierOpeningGambitDamageNearby extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDamageNearby';
-    this.type = 'ModifierOpeningGambitDamageNearby';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Deal %X damage to everything around it';
-
-    this.prototype.damageAmount = 0;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearby'];
-  }
+  static type = 'ModifierOpeningGambitDamageNearby';
+  static modifierName = 'Opening Gambit';
+  static description = 'Deal %X damage to everything around it';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -54,6 +45,8 @@ class ModifierOpeningGambitDamageNearby extends ModifierOpeningGambit {
     })();
   }
 }
-ModifierOpeningGambitDamageNearby.initClass();
+ModifierOpeningGambitDamageNearby.prototype.type = 'ModifierOpeningGambitDamageNearby';
+ModifierOpeningGambitDamageNearby.prototype.damageAmount = 0;
+ModifierOpeningGambitDamageNearby.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit', 'FX.Modifiers.ModifierGenericDamageNearby'];
 
 module.exports = ModifierOpeningGambitDamageNearby;

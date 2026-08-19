@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Challenge = require('./challenge');
@@ -11,20 +10,7 @@ const PlayModeFactory = require('../playModes/playModeFactory');
 const PlayModes = require('../playModes/playModesLookup');
 
 class Sandbox extends Challenge {
-  static initClass() {
-    this.type = 'Sandbox';
-    this.prototype.type = 'Sandbox';
-
-    this.prototype.name = PlayModeFactory.playModeForIdentifier(PlayModes.Sandbox).name;
-    this.prototype.description = PlayModeFactory.playModeForIdentifier(PlayModes.Sandbox).description;
-
-    this.prototype.battleMapTemplateIndex = null; // sandbox can use random battle maps
-
-    this.prototype.player1Deck = null;
-    this.prototype.player2Deck = null;
-    this.prototype.skipMulligan = false;
-    this.prototype.customBoard = false;
-  }
+  static type = 'Sandbox';
 
   setPlayer1DeckData(player1Deck) {
     return this.player1Deck = player1Deck;
@@ -59,7 +45,14 @@ class Sandbox extends Challenge {
 
   setupOpponentAgent() {}
 }
-Sandbox.initClass();
+Sandbox.prototype.type = 'Sandbox';
+Sandbox.prototype.name = PlayModeFactory.playModeForIdentifier(PlayModes.Sandbox).name;
+Sandbox.prototype.description = PlayModeFactory.playModeForIdentifier(PlayModes.Sandbox).description;
+Sandbox.prototype.battleMapTemplateIndex = null;
+Sandbox.prototype.player1Deck = null;
+Sandbox.prototype.player2Deck = null;
+Sandbox.prototype.skipMulligan = false;
+Sandbox.prototype.customBoard = false;
 // no agent needed for sandbox
 
 module.exports = Sandbox;

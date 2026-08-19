@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,15 +11,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
 class ModifierDealDamageWatchDamageJoinedEnemies extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchDamageJoinedEnemies';
-    this.type = 'ModifierDealDamageWatchDamageJoinedEnemies';
-
-    this.modifierName = 'Deal Damage to an enemy and all joined enemies';
-    this.description = 'Whenever this minion deals damage to an enemy, damage all joined enemies';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericChainLightning'];
-  }
+  static type = 'ModifierDealDamageWatchDamageJoinedEnemies';
+  static modifierName = 'Deal Damage to an enemy and all joined enemies';
+  static description = 'Whenever this minion deals damage to an enemy, damage all joined enemies';
 
   onDealDamage(action) {
     const unit = action.getTarget();
@@ -69,6 +62,7 @@ class ModifierDealDamageWatchDamageJoinedEnemies extends ModifierDealDamageWatch
     })();
   }
 }
-ModifierDealDamageWatchDamageJoinedEnemies.initClass();
+ModifierDealDamageWatchDamageJoinedEnemies.prototype.type = 'ModifierDealDamageWatchDamageJoinedEnemies';
+ModifierDealDamageWatchDamageJoinedEnemies.prototype.fxResource = ['FX.Modifiers.ModifierGenericChainLightning'];
 
 module.exports = ModifierDealDamageWatchDamageJoinedEnemies;

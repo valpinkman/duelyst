@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,18 +13,9 @@ const ModifierDeathWatch = require('./modifierDeathWatch');
 const Modifier = require('./modifier');
 
 class ModifierDeathWatchBuffSelf extends ModifierDeathWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDeathWatchBuffSelf';
-    this.type = 'ModifierDeathWatchBuffSelf';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.deathwatch_def');
-
-    this.modifierName = i18next.t('modifiers.deathwatch_name');
-    this.description = 'Gains %X';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierDeathWatchBuffSelf';
+  static isKeyworded = true;
+  static description = 'Gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -53,6 +43,9 @@ class ModifierDeathWatchBuffSelf extends ModifierDeathWatch {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierDeathWatchBuffSelf.initClass();
+ModifierDeathWatchBuffSelf.prototype.type = 'ModifierDeathWatchBuffSelf';
+ModifierDeathWatchBuffSelf.keywordDefinition = i18next.t('modifiers.deathwatch_def');
+ModifierDeathWatchBuffSelf.modifierName = i18next.t('modifiers.deathwatch_name');
+ModifierDeathWatchBuffSelf.prototype.fxResource = ['FX.Modifiers.ModifierDeathwatch', 'FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierDeathWatchBuffSelf;

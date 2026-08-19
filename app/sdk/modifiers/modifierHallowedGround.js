@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,24 +12,7 @@ const i18next = require('i18next');
 const ModifierEndTurnWatch = require('./modifierEndTurnWatch');
 
 class ModifierHallowedGround extends ModifierEndTurnWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierHallowedGround';
-    this.type = 'ModifierHallowedGround';
-
-    this.modifierName = i18next.t('modifiers.hallowed_ground_name');
-    this.keywordDefinition = i18next.t('modifiers.hallowed_ground_def');
-    this.description = i18next.t('modifiers.hallowed_ground_def');
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierHallowedGround'];
-
-    this.prototype.healAmount = 1;
-    // hallowed ground heals 1 damage by default
-  }
+  static type = 'ModifierHallowedGround';
 
   static getDescription() {
     return this.description;
@@ -74,6 +56,15 @@ class ModifierHallowedGround extends ModifierEndTurnWatch {
     }
   }
 }
-ModifierHallowedGround.initClass();
+ModifierHallowedGround.prototype.type = 'ModifierHallowedGround';
+ModifierHallowedGround.modifierName = i18next.t('modifiers.hallowed_ground_name');
+ModifierHallowedGround.keywordDefinition = i18next.t('modifiers.hallowed_ground_def');
+ModifierHallowedGround.description = i18next.t('modifiers.hallowed_ground_def');
+ModifierHallowedGround.prototype.activeInHand = false;
+ModifierHallowedGround.prototype.activeInDeck = false;
+ModifierHallowedGround.prototype.activeInSignatureCards = false;
+ModifierHallowedGround.prototype.activeOnBoard = true;
+ModifierHallowedGround.prototype.fxResource = ['FX.Modifiers.ModifierHallowedGround'];
+ModifierHallowedGround.prototype.healAmount = 1;
 
 module.exports = ModifierHallowedGround;

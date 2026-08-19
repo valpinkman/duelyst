@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardAsTransformAction = require('app/sdk/actions/playCardAsTransformAction');
@@ -9,15 +8,12 @@ const ModifierBuilding = require('app/sdk/modifiers/modifierBuilding');
 const ModifierBuildWatch = require('./modifierBuildWatch');
 
 class ModifierMyBuildWatch extends ModifierBuildWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyBuildWatch';
-    this.type = 'ModifierMyBuildWatch';
-  }
+  static type = 'ModifierMyBuildWatch';
 
   getIsActionRelevant(action) {
     return super.getIsActionRelevant(action) && (action.getOwnerId() === this.getCard().getOwnerId());
   }
 }
-ModifierMyBuildWatch.initClass();
+ModifierMyBuildWatch.prototype.type = 'ModifierMyBuildWatch';
 
 module.exports = ModifierMyBuildWatch;

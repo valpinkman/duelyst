@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,15 +13,7 @@ const i18next = require('i18next');
 const ModifierImmune = require('./modifierImmune');
 
 class ModifierImmuneToSpells extends ModifierImmune {
-  static initClass() {
-    this.prototype.type = 'ModifierImmuneToSpells';
-    this.type = 'ModifierImmuneToSpells';
-
-    this.modifierName = i18next.t('modifiers.immune_to_spells_name');
-    this.description = i18next.t('modifiers.immune_to_spells_def');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunitySpell'];
-  }
+  static type = 'ModifierImmuneToSpells';
 
   onValidateAction(event) {
     const a = event.action;
@@ -35,7 +26,10 @@ class ModifierImmuneToSpells extends ModifierImmune {
     }
   }
 }
-ModifierImmuneToSpells.initClass();
+ModifierImmuneToSpells.prototype.type = 'ModifierImmuneToSpells';
+ModifierImmuneToSpells.modifierName = i18next.t('modifiers.immune_to_spells_name');
+ModifierImmuneToSpells.description = i18next.t('modifiers.immune_to_spells_def');
+ModifierImmuneToSpells.prototype.fxResource = ['FX.Modifiers.ModifierImmunity', 'FX.Modifiers.ModifierImmunitySpell'];
 
 module.exports = ModifierImmuneToSpells;
 

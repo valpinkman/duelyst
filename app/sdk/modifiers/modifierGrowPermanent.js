@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,7 @@ const ModifierGrow = require('./modifierGrow');
 const ModifierGrowOnBothTurns = require('./modifierGrowOnBothTurns');
 
 class ModifierGrowPermanent extends ModifierGrow {
-  static initClass() {
-    this.prototype.type = 'ModifierGrowPermanent';
-    this.type = 'ModifierGrowPermanent';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff', 'FX.Modifiers.ModifierGrow'];
-  }
+  static type = 'ModifierGrowPermanent';
 
   // override standard Modifier method applyManagedModifiersFromModifiersContextObjects
   // in this case we want the applied buffs to be permanent even if the Grow Modifier
@@ -28,6 +22,8 @@ class ModifierGrowPermanent extends ModifierGrow {
     }
   }
 }
-ModifierGrowPermanent.initClass(); // NOT being applied as a child modifier
+ModifierGrowPermanent.prototype.type = 'ModifierGrowPermanent';
+ModifierGrowPermanent.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff', 'FX.Modifiers.ModifierGrow'];
+// NOT being applied as a child modifier
 
 module.exports = ModifierGrowPermanent;

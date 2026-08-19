@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -13,32 +12,24 @@ const ModifierProvoked = require('./modifierProvoked');
 const Modifier = require('./modifier');
 
 class ModifierProvoke extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierProvoke';
-    this.type = 'ModifierProvoke';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.provoke_def');
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.provoke_name');
-    this.description = null;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.isAura = true;
-    this.prototype.auraRadius = 1;
-    this.prototype.auraIncludeSelf = false;
-    this.prototype.auraIncludeAlly = false;
-    this.prototype.auraIncludeEnemy = true;
-
-    this.prototype.modifiersContextObjects = [ModifierProvoked.createContextObject()];
-    this.prototype.fxResource = ['FX.Modifiers.ModifierProvoke'];
-  }
+  static type = 'ModifierProvoke';
+  static isKeyworded = true;
+  static description = null;
 }
-ModifierProvoke.initClass();
+ModifierProvoke.prototype.type = 'ModifierProvoke';
+ModifierProvoke.keywordDefinition = i18next.t('modifiers.provoke_def');
+ModifierProvoke.prototype.maxStacks = 1;
+ModifierProvoke.modifierName = i18next.t('modifiers.provoke_name');
+ModifierProvoke.prototype.activeInHand = false;
+ModifierProvoke.prototype.activeInDeck = false;
+ModifierProvoke.prototype.activeInSignatureCards = false;
+ModifierProvoke.prototype.activeOnBoard = true;
+ModifierProvoke.prototype.isAura = true;
+ModifierProvoke.prototype.auraRadius = 1;
+ModifierProvoke.prototype.auraIncludeSelf = false;
+ModifierProvoke.prototype.auraIncludeAlly = false;
+ModifierProvoke.prototype.auraIncludeEnemy = true;
+ModifierProvoke.prototype.modifiersContextObjects = [ModifierProvoked.createContextObject()];
+ModifierProvoke.prototype.fxResource = ['FX.Modifiers.ModifierProvoke'];
 
 module.exports = ModifierProvoke;

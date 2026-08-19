@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,13 +9,9 @@ const Modifier = require('./modifier');
 const ModifierMyHealWatchAnywhere = require('./modifierMyHealWatchAnywhere');
 
 class ModifierMyHealWatchAnywhereBuffSelf extends ModifierMyHealWatchAnywhere {
-  static initClass() {
-    this.prototype.type = 'ModifierMyHealWatchAnywhereBuffSelf';
-    this.type = 'ModifierMyHealWatchAnywhereBuffSelf';
-
-    this.modifierName = 'My Heal Watch Anywhere Buff Self';
-    this.description = 'This minion gains %X for each time you healed anything this game';
-  }
+  static type = 'ModifierMyHealWatchAnywhereBuffSelf';
+  static modifierName = 'My Heal Watch Anywhere Buff Self';
+  static description = 'This minion gains %X for each time you healed anything this game';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -40,6 +35,6 @@ class ModifierMyHealWatchAnywhereBuffSelf extends ModifierMyHealWatchAnywhere {
     return this.applyManagedModifiersFromModifiersContextObjects(this.modifiersContextObjects, this.getCard());
   }
 }
-ModifierMyHealWatchAnywhereBuffSelf.initClass();
+ModifierMyHealWatchAnywhereBuffSelf.prototype.type = 'ModifierMyHealWatchAnywhereBuffSelf';
 
 module.exports = ModifierMyHealWatchAnywhereBuffSelf;

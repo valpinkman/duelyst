@@ -1,17 +1,11 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const ModifierSummonWatchTransform = require('./modifierSummonWatchTransform');
 
 class ModifierSummonWatchNearbyTransform extends ModifierSummonWatchTransform {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchNearbyTransform';
-    this.type = 'ModifierSummonWatchNearbyTransform';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-  }
+  static type = 'ModifierSummonWatchNearbyTransform';
 
   getIsValidTransformPosition(summonedUnitPosition) {
     const entityPosition = this.getCard().getPosition();
@@ -21,6 +15,7 @@ class ModifierSummonWatchNearbyTransform extends ModifierSummonWatchTransform {
     return false;
   }
 }
-ModifierSummonWatchNearbyTransform.initClass();
+ModifierSummonWatchNearbyTransform.prototype.type = 'ModifierSummonWatchNearbyTransform';
+ModifierSummonWatchNearbyTransform.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
 
 module.exports = ModifierSummonWatchNearbyTransform;

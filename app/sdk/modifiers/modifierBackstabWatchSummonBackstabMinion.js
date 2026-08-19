@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS202: Simplify dynamic range loops
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -17,13 +16,7 @@ const ModifierBackstab = require('./modifierBackstab');
 const ModifierBackstabWatch = require('./modifierBackstabWatch');
 
 class ModifierBackstabWatchSummonBackstabMinion extends ModifierBackstabWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierBackstabWatchSummonBackstabMinion';
-    this.type = 'ModifierBackstabWatchSummonBackstabMinion';
-
-    this.prototype.cardToAdd = null;
-    this.prototype.numToAdd = 0;
-  }
+  static type = 'ModifierBackstabWatchSummonBackstabMinion';
 
   static createContextObject(backstabManaCost, options) {
     const contextObject = super.createContextObject(options);
@@ -72,6 +65,8 @@ class ModifierBackstabWatchSummonBackstabMinion extends ModifierBackstabWatch {
     }
   }
 }
-ModifierBackstabWatchSummonBackstabMinion.initClass();
+ModifierBackstabWatchSummonBackstabMinion.prototype.type = 'ModifierBackstabWatchSummonBackstabMinion';
+ModifierBackstabWatchSummonBackstabMinion.prototype.cardToAdd = null;
+ModifierBackstabWatchSummonBackstabMinion.prototype.numToAdd = 0;
 
 module.exports = ModifierBackstabWatchSummonBackstabMinion;

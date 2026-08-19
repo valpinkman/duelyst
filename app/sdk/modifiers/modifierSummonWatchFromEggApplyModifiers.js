@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,20 +12,9 @@ const Modifier = require('./modifier');
 const ModifierEgg = require('./modifierEgg');
 
 class ModifierSummonWatchFromEggApplyModifiers extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSummonWatchFromEggApplyModifiers';
-    this.type = 'ModifierSummonWatchFromEggApplyModifiers';
-
-    this.modifierName = 'Summon Watch';
-    this.description = 'Friendly minions that hatch from Eggs %X';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
-  }
+  static type = 'ModifierSummonWatchFromEggApplyModifiers';
+  static modifierName = 'Summon Watch';
+  static description = 'Friendly minions that hatch from Eggs %X';
 
   static createContextObject(modifiersContextObjects, buffDescription, options) {
     const contextObject = super.createContextObject(options);
@@ -61,7 +49,12 @@ class ModifierSummonWatchFromEggApplyModifiers extends Modifier {
     }
   }
 }
-ModifierSummonWatchFromEggApplyModifiers.initClass();
+ModifierSummonWatchFromEggApplyModifiers.prototype.type = 'ModifierSummonWatchFromEggApplyModifiers';
+ModifierSummonWatchFromEggApplyModifiers.prototype.activeInHand = false;
+ModifierSummonWatchFromEggApplyModifiers.prototype.activeInDeck = false;
+ModifierSummonWatchFromEggApplyModifiers.prototype.activeInSignatureCards = false;
+ModifierSummonWatchFromEggApplyModifiers.prototype.activeOnBoard = true;
+ModifierSummonWatchFromEggApplyModifiers.prototype.fxResource = ['FX.Modifiers.ModifierSummonWatch'];
 
 module.exports = ModifierSummonWatchFromEggApplyModifiers;
 

@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,7 @@ const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceActi
 const RemoveAction = require('app/sdk/actions/removeAction');
 
 class PlayerModifierEmblemGainMinionOrLoseControlWatch extends PlayerModifierEmblem {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemGainMinionOrLoseControlWatch';
-    this.type = 'PlayerModifierEmblemGainMinionOrLoseControlWatch';
-  }
+  static type = 'PlayerModifierEmblemGainMinionOrLoseControlWatch';
 
   onAction(e) {
     super.onAction(e);
@@ -62,7 +58,7 @@ class PlayerModifierEmblemGainMinionOrLoseControlWatch extends PlayerModifierEmb
 
   onGainMinionWatch(action) {}
 }
-PlayerModifierEmblemGainMinionOrLoseControlWatch.initClass();
+PlayerModifierEmblemGainMinionOrLoseControlWatch.prototype.type = 'PlayerModifierEmblemGainMinionOrLoseControlWatch';
 // override me in sub classes to implement special behavior
 
 module.exports = PlayerModifierEmblemGainMinionOrLoseControlWatch;

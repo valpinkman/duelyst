@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,8 @@ const UtilsJavascript = require('app/common/utils/utils_javascript');
 const _ = require('underscore');
 
 class PlayerModifierEndTurnRespawnEntityWithBuff extends PlayerModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEndTurnRespawnEntityWithBuff';
-    this.type = 'PlayerModifierEndTurnRespawnEntityWithBuff';
-
-    this.isHiddenToUI = true;
-    this.prototype.durationEndTurn = 1;
-    this.prototype.cardDataOrIndexToSpawn = null;
-  }
+  static type = 'PlayerModifierEndTurnRespawnEntityWithBuff';
+  static isHiddenToUI = true;
 
   static createContextObject(cardDataOrIndexToSpawn, modifiersContextObjects, position, options) {
     const contextObject = super.createContextObject(options);
@@ -50,6 +43,8 @@ class PlayerModifierEndTurnRespawnEntityWithBuff extends PlayerModifier {
     }
   }
 }
-PlayerModifierEndTurnRespawnEntityWithBuff.initClass();
+PlayerModifierEndTurnRespawnEntityWithBuff.prototype.type = 'PlayerModifierEndTurnRespawnEntityWithBuff';
+PlayerModifierEndTurnRespawnEntityWithBuff.prototype.durationEndTurn = 1;
+PlayerModifierEndTurnRespawnEntityWithBuff.prototype.cardDataOrIndexToSpawn = null;
 
 module.exports = PlayerModifierEndTurnRespawnEntityWithBuff;

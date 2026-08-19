@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,11 +11,7 @@ Action that activates a player's signature card.
 */
 
 class ActivateSignatureCardAction extends Action {
-  static initClass() {
-    this.type = 'ActivateSignatureCardAction';
-
-    this.prototype.targetPlayerId = null;
-  }
+  static type = 'ActivateSignatureCardAction';
 
   constructor(gameSession, targetPlayerId) {
     super(gameSession);
@@ -45,6 +40,6 @@ class ActivateSignatureCardAction extends Action {
     return this.getTargetPlayer().setIsSignatureCardActive(true);
   }
 }
-ActivateSignatureCardAction.initClass();
+ActivateSignatureCardAction.prototype.targetPlayerId = null;
 
 module.exports = ActivateSignatureCardAction;

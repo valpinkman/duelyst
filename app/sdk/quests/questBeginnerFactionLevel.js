@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const QuestBeginner = require('./questBeginner');
@@ -10,9 +9,7 @@ const GameType = require('app/sdk/gameType');
 const i18next = require('i18next');
 
 class QuestBeginnerFactionLevel extends QuestBeginner {
-  static initClass() {
-    this.Identifier = 9906;
-  }
+  static Identifier = 9906;
 
   constructor() {
     super(QuestBeginnerFactionLevel.Identifier, i18next.t('quests.quest_beginner_faction_up_title'), [QuestType.Beginner], QuestBeginnerFactionLevel.prototype.goldReward);
@@ -30,7 +27,6 @@ class QuestBeginnerFactionLevel extends QuestBeginner {
     return i18next.t('quests.quest_beginner_faction_up_desc');
   }
 }
-QuestBeginnerFactionLevel.initClass();
 
 //  progressForChallengeId:()->
 //    return 1

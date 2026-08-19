@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,10 +13,6 @@ const CloneEntityAction = require('app/sdk/actions/cloneEntityAction');
 const _ = require('underscore');
 
 class SpellMirrorMeld extends SpellApplyEntityToBoard {
-  static initClass() {
-    this.prototype.targetType = CardType.Entity;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -56,6 +51,6 @@ class SpellMirrorMeld extends SpellApplyEntityToBoard {
     return filteredPositions;
   }
 }
-SpellMirrorMeld.initClass();
+SpellMirrorMeld.prototype.targetType = CardType.Entity;
 
 module.exports = SpellMirrorMeld;

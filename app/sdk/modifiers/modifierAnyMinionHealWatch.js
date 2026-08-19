@@ -1,27 +1,15 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const HealAction = require('app/sdk/actions/healAction');
 const Modifier = require('./modifier');
 
 class ModifierAnyMinionHealWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierAnyMinionHealWatch';
-    this.type = 'ModifierAnyMinionHealWatch';
-
-    this.modifierName = 'Any minion HealWatch';
-    this.description = '';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch'];
-  }
+  static type = 'ModifierAnyMinionHealWatch';
+  static modifierName = 'Any minion HealWatch';
+  static description = '';
 
   // "heal watchers" are not allowed to proc if they die during the step
   onAfterCleanupAction(e) {
@@ -39,7 +27,12 @@ class ModifierAnyMinionHealWatch extends Modifier {
 
   onHealWatch(action) {}
 }
-ModifierAnyMinionHealWatch.initClass();
+ModifierAnyMinionHealWatch.prototype.type = 'ModifierAnyMinionHealWatch';
+ModifierAnyMinionHealWatch.prototype.activeInHand = false;
+ModifierAnyMinionHealWatch.prototype.activeInDeck = false;
+ModifierAnyMinionHealWatch.prototype.activeInSignatureCards = false;
+ModifierAnyMinionHealWatch.prototype.activeOnBoard = true;
+ModifierAnyMinionHealWatch.prototype.fxResource = ['FX.Modifiers.ModifierHealWatch'];
 // override me in sub classes to implement special behavior
 
 module.exports = ModifierAnyMinionHealWatch;

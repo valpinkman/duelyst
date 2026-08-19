@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DrawCardAction = require('app/sdk/actions/drawCardAction');
@@ -11,15 +10,9 @@ const Modifier = require('./modifier');
 const ModifierOpeningGambit = require('./modifierOpeningGambit');
 
 class ModifierOpeningGambitDrawCardBothPlayers extends ModifierOpeningGambit {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitDrawCardBothPlayers';
-    this.type = 'ModifierOpeningGambitDrawCardBothPlayers';
-
-    this.modifierName = 'Opening Gambit';
-    this.description = 'Both players draw a card';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
-  }
+  static type = 'ModifierOpeningGambitDrawCardBothPlayers';
+  static modifierName = 'Opening Gambit';
+  static description = 'Both players draw a card';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -42,6 +35,7 @@ class ModifierOpeningGambitDrawCardBothPlayers extends ModifierOpeningGambit {
     return this.getGameSession().executeAction(new DrawCardAction(this.getGameSession(), enemyGeneral.getOwnerId()));
   }
 }
-ModifierOpeningGambitDrawCardBothPlayers.initClass();
+ModifierOpeningGambitDrawCardBothPlayers.prototype.type = 'ModifierOpeningGambitDrawCardBothPlayers';
+ModifierOpeningGambitDrawCardBothPlayers.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
 
 module.exports = ModifierOpeningGambitDrawCardBothPlayers;

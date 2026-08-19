@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CONFIG = require('app/common/config');
@@ -11,15 +10,7 @@ const i18next = require('i18next');
 const ModifierBanded = require('./modifierBanded');
 
 class ModifierBandedHeal extends ModifierBanded {
-  static initClass() {
-    this.prototype.type = 'ModifierBandedHeal';
-    this.type = 'ModifierBandedHeal';
-
-    this.modifierName = i18next.t('modifiers.banded_heal_name');
-    this.description = i18next.t('modifiers.banded_heal_desc');
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierZealed', 'FX.Modifiers.ModifierZealedHeal'];
-  }
+  static type = 'ModifierBandedHeal';
 
   onEndTurn() {
     super.onEndTurn();
@@ -32,6 +23,9 @@ class ModifierBandedHeal extends ModifierBanded {
     }
   }
 }
-ModifierBandedHeal.initClass();
+ModifierBandedHeal.prototype.type = 'ModifierBandedHeal';
+ModifierBandedHeal.modifierName = i18next.t('modifiers.banded_heal_name');
+ModifierBandedHeal.description = i18next.t('modifiers.banded_heal_desc');
+ModifierBandedHeal.prototype.fxResource = ['FX.Modifiers.ModifierZealed', 'FX.Modifiers.ModifierZealedHeal'];
 
 module.exports = ModifierBandedHeal;

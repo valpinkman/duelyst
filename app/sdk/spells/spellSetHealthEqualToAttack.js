@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,15 +12,6 @@ const Modifier = require('app/sdk/modifiers/modifier');
 const _ = require('underscore');
 
 class SpellSetHealthEqualToAttack extends Spell {
-  static initClass() {
-    this.prototype.targetType = CardType.Unit;
-    this.prototype.spellFilterType = SpellFilterType.NeutralDirect;
-    this.prototype.appliedName = null;
-    this.prototype.appliedDescription = null;
-    this.prototype.durationEndTurn = null;
-    this.prototype.durationStartTurn = null;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     super.onApplyEffectToBoardTile(board, x, y, sourceAction);
 
@@ -41,6 +31,11 @@ class SpellSetHealthEqualToAttack extends Spell {
     return this.getGameSession().applyModifierContextObject(contextObject, entity);
   }
 }
-SpellSetHealthEqualToAttack.initClass();
+SpellSetHealthEqualToAttack.prototype.targetType = CardType.Unit;
+SpellSetHealthEqualToAttack.prototype.spellFilterType = SpellFilterType.NeutralDirect;
+SpellSetHealthEqualToAttack.prototype.appliedName = null;
+SpellSetHealthEqualToAttack.prototype.appliedDescription = null;
+SpellSetHealthEqualToAttack.prototype.durationEndTurn = null;
+SpellSetHealthEqualToAttack.prototype.durationStartTurn = null;
 
 module.exports = SpellSetHealthEqualToAttack;

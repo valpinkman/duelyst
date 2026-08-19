@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,10 +8,7 @@ const Action = require('./action');
 const CardType = require('app/sdk/cards/cardType');
 
 class SetDamageAction extends Action {
-  static initClass() {
-    this.type = 'SetDamageAction';
-    this.prototype.damageValue = 0;
-  }
+  static type = 'SetDamageAction';
 
   constructor() {
     super(...arguments);
@@ -29,6 +25,6 @@ class SetDamageAction extends Action {
     }
   }
 }
-SetDamageAction.initClass();
+SetDamageAction.prototype.damageValue = 0;
 
 module.exports = SetDamageAction;

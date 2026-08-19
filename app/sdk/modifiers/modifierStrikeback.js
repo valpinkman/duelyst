@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -13,27 +12,10 @@ const Modifier = require('./modifier');
 const ModifierBlastAttack = require('./modifierBlastAttack');
 
 class ModifierStrikeback extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierStrikeback';
-    this.type = 'ModifierStrikeback';
-
-    // @isKeyworded: true
-    // @keywordDefinition: "Whenever this minion is attacked, it simultaneously counterattacks."
-
-    this.modifierName = 'Strikeback';
-    this.description = null;
-    this.isHiddenToUI = true;
-    this.prototype.isRemovable = false;
-    this.prototype.isCloneable = false;
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.maxStacks = 1;
-    this.prototype.fxResource = ['FX.Modifiers.ModifierStrikeback'];
-  }
+  static type = 'ModifierStrikeback';
+  static modifierName = 'Strikeback';
+  static description = null;
+  static isHiddenToUI = true;
 
   onEvent(event) {
     super.onEvent(event);
@@ -83,6 +65,14 @@ class ModifierStrikeback extends Modifier {
     return false;
   }
 }
-ModifierStrikeback.initClass();
+ModifierStrikeback.prototype.type = 'ModifierStrikeback';
+ModifierStrikeback.prototype.isRemovable = false;
+ModifierStrikeback.prototype.isCloneable = false;
+ModifierStrikeback.prototype.activeInHand = false;
+ModifierStrikeback.prototype.activeInDeck = false;
+ModifierStrikeback.prototype.activeInSignatureCards = false;
+ModifierStrikeback.prototype.activeOnBoard = true;
+ModifierStrikeback.prototype.maxStacks = 1;
+ModifierStrikeback.prototype.fxResource = ['FX.Modifiers.ModifierStrikeback'];
 
 module.exports = ModifierStrikeback;

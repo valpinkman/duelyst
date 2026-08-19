@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,10 +10,7 @@ const SpellKillTarget = require('./spellKillTarget');
 const SpellFilterType = require('./spellFilterType');
 
 class SpellLavastorm extends SpellKillTarget {
-  static initClass() {
-    this.minAttackValue = 0;
-    this.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
-  }
+  static minAttackValue = 0;
 
   _findApplyEffectPositions(position, sourceAction) {
     const potentialApplyEffectPositions = super._findApplyEffectPositions(position, sourceAction);
@@ -32,6 +28,6 @@ class SpellLavastorm extends SpellKillTarget {
     return applyEffectPositions;
   }
 }
-SpellLavastorm.initClass();
+SpellLavastorm.prototype.spellFilterType = SpellFilterType.NeutralIndirect;
 
 module.exports = SpellLavastorm;

@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -10,22 +9,15 @@ const i18next = require('i18next');
 const Modifier = require('./modifier');
 
 class ModifierRanged extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierRanged';
-    this.type = 'ModifierRanged';
-
-    this.isKeyworded = true;
-    this.keywordDefinition = i18next.t('modifiers.ranged_def');
-    this.prototype.maxStacks = 1;
-
-    this.modifierName = i18next.t('modifiers.ranged_name');
-    this.description = null;
-
-    this.prototype.attributeBuffs = { reach: CONFIG.REACH_RANGED - CONFIG.REACH_MELEE };
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierRanged'];
-  }
+  static type = 'ModifierRanged';
+  static isKeyworded = true;
+  static description = null;
 }
-ModifierRanged.initClass();
+ModifierRanged.prototype.type = 'ModifierRanged';
+ModifierRanged.keywordDefinition = i18next.t('modifiers.ranged_def');
+ModifierRanged.prototype.maxStacks = 1;
+ModifierRanged.modifierName = i18next.t('modifiers.ranged_name');
+ModifierRanged.prototype.attributeBuffs = { reach: CONFIG.REACH_RANGED - CONFIG.REACH_MELEE };
+ModifierRanged.prototype.fxResource = ['FX.Modifiers.ModifierRanged'];
 
 module.exports = ModifierRanged;

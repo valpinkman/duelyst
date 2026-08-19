@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,11 +12,7 @@ const Action = require('./action');
 const _ = require('underscore');
 
 class GenerateSignatureCardAction extends Action {
-  static initClass() {
-    this.type = 'GenerateSignatureCardAction';
-    this.prototype.cardDataOrIndex = null;
-    // card data or index for new card
-  }
+  static type = 'GenerateSignatureCardAction';
 
   constructor(gameSession, ownerId, cardDataOrIndex) {
     super(gameSession);
@@ -109,6 +104,6 @@ class GenerateSignatureCardAction extends Action {
     }
   }
 }
-GenerateSignatureCardAction.initClass();
+GenerateSignatureCardAction.prototype.cardDataOrIndex = null;
 
 module.exports = GenerateSignatureCardAction;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,10 +12,7 @@ const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction')
 const PlaySignatureCardAction = require('app/sdk/actions/playSignatureCardAction');
 
 class PlayerModifierManaModifierSingleUse extends PlayerModifierManaModifier {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierManaModifierSingleUse';
-    this.type = 'PlayerModifierManaModifierSingleUse';
-  }
+  static type = 'PlayerModifierManaModifierSingleUse';
 
   onAction(event) {
     // only do this check on authoritative side because server will know if anything modified the playCardAction and can check original card
@@ -56,6 +52,6 @@ class PlayerModifierManaModifierSingleUse extends PlayerModifierManaModifier {
     }
   }
 }
-PlayerModifierManaModifierSingleUse.initClass();
+PlayerModifierManaModifierSingleUse.prototype.type = 'PlayerModifierManaModifierSingleUse';
 
 module.exports = PlayerModifierManaModifierSingleUse;

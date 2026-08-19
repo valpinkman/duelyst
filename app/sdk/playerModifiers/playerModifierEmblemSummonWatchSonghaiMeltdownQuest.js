@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -9,12 +8,7 @@ const PlayerModifierEmblemSummonWatch = require('./playerModifierEmblemSummonWat
 const RandomDamageAction = require('app/sdk/actions/randomDamageAction');
 
 class PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest extends PlayerModifierEmblemSummonWatch {
-  static initClass() {
-    this.prototype.type = 'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
-    this.type = 'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
 
   onSummonWatch(action) {
     const unit = action.getTarget();
@@ -28,6 +22,7 @@ class PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest extends PlayerModifier
     }
   }
 }
-PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.initClass();
+PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.prototype.type = 'PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest';
+PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest.prototype.maxStacks = 1;
 
 module.exports = PlayerModifierEmblemSummonWatchSonghaiMeltdownQuest;

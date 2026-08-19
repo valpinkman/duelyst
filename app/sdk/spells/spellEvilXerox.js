@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const SpellSpawnEntity = require('./spellSpawnEntity');
@@ -14,10 +13,6 @@ const ModifierFirstBlood = require('app/sdk/modifiers/modifierFirstBlood');
 const ModifierFlying = require('app/sdk/modifiers/modifierFlying');
 
 class SpellEvilXerox extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.spawnSilently = true;
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
       const minions = [];
@@ -50,7 +45,7 @@ class SpellEvilXerox extends SpellSpawnEntity {
     }
   }
 }
-SpellEvilXerox.initClass();
+SpellEvilXerox.prototype.spawnSilently = true;
 
 module.exports = SpellEvilXerox;
 

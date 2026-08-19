@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -13,22 +12,6 @@ const Cards = require('app/sdk/cards/cardsLookupComplete');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
 
 class SpellAmbush extends SpellSpawnEntity {
-  static initClass() {
-    this.prototype.spellFilterType = SpellFilterType.None;
-
-    this.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction6.WyrBeast };
-
-    this.prototype.unitsToSpawn = [
-      { id: Cards.Faction6.WolfRaven },
-      { id: Cards.Faction6.CrystalCloaker },
-      { id: Cards.Faction6.WyrBeast },
-      { id: Cards.Faction6.WyrBeast },
-    ];
-
-    this.prototype.timesApplied = 0;
-    // we'll increment this each time we apply spawn a unit so we can grab each unit from the 'snow patrol'
-  }
-
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
     if (this.unitsToSpawn.length > 0) {
       // get next unit to spawn
@@ -72,6 +55,14 @@ class SpellAmbush extends SpellSpawnEntity {
     return true;
   }
 }
-SpellAmbush.initClass();
+SpellAmbush.prototype.spellFilterType = SpellFilterType.None;
+SpellAmbush.prototype.cardDataOrIndexToSpawn = { id: Cards.Faction6.WyrBeast };
+SpellAmbush.prototype.unitsToSpawn = [
+  { id: Cards.Faction6.WolfRaven },
+  { id: Cards.Faction6.CrystalCloaker },
+  { id: Cards.Faction6.WyrBeast },
+  { id: Cards.Faction6.WyrBeast },
+];
+SpellAmbush.prototype.timesApplied = 0;
 
 module.exports = SpellAmbush;

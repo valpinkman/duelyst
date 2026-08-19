@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
@@ -13,14 +12,7 @@ const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 const Modifier = require('./modifier');
 
 class ModifierDealDamageWatchKillTarget extends ModifierDealDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierDealDamageWatchKillTarget';
-    this.type = 'ModifierDealDamageWatchKillTarget';
-
-    this.prototype.maxStacks = 1;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
-  }
+  static type = 'ModifierDealDamageWatchKillTarget';
 
   onEvent(event) {
     super.onEvent(event);
@@ -58,7 +50,9 @@ class ModifierDealDamageWatchKillTarget extends ModifierDealDamageWatch {
     }
   }
 }
-ModifierDealDamageWatchKillTarget.initClass();
+ModifierDealDamageWatchKillTarget.prototype.type = 'ModifierDealDamageWatchKillTarget';
+ModifierDealDamageWatchKillTarget.prototype.maxStacks = 1;
+ModifierDealDamageWatchKillTarget.prototype.fxResource = ['FX.Modifiers.ModifierDealDamageWatch', 'FX.Modifiers.ModifierGenericKill'];
 
 module.exports = ModifierDealDamageWatchKillTarget;
 

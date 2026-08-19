@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
@@ -20,14 +19,8 @@ const ModifierFirstBlood = require('./modifierFirstBlood');
 const ModifierBackstab = require('./modifierBackstab');
 
 class ModifierSpellWatchGainRandomKeyword extends ModifierEnemySpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchGainRandomKeyword';
-    this.type = 'ModifierSpellWatchGainRandomKeyword';
-
-    this.description = 'Whenever you cast a spell, this gains a random keyword ability';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
-  }
+  static type = 'ModifierSpellWatchGainRandomKeyword';
+  static description = 'Whenever you cast a spell, this gains a random keyword ability';
 
   static createContextObject() {
     const contextObject = super.createContextObject();
@@ -56,6 +49,7 @@ class ModifierSpellWatchGainRandomKeyword extends ModifierEnemySpellWatch {
     }
   }
 }
-ModifierSpellWatchGainRandomKeyword.initClass();
+ModifierSpellWatchGainRandomKeyword.prototype.type = 'ModifierSpellWatchGainRandomKeyword';
+ModifierSpellWatchGainRandomKeyword.prototype.fxResource = ['FX.Modifiers.ModifierGenericBuff'];
 
 module.exports = ModifierSpellWatchGainRandomKeyword;

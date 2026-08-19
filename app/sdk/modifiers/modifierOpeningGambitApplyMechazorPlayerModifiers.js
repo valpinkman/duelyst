@@ -1,6 +1,5 @@
 /*
  * decaffeinate suggestions:
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -8,10 +7,7 @@ const PlayerModifierMechazorBuildProgress = require('app/sdk/playerModifiers/pla
 const ModifierOpeningGambitApplyPlayerModifiers = require('./modifierOpeningGambitApplyPlayerModifiers');
 
 class ModifierOpeningGambitApplyMechazorPlayerModifiers extends ModifierOpeningGambitApplyPlayerModifiers {
-  static initClass() {
-    this.prototype.type = 'ModifierOpeningGambitApplyMechazorPlayerModifiers';
-    this.type = 'ModifierOpeningGambitApplyMechazorPlayerModifiers';
-  }
+  static type = 'ModifierOpeningGambitApplyMechazorPlayerModifiers';
 
   static createContextObject(progressAmount, options) {
     if (progressAmount == null) { progressAmount = 1; }
@@ -23,6 +19,6 @@ class ModifierOpeningGambitApplyMechazorPlayerModifiers extends ModifierOpeningG
     return contextObject;
   }
 }
-ModifierOpeningGambitApplyMechazorPlayerModifiers.initClass();
+ModifierOpeningGambitApplyMechazorPlayerModifiers.prototype.type = 'ModifierOpeningGambitApplyMechazorPlayerModifiers';
 
 module.exports = ModifierOpeningGambitApplyMechazorPlayerModifiers;

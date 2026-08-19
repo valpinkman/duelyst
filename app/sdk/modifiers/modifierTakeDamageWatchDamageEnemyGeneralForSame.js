@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,14 +10,8 @@ const CardType = require('app/sdk/cards/cardType');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 
 class ModifierTakeDamageWatchDamageEnemyGeneralForSame extends ModifierTakeDamageWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierTakeDamageWatchDamageEnemyGeneralForSame';
-    this.type = 'ModifierTakeDamageWatchDamageEnemyGeneralForSame';
-
-    this.description = 'Whenever this minion takes damage, it deals that much damage to the enemy General';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
-  }
+  static type = 'ModifierTakeDamageWatchDamageEnemyGeneralForSame';
+  static description = 'Whenever this minion takes damage, it deals that much damage to the enemy General';
 
   onDamageTaken(action) {
     const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
@@ -33,6 +26,7 @@ class ModifierTakeDamageWatchDamageEnemyGeneralForSame extends ModifierTakeDamag
     }
   }
 }
-ModifierTakeDamageWatchDamageEnemyGeneralForSame.initClass();
+ModifierTakeDamageWatchDamageEnemyGeneralForSame.prototype.type = 'ModifierTakeDamageWatchDamageEnemyGeneralForSame';
+ModifierTakeDamageWatchDamageEnemyGeneralForSame.prototype.fxResource = ['FX.Modifiers.ModifierTakeDamageWatch', 'FX.Modifiers.ModifierGenericDamage'];
 
 module.exports = ModifierTakeDamageWatchDamageEnemyGeneralForSame;

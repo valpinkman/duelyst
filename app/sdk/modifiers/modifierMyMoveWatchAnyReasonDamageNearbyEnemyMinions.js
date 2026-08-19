@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS205: Consider reworking code to avoid use of IIFEs
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -12,17 +11,9 @@ const DamageAction = require('app/sdk/actions/damageAction');
 const ModifierMyMoveWatchAnyReason = require('./modifierMyMoveWatchAnyReason');
 
 class ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions extends ModifierMyMoveWatchAnyReason {
-  static initClass() {
-    this.prototype.type = 'ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions';
-    this.type = 'ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions';
-
-    this.modifierName = 'Move Watch Any Reason Self Damage Nearby Enemy Minions';
-    this.description = 'Move Watch Any Reason Self Damage Nearby Enemy Minions';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
-
-    this.prototype.damageAmount = 0;
-  }
+  static type = 'ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions';
+  static modifierName = 'Move Watch Any Reason Self Damage Nearby Enemy Minions';
+  static description = 'Move Watch Any Reason Self Damage Nearby Enemy Minions';
 
   static createContextObject(damageAmount, options) {
     const contextObject = super.createContextObject();
@@ -50,6 +41,8 @@ class ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions extends ModifierMyMov
     })();
   }
 }
-ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.initClass();
+ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.type = 'ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions';
+ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.fxResource = ['FX.Modifiers.ModifierMyMoveWatch'];
+ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions.prototype.damageAmount = 0;
 
 module.exports = ModifierMyMoveWatchAnyReasonDamageNearbyEnemyMinions;

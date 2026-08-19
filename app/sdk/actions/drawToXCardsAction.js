@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Action = require('./action');
@@ -11,11 +10,7 @@ const Logger = require('app/common/logger');
 const _ = require('underscore');
 
 class DrawToXCardsAction extends Action {
-  static initClass() {
-    this.type = 'DrawToXCardsAction';
-
-    this.prototype.cardCount = 0;
-  }
+  static type = 'DrawToXCardsAction';
 
   constructor(gameSession, ownerId) {
     super(gameSession);
@@ -42,7 +37,7 @@ class DrawToXCardsAction extends Action {
     }
   }
 }
-DrawToXCardsAction.initClass();
+DrawToXCardsAction.prototype.cardCount = 0;
 
 module.exports = DrawToXCardsAction;
 

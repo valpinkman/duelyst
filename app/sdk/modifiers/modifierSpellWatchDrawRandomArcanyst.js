@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
@@ -11,15 +10,9 @@ const ModifierSpellWatch = require('./modifierSpellWatch');
 const Modifier = require('./modifier');
 
 class ModifierSpellWatchDrawRandomArcanyst extends ModifierSpellWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellWatchDrawRandomArcanyst';
-    this.type = 'ModifierSpellWatchDrawRandomArcanyst';
-
-    this.modifierName = 'Spell Watch';
-    this.description = 'Whenever you cast a spell, draw a random Arcanyst';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierSpellWatchDrawRandomArcanyst';
+  static modifierName = 'Spell Watch';
+  static description = 'Whenever you cast a spell, draw a random Arcanyst';
 
   onSpellWatch(action) {
     if (this.getGameSession().getIsRunningAsAuthoritative()) {
@@ -47,6 +40,7 @@ class ModifierSpellWatchDrawRandomArcanyst extends ModifierSpellWatch {
     }
   }
 }
-ModifierSpellWatchDrawRandomArcanyst.initClass();
+ModifierSpellWatchDrawRandomArcanyst.prototype.type = 'ModifierSpellWatchDrawRandomArcanyst';
+ModifierSpellWatchDrawRandomArcanyst.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 
 module.exports = ModifierSpellWatchDrawRandomArcanyst;

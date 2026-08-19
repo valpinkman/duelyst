@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,35 +13,6 @@ const request = require('superagent');
 const _ = require('underscore');
 
 class Consul {
-  static initClass() {
-    this.baseUrl = `http://${config.get('consul.ip')}:${config.get('consul.port')}/v1/`;
-    this.kvUrl = this.baseUrl + 'kv/';
-    this.gameServiceHealthUrl = this.baseUrl + `health/service/${config.get('consul.gameServiceName')}?passing`;
-    this.aiServiceHealthUrl = this.baseUrl + `health/service/${process.env.NODE_ENV}-ai?passing`;
-
-    this.kv = {
-      get: (key, callback) => new Promise((resolve, reject) =>
-      // Make 'raw' request to Consul which returns the value directly (not encoded)
-      // Without 'raw', the value will be base64 encoded, you can decode with:
-      // decoded = new Buffer(value, 'base64').toString()
-        request.get(this.kvUrl + key + '?raw').end(function (err, res) {
-          if ((res != null) && (res.status >= 400)) {
-            // Network failure, we should probably return a more intuitive error object
-            Logger.module('CONSUL').debug(`ERROR! Failed to connect to Consul, kv.get(${key}) failed: ${res.status} `.red);
-            return reject(new Error('Failed to connect to Consul.'));
-          } else if (err) {
-            // Internal failure
-            Logger.module('CONSUL').debug(`ERROR! kv.get(${key}) failed: ${err.message} `.red);
-            return reject(err);
-          } else {
-            // Logger.module("CONSUL").log "kv.get(#{key}): #{res.text} ".green
-            return resolve(res.text);
-          }
-        }),
-      ).nodeify(callback),
-    };
-  }
-
   static getHealthyServers(callback) {
     return new Promise((resolve, reject) => request.get(this.gameServiceHealthUrl).end(function (err, res) {
       if ((res != null) && (res.status >= 400)) {
@@ -110,6 +80,30 @@ class Consul {
     }).nodeify(callback);
   }
 }
-Consul.initClass();
+Consul.baseUrl = `http://${config.get('consul.ip')}:${config.get('consul.port')}/v1/`;
+Consul.kvUrl = Consul.baseUrl + 'kv/';
+Consul.gameServiceHealthUrl = Consul.baseUrl + `health/service/${config.get('consul.gameServiceName')}?passing`;
+Consul.aiServiceHealthUrl = Consul.baseUrl + `health/service/${process.env.NODE_ENV}-ai?passing`;
+Consul.kv = {
+  get: (key, callback) => new Promise((resolve, reject) =>
+  // Make 'raw' request to Consul which returns the value directly (not encoded)
+  // Without 'raw', the value will be base64 encoded, you can decode with:
+  // decoded = new Buffer(value, 'base64').toString()
+    request.get(Consul.kvUrl + key + '?raw').end(function (err, res) {
+      if ((res != null) && (res.status >= 400)) {
+        // Network failure, we should probably return a more intuitive error object
+        Logger.module('CONSUL').debug(`ERROR! Failed to connect to Consul, kv.get(${key}) failed: ${res.status} `.red);
+        return reject(new Error('Failed to connect to Consul.'));
+      } else if (err) {
+        // Internal failure
+        Logger.module('CONSUL').debug(`ERROR! kv.get(${key}) failed: ${err.message} `.red);
+        return reject(err);
+      } else {
+        // Logger.module("CONSUL").log "kv.get(#{key}): #{res.text} ".green
+        return resolve(res.text);
+      }
+    }),
+  ).nodeify(callback),
+};
 
 module.exports = Consul;

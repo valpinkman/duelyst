@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -11,12 +10,8 @@ const Modifier = require('./modifier');
 const ModifierOverwatchAttacked = require('./modifierOverwatchAttacked');
 
 class ModifierOverwatchAttackedBuffSelf extends ModifierOverwatchAttacked {
-  static initClass() {
-    this.prototype.type = 'ModifierOverwatchAttackedBuffSelf';
-    this.type = 'ModifierOverwatchAttackedBuffSelf';
-
-    this.description = 'When this minion is attacked, it gains %X';
-  }
+  static type = 'ModifierOverwatchAttackedBuffSelf';
+  static description = 'When this minion is attacked, it gains %X';
 
   static createContextObject(attackBuff, maxHPBuff, options) {
     if (attackBuff == null) { attackBuff = 0; }
@@ -46,6 +41,6 @@ class ModifierOverwatchAttackedBuffSelf extends ModifierOverwatchAttacked {
     }
   }
 }
-ModifierOverwatchAttackedBuffSelf.initClass();
+ModifierOverwatchAttackedBuffSelf.prototype.type = 'ModifierOverwatchAttackedBuffSelf';
 
 module.exports = ModifierOverwatchAttackedBuffSelf;

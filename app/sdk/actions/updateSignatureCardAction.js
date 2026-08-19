@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -14,11 +13,7 @@ Generates a new signature card if signature card slot was active when this actio
 */
 
 class UpdateSignatureCardAction extends Action {
-  static initClass() {
-    this.type = 'UpdateSignatureCardAction';
-
-    this.prototype.targetPlayerId = null;
-  }
+  static type = 'UpdateSignatureCardAction';
 
   constructor(gameSession, targetPlayerId) {
     super(gameSession);
@@ -52,6 +47,6 @@ class UpdateSignatureCardAction extends Action {
     return this.getGameSession().getGeneralForPlayerId(this.getTargetPlayerId()).flushCachedReferenceSignatureCard();
   }
 }
-UpdateSignatureCardAction.initClass();
+UpdateSignatureCardAction.prototype.targetPlayerId = null;
 
 module.exports = UpdateSignatureCardAction;

@@ -3,7 +3,6 @@
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
  * DS103: Rewrite code to no longer use __guard__, or convert again using --optional-chaining
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
@@ -14,20 +13,9 @@ const Stringifiers = require('app/sdk/helpers/stringifiers');
 const Modifier = require('./modifier');
 
 class ModifierSpellDamageWatch extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierSpellDamageWatch';
-    this.type = 'ModifierSpellDamageWatch';
-
-    this.modifierName = 'Spell Damage Watch';
-    this.description = 'Spell Damage Watch';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
-  }
+  static type = 'ModifierSpellDamageWatch';
+  static modifierName = 'Spell Damage Watch';
+  static description = 'Spell Damage Watch';
 
   onAction(e) {
     super.onAction(e);
@@ -55,7 +43,12 @@ class ModifierSpellDamageWatch extends Modifier {
     return false;
   }
 }
-ModifierSpellDamageWatch.initClass();
+ModifierSpellDamageWatch.prototype.type = 'ModifierSpellDamageWatch';
+ModifierSpellDamageWatch.prototype.activeInHand = false;
+ModifierSpellDamageWatch.prototype.activeInDeck = false;
+ModifierSpellDamageWatch.prototype.activeInSignatureCards = false;
+ModifierSpellDamageWatch.prototype.activeOnBoard = true;
+ModifierSpellDamageWatch.prototype.fxResource = ['FX.Modifiers.ModifierSpellWatch'];
 
 module.exports = ModifierSpellDamageWatch;
 

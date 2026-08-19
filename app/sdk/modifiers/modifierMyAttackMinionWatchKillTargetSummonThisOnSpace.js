@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,14 +9,7 @@ const KillAction = require('app/sdk/actions/killAction');
 const ModifierMyAttackMinionWatch = require('./modifierMyAttackMinionWatch');
 
 class ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace extends ModifierMyAttackMinionWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace';
-    this.type = 'ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierGenericKill'];
-
-    this.prototype.maxStacks = 1;
-  }
+  static type = 'ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace';
 
   onMyAttackMinionWatch(action) {
     const target = action.getTarget();
@@ -35,6 +27,8 @@ class ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace extends ModifierMyA
     }
   }
 }
-ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.initClass();
+ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.type = 'ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace';
+ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.fxResource = ['FX.Modifiers.ModifierGenericKill'];
+ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace.prototype.maxStacks = 1;
 
 module.exports = ModifierMyAttackMinionWatchKillTargetSummonThisOnSpace;

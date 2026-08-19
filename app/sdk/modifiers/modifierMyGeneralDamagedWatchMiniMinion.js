@@ -1,7 +1,6 @@
 /*
  * decaffeinate suggestions:
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
@@ -9,17 +8,7 @@ const DrawCardAction = require('app/sdk/actions/drawCardAction');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 
 class ModifierMyGeneralDamagedWatchMiniMinion extends ModifierMyGeneralDamagedWatch {
-  static initClass() {
-    this.prototype.type = 'ModifierMyGeneralDamagedWatchMiniMinion';
-    this.type = 'ModifierMyGeneralDamagedWatchMiniMinion';
-
-    this.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch'];
-
-    this.prototype.activeInHand = true;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = false;
-  }
+  static type = 'ModifierMyGeneralDamagedWatchMiniMinion';
 
   onDamageDealtToGeneral(action) {
     const enemyGeneral = this.getCard().getGameSession().getGeneralForOpponentOfPlayerId(this.getCard().getOwnerId());
@@ -36,6 +25,11 @@ class ModifierMyGeneralDamagedWatchMiniMinion extends ModifierMyGeneralDamagedWa
     }
   }
 }
-ModifierMyGeneralDamagedWatchMiniMinion.initClass();
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.type = 'ModifierMyGeneralDamagedWatchMiniMinion';
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.fxResource = ['FX.Modifiers.ModifierMyGeneralDamagedWatch'];
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeInHand = true;
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeInDeck = false;
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeInSignatureCards = false;
+ModifierMyGeneralDamagedWatchMiniMinion.prototype.activeOnBoard = false;
 
 module.exports = ModifierMyGeneralDamagedWatchMiniMinion;

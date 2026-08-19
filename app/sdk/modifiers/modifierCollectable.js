@@ -2,7 +2,6 @@
  * decaffeinate suggestions:
  * DS101: Remove unnecessary use of Array.from
  * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
@@ -10,20 +9,9 @@ const Logger = require('app/common/logger');
 const Modifier = require('./modifier');
 
 class ModifierCollectable extends Modifier {
-  static initClass() {
-    this.prototype.type = 'ModifierCollectable';
-    this.type = 'ModifierCollectable';
-
-    this.modifierName = 'Collectable';
-    this.description = 'When another entity moves onto this location..';
-
-    this.prototype.activeInHand = false;
-    this.prototype.activeInDeck = false;
-    this.prototype.activeInSignatureCards = false;
-    this.prototype.activeOnBoard = true;
-    this.prototype.depleted = false; // whether collectable has been used
-    this.prototype.fxResource = ['FX.Modifiers.ModifierCollectable'];
-  }
+  static type = 'ModifierCollectable';
+  static modifierName = 'Collectable';
+  static description = 'When another entity moves onto this location..';
 
   getPrivateDefaults(gameSession) {
     const p = super.getPrivateDefaults(gameSession);
@@ -93,6 +81,12 @@ class ModifierCollectable extends Modifier {
     return this._private.collectingEntity = this.getCollectingEntity();
   }
 }
-ModifierCollectable.initClass();
+ModifierCollectable.prototype.type = 'ModifierCollectable';
+ModifierCollectable.prototype.activeInHand = false;
+ModifierCollectable.prototype.activeInDeck = false;
+ModifierCollectable.prototype.activeInSignatureCards = false;
+ModifierCollectable.prototype.activeOnBoard = true;
+ModifierCollectable.prototype.depleted = false;
+ModifierCollectable.prototype.fxResource = ['FX.Modifiers.ModifierCollectable'];
 
 module.exports = ModifierCollectable;
