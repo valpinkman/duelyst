@@ -8,14 +8,16 @@ step it describes, so it can never drift from the code.
 ## ▶ Resume here
 
 - **Branch:** `modernization` (stacked commits, one per step; not pushed anywhere yet)
-- **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
-  `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
-  under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** Phase 5 (decaffeinate → TS). 4.5 (delete gulp) stays open until the
-  practice-game verification — needs a real Firebase RTDB (owner/QA step, or a later
-  autonomous attempt via the Firebase MCP).
-- **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
-  (1.4 runtime half).
+- **Current state:** Phases 0–3 complete; Phase 4 complete except 4.5 (gulp deletion, gated on
+  playing a practice game — needs real Firebase, owner/QA step); **Phase 5 complete and Phase 6
+  conversion complete: the entire runtime (app/, server/, worker/) is CoffeeScript-free**, and
+  `coffeescript/register` is gone from `bin/*`. Coffee remains only in `cli/` + `scripts/`
+  (dead-ops, deletion candidates), the test preludes, and the gulp pipeline.
+- **In progress:** exercising the never-in-CI `test/integration/data_access` suites in-container
+  against compose Postgres/Redis to validate the converted data layer (7.2 spike).
+- **Next steps:** 7.2 (integration revival), 7.4 (desktop into workspace), 7.1 (mocha retirement)
+  — 4.5 + the Firebase keep/replace decision need the owner.
+- **Known dirty state:** none.
 
 ## Rules
 
