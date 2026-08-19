@@ -11,8 +11,9 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 4.3 (runtime CDN base URL — release-only concern, may fold into 4.5) and
-  4.4 (dev-server alignment); 4.5 (delete gulp) requires the practice-game verification.
+- **Next step:** Phase 5 (decaffeinate → TS). 4.5 (delete gulp) stays open until the
+  practice-game verification — needs a real Firebase RTDB (owner/QA step, or a later
+  autonomous attempt via the Firebase MCP).
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -154,8 +155,16 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
   built CSS, so css precedes packages (as in gulp). `app/resources` never enters the module
   graph. **Browser-verified from a clean `dist/`**: full login screen renders (screenshot
   checked), console profile identical to gulp. Gulp path untouched. — (this commit)
-- [ ] 4.3 Runtime CDN base URL replaces the regex URL rewriting (`rsx:*_urls`, rework-url).
-- [ ] 4.4 Dev server + `server/routes/public.coffee` alignment (serve Vite output / proxy).
+- [x] 4.3 Resolved by decision instead of code: the regex CDN rewriting only runs in
+  staging/production release builds against AWS infrastructure the audit already classified as
+  dead for the open-source deployment. No runtime base-URL layer is built speculatively; the
+  rewriting machinery is deleted with gulp in 4.5. If a CDN deployment ever returns, implement
+  a base URL at that point (decision logged). — (this commit)
+- [x] 4.4 Alignment verified without code changes: `server/routes/public.coffee` serves
+  whatever is in `dist/src`, and the compose api returns 200 for `/`, `duelyst.js` and
+  resources built by `pnpm build:client`. Dev loop: `pnpm build:client:watch` (vite --watch
+  rebuilds the bundle in ~2.4s on change; run `build:client` once first for assets). A full
+  HMR dev server is deliberately out of scope until the client is ESM/TS. — (this commit)
 - [ ] 4.5 Delete gulp pipeline + dead tasks (cdn, revision, git, docker, bump, shop) once Vite output is byte-for-byte-equivalent in behavior.
   *Accept:* game client boots and plays a practice game from the Vite build.
 
@@ -198,5 +207,6 @@ Order (mechanical first, god-objects last). Each bullet is many small commits:
 | 2026-08-19 | vitest lands *beside* mocha (Phase 1) instead of a one-shot swap | 1287 passing tests are the safety net for the TS conversion; never lose them |
 | 2026-08-19 | Phantom deps added explicitly rather than enabling hoisting shims | keeps pnpm strictness as a lint for the monorepo split |
 | 2026-08-19 | Gate's coffee-lint criterion = CI scope (`pnpm lint:coffee app server worker`), not `lint:coffee:all` | `lint:coffee:all` was red before this work: 59 pre-existing errors, all in dead ops dirs (`cli/`, `scripts/*`) that CI deliberately excludes; several are indentation errors that can't be auto-fixed safely in untested CoffeeScript. Those dirs are deletion candidates, not fix targets. |
+| 2026-08-19 | 4.3: no speculative CDN base-URL layer; regex-rewrite machinery dies with gulp | CDN deploys target dead AWS infra; YAGNI — build it if a CDN deployment returns |
 | 2026-08-19 | 3.2: SDK/common become workspace packages in place; physical `packages/sdk` move deferred to the TS phase | moving 1,400 files pre-TS forces a ~7,000-site require rewrite or symlink fragility for zero functional gain; package names + boundary land now, relocation lands when imports are rewritten anyway |
 | 2026-08-19 | Vitest runs the CJS tests via native-require passthrough (no coffee plugin/aliases yet) | zero-risk parity with mocha's module loading; the Vite-pipeline transform belongs to Phase 4 where it's exercised by the client build. Cost: vitest wall-clock ~38s vs mocha 6s (each forked file re-imports the SDK); acceptable until the SDK is TS. |

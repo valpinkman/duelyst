@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — 4.3/4.4 closed: compose api serves build:client dist (200s); build:client:watch
+  dev loop added; CDN rewriting will die with gulp (decision).
 - 2026-08-19 — pnpm build:client is a complete gulp-free client build (browser-verified
   from clean dist; login screen renders). Gulp still intact until 4.5.
 - 2026-08-19 — Vite builds the client bundle (pnpm build:vite, 2.4s vs ~35s browserify);

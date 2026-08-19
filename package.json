@@ -213,7 +213,8 @@
     "test:vitest": "vitest run",
     "test:vitest:watch": "vitest",
     "build:vite": "vite build --config vite.config.client.mjs",
-    "build:client": "node scripts/build/build-client.mjs"
+    "build:client": "node scripts/build/build-client.mjs",
+    "build:client:watch": "vite build --config vite.config.client.mjs --watch"
   },
   "packageManager": "pnpm@10.12.1",
   "pnpm": {
