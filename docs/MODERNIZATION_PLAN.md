@@ -70,7 +70,7 @@ step it describes, so it can never drift from the code.
   dirs) and `test/unit/session/index.js` (0 active tests) + its `test:unit:session` script;
   codemod `scripts/codemods/remove-dead-test-imports.js` stripped the 15 never-used
   `require('sinon')` imports from integration files; dropped `sinon` + `power-assert`
-  devDependencies. The real `this.timeout`/`done` debt lives in `test/integration` + `test/rest`
+  devDependencies. The real `this.timeout`/`done` debt lives in `test/integration` (`test/rest` deleted in 7.3)
   → handled in 7.1/7.2.
   *Accepted:* mocha 1287 + vitest 1285 green; gate green. — (this commit)
 - [x] 1.3 vitest covers all of `test/unit` (101 files); `unit_tests_vitest` CI job added beside
@@ -623,7 +623,7 @@ server and worker. What remains is *typing* (5T.4), not converting.
   |---|---|---|---|---|
   | `firebase-tools` | 15 | 14.27 | 15.27 | **dev-only**; pinned to 14 because 15 needs JDK 21 |
   | `hbs` | 12 | 4.1.0 | 4.2.1 | **patch bump** — server view engine |
-  | `supertest` | 11 | 0.14.0 | 7.2.2 | **dev-only**; only `test/rest` uses it, and that is broken |
+  | ~~`supertest`~~ | ~~11~~ | — | — | ✅ **removed with `test/rest`** |
   | `socket.io` | 6 | 4.6.1 | 4.8.3 | minor bump |
   | ~~`request`~~ | ~~5~~ | — | — | ✅ **removed** — replaced with native `fetch` |
   | `kue` | 5 | 0.11.6 | *final* | unmaintained — replacement project, pins redis@2 |
@@ -632,8 +632,17 @@ server and worker. What remains is *typing* (5T.4), not converting.
   | `helmet` | 4 | 0.8.0 | 8.3.0 | security middleware, 8 majors behind |
   | `validator` | 3 | 3.43.0 | 13.15 | |
 
-  **26 of the 129 are dev-only** (`firebase-tools` + `supertest`) and never ship.
+  **26 of the 129 were dev-only** (`firebase-tools` + `supertest`) and never shipped.
 
+  - [x] **Deleted `test/rest`, removing `supertest` (101 → 90).** Five files, referenced by no
+    script, no vitest config, no workflow and no compose service — so they had not run in a very
+    long time. Confirmed dead by actually running them under a temporary config rather than
+    trusting the plan's "broken" label: **all five fail**, and not for one fixable reason —
+    `api.js` throws `ReferenceError: Cannot access 'api' before initialization`, `password_reset`
+    dies on `express-jwt: 'secret' is a required option`, `version-check` on
+    `Cannot read properties of undefined (reading 'get')`. Reviving them would be writing new
+    tests, not fixing old ones, and the routes they cover are exercised by the e2e suite and the
+    integration suites instead.
   - [x] **`request` → native `fetch` (106 → 101).** `request` was deprecated *and frozen at its
     final version*, so its advisories could never be patched — the only way off it was to stop
     using it. Its one consumer downloaded `index.html`/`register.html` from the CDN at boot in
