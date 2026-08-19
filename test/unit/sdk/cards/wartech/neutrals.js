@@ -238,7 +238,7 @@ describe('wartech', () => {
       const action = player1.actionPlaySignatureCard(0, 1);
       gameSession.executeAction(action);
 
-      hand1 = player1.getDeck().getCardsInHand();
+      const hand1 = player1.getDeck().getCardsInHand();
       expect(hand1[0].getId()).to.equal(SDK.Cards.Spell.Warbird);
     });
 

@@ -368,7 +368,7 @@ describe('unity', () => {
 
       const hand1 = player1.getDeck().getCardsInHand();
 
-      spellCounter = 0;
+      let spellCounter = 0;
 
       for (let i = 0; i < 3; i++) {
         if (hand1[i].getId() == SDK.Cards.Spell.DragonGrace || hand1[i].getId() == SDK.Cards.Spell.DragonBreath || hand1[i].getId() == SDK.Cards.Spell.DragonHeart) {

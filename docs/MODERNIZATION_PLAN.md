@@ -8,8 +8,10 @@ step it describes, so it can never drift from the code.
 ## ▶ Resume here
 
 - **Branch:** `modernization` (stacked commits, one per step; not pushed anywhere yet)
-- **Current state:** Phase 0 complete. Baseline green: `pnpm build` + `pnpm test:unit` (1287 passing).
-- **Next step:** 1.1 — vitest running `test/unit/sdk` alongside mocha.
+- **Current state:** Phase 0 complete; 1.1 done (vitest runs `test/unit/sdk`, 1285/1285 parity
+  with mocha). Baseline green: `pnpm build` + `pnpm test:unit` (1287 passing).
+- **Next step:** 1.2 — codemod mocha-isms across the rest of `test/unit` (this.timeout, done,
+  dead sinon/power-assert imports, `test/index.js`).
 - **Known dirty state:** none. Docker images and GitHub workflows were converted to pnpm
   mechanically but have not been exercised (1.4 / 1.5 below).
 
@@ -18,7 +20,10 @@ step it describes, so it can never drift from the code.
 1. Every step lands as **one commit** on `modernization` (or a branch stacked on it).
 2. Every commit leaves the acceptance baseline green: `pnpm tsc:chroma-js && FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build && pnpm test:unit` — plus any step-specific criterion below.
 3. pnpm only. Never yarn/npm. No big-bang rewrites; codemods over hand-rewrites.
-4. When a step completes: tick it here, record the commit hash, and update the status log in `AGENTS.md`.
+4. When a step completes: tick it here and update the status log in `AGENTS.md` in the same
+   commit. Record hashes of *prior* commits only; a step's own entry says "(this commit)" —
+   its final hash isn't knowable from inside the commit (amending changes it). Find it later
+   with `git log --oneline -- <step files>` if needed.
 
 ## Phases
 
@@ -31,8 +36,13 @@ step it describes, so it can never drift from the code.
 
 ### Phase 1 — Test runner beachhead (vitest beside mocha)
 
-- [ ] 1.1 vitest configured for `test/unit/sdk` only: CoffeeScript transform plugin, `app/`+`test/` aliases, `testTimeout: 1000`, file-level parallelism only (GameSession singleton).
-  *Accept:* `pnpm test:vitest` passes the same specs as `mocha test/unit/sdk` (same count), and mocha still green.
+- [x] 1.1 vitest configured for `test/unit/sdk` (99 files) beside mocha — `vitest.config.mjs`,
+  `pnpm test:vitest`, pool `forks` + `isolate` for the GameSession singleton. No CoffeeScript
+  plugin needed yet: the CJS test preludes register `coffeescript/register`+`app-module-path`
+  and vite-node's native-require interop loads the SDK exactly as mocha does (plugin/aliases
+  deferred to Phase 4). Fixed 4 tests that assigned undeclared globals (strict-mode error under
+  vite-node, silent global leak under mocha).
+  *Accepted:* vitest 1285/1285 == mocha 1285/1285 on the subtree; full gate green. — (this commit)
 - [ ] 1.2 Codemod the mocha-isms in `test/unit`: `this.timeout(n)` (122) → per-test options, `done` callbacks (69) → async, delete dead sinon/power-assert imports and `test/index.js`.
   *Accept:* both runners green on `test/unit`.
 - [ ] 1.3 Extend vitest to all of `test/unit`; add a `unit_tests_vitest` CI job next to the mocha one.
@@ -101,3 +111,5 @@ Order (mechanical first, god-objects last). Each bullet is many small commits:
 | 2026-08-19 | Dummy `FIREBASE_URL` for builds/CI; real Firebase only needed to play | matches upstream CI behavior |
 | 2026-08-19 | vitest lands *beside* mocha (Phase 1) instead of a one-shot swap | 1287 passing tests are the safety net for the TS conversion; never lose them |
 | 2026-08-19 | Phantom deps added explicitly rather than enabling hoisting shims | keeps pnpm strictness as a lint for the monorepo split |
+| 2026-08-19 | Gate's coffee-lint criterion = CI scope (`pnpm lint:coffee app server worker`), not `lint:coffee:all` | `lint:coffee:all` was red before this work: 59 pre-existing errors, all in dead ops dirs (`cli/`, `scripts/*`) that CI deliberately excludes; several are indentation errors that can't be auto-fixed safely in untested CoffeeScript. Those dirs are deletion candidates, not fix targets. |
+| 2026-08-19 | Vitest runs the CJS tests via native-require passthrough (no coffee plugin/aliases yet) | zero-risk parity with mocha's module loading; the Vite-pipeline transform belongs to Phase 4 where it's exercised by the client build. Cost: vitest wall-clock ~38s vs mocha 6s (each forked file re-imports the SDK); acceptable until the SDK is TS. |

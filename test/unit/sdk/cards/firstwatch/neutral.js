@@ -204,8 +204,8 @@ describe('first watch', () => {
       var playCardFromHandAction1 = player1.actionPlayCardFromHand(0, 4, 2);
       gameSession.executeAction(playCardFromHandAction1);
 
-      allySpriggans = board.getEntitiesAroundEntity(gameSession.getGeneralForPlayer1());
-      enemySpriggans = board.getEntitiesAroundEntity(gameSession.getGeneralForPlayer2());
+      const allySpriggans = board.getEntitiesAroundEntity(gameSession.getGeneralForPlayer1());
+      const enemySpriggans = board.getEntitiesAroundEntity(gameSession.getGeneralForPlayer2());
 
       expect(allySpriggans.length).to.equal(3); // expect there to be 3 spriggin
       expect(enemySpriggans.length).to.equal(3);

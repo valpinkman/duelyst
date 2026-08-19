@@ -116,6 +116,9 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — vitest runs beside mocha for `test/unit/sdk` (`pnpm test:vitest`, 1285/1285
+  parity). CJS native-require passthrough, no coffee plugin yet; gate's coffee-lint = CI scope
+  (`lint:coffee app server worker`) — `lint:coffee:all` has pre-existing errors in dead dirs.
 - 2026-08-19 — repo switched from Yarn 4 to pnpm 10 (workspace over `packages/*`; CI/Docker
   converted, Docker images not yet rebuilt). Baseline: `pnpm build` and `pnpm test:unit`
   (1287 passing) green. Audit written.

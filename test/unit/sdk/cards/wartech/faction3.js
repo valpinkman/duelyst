@@ -360,7 +360,7 @@ describe('wartech', () => {
 
       const hand1 = player1.getDeck().getCardsInHand();
 
-      for (i = 0; i < hand1.length; i++) {
+      for (let i = 0; i < hand1.length; i++) {
         if (hand1[i].getBaseManaCost() <= 4) {
           expect(hand1[i].getManaCost()).to.equal(0);
         } else {
