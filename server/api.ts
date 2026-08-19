@@ -10,8 +10,8 @@ Starts main application
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
+const downloadHtml = require('./lib/download_html');
 const mkdirp = require('mkdirp');
-const request = require('request');
 const Promise = require('bluebird');
 const Logger = require('../app/common/logger');
 const shutdownLib = require('./shutdown');
@@ -49,50 +49,9 @@ const makeDirectory = function (cb) {
   });
 };
 
-const downloadIndexHtml = function (url, cb) {
-  const origin = `${url}/index.html`;
-  const destination = `${__dirname}/../public/${env}/index.html`;
-  Logger.module('API').warn(`Downloading ${origin} to ${destination}.`);
+const downloadIndexHtml = (url, cb) => downloadHtml(`${url}/index.html`, `${__dirname}/../public/${env}/index.html`, cb);
 
-  return request({ url: origin, gzip: true })
-    .on('error', (err) => cb(err)).on('response', function (res) {
-      if (res.statusCode !== 200) {
-        return cb(new Error(`request returned status ${res.statusCode}`));
-      }
-    }).pipe(fs.createWriteStream(destination))
-    .on('error', function (err) {
-      Logger.module('API').error(`Failed to download ${origin} to ${destination}`);
-      return cb(err);
-    })
-    .on('finish', function () {
-      Logger.module('API').warn(`Downloaded ${origin} to ${destination}`);
-      return cb(null);
-    });
-};
-
-const downloadRegisterHtml = function (url, cb) {
-  const origin = `${url}/register.html`;
-  const destination = `${__dirname}/../public/${env}/register.html`;
-  Logger.module('API').warn(`Downloading ${origin} to ${destination}.`);
-
-  return request({ url: origin, gzip: true })
-    .on('error', function (err) {
-      Logger.module('API').error(`Failed to download ${origin}: ${err}`);
-      return cb(err);
-    }).on('response', function (res) {
-      if (res.statusCode !== 200) {
-        return cb(new Error(`request returned status ${res.statusCode}`));
-      }
-    }).pipe(fs.createWriteStream(destination))
-    .on('error', function (err) {
-      Logger.module('API').error(`Failed to write ${origin} to ${destination}: ${err}`);
-      return cb(err);
-    })
-    .on('finish', function () {
-      Logger.module('API').warn(`Downloaded ${origin} to ${destination}`);
-      return cb(null);
-    });
-};
+const downloadRegisterHtml = (url, cb) => downloadHtml(`${url}/register.html`, `${__dirname}/../public/${env}/register.html`, cb);
 
 const setupDevelopment = () => server.listen(apiPort, function () {
   server.connected = true;

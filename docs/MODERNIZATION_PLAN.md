@@ -625,7 +625,7 @@ server and worker. What remains is *typing* (5T.4), not converting.
   | `hbs` | 12 | 4.1.0 | 4.2.1 | **patch bump** — server view engine |
   | `supertest` | 11 | 0.14.0 | 7.2.2 | **dev-only**; only `test/rest` uses it, and that is broken |
   | `socket.io` | 6 | 4.6.1 | 4.8.3 | minor bump |
-  | `request` | 5 | 2.88.2 | *final* | deprecated — must be **replaced** (native fetch) |
+  | ~~`request`~~ | ~~5~~ | — | — | ✅ **removed** — replaced with native `fetch` |
   | `kue` | 5 | 0.11.6 | *final* | unmaintained — replacement project, pins redis@2 |
   | `knex` | 5 | 0.19.5 | 3.3.0 | gated on bluebird |
   | `jquery` | 4 | 2.1.4 | 4.0.0 | client |
@@ -634,6 +634,20 @@ server and worker. What remains is *typing* (5T.4), not converting.
 
   **26 of the 129 are dev-only** (`firebase-tools` + `supertest`) and never ship.
 
+  - [x] **`request` → native `fetch` (106 → 101).** `request` was deprecated *and frozen at its
+    final version*, so its advisories could never be patched — the only way off it was to stop
+    using it. Its one consumer downloaded `index.html`/`register.html` from the CDN at boot in
+    staging/production. Ported faithfully rather than deleted: the CDN model is still how a real
+    deployment gets those files (the api Dockerfile does not copy `dist/`), so removing it would
+    have been a deployment-architecture decision, not a dependency bump.
+    Extracted to `server/lib/download_html.ts` because `server/api.ts` boots the server as a side
+    effect of being required, so nothing in it can be tested — and **this path never runs in
+    development**, so it would otherwise have shipped on "it looks right" with a failure mode of
+    "the API refuses to boot". `test/unit/misc/download_html.js` covers success, non-200,
+    connection failure, and **gzip** specifically (the old call passed `{ gzip: true }`; fetch
+    handles it transparently rather than by option).
+    A transitive `request@2.79.0` remains via `coveralls`, a dev-only coverage reporter — it no
+    longer contributes any advisory path.
   - [x] **Acted on that batch: 129 → 106 advisories.** All four now contribute **0** paths.
     - `hbs` 4.1.0 → 4.2.1 and `socket.io`/`socket.io-client` 4.6.1 → 4.8.3 — drop-in (−16 alone).
     - `validator` 3.43 → 13.15. The hazard was `isLength`: the code calls it with a **positional**
