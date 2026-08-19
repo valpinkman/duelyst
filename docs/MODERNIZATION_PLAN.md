@@ -195,7 +195,14 @@ mocha + vitest + both builds + wire-format tests.
     (`questParticipationWithFaction`: bound `=>` method + a faithfully-preserved latent bug —
     its constructor always read the prototype `factionId` (null) for the quest name).
     — (this commit)
-- [ ] 5.3 `actions/` (65), `validators/`, `helpers/`.
+- [x] 5.3 `actions/` — all 65 files including the `action.coffee` base and `actionFactory`
+  (validators/helpers already landed in 5.2c). Key finding: **class hierarchies must convert
+  together, children-first** — a CS1 subclass cannot extend an ES6 base ("Class constructor
+  cannot be invoked without 'new'"). The action dual-type idiom (`@type ?= X.type` before
+  super in every subclass) is illegal in ES6; translated once at the root:
+  `@type ?= @constructor.type` after super (the leaf's static — identical own-property
+  result, verified by the wire-format guard tests). 6 files had other pre-super bodies whose
+  statements the super chain never reads — moved after super mechanically. — (this commit)
 - [ ] 5.4 `entities/`, `cards/card.coffee`, factories (watch `@type` vs `type:` and prototype defaults — see audit §3.1 risks).
 - [ ] 5.5 `gameSession.coffee` last; then `application.coffee` / boot files.
   *Accept per batch:* baseline green + golden-file serialization tests green.

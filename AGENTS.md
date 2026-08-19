@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — actions layer decaffeinated (65 files, 5.3); dual-type idiom translated via
+  @constructor.type at the root; hierarchies must convert children-first (documented in plan).
 - 2026-08-19 — 180 meta-game sdk files decaffeinated (5.2c); app/sdk down to 169 .coffee
   (core classes, actions, entities, cards, factories).
 - 2026-08-19 — 304 spells/playerModifiers/gameSessionModifiers decaffeinated (5.2b); clean run.

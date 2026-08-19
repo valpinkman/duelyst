@@ -8,8 +8,8 @@
  */
 const CONFIG = require('app/common/config');
 const Modifier = require('app/sdk/modifiers/modifier');
-const MoveAction = require('app/sdk/actions/moveAction.coffee');
-const AttackAction = require('app/sdk/actions/attackAction.coffee');
+const MoveAction = require('app/sdk/actions/moveAction');
+const AttackAction = require('app/sdk/actions/attackAction');
 const CardType = require('app/sdk/cards/cardType');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
 const UtilsPosition = require('app/common/utils/utils_position');

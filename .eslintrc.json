@@ -171,7 +171,8 @@
         "radix": "warn",
         "no-useless-constructor": "warn",
         "no-empty-function": "warn",
-        "no-empty": "warn"
+        "no-empty": "warn",
+        "no-prototype-builtins": "warn"
       }
     },
     {

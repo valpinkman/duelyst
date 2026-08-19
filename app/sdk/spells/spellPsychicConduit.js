@@ -9,8 +9,8 @@
 const SpellApplyModifiers = require('./spellApplyModifiers');
 const CardType = require('app/sdk/cards/cardType');
 const SpellFilterType = require('./spellFilterType');
-const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceAction.coffee');
-const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction.coffee');
+const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceAction');
+const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction');
 
 class SpellPsychicConduit extends SpellApplyModifiers {
   static initClass() {

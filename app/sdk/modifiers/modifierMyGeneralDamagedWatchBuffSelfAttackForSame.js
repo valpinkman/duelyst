@@ -4,7 +4,7 @@
  * DS206: Consider reworking classes to avoid initClass
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const DamageAction = require('app/sdk/actions/damageAction.coffee');
+const DamageAction = require('app/sdk/actions/damageAction');
 const Modifier = require('./modifier.coffee');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 

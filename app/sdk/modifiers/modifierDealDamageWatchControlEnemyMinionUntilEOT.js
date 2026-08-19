@@ -6,8 +6,8 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const CardType = require('app/sdk/cards/cardType');
-const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceAction.coffee');
-const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction.coffee');
+const SwapUnitAllegianceAction = require('app/sdk/actions/swapUnitAllegianceAction');
+const RefreshExhaustionAction = require('app/sdk/actions/refreshExhaustionAction');
 const ModifierEndTurnWatchSwapAllegiance = require('app/sdk/modifiers/modifierEndTurnWatchSwapAllegiance');
 const ModifierDealDamageWatch = require('./modifierDealDamageWatch');
 
