@@ -128,6 +128,10 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — deleted `scripts/add_index.js` (GitGuardian). Its two hardcoded Firebase
+  tokens came from upstream's 2022 source dump and are public in `open-duelyst/duelyst`;
+  decaffeinating the file gave them a new path, which re-flagged them as new incidents.
+  Audited alongside: `.env` and `serviceAccountKey.json` have NEVER been committed.
 - 2026-08-19 — dependency tier 1 done (advisories 212 → 148): moment 2.30, underscore 1.13,
   handlebars off its 4.5.3 pin (prototype access restored explicitly in the Vite hbs plugin),
   jsonwebtoken 5.4 → 9 + express-jwt 6 → 8 (`requestProperty: 'user'` keeps the 149

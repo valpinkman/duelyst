@@ -439,7 +439,12 @@ server and worker. What remains is *typing* (5T.4), not converting.
   simulation, daily_challenges, image-utils, firebase_to_sql, codex asset-authoring). Verified
   zero external references first.
   **Kept and converted** the tooling worth having: `scripts/localization/*` (finds missing and
-  out-of-date i18n keys) and `scripts/add_index`, `generate_invite_codes`.
+  out-of-date i18n keys) and `generate_invite_codes`.
+  **`scripts/add_index` was later deleted** (see 8.3): converting it to `.js` gave the two
+  hardcoded Firebase tokens it had carried since the initial 2022 source dump a new file
+  path, which re-triggered GitGuardian. Dead three ways over — both `duelyst-alpha*`
+  instances are gone, it uses the Firebase v2 API (`new Firebase(url)` / `.auth(token, cb)`)
+  that no current SDK has, and it is a one-off email-index backfill.
   **Dropped as unfixable:** `delete_user`, `find_user`, `find_userid_by_name` — all three
   `require('server/lib/users_module')`, which has never existed in this repo (it was in the
   audit's unresolved list); they cannot ever have run.
@@ -447,6 +452,15 @@ server and worker. What remains is *typing* (5T.4), not converting.
   `coffeescript` + `@coffeelint/cli` dependencies, the `lint:coffee*` scripts, Vite's
   CoffeeScript plugin and `.coffee` resolution, the `coffeescript/register` calls left in
   8 test/server/script files, and 9 dependencies only the deleted ops used. — (this commit)
+- [x] 8.3 Deleted `scripts/add_index.js` — the only legacy script with Firebase tokens
+  inlined (its three siblings `clear_user_quests`, `generate_invite_codes`,
+  `add_quest_queue_job` already read `config.get('firebaseToken')`). The tokens date to
+  upstream commit `12b49376` (2022-03-29, "init repo with initial source dump") and are
+  public in `open-duelyst/duelyst`, so nothing was newly exposed — but 8.1's decaffeinate
+  pass rewrote `add_index.coffee` to `.js`, and GitGuardian counts a known secret at a new
+  path as a new incident. **Audited at the same time: `.env` and `serviceAccountKey.json`
+  have never been committed** (0 commits touch either across all refs, and no
+  credential-shaped path exists in any object in history). — (this commit)
 
 ### Phase 7 — Test & dependency endgame
 
