@@ -178,7 +178,15 @@ mocha + vitest + both builds + wire-format tests.
 - [x] 5.1 Leaf lookups → JS: `cardType`, `factionsLookup`, `racesLookup`, `rarityLookup`,
   `cardsLookup`, `cardsLookupComplete` (6 files); `app/sdk/**/*.js` eslint override added
   following the app/ui/app/view convention. — (this commit)
-- [ ] 5.2 Declarative modifiers & spells (~600 files) via scripted decaffeinate → `.ts` under a loose tsconfig.
+- [ ] 5.2 Declarative modifiers & spells via scripted decaffeinate (JS while gulp lives):
+  - [x] 5.2a all 716 `app/sdk/modifiers/*` except `modifier.coffee` + `modifierFactory.coffee`
+    (714 scripted + 2 hand-converted where CS used `this` before `super`). Two latent-bug
+    classes surfaced: decaffeinate silently refuses invalid constructors while exiting 0
+    (batch script now verifies output exists), and `modifierInfiltrate`'s CS `for x of array`
+    loop assigned properties to string keys — a sloppy-mode no-op that throws in strict ES6
+    class methods; preserved as an explicit no-op with a comment. — (this commit)
+  - [ ] 5.2b `app/sdk/spells/*` (except `spell.coffee`), `playerModifiers/*`,
+    `gameSessionModifiers/*`.
 - [ ] 5.3 `actions/` (65), `validators/`, `helpers/`.
 - [ ] 5.4 `entities/`, `cards/card.coffee`, factories (watch `@type` vs `type:` and prototype defaults — see audit §3.1 risks).
 - [ ] 5.5 `gameSession.coffee` last; then `application.coffee` / boot files.

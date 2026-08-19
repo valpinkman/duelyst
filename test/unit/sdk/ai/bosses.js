@@ -12,10 +12,10 @@ const CardFactory = require('../../../../app/sdk/cards/cardFactory.coffee');
 const UtilsSDK = require('../../../utils/utils_sdk');
 const UsableDecks = require('../../../../server/ai/decks/usable_decks');
 const StarterAI = require('../../../../server/ai/starter_ai');
-const ModifierRanged = require('../../../../app/sdk/modifiers/modifierRanged.coffee');
-const ModifierForcefield = require('../../../../app/sdk/modifiers/modifierForcefield.coffee');
-const ModifierFlying = require('../../../../app/sdk/modifiers/modifierFlying.coffee');
-const ModifierTranscendance = require('../../../../app/sdk/modifiers/modifierTranscendance.coffee');
+const ModifierRanged = require('../../../../app/sdk/modifiers/modifierRanged');
+const ModifierForcefield = require('../../../../app/sdk/modifiers/modifierForcefield');
+const ModifierFlying = require('../../../../app/sdk/modifiers/modifierFlying');
+const ModifierTranscendance = require('../../../../app/sdk/modifiers/modifierTranscendance');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

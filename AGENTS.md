@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — 716 modifiers decaffeinated to JS (5.2a); suite, both builds, wire-format
+  fixture all green.
 - 2026-08-19 — 4.3/4.4 closed: compose api serves build:client dist (200s); build:client:watch
   dev loop added; CDN rewriting will die with gulp (decision).
 - 2026-08-19 — pnpm build:client is a complete gulp-free client build (browser-verified

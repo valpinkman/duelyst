@@ -44,6 +44,11 @@ for (const file of files) {
   }
   try {
     execFileSync('node', ['node_modules/decaffeinate/bin/decaffeinate', '--disallow-invalid-constructors', file], { stdio: 'pipe' });
+    // decaffeinate exits 0 even when it refuses a file (e.g. invalid
+    // constructors) - only trust it if the .js actually materialized
+    if (!fs.existsSync(file.replace(/\.coffee$/, '.js'))) {
+      throw new Error('decaffeinate produced no output (likely an unconvertible constructor)');
+    }
     fs.rmSync(file);
     converted.push(file);
     console.log(`converted ${file}`);
@@ -56,9 +61,11 @@ for (const file of files) {
 // rewrite requires of the converted files: match on the last two path
 // segments so same-named files in different directories don't collide
 if (converted.length > 0) {
-  const suffixes = converted.map((f) => {
+  // two forms per converted file: "<dir>/<name>.coffee" and same-directory
+  // "./<name>.coffee"
+  const suffixes = converted.flatMap((f) => {
     const segs = f.split('/');
-    return segs.slice(-2).join('/'); // e.g. "cards/cardType.coffee"
+    return [segs.slice(-2).join('/'), `./${segs[segs.length - 1]}`];
   });
   let rewrites = 0;
   for (const root of SEARCH_ROOTS) {

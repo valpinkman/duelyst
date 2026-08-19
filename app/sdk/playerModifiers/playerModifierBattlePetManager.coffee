@@ -1,7 +1,7 @@
 EVENTS = require 'app/common/event_types'
 PlayerModifier = require 'app/sdk/playerModifiers/playerModifier.coffee'
-ModifierBattlePet = require 'app/sdk/modifiers/modifierBattlePet.coffee'
-ModifierTranscendance = require 'app/sdk/modifiers/modifierTranscendance.coffee'
+ModifierBattlePet = require 'app/sdk/modifiers/modifierBattlePet'
+ModifierTranscendance = require 'app/sdk/modifiers/modifierTranscendance'
 StartTurnAction = require 'app/sdk/actions/startTurnAction.coffee'
 RefreshExhaustionAction =  require 'app/sdk/actions/refreshExhaustionAction'
 

@@ -158,7 +158,16 @@
         "prefer-const": "warn",
         "prefer-destructuring": "warn",
         "import/no-unresolved": "off",
-        "import/extensions": "off"
+        "import/extensions": "off",
+        "class-methods-use-this": "off",
+        "default-param-last": "warn",
+        "no-nested-ternary": "warn",
+        "no-undef": "warn",
+        "no-plusplus": "warn",
+        "no-bitwise": "warn",
+        "max-classes-per-file": "warn",
+        "default-case": "warn",
+        "import/order": "off"
       }
     },
     {
