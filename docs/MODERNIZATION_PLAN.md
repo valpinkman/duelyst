@@ -13,10 +13,14 @@ step it describes, so it can never drift from the code.
   conversion complete: the entire runtime (app/, server/, worker/) is CoffeeScript-free**, and
   `coffeescript/register` is gone from `bin/*`. Coffee remains only in `cli/` + `scripts/`
   (dead-ops, deletion candidates), the test preludes, and the gulp pipeline.
-- **In progress:** exercising the never-in-CI `test/integration/data_access` suites in-container
-  against compose Postgres/Redis to validate the converted data layer (7.2 spike).
-- **Next steps:** 7.2 (integration revival), 7.4 (desktop into workspace), 7.1 (mocha retirement)
-  — 4.5 + the Firebase keep/replace decision need the owner.
+- **Autonomous frontier reached.** Everything not needing owner input is done. Blocked on the
+  owner: (a) 4.5 gulp deletion — needs a played practice game, which needs a real Firebase
+  RTDB (legacy token + service account are console-manual; the Firebase MCP can create a
+  project but not those credentials); (b) full 7.2 integration revival — same Firebase need;
+  (c) the Firebase keep/replace decision; (d) desktop packaging QA (Electron 2 unpin);
+  (e) 7.1 mocha retirement + the `.js → .ts` rename pass — both sensibly follow gulp deletion.
+- 7.3 (dependency upgrades) is available as further autonomous work if desired, but the plan
+  gates it on the TS conversion of the consuming code.
 - **Known dirty state:** none.
 
 ## Rules
@@ -275,7 +279,13 @@ mocha + vitest + both builds + wire-format tests.
 ### Phase 7 — Test & dependency endgame
 
 - [ ] 7.1 Full mocha removal; vitest only; drop `app-module-path`/register preludes from all test files.
-- [ ] 7.2 Integration tests: revive against dockerized Postgres/Redis (+ Firebase decision below); get more than `misc` running in CI.
+- [~] 7.2 Spike done (in-container against compose Postgres/Redis, post-conversion): the
+  `data_access` suites all LOAD and RUN — no module errors from the conversion. Two
+  environment gates found: (1) test setup expects a seeded referral code — fix with
+  `INSERT INTO referral_codes (code, is_active) VALUES ('kumite14', true)` after migrate
+  (should become a migration/seed script when reviving for CI); (2) `createNewUser` connects
+  to Firebase Admin — needs REAL credentials, so full revival is blocked on the Firebase
+  decision below (owner). CI stays on `misc` until then.
 - [ ] 7.3 Legacy dependency upgrades (bluebird→native promises, moment, underscore, kue, winston, express-jwt/jsonwebtoken, knex) — each its own step, after TS conversion of the code that uses them.
 - [x] 7.4 (workspace half) `desktop/` is a pnpm workspace member: own `yarn.lock` removed,
   `electron` allowlisted in `pnpm.onlyBuiltDependencies` (binary installs, v21.4.4), the
