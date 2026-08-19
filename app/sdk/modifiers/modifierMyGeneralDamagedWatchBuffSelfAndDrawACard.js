@@ -5,7 +5,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const DamageAction = require('app/sdk/actions/damageAction');
-const Modifier = require('./modifier.coffee');
+const Modifier = require('./modifier');
 const ModifierMyGeneralDamagedWatch = require('./modifierMyGeneralDamagedWatch');
 
 class ModifierMyGeneralDamagedWatchBuffSelfAndDrawACard extends ModifierMyGeneralDamagedWatch {

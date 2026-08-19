@@ -7,7 +7,7 @@
  */
 const CardType = require('app/sdk/cards/cardType');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
-const Spell = require('./spell.coffee');
+const Spell = require('./spell');
 const ModifierPseudoRush = require('app/sdk/modifiers/modifierPseudoRush');
 const RemoveAction = require('app/sdk/actions/removeAction');
 const PlayCardAsTransformAction = require('app/sdk/actions/playCardAsTransformAction');

@@ -210,8 +210,22 @@ mocha + vitest + both builds + wire-format tests.
   `@type ?= @constructor.type` after super (the leaf's static — identical own-property
   result, verified by the wire-format guard tests). 6 files had other pre-super bodies whose
   statements the super chain never reads — moved after super mechanically. — (this commit)
-- [ ] 5.4 `entities/`, `cards/card.coffee`, factories (watch `@type` vs `type:` and prototype defaults — see audit §3.1 risks).
-- [ ] 5.5 `gameSession.coffee` last; then `application.coffee` / boot files.
+- [x] 5.4 Entities, card, deck, all 62 card factories + cardFactory, factionFactory,
+  board/player/step/gameTurn/gameSetup, modifier/modifierFactory/spell/playerModifier bases,
+  remaining lookups. Waves ran children-first; text-parser patches accompanied the factory
+  conversions (JS `/* */` block comments in the card-factory line parser; factionFactory
+  extensionless read + comma-tolerant regex) — the packages manifest guard caught the one
+  regression attempt (`card_inspect_undefined` from a commented-out card). — (this commit)
+- [x] 5.5 (SDK part) `gameSession.coffee` converted (its `super(@)` — passing `this` as a super
+  argument — rewritten to `super(null)` + self-assign, since SDKObject only stores the ref);
+  `object.coffee` (SDKObject) converted last after every subclass. **`app/sdk` is now 100%
+  JavaScript (0 `.coffee`).** Client boot files (`application.coffee`, `index.coffee`,
+  `register.coffee`, `networkManager.coffee`, remaining `app/common` coffee) → 5.5b.
+  *Accepted:* mocha+vitest 1300 (wire-format guards green), both builds, packages manifest
+  verified, in-container 1300, browser boot to login screen (0 errors). — (this commit)
+- [ ] 5.5b Client boot files: `application.coffee`, `index.coffee`, `register.coffee`,
+  `networkManager.coffee`, `app/common/*.coffee` (~10), `app/data.coffee`,
+  `app/localization/index.coffee`, shader generator, replay.
   *Accept per batch:* baseline green + golden-file serialization tests green.
 
 ### Phase 6 — Server: build step + TS

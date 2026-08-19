@@ -26,7 +26,7 @@
   const coffeScript = require('coffeescript/register');
   const Cards = require('app/sdk/cards/cardsLookupComplete');
   const FactionsLookup = require('app/sdk/cards/factionsLookup');
-  const FactionFactory = require('app/sdk/cards/factionFactory.coffee');
+  const FactionFactory = require('app/sdk/cards/factionFactory');
   const CodexChapters = require('app/sdk/codex/codexChapterLookup');
   const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup');
   const CONFIG = require('app/common/config');
@@ -506,20 +506,31 @@
     // remove plain comments and soft returns
     line = helpers.stripComments(line).replace('\r', '\n');
 
-    // ignore lines between complex comments
+    // ignore lines between complex comments (coffee ### ... ### and JS /* ... */)
     // will fail if line contains actual code before/after comment
-    const indexOfComment = line.indexOf('###');
     if (cardFactoryLineInsideComment) {
       if (nextLine) {
         nextLine = false;
       }
-      if (indexOfComment != -1) {
+      const coffeeClose = line.indexOf('###');
+      const jsClose = line.indexOf('*/');
+      if (coffeeClose != -1) {
         cardFactoryLineInsideComment = false;
-        line = line.slice(indexOfComment + 3);
+        line = line.slice(coffeeClose + 3);
+      } else if (jsClose != -1) {
+        cardFactoryLineInsideComment = false;
+        line = line.slice(jsClose + 2);
       }
-    } else if (indexOfComment != -1) {
-      cardFactoryLineInsideComment = true;
-      nextLine = true;
+    } else {
+      const coffeeOpen = line.indexOf('###');
+      const jsOpen = line.indexOf('/*');
+      if (coffeeOpen != -1) {
+        cardFactoryLineInsideComment = true;
+        nextLine = true;
+      } else if (jsOpen != -1 && line.indexOf('*/', jsOpen) == -1) {
+        cardFactoryLineInsideComment = true;
+        nextLine = true;
+      }
     }
 
     // check if this is a valid line
@@ -846,7 +857,7 @@
     const factionBlocks = content.split(/fmap\[[\s\t]*?Factions\.\w+\][\s\t]*?=/);
     for (let i = 1, il = factionBlocks.length; i < il; i++) {
       const factionBlock = factionBlocks[i];
-      const factionAlias = factionBlock.match(/id:[\s\t]*?Factions\.(\w+)[\r\n]/)[1];
+      const factionAlias = factionBlock.match(/id:[\s\t]*?Factions\.(\w+)/)[1];
       const factionId = FactionsLookup[factionAlias];
       if (factionId != null) {
         let factionResourcesForGamePkg = [];
@@ -1239,7 +1250,7 @@
     console.log(' [GP] Resources packed for STANDARD files!');
     console.log(' [GP] Packaging resources for SPECIAL files...');
     return Promise.all([
-      helpers.readFile(`${dir}/../app/sdk/cards/factionFactory.coffee`, parseFactionFactory),
+      helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/cards/factionFactory.js`) ? `${dir}/../app/sdk/cards/factionFactory.js` : `${dir}/../app/sdk/cards/factionFactory`, parseFactionFactory),
       helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/codex/codex.js`) ? `${dir}/../app/sdk/codex/codex.js` : `${dir}/../app/sdk/codex/codex`, parseCodex),
       helpers.readFile(`${dir}/../app/view/layers/game/BattleMap.js`, parseBattleMap),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/modifiers`, parseModifier, /modifierFactory|modifierContextObject/i),

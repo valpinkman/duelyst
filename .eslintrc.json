@@ -172,7 +172,8 @@
         "no-useless-constructor": "warn",
         "no-empty-function": "warn",
         "no-empty": "warn",
-        "no-prototype-builtins": "warn"
+        "no-prototype-builtins": "warn",
+        "no-lonely-if": "warn"
       }
     },
     {

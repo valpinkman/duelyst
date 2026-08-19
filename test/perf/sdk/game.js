@@ -6,7 +6,7 @@ const Promise = require('bluebird');
 const Benchmark = require('benchmark');
 
 const Logger = require('../../../app/common/logger.coffee');
-const SDK = require('../../../app/sdk/index.coffee');
+const SDK = require('../../../app/sdk/index');
 const UtilsSDK = require('../../utils/utils_sdk');
 
 module.exports = new Promise((resolve, reject) => {

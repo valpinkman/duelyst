@@ -15,7 +15,7 @@ const positionProximityToGenerals = require('../../../../server/ai/scoring/posit
 const positionShadowTileAvoidance = require('../../../../server/ai/scoring/position/position_shadowTileAvoidance');
 const positionZeal = require('../../../../server/ai/scoring/position/position_zeal');
 const UtilsSDK = require('../../../utils/utils_sdk');
-const SDK = require('../../../../app/sdk/index.coffee');
+const SDK = require('../../../../app/sdk/index');
 const Logger = require('../../../../app/common/logger.coffee');
 const CONFIG = require('../../../../app/common/config');
 

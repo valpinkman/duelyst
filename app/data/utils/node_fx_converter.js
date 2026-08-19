@@ -96,7 +96,7 @@ for (let i = 1, il = numCFCParts; i < il; i++) {
 }
 
 // save final cardFactory.coffee
-writeFile('../sdk/cards/cardFactory.coffee', newCFC);
+writeFile('../sdk/cards/cardFactory', newCFC);
 
 function parseCFCPart(part) {
   const idEndIndex = part.indexOf(')');

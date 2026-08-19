@@ -6,7 +6,7 @@ Logger = require 'app/common/logger'
 CONFIG = require 'app/common/config'
 Storage = require 'app/common/storage'
 GameSession = require 'app/sdk/gameSession'
-GameType = require 'app/sdk/gameType.coffee'
+GameType = require 'app/sdk/gameType'
 
 class NetworkManager
   instance = null

@@ -9,7 +9,7 @@ const fbUtil = require('../../app/common/utils/utils_firebase');
 const config = require('../../config/config');
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module.coffee');
 const UsersModule = require('../../server/lib/data_access/users.coffee');
-const SDK = require('../../app/sdk/index.coffee');
+const SDK = require('../../app/sdk/index');
 
 // configure where to run the tests against
 const api = require('../../server/express.coffee');

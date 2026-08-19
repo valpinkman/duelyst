@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const prettyjson = require('prettyjson');
 
-const SDK = require('../app/sdk/index.coffee');
+const SDK = require('../app/sdk/index');
 
 const rewardsData = [
   { spirit_gained: 23, shards_gained: [1, 2], bonuses_gained: [{ spirit: 2, gold: 10, shards: [1, 2] }] },

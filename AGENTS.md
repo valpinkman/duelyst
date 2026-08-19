@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — app/sdk is 100% JavaScript (1,375 files converted across 5.1–5.5); wire-format
+  and packages-manifest guards green throughout; browser boot verified.
 - 2026-08-19 — CRITICAL catch: 5.2c had silently dropped 325 asset packages (text-parsers
   assumed coffee syntax). Fixed; packages-manifest.json now locks the key set in build:client.
 - 2026-08-19 — actions layer decaffeinated (65 files, 5.3); dual-type idiom translated via

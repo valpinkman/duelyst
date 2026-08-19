@@ -6,7 +6,7 @@ const _ = require('underscore');
 const UtilsSDK = require('../../../utils/utils_sdk');
 const StarterAI = require('../../../../server/ai/starter_ai');
 const ScoreForUnit = require('../../../../server/ai/scoring/base/unit');
-const SDK = require('../../../../app/sdk/index.coffee');
+const SDK = require('../../../../app/sdk/index');
 const Logger = require('../../../../app/common/logger.coffee');
 const CONFIG = require('../../../../app/common/config');
 

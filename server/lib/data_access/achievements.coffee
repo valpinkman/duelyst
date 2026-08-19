@@ -19,10 +19,10 @@ generatePushId = require '../../../app/common/generate_push_id'
 
 # SDK imports
 SDK = require '../../../app/sdk'
-CardFactory = require '../../../app/sdk/cards/cardFactory.coffee'
+CardFactory = require '../../../app/sdk/cards/cardFactory'
 Rarity = require '../../../app/sdk/cards/rarityLookup'
 Faction = require '../../../app/sdk/cards/factionsLookup'
-GameSession = require '../../../app/sdk/gameSession.coffee'
+GameSession = require '../../../app/sdk/gameSession'
 UtilsGameSession = require '../../../app/common/utils/utils_game_session.coffee'
 QuestFactory = require '../../../app/sdk/quests/questFactory'
 QuestType = require '../../../app/sdk/quests/questTypeLookup'

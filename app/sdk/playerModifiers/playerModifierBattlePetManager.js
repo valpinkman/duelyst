@@ -8,7 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const EVENTS = require('app/common/event_types');
-const PlayerModifier = require('app/sdk/playerModifiers/playerModifier.coffee');
+const PlayerModifier = require('app/sdk/playerModifiers/playerModifier');
 const ModifierBattlePet = require('app/sdk/modifiers/modifierBattlePet');
 const ModifierTranscendance = require('app/sdk/modifiers/modifierTranscendance');
 const StartTurnAction = require('app/sdk/actions/startTurnAction');
