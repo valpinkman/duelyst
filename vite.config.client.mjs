@@ -79,8 +79,20 @@ function hbsPlugin() {
     transform(code, id) {
       if (!id.endsWith('.hbs')) return null;
       const precompiled = Handlebars.precompile(code);
+      // Handlebars 4.6 stopped resolving properties that live on an object's
+      // PROTOTYPE (the prototype-pollution fix). This codebase keeps view data
+      // on prototypes all over the place - it is the same pattern the SDK's
+      // wire format depends on - so templates render blanks without this.
+      // Upstream's answer was to pin handlebars at 4.5.3 and ignore the CVE;
+      // restoring the behaviour explicitly lets us take the fixed version.
+      // Tightening this means passing plain objects to templates instead.
       return {
-        code: `var HandlebarsRuntime = require('hbsfy/runtime');\nmodule.exports = HandlebarsRuntime.template(${precompiled});\n`,
+        code: `var HandlebarsRuntime = require('hbsfy/runtime');
+var __tpl = HandlebarsRuntime.template(${precompiled});
+module.exports = function (context, options) {
+  return __tpl(context, Object.assign({ allowProtoPropertiesByDefault: true, allowProtoMethodsByDefault: true }, options));
+};
+`,
         map: null,
       };
     },
