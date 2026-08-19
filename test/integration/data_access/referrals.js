@@ -29,7 +29,7 @@ describe('referrals module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -56,7 +56,7 @@ describe('referrals module', () => {
     let oldUserWithEventsId = null;
     let userWithRankedGame = null;
 
-    before(() => {
+    beforeAll(() => {
       const rando1 = generatePushId();
       const email1 = `${rando1}-unit-test@duelyst.local`;
       const username1 = `${rando1.toLowerCase()}-unit-test`;
@@ -264,7 +264,7 @@ describe('referrals module', () => {
     describe('claimReferralRewards()', () => {
       let noReferralUserId = null;
 
-      before(() => {
+      beforeAll(() => {
         const rando = generatePushId();
         const email = `${rando}-unit-test@duelyst.local`;
         const username = `${rando.toLowerCase()}-unit-test`;

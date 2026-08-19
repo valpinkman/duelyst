@@ -28,7 +28,7 @@ describe('inventory module', () => {
   const unlockableCardSets = [SDK.CardSet.Bloodborn, SDK.CardSet.Unity];
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -964,14 +964,14 @@ describe('inventory module', () => {
   });
 
   describe('craftCard()', () => {
-    before(() => SyncModule.wipeUserData(userId));
+    beforeAll(() => SyncModule.wipeUserData(userId));
 
     // save current state of allCardsAvailable as the next few tests will change it
     const allCardsAvailableBefore = config.get('allCardsAvailable');
 
     describe('when ALL_CARDS_AVAILABLE is FALSE', () => {
       // before cleanup to check if user already exists and delete
-      before(() => {
+      beforeAll(() => {
         process.env.ALL_CARDS_AVAILABLE = false;
         config.set('allCardsAvailable', false);
         InventoryModule._allCollectibleCards = null;
@@ -1194,7 +1194,7 @@ describe('inventory module', () => {
 
     describe('when ALL_CARDS_AVAILABLE is TRUE', () => {
       // before cleanup to check if user already exists and delete
-      before(() => {
+      beforeAll(() => {
         process.env.ALL_CARDS_AVAILABLE = true;
         config.set('allCardsAvailable', true);
         InventoryModule._allCollectibleCards = null;
@@ -1209,7 +1209,7 @@ describe('inventory module', () => {
       });
 
       // before cleanup to check if user already exists and delete
-      after(() => {
+      afterAll(() => {
         process.env.ALL_CARDS_AVAILABLE = allCardsAvailableBefore;
         config.set('allCardsAvailable', allCardsAvailableBefore);
         InventoryModule._allCollectibleCards = null;
@@ -1231,7 +1231,7 @@ describe('inventory module', () => {
 
   describe('disenchantCard()', () => {
     // before cleanup to check if user already exists and delete
-    before(() => DuelystFirebase.connect().getRootRef()
+    beforeAll(() => DuelystFirebase.connect().getRootRef()
       .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
@@ -1669,7 +1669,7 @@ describe('inventory module', () => {
 
   describe('giveUserCards()', () => {
     // before cleanup to check if user already exists and delete
-    before(() => DuelystFirebase.connect().getRootRef()
+    beforeAll(() => DuelystFirebase.connect().getRootRef()
       .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
@@ -1742,7 +1742,7 @@ describe('inventory module', () => {
   });
 
   describe('giveUserCodexChapter()', () => {
-    before(() => DuelystFirebase.connect().getRootRef()
+    beforeAll(() => DuelystFirebase.connect().getRootRef()
       .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
@@ -1803,7 +1803,7 @@ describe('inventory module', () => {
   });
 
   describe('giveUserMissingCodexChapters()', () => {
-    before(() => DuelystFirebase.connect().getRootRef()
+    beforeAll(() => DuelystFirebase.connect().getRootRef()
       .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
@@ -1854,7 +1854,7 @@ describe('inventory module', () => {
 
   describe('markCardAsReadInUserCollection()', () => {
     // before cleanup to check if user already exists and delete
-    before(() => DuelystFirebase.connect().getRootRef()
+    beforeAll(() => DuelystFirebase.connect().getRootRef()
       .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
@@ -1934,7 +1934,7 @@ describe('inventory module', () => {
   });
 
   describe('debitSpiritFromUser()', () => {
-    before(() => {
+    beforeAll(() => {
       // Give user an initial amount of spirit to test with
       const txPromise = knex.transaction((tx) => {
         InventoryModule.giveUserSpirit(txPromise, tx, userId, 11)
@@ -2005,7 +2005,7 @@ describe('inventory module', () => {
   });
 
   describe('softWipeUserCardInventory()', () => {
-    before(() => {
+    beforeAll(() => {
       InventoryModule.SOFTWIPE_AVAILABLE_UNTIL = moment().utc().add(4, 'days');
     });
 
@@ -2020,7 +2020,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has not opened any orbs and has no cards', () => {
-      before(() => SyncModule.wipeUserData(userId));
+      beforeAll(() => SyncModule.wipeUserData(userId));
 
       it('should not make any changes to the account and throw a BadRequestError', () => InventoryModule.softWipeUserCardInventory(userId)
         .then((r) => {
@@ -2032,7 +2032,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has only opened spirit orbs and has no other cards', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 200 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core)).then((boosterIds) => {
           const all = [];
           _.each(boosterIds, (boosterId) => {
@@ -2097,7 +2097,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has not opened any orbs and has some BASIC cards', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 200 })).then(() => knex.transaction((tx) => InventoryModule.giveUserCards(null, tx, userId, [11, 11, 11], 'faction xp'))));
 
       it('should not make any changes to the account and throw a BadRequestError', () => InventoryModule.softWipeUserCardInventory(userId)
@@ -2139,7 +2139,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 3, SDK.CardSet.Core)).then((boosterIds) => {
           const all = [];
           _.each(boosterIds, (boosterId) => {
@@ -2204,7 +2204,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted some orb cards', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 3, SDK.CardSet.Core)).then((boosterIds) => {
           const all = [];
           _.each(boosterIds, (boosterId) => {
@@ -2275,7 +2275,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted their ACHIEVEMENT cards', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core)).then((boosterIds) => {
           const all = [];
           _.each(boosterIds, (boosterId) => {
@@ -2346,7 +2346,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted their entire collection', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .bind({})
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
         .then((boosterIds) => {
@@ -2427,7 +2427,7 @@ describe('inventory module', () => {
     });
 
     describe('if a user has opened some orbs and has some BASIC cards and ACHIEVEMENT cards and disenchanted all non-basic cards and crafted other cards', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .bind({})
         .then(() => knex('users').where('id', userId).update({ wallet_gold: 300 })).then(() => InventoryModule.buyBoosterPacksWithGold(userId, 2, SDK.CardSet.Core))
         .then((boosterIds) => {
@@ -2848,7 +2848,7 @@ describe('inventory module', () => {
   });
 
   describe('Test cached card methods', () => {
-    after(() => {
+    afterAll(() => {
       // after we're all done make sure to rebuild cache one more time
       const cards = SDK.GameSession.getCardCaches().getCards();
     });
@@ -3294,7 +3294,7 @@ describe('inventory module', () => {
   });
 
   describe('claimFreeCardOfTheDay', () => {
-    before(() => SyncModule.wipeUserData(userId));
+    beforeAll(() => SyncModule.wipeUserData(userId));
 
     it('expect to be able to claim a free card of the day', () => InventoryModule.claimFreeCardOfTheDay(userId)
       .bind({})

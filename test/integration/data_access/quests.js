@@ -31,7 +31,7 @@ describe('quests module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -109,7 +109,7 @@ describe('quests module', () => {
         level: 9,
       };
 
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => UsersModule.setNewPlayerFeatureProgression(userId, NewPlayerProgressionModuleLookup.Core, NewPlayerProgressionStageEnum.FirstGameDone.key)).then(() => QuestsModule.generateBeginnerQuests(userId)));
 
       it('expect to progress/complete faction quest with leveling up a faction', () => knex.transaction((tx) => QuestsModule.updateQuestProgressWithProgressedFactionData(Promise.resolve(), tx, userId, fakeFactionData)).then((result) => {
@@ -127,7 +127,7 @@ describe('quests module', () => {
   });
 
   describe('After FTUE', () => {
-    before(() => {
+    beforeAll(() => {
       QuestsModule.SEASONAL_QUESTS_ACTIVE = false;
 
       return SyncModule.wipeUserData(userId)
@@ -151,10 +151,10 @@ describe('quests module', () => {
       let updatedAt = null;
       let generatedAt = null;
 
-      before(() => {
+      beforeAll(() => {
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to save and return quest data', () => QuestsModule.generateDailyQuests(userId)
@@ -280,10 +280,10 @@ describe('quests module', () => {
     describe('mulliganDailyQuest()', () => {
       let mulliganedAt = null;
 
-      before(() => {
+      beforeAll(() => {
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to be able to mulligan quest at index [0]', () => QuestsModule.mulliganDailyQuest(userId, 0)
@@ -403,7 +403,7 @@ describe('quests module', () => {
     describe('updateQuestProgressWithGame()', () => {
       let fakeGameSessionData;
 
-      before(() => {
+      beforeAll(() => {
         const systemTime = moment().add(50, 'hours');
 
         fakeGameSessionData = {};
@@ -424,7 +424,7 @@ describe('quests module', () => {
         ]);
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to progress a Lyonar Participation Quest (101) with a game', () => {
@@ -529,7 +529,7 @@ describe('quests module', () => {
     describe('updateQuestProgressWithGame() - rift', () => {
       let fakeGameSessionData;
 
-      before(() => {
+      beforeAll(() => {
         const systemTime = moment().add(100, 'hours');
 
         fakeGameSessionData = {};
@@ -551,7 +551,7 @@ describe('quests module', () => {
           ]));
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to progress a Lyonar Win Quest (101) with a rift game', () => {
@@ -632,7 +632,7 @@ describe('quests module', () => {
     describe('updateQuestProgressWithGame() - receive spirit orb', () => {
       let fakeGameSessionData;
 
-      before(() => {
+      beforeAll(() => {
         const systemTime = moment().utc();
 
         fakeGameSessionData = {};
@@ -651,7 +651,7 @@ describe('quests module', () => {
           .then(() => QuestsModule.generateBeginnerQuests(userId));
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to recieve a spirit orb for completing win 1 practice game quest', () => {
@@ -689,13 +689,13 @@ describe('quests module', () => {
       let fakeGameSessionData;
       let catchUpChargesGiven = 0;
 
-      before(() => {
+      beforeAll(() => {
         const systemTime = moment().utc();
 
         return knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT);
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to create a quest when giving a user first catch up charge', () => {
@@ -799,7 +799,7 @@ describe('quests module', () => {
     describe('generateDailyQuests() - catch up quest', () => {
       let fakeGameSessionData;
 
-      before(() => {
+      beforeAll(() => {
         const systemTime = moment().utc();
 
         return Promise.all([
@@ -810,7 +810,7 @@ describe('quests module', () => {
         ]);
       });
 
-      after(() => {
+      afterAll(() => {
       });
 
       it('expect to not generate a catch up quest when user has completed all of their quests and can generate quests 1 day later', () => {
@@ -1055,7 +1055,7 @@ describe('quests module', () => {
   });
 
   describe('After FTUE - with one beginner quest', () => {
-    before(() => {
+    beforeAll(() => {
       QuestsModule.SEASONAL_QUESTS_ACTIVE = false;
 
       return SyncModule.wipeUserData(userId)
@@ -1141,7 +1141,7 @@ describe('quests module', () => {
   });
 
   describe('Seasonal Quests', () => {
-    before(() => {
+    beforeAll(() => {
       QuestsModule.SEASONAL_QUESTS_ACTIVE = true;
       return SyncModule.wipeUserData(userId)
         .then(() => knex('user_new_player_progression').insert({
@@ -1231,7 +1231,7 @@ describe('quests module', () => {
       });
 
       describe('mulliganDailyQuest() - Frostfire 2016 Quest', () => {
-        before(() => {
+        beforeAll(() => {
           QuestsModule.SEASONAL_QUESTS_ACTIVE = true;
           return SyncModule.wipeUserData(userId)
             .then(() => knex('user_new_player_progression').insert({
@@ -1254,7 +1254,7 @@ describe('quests module', () => {
       describe('updateQuestProgressWithGame() - Frostfire 2016 Quest', () => {
         let fakeGameSessionData;
 
-        before(() => {
+        beforeAll(() => {
           const systemTime = moment().add(50, 'hours');
           //
           fakeGameSessionData = {};
@@ -1396,7 +1396,7 @@ describe('quests module', () => {
       //
       // })
       describe('updateQuestProgressWithCompletedQuest() - Frostfire 2016 Quest', () => {
-        before(() => {
+        beforeAll(() => {
           const systemTime = moment().add(50, 'hours');
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
@@ -1442,7 +1442,7 @@ describe('quests module', () => {
     describe('February 2017 Quest', () => {
       const FebQuestId = 30002;
 
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => knex('user_new_player_progression').insert({
           user_id: userId,
           module_name: NewPlayerProgressionModuleLookup.Core,
@@ -1508,7 +1508,7 @@ describe('quests module', () => {
       });
 
       describe('updateQuestProgressWithCompletedQuest() - February 2017 Quest', () => {
-        before(() => {
+        beforeAll(() => {
           const systemTime = moment().add(50, 'hours');
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
@@ -1554,7 +1554,7 @@ describe('quests module', () => {
     //
 
     describe('updateQuestProgressWithCompletedQuest() - Frostfire 2016 Quest', () => {
-      before(() => {
+      beforeAll(() => {
         const systemTime = moment().add(50, 'hours');
         // set up user quests as Lyonar and Songhai participation quests
         return SyncModule.wipeUserData(userId)
@@ -1600,7 +1600,7 @@ describe('quests module', () => {
   describe('Promo Quest', () => {
     const annQuestId = 40001;
 
-    before(() => SyncModule.wipeUserData(userId)
+    beforeAll(() => SyncModule.wipeUserData(userId)
       .then(() => knex('user_new_player_progression').insert({
         user_id: userId,
         module_name: NewPlayerProgressionModuleLookup.Core,

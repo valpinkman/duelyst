@@ -29,7 +29,7 @@ describe('challenges module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -54,7 +54,7 @@ describe('challenges module', () => {
     let challengeType = null;
     const attemptedAt = null;
 
-    before(() => {
+    beforeAll(() => {
       // Create a test challenge
       challengeType = 'UnitTestChallenge';
 
@@ -84,7 +84,7 @@ describe('challenges module', () => {
     let challengeType = null;
     let completedAt = null;
 
-    before(() => {
+    beforeAll(() => {
       // Create a test challenge
       challengeType = 'UnitTestChallenge';
 
@@ -181,7 +181,7 @@ describe('challenges module', () => {
       }));
 
     describe('beginner challenge quests', () => {
-      before(() => SyncModule.wipeUserData(userId)
+      beforeAll(() => SyncModule.wipeUserData(userId)
         .then(() => UsersModule.setNewPlayerFeatureProgression(userId, SDK.NewPlayerProgressionModuleLookup.Core, SDK.NewPlayerProgressionStageEnum.FirstGameDone.key)).then(() => QuestsModule.generateBeginnerQuests(userId)));
 
       it('expect beginner challenge quests to progress with challenge completion', () => {
@@ -232,7 +232,7 @@ describe('challenges module', () => {
     const challengeId = 'unit-test-daily-challenge';
     const challengeDate = moment.utc('2016-05-01');
 
-    before(() =>
+    beforeAll(() =>
       // clear any existing data
       DuelystFirebase.connect().getRootRef()
         .then((rootRef) => FirebasePromises.set(rootRef.child('daily-challenges').child(challengeDate.format('YYYY-MM-DD')), {

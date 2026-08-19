@@ -28,7 +28,7 @@ describe('gift codes module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -358,7 +358,7 @@ describe('gift codes module', () => {
     });
 
     describe('codes with one-use per customer limit', () => {
-      before(() => knex('gift_codes').where('exclusion_id', 'unit-test-1').andWhere('claimed_by_user_id', userId).delete());
+      beforeAll(() => knex('gift_codes').where('exclusion_id', 'unit-test-1').andWhere('claimed_by_user_id', userId).delete());
 
       it('allows one use of a one-per-customer code by a user', () => {
         const code = `unit-test-${generatePushId()}`;

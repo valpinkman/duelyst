@@ -62,7 +62,7 @@ describe('gauntlet module', () => {
   };
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -134,14 +134,14 @@ describe('gauntlet module', () => {
     const otherUserTicketId = 'invalid-ticket-for-other-user';
 
     // before cleanup to check if user already exists and delete
-    before(() => knex('user_gauntlet_tickets').where('id', otherUserTicketId).delete()
+    beforeAll(() => knex('user_gauntlet_tickets').where('id', otherUserTicketId).delete()
       .then(() => knex('user_gauntlet_tickets').insert({
         id: otherUserTicketId,
         user_id: 'some-other-user',
       })));
 
     // before cleanup to check if user already exists and delete
-    after(() => knex('user_gauntlet_tickets').where('id', otherUserTicketId).delete());
+    afterAll(() => knex('user_gauntlet_tickets').where('id', otherUserTicketId).delete());
 
     it('expect to NOT be able to start a run with an invalid ticket', () => GauntletModule.startRun(userId, 'doesnt-exist')
       .then((result) => {
@@ -552,7 +552,7 @@ describe('gauntlet module', () => {
     let lastResignedAt = null;
 
     // before cleanup
-    before(() => knex('user_gauntlet_run').where({ user_id: userId }).delete());
+    beforeAll(() => knex('user_gauntlet_run').where({ user_id: userId }).delete());
 
     it('expect to ERROR out an attempt to resign with no run', () => GauntletModule.resignRun(userId)
       .then((data) => {
@@ -622,7 +622,7 @@ describe('gauntlet module', () => {
   describe('updateArenaRunWithGameOutcome()', () => {
     const tickets = [];
 
-    before(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
+    beforeAll(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
       .then(() => Promise.all([
         GauntletModule.buyArenaTicketWithGold(userId),
         GauntletModule.buyArenaTicketWithGold(userId),
@@ -638,7 +638,7 @@ describe('gauntlet module', () => {
         });
       }));
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('expect to FAIL to update arena run with a game if no arena run is active', () => GauntletModule.updateArenaRunWithGameOutcome(userId, 'game 1', true)
@@ -957,7 +957,7 @@ describe('gauntlet module', () => {
   describe('claimRewards()', () => {
     const tickets = [];
 
-    before(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
+    beforeAll(() => knex('users').where('id', userId).update({ wallet_gold: 2500 }).then((numUpdates) => knex('user_gauntlet_run').where({ user_id: userId }).delete())
       .then(() => Promise.all([
         GauntletModule.buyArenaTicketWithGold(userId),
         GauntletModule.buyArenaTicketWithGold(userId),
@@ -973,7 +973,7 @@ describe('gauntlet module', () => {
         });
       }));
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('expect inventory and wallet to update after claiming rewards', () => Promise.all([
@@ -1082,10 +1082,10 @@ describe('gauntlet module', () => {
   describe('generate card rarity output', () => {
     const tickets = [];
 
-    before(() => {
+    beforeAll(() => {
     });
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('iterate over card choice rarities', () => {

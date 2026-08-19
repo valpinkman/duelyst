@@ -29,7 +29,7 @@ describe('gift crates module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() =>
+  beforeAll(() =>
     // Logger.module("UNITTEST").log("creating user");
     UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -51,7 +51,7 @@ describe('gift crates module', () => {
   describe('unlockGiftCrate()', () => {
     const UNIT_TEST_CRATE = 'UNIT_TEST_CRATE';
 
-    before(() => {
+    beforeAll(() => {
       GiftCrateFactory._generateCache();
       GiftCrateFactory._giftCrateTemplateCache[UNIT_TEST_CRATE] = {
         availableAt: moment.utc(0).year(2015).month(11).date(20)

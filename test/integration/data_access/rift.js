@@ -32,7 +32,7 @@ describe('rift module', () => {
   const swapUpgradeTestCount = 0;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -131,14 +131,14 @@ describe('rift module', () => {
     const otherUserTicketId = 'invalid-ticket-for-other-user';
 
     // before cleanup to check if user already exists and delete
-    before(() => knex('user_rift_tickets').where('id', otherUserTicketId).delete()
+    beforeAll(() => knex('user_rift_tickets').where('id', otherUserTicketId).delete()
       .then(() => knex('user_rift_tickets').insert({
         id: otherUserTicketId,
         user_id: 'some-other-user',
       })));
 
     // before cleanup to check if user already exists and delete
-    after(() => knex('user_rift_tickets').where('id', otherUserTicketId).delete());
+    afterAll(() => knex('user_rift_tickets').where('id', otherUserTicketId).delete());
 
     it('expect to NOT be able to start a run with an invalid ticket', () => RiftModule.startRun(userId, 'doesnt-exist')
       .then((result) => {
@@ -210,7 +210,7 @@ describe('rift module', () => {
 
   describe('chooseGeneral()', () => {
     // before cleanup
-    before(() => knex('user_rift_runs').where({ user_id: userId }).delete());
+    beforeAll(() => knex('user_rift_runs').where({ user_id: userId }).delete());
 
     it('expect trying to choose a general with no run to ERROR out', () => RiftModule.chooseGeneral(userId, 'fake-ticket-id', 1)
       .then((riftData) => {
@@ -275,7 +275,7 @@ describe('rift module', () => {
   describe('getRiftRunDeck()', () => {
     let runTicketId = null;
 
-    before(() => SyncModule.wipeUserData(userId)
+    beforeAll(() => SyncModule.wipeUserData(userId)
       .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
@@ -303,7 +303,7 @@ describe('rift module', () => {
   describe('getRunMatchmakingMetric()', () => {
     let runTicketId = null;
 
-    before(() => SyncModule.wipeUserData(userId)
+    beforeAll(() => SyncModule.wipeUserData(userId)
       .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {
@@ -336,7 +336,7 @@ describe('rift module', () => {
   describe('updateRiftRunWithGameOutcome()', () => {
     let runTicketId = null;
 
-    before(() => SyncModule.wipeUserData(userId)
+    beforeAll(() => SyncModule.wipeUserData(userId)
       .bind({})
       .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE })).then(() => RiftModule.buyRiftTicketWithGold(userId))
       .then((ticketId) => {

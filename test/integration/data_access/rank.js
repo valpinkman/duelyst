@@ -74,7 +74,7 @@ describe('rank module', () => {
   };
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     SRankManager.unitTestMode = true;
 
     Logger.module('UNITTEST').log('creating user');
@@ -95,7 +95,7 @@ describe('rank module', () => {
   });
 
   // after cleanup
-  after(() => {
+  afterAll(() => {
     SRankManager.unitTestMode = false;
   });
 
@@ -305,7 +305,7 @@ describe('rank module', () => {
 
     let initialRank = null;
 
-    before(() => {
+    beforeAll(() => {
       initialRank = {
         rank: 19,
         stars: 0,
@@ -318,7 +318,7 @@ describe('rank module', () => {
       });
     });
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('expect to update rank data with an additional win', () => {
@@ -395,10 +395,10 @@ describe('rank module', () => {
 
     let initialRank = null;
 
-    before(() => {
+    beforeAll(() => {
     });
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('expect to not lose stars for a loss at rank 20', () => {
@@ -519,7 +519,7 @@ describe('rank module', () => {
       return knex('users').where('id', userId).update(rankData);
     };
 
-    before(() => Promise.all([
+    beforeAll(() => Promise.all([
       createOrWipeUser('unit-test-rating-1@duelyst.local', player1UserName, 20),
       createOrWipeUser('unit-test-rating-2@duelyst.local', player2UserName, 20),
       createOrWipeUser('unit-test-rating-3@duelyst.local', player3UserName, 0),
@@ -531,7 +531,7 @@ describe('rank module', () => {
       player4Id = player4CreatedId;
     }));
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('expect to have no rating data after two non silver players play a match', () => {
@@ -764,7 +764,7 @@ describe('rank module', () => {
     let startOfSeasonMoment = null;
 
     // Create or wipe 6 s-rank users then perform a series of matches
-    before(() => {
+    beforeAll(() => {
       const oldSeasonTime = moment().utc().year(1999).month(2); // Set to an old season so this can happen in isolation
       startOfSeasonMoment = moment(oldSeasonTime).utc().startOf('month');
       return Promise.all([
@@ -801,7 +801,7 @@ describe('rank module', () => {
       });
     });
 
-    after(() => {
+    afterAll(() => {
     });
 
     it('expect a series of s rank matches to result in an expected ladder state', () => {
@@ -835,7 +835,7 @@ describe('rank module', () => {
   describe('claimRewardsForSeasonRank()', () => {
     const daySoFar = moment().utc();
 
-    before(() => SyncModule.wipeUserData(userId).then(() => RankModule.cycleUserSeasonRanking(userId)));
+    beforeAll(() => SyncModule.wipeUserData(userId).then(() => RankModule.cycleUserSeasonRanking(userId)));
 
     it('expect to NOT be able to claim rewards if no rank achieved last season', () => {
       const lastSeasonMoment = moment(daySoFar).subtract(1, 'month');

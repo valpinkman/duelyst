@@ -28,7 +28,7 @@ describe('sync module', () => {
   const userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')

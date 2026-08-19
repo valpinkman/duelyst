@@ -31,7 +31,7 @@ describe('cosmetic chests module', () => {
   let fbRootRef = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
@@ -234,7 +234,7 @@ describe('cosmetic chests module', () => {
   });
 
   describe('openChest()', () => {
-    before(() => SyncModule.wipeUserData(userId));
+    beforeAll(() => SyncModule.wipeUserData(userId));
 
     it('expect to be able to open a chest with a key of the same type', () => {
       let keyId = null;
@@ -435,7 +435,7 @@ describe('cosmetic chests module', () => {
     const gameId = 'game-id';
     const game2Id = 'game-id-2';
 
-    before(() => SyncModule.wipeUserData(userId).then(() => knex('user_progression').insert({
+    beforeAll(() => SyncModule.wipeUserData(userId).then(() => knex('user_progression').insert({
       user_id: userId,
       win_count: 8,
       game_count: 5,
@@ -522,12 +522,12 @@ describe('cosmetic chests module', () => {
       ],
     };
 
-    before(() => SyncModule.wipeUserData(userId)
+    beforeAll(() => SyncModule.wipeUserData(userId)
       .then(() =>
       // Write event to firebase
         FirebasePromises.set(fbRootRef.child('boss-events').child(bossEventId), bossEventData)));
 
-    after(() => SyncModule.wipeUserData(userId)
+    afterAll(() => SyncModule.wipeUserData(userId)
       .then(() =>
       // Write event to firebase
         FirebasePromises.remove(fbRootRef.child('boss-events').child(bossEventId))));
@@ -965,7 +965,7 @@ describe('cosmetic chests module', () => {
       expect(actualPercentage).to.be.at.most(expectedPercentage * upperVariance);
     };
 
-    before('expect chest opening rewards to match current design', () => {
+    beforeAll('expect chest opening rewards to match current design', () => {
       const gameSession = SDK.GameSession.current();
       const processReward = function (rewardTypeObject, rewardObject) {
         for (const key in rewardObject) {

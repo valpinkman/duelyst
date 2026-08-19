@@ -27,7 +27,7 @@ describe("achievements module", function() {
   const userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(function(){
+  beforeAll(function(){
     Logger.module("UNITTEST").log("creating user");
     return UsersModule.createNewUser('unit-test@duelyst.local','unittest','hash','kumite14')
     .then(function(userIdCreated){

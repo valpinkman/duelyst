@@ -29,7 +29,7 @@ describe('users module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(() => {
+  beforeAll(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -74,7 +74,7 @@ describe('users module', () => {
   });
 
   describe('createNewUser()', () => {
-    before(() =>
+    beforeAll(() =>
       // destroy referral codes
       Promise.all([
         knex('referral_codes').where('code', 'test-referral-20-gold').delete(),
@@ -88,12 +88,12 @@ describe('users module', () => {
       //
       let invitesActiveBefore = null;
 
-      before(() => {
+      beforeAll(() => {
         invitesActiveBefore = config.get('inviteCodesActive');
         config.set('inviteCodesActive', true);
       });
 
-      after(() => { config.set('inviteCodesActive', invitesActiveBefore); });
+      afterAll(() => { config.set('inviteCodesActive', invitesActiveBefore); });
 
       it('expect NOT to be able to create a user with an invalid invite code if invite codes are ACTIVE', () => {
         const rando = generatePushId();
@@ -138,12 +138,12 @@ describe('users module', () => {
       //
       let invitesActiveBefore = null;
 
-      before(() => {
+      beforeAll(() => {
         invitesActiveBefore = config.get('inviteCodesActive');
         config.set('inviteCodesActive', false);
       });
 
-      after(() => { config.set('inviteCodesActive', invitesActiveBefore); });
+      afterAll(() => { config.set('inviteCodesActive', invitesActiveBefore); });
 
       it('expect to be able to create a user with an invalid invite code if invite codes are INACTIVE', () => {
         const rando = generatePushId();
@@ -466,7 +466,7 @@ describe('users module', () => {
     let registeredMoment;
     let daysSeenUserId;
 
-    before(() => {
+    beforeAll(() => {
       const rando = generatePushId();
       const email = `${rando}-unit-test@duelyst.local`;
       const username = `${rando.toLowerCase()}-unit-test`;
@@ -728,7 +728,7 @@ describe('users module', () => {
 
   describe('changePassword()', () => {
     // after cleanup
-    after(() => UsersModule.changePassword(userId, 'newpass', 'hash'));
+    afterAll(() => UsersModule.changePassword(userId, 'newpass', 'hash'));
 
     it('expect to FAIL changing password if you don\'t provide correct existing password', () => UsersModule.changePassword(userId, 'wrongpass', 'newpass')
       .then((response) => {
@@ -1579,7 +1579,7 @@ describe('users module', () => {
   });
 
   describe('updateUserProgressionWithGameOutcome() - codex reward', () => {
-    before(() => DuelystFirebase.connect().getRootRef()
+    beforeAll(() => DuelystFirebase.connect().getRootRef()
       .bind({})
       .then((fbRootRef) => Promise.all([
         FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId)),
@@ -2245,7 +2245,7 @@ describe('users module', () => {
   });
 
   describe('isAllowedToUseDeck()', () => {
-    before(() =>
+    beforeAll(() =>
       // clear any existing data
       DuelystFirebase.connect().getRootRef()
         .then((rootRef) => SyncModule.wipeUserData(userId)));
@@ -2746,7 +2746,7 @@ describe('users module', () => {
 
   // region ftue tests
   describe('setNewPlayerFeatureProgression()', () => {
-    before(() =>
+    beforeAll(() =>
       // clear any existing data
       DuelystFirebase.connect().getRootRef()
         .then((rootRef) => SyncModule.wipeUserData(userId)));
