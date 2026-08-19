@@ -7,20 +7,30 @@ step it describes, so it can never drift from the code.
 
 ## ▶ Resume here
 
-- **Branch:** `modernization` (stacked commits, one per step; not pushed anywhere yet)
-- **Current state:** Phases 0–3 complete; Phase 4 complete except 4.5 (gulp deletion, gated on
-  playing a practice game — needs real Firebase, owner/QA step); **Phase 5 complete and Phase 6
-  conversion complete: the entire runtime (app/, server/, worker/) is CoffeeScript-free**, and
-  `coffeescript/register` is gone from `bin/*`. Coffee remains only in `cli/` + `scripts/`
-  (dead-ops, deletion candidates), the test preludes, and the gulp pipeline.
-- **Autonomous frontier reached.** Everything not needing owner input is done. Blocked on the
-  owner: (a) 4.5 gulp deletion — needs a played practice game, which needs a real Firebase
-  RTDB (legacy token + service account are console-manual; the Firebase MCP can create a
-  project but not those credentials); (b) full 7.2 integration revival — same Firebase need;
-  (c) the Firebase keep/replace decision; (d) desktop packaging QA (Electron 2 unpin);
-  (e) 7.1 mocha retirement + the `.js → .ts` rename pass — both sensibly follow gulp deletion.
-- 7.3 (dependency upgrades) is available as further autonomous work if desired, but the plan
-  gates it on the TS conversion of the consuming code.
+- **Branch:** `modernization` (44 commits, one per step; not pushed anywhere)
+- **The four stack goals are done:**
+  1. **pnpm monorepo** — workspace over `packages/*`, `app/sdk`, `app/common`, `desktop`.
+  2. **TypeScript instead of CoffeeScript** — the *entire runtime* (client, SDK, server,
+     worker) is `.ts`. Remaining `.js`: `app/data/*` (data + generated), the 86 knex
+     migrations, `server/knexfile.js`, build scripts and `cli/`+`scripts/` legacy ops
+     (which still hold the last 57 `.coffee` files — deletion candidates).
+  3. **vitest** — mocha retired; unit + integration configs.
+  4. **Modern bundler** — gulp deleted; Vite/rolldown builds the client in ~2.4s (was ~35s).
+  Playwright is available and was used for verification, but there is still no committed e2e
+  suite (see Later).
+- **Verified working**, not just building: `pnpm build` from a clean tree, all four services
+  in Docker, and a **practice game played end-to-end against the TypeScript stack** with a real
+  Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
+  concede), 0 console errors.
+- **Next (all optional, in value order):**
+  - 5T.4 incremental typing: `pnpm typecheck` reports **5,503 errors** under the loose config
+    (a metric, not a gate). Start with the SDK; move directories into `tsconfig.strict.json`
+    as they go clean.
+  - 7.2 integration revival in CI (needs the referral-code seed + a CI Firebase project).
+  - 7.3 dependency upgrades (bluebird→native promises, moment, underscore, kue, winston…).
+  - Delete `cli/` + `scripts/` legacy ops (last CoffeeScript, ~57 files) after confirming
+    nothing operational depends on them.
+  - 5T.3: replace the tsx require-hook with a real build for production images.
 - **Known dirty state:** none.
 
 ## Rules
