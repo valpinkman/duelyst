@@ -1,8 +1,7 @@
 const {
-  app, ipcMain, Menu, BrowserWindow, globalShortcut, dialog,
+  app, ipcMain, Menu, BrowserWindow, globalShortcut, dialog, shell,
 } = require('electron');
 const path = require('path');
-const window = require('electron-window');
 const localShortcut = require('electron-localshortcut');
 const minimist = require('minimist');
 const osName = require('os-name')();
@@ -51,17 +50,18 @@ app.setAsDefaultProtocolClient('duelyst');
 
 let mainWindow = null;
 
-// make this a single instance app
-const isSecondInstance = app.makeSingleInstance((argv, workingDirectory) => {
-  // Someone tried to run a second instance, we should focus our window.
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
-  }
-});
-
-if (isSecondInstance) {
+// make this a single instance app (app.makeSingleInstance was removed in
+// Electron 4 in favour of the lock + 'second-instance' event)
+if (!app.requestSingleInstanceLock()) {
   app.quit();
+} else {
+  app.on('second-instance', () => {
+    // someone tried to run a second instance: focus the window we already have
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 }
 
 // Note: It's important that you don't do anything with Electron
@@ -102,28 +102,42 @@ app.on('ready', () => {
     resizable: true,
     webPreferences: {
       nodeIntegration: false,
+      // the preload assigns onto `window` directly and uses Node builtins,
+      // which needs the pre-Electron-12/20 behaviour
+      contextIsolation: false,
+      sandbox: false,
       backgroundThrottling: false,
-      preload: path.join(__dirname, 'renderer-preload'),
+      preload: path.join(__dirname, 'preload.cjs'),
     },
   };
 
-  mainWindow = window.createWindow(windowOptions);
+  // can access at window.__args__ from scripts ran from index.html
+  const argsForRenderer = {
+    data: argv,
+  };
+  // electron-window (unmaintained since 2017) used to create the window and
+  // inject these args; additionalArguments is the supported mechanism.
+  windowOptions.webPreferences.additionalArguments = [`--app-args=${JSON.stringify(argsForRenderer)}`];
+  windowOptions.show = false;
+
+  mainWindow = new BrowserWindow(windowOptions);
+  mainWindow.once('ready-to-show', () => mainWindow.show());
 
   // toggle to fullscreen after launch
   if (!argv.windowed) {
     mainWindow.setFullScreen(true);
   }
 
-  // can access at window.__args__ from scripts
-  // ran from index.html
-  const argsForRenderer = {
-    data: argv,
-  };
-
   // setupDiscord();
 
-  const indexPath = path.resolve(__dirname, 'dist/src', 'index.html');
-  mainWindow.showURL(indexPath, argsForRenderer);
+  // packaged: the client ships as an unpacked resource next to the app
+  // (see electron-builder.yml extraResources); unpackaged: it is the root
+  // build output two levels up from desktop/build/
+  const clientRoot = app.isPackaged
+    ? path.join(process.resourcesPath, 'client')
+    : path.resolve(__dirname, '..', '..', 'dist', 'src');
+  const indexPath = path.resolve(clientRoot, 'index.html');
+  mainWindow.loadFile(indexPath);
 });
 
 function setupWin32Shortcuts() {
@@ -230,7 +244,7 @@ function setupDarwinMenu() {
       submenu: [
         {
           label: 'Support',
-          click() { require('shell').openExternal('https://support.duelyst.com'); },
+          click() { shell.openExternal('https://support.duelyst.com'); },
         },
       ],
     },
@@ -295,6 +309,8 @@ const showInfoDialog = debounce((data) => {
   return dialog.showMessageBox(options, noop);
 }, 1000, { leading: true, trailing: false });
 
+ipcMain.on('quit-app', () => app.quit());
+
 ipcMain.on('create-window', (event, options) => {
   const windowOptions = {
     title: options.title || 'Paymentwall',
@@ -303,11 +319,11 @@ ipcMain.on('create-window', (event, options) => {
     fullscreen: false,
     resizable: false,
     show: true,
-    webpreferences: {
+    webPreferences: {
       nodeIntegration: false,
       webSecurity: true,
     },
   };
-  const win = window.createWindow(windowOptions);
-  win.showURL(options.url, {}, () => { });
+  const win = new BrowserWindow(windowOptions);
+  win.loadURL(options.url);
 });

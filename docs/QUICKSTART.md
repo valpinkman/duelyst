@@ -106,15 +106,16 @@ with the server code.
 
 ## Building Desktop Clients <a id="desktop" />
 
-After building the app, the desktop clients can be built separately.
-`desktop/` is a pnpm workspace member; `pnpm install` at the repo root
-installs its dependencies (including Electron).
+After building the app, the desktop client can be packaged separately.
+`desktop/` is a pnpm workspace member, so a root `pnpm install` sets it up.
 ```bash
 cd desktop
-# replace <platform> with 'mac', 'windows', 'linux', or 'all'
-pnpm build:<platform>
-pnpm start:<platform>
+pnpm start          # run the shell against the local build
+pnpm package:mac    # or package:mac:x64 / package:win / package:linux
 ```
+Output lands in `desktop/dist/build/`. The shell is Electron 43: main and
+preload are bundled by Vite, and the game client rides along as an unpacked
+resource, so the packaged app contains no `node_modules`.
 
 The compiled client will be in the `dist/src` directory.
 

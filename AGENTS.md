@@ -59,7 +59,7 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 | `vite.config.client.mjs`, `scripts/build/build-client.mjs` | client build: Vite/rolldown bundle (coffee/hbs/glslify plugins, envify defines) + vendor concat, sass, index.html, locales, resource copy | JS |
 | `scripts/generate_packages.js` | **build-critical**: scans `//pragma PKGS:` comments and RSX refs to emit `app/data/packages.js` | JS |
 | `packages/` | vendored forks: `chroma-js` (TS), `warlock`, `backfire`, `Backbone.VirtualCollection` | mixed |
-| `desktop/` | Electron shell wrapping `dist/src` | JS |
+| `desktop/` | Electron 43 shell: main+preload bundled by Vite, packaged with electron-builder, game client shipped as an unpacked resource | JS |
 | `docs/` | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (analysis), **`MODERNIZATION_PLAN.md`** (checklist / resume point) | |
 
 ## Conventions and gotchas that bite

@@ -31,3 +31,7 @@ dump.rdb
 /test-results/
 /playwright-report/
 /blob-report/
+
+# Electron shell build output
+/desktop/build/
+/desktop/dist/
