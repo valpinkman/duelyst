@@ -11,7 +11,7 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 2.4 — `app/common/chroma.js` requires `@counterplay/chromajs` by name.
+- **Next step:** 2.5 — move the `app/sdk.coffee` barrel inside `app/sdk/`.
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -83,7 +83,8 @@ step it describes, so it can never drift from the code.
   consumers were already in `app/ui`, and it requires the SDK barrel + audio_engine, so it was
   client code mislocated in common. Its relative requires converted to root-absolute; 18
   consumer paths updated. `app/common` now has zero client-directed requires. — (this commit)
-- [ ] 2.4 Fix `app/common/chroma.js` to require `@counterplay/chromajs` by name instead of a relative path into `packages/`.
+- [x] 2.4 `app/common/chroma.js` requires `@counterplay/chromajs` by name (resolves through the
+  pnpm workspace link instead of a relative path into `packages/`). — (this commit)
 - [ ] 2.5 Move the `app/sdk.coffee` barrel inside `app/sdk/` (leave a re-export shim; ~29 server requires + 154 client requires keep working).
   *Accept for all:* dependency scan shows sdk+common have zero edges to client/server/config; baseline green.
 
