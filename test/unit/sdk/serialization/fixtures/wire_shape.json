@@ -1,0 +1,143 @@
+{
+  "session": [
+    "battleMapTemplate",
+    "board",
+    "cardsByIndex",
+    "createdAt",
+    "currentTurn",
+    "gameSetupData",
+    "gameType",
+    "index",
+    "lastActionTimestamp",
+    "modifiersByIndex",
+    "players",
+    "status",
+    "turns",
+    "updatedAt"
+  ],
+  "board": [
+    "cardIndices",
+    "columnCount",
+    "rowCount"
+  ],
+  "player": [
+    "deck",
+    "hasStartingHand",
+    "isCurrentPlayer",
+    "isRanked",
+    "lastMaximumMana",
+    "lastRemainingMana",
+    "maximumMana",
+    "playerId",
+    "remainingMana",
+    "signatureCardActive",
+    "signatureCardIndices",
+    "startingMana",
+    "totalDamageDealt",
+    "totalDamageDealtToGeneral",
+    "totalMinionsKilled",
+    "totalMinionsPlayedFromHand",
+    "totalMinionsSpawned",
+    "totalSpellsCast",
+    "totalSpellsPlayedFromHand",
+    "username"
+  ],
+  "deck": [
+    "drawPile",
+    "hand",
+    "numCardsReplacedThisTurn",
+    "ownerId"
+  ],
+  "general": [
+    "atk",
+    "attacksMade",
+    "exhausted",
+    "factionId",
+    "id",
+    "index",
+    "isGeneral",
+    "isPlayed",
+    "isRemoved",
+    "location",
+    "manaCost",
+    "maxHP",
+    "modifierIndices",
+    "modifiersAppliedFromContextObjects",
+    "modifiersContextObjects",
+    "movesMade",
+    "name",
+    "ownerId",
+    "position",
+    "signatureCardData",
+    "wasGeneral"
+  ],
+  "unit": [
+    "atk",
+    "factionId",
+    "id",
+    "index",
+    "isRemoved",
+    "location",
+    "manaCost",
+    "maxHP",
+    "modifierIndices",
+    "modifiersAppliedFromContextObjects",
+    "modifiersContextObjects",
+    "name",
+    "ownerId",
+    "rarityId"
+  ],
+  "turn": [
+    "createdAt",
+    "ended",
+    "playerId",
+    "steps",
+    "updatedAt"
+  ],
+  "step": [
+    "action",
+    "index",
+    "playerId",
+    "timestamp"
+  ],
+  "attackAction": [
+    "index",
+    "ownerId",
+    "resolveSubActionIndices",
+    "sourceIndex",
+    "sourcePosition",
+    "subActionsOrderedByEventType",
+    "targetIndex",
+    "targetPosition",
+    "timestamp",
+    "type"
+  ],
+  "endTurnAction": [
+    "index",
+    "ownerId",
+    "resolveSubActionIndices",
+    "subActionsOrderedByEventType",
+    "timestamp",
+    "type"
+  ],
+  "modifier": [
+    "cardAffectedIndex",
+    "contextObject",
+    "index",
+    "isInherent",
+    "isStacking",
+    "numEndTurnsElapsed",
+    "numStartTurnsElapsed",
+    "sourceCardIndex",
+    "subModifierIndices",
+    "type"
+  ],
+  "battleMapTemplate": [
+    "hasBlueDust",
+    "hasRain",
+    "hasSnow",
+    "hasSunRays",
+    "hasWeather",
+    "mapTemplate"
+  ]
+}

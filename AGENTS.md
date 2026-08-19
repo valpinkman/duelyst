@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — wire-format guard rails added (round-trip + golden key-set fixture + factory
+  dual-type tests); UPDATE_WIRE_SHAPE=1 regenerates the fixture deliberately.
 - 2026-08-19 — Phase 2 complete: barrel is app/sdk/index.coffee; dependency scan confirms
   sdk+common have zero edges to client/server/config.
 - 2026-08-19 — utils_ui moved app/common → app/ui; app/common has no client-directed requires.

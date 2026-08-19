@@ -11,7 +11,7 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 3.1 — golden-file serialization guard rails (before any file moves).
+- **Next step:** 3.2 — lift `app/sdk` + shared `app/common` core into `packages/sdk`.
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -104,7 +104,16 @@ barrel inside `app/sdk/` minus its client-directed export (2.5). Nothing moved t
 
 ### Phase 3 — `packages/sdk`
 
-- [ ] 3.1 Golden-file guard rails **before any moves**: GameSession serialize→deserialize→serialize round-trip tests + a recorded-replay fixture; factory `@type` dispatch test.
+- [x] 3.1 Wire-format guard rails in `test/unit/sdk/serialization/wire_format.js` (11 tests,
+  both runners): (a) scripted-game serialize→deserialize→serialize round-trip must be
+  deep-equal, plus state reproduction checks; (b) golden fixture `fixtures/wire_shape.json`
+  locks the sorted own-key sets of every serialized object kind (session, board, player, deck,
+  general, unit, turn, step, actions, modifier, battleMapTemplate) — regenerate deliberately
+  with `UPDATE_WIRE_SHAPE=1`; (c) factory dual-type dispatch: modifiers keep static `@type` +
+  prototype `type:` in sync, actions keep static `@type` + constructor-assigned own `type`
+  (two different patterns — documented in the test). Discovered en route: byte-identical
+  round-trips are NOT guaranteed (key order shifts), deep-equality is the invariant.
+  — (this commit)
 - [ ] 3.2 Lift `app/sdk` + the shared core of `app/common` into `packages/sdk` (workspace package, still CoffeeScript, alias/shims so `require 'app/sdk/...'` keeps resolving everywhere).
   *Accept:* baseline green; server boots (`pnpm api` starts against dev config).
 
