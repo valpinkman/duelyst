@@ -56,7 +56,7 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 | `scripts/generate_packages.js` | **build-critical**: scans `//pragma PKGS:` comments and RSX refs to emit `app/data/packages.js` | JS |
 | `packages/` | vendored forks: `chroma-js` (TS), `warlock`, `backfire`, `Backbone.VirtualCollection` | mixed |
 | `desktop/` | Electron shell wrapping `dist/src` | JS |
-| `docs/` | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (full dependency analysis) | |
+| `docs/` | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (analysis), **`MODERNIZATION_PLAN.md`** (checklist / resume point) | |
 
 ## Conventions and gotchas that bite
 
@@ -90,6 +90,11 @@ token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing 
 Target stack: **pnpm monorepo · TypeScript · vitest (+ Playwright later for e2e) · a modern
 bundler (Vite-class) instead of gulp/browserify.** The full analysis, dependency graph and
 rationale are in `docs/MODERNIZATION_AUDIT.md` — read it before structural work.
+
+**The step-by-step checklist, current status and decisions log live in
+`docs/MODERNIZATION_PLAN.md` — start every modernization session from its "Resume here"
+section, and update it (checkbox + commit hash + decisions) in the same commit as the step
+it describes.**
 
 How we work on it:
 - All work happens on the **`modernization`** branch (or branches stacked on it), **one commit
