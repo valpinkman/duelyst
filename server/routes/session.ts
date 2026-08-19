@@ -15,6 +15,7 @@ const _ = require('underscore');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const DuelystFirebase = require('../lib/duelyst_firebase_module');
 const Promise = require('bluebird');
 const uuid = require('node-uuid');
 const moment = require('moment');
@@ -76,6 +77,22 @@ const analyticsDataFromUserData = function (userRow) {
 };
 
 /*
+ * Mint the Firebase custom token that will replace the legacy one (plan 9.1).
+ *
+ * Deliberately NON-FATAL: nothing consumes this yet - the client still
+ * authenticates to Firebase with the legacy HS256 token - so a Firebase
+ * hiccup here must not be able to break logging in. It is logged loudly and
+ * the response simply carries a null, rather than failing the session.
+ * This becomes required (and fatal) in 9.3, when the client starts using it.
+ */
+const mintFirebaseCustomToken = (id, username) => DuelystFirebase
+  .createCustomToken(id, { username: username || null })
+  .catch((e) => {
+    Logger.module('SESSION').error(`failed to mint firebase custom token for ${id}: ${e.message}`);
+    return null;
+  });
+
+/*
 Log a user in (firing sync jobs) and generate a response (token)
 Possibly add param in return data to say username is null? OR just allow client to decode token
 */
@@ -105,7 +122,11 @@ const logUserIn = (id) => UsersModule.userDataForId(id)
 
     this.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
     this.analyticsData = analyticsDataFromUserData(data);
-    return UsersModule.bumpSessionCountAndSyncDataIfNeeded(id, data);
+    return mintFirebaseCustomToken(id, data.username)
+      .then((firebaseToken) => {
+        this.firebaseToken = firebaseToken;
+        return UsersModule.bumpSessionCountAndSyncDataIfNeeded(id, data);
+      });
   }).then(function (synced) {
     this.synced = synced;
     return UsersModule.createDaysSeenOnJob(id);
@@ -113,6 +134,8 @@ const logUserIn = (id) => UsersModule.userDataForId(id)
   .then(function () {
     return {
       token: this.token,
+      // additive in 9.1; the client ignores it until 9.3
+      firebase_token: this.firebaseToken,
       synced: this.synced,
       analytics_data: this.analyticsData,
     };
@@ -198,7 +221,11 @@ router.post('/session/', function (req, res, next) {
         // make a db transaction/ledger event for the login
         // UsersModule.logEvent(@id,"session","login")
 
-        return UsersModule.bumpSessionCountAndSyncDataIfNeeded(this.id, this.userRow);
+        return mintFirebaseCustomToken(this.id, this.userRow && this.userRow.username)
+          .then((firebaseToken) => {
+            this.firebaseToken = firebaseToken;
+            return UsersModule.bumpSessionCountAndSyncDataIfNeeded(this.id, this.userRow);
+          });
       }
     })
     .then(function () {
@@ -207,7 +234,8 @@ router.post('/session/', function (req, res, next) {
     .then(function () {
       const analyticsData = analyticsDataFromUserData(this.userRow);
       // Send token
-      return res.status(200).json({ token: this.token, analytics_data: analyticsData });
+      // firebase_token is additive in 9.1; the client ignores it until 9.3
+      return res.status(200).json({ token: this.token, firebase_token: this.firebaseToken, analytics_data: analyticsData });
     })
     .catch(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message }))
     .catch(Errors.NotFoundError, (e) => res.status(401).json({ message: 'Invalid Username or Password' }))

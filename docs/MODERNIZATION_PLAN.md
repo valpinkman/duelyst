@@ -623,21 +623,48 @@ exposes `d` to the rules as `auth`. Any SDK upgrade forces a move to real Fireba
 *Spiked and confirmed*: `firebase-admin`'s `getAuth().createCustomToken(uid, {username})` mints
 the right thing (RS256, service-account-signed, `uid` + `claims.username`).
 
-Staged so each step is independently revertible and no step can lock players out:
+**Dual-accepting rules were considered and REJECTED** (owner discussion, 2026-08-19). The idea
+was `auth.id == $uid || auth.uid == $uid` so old and new clients both work. It does not buy
+safety: with `||`, a mistake in the new branch is *masked* by the old branch still matching, so
+a bad rewrite would surface only when the legacy branch is finally removed — far from the change
+that caused it. There is also no third-party client population to stay compatible with (the
+client is served by our own API container, the desktop app bundles its own copy). Single cutover
+instead, rehearsed on `duelyst-ci`, where a wrong rule fails loudly and harmlessly.
 
-- [ ] 9.1 **Server mints a Firebase custom token alongside the existing API JWT.** Purely
-  additive — the API token is untouched, so the 149 `req.user.d.id` reads and express-jwt keep
-  working. Ship and verify before anything else moves.
-- [ ] 9.2 **Make the rules accept BOTH shapes** (`auth.id == $uid || auth.uid == $uid`, and
-  `auth.token.username` beside `auth.username`). This is what de-risks the whole migration: with
-  dual-accepting rules deployed, old and new clients both work, so 9.3 can be rolled back freely.
-  Deploy to `duelyst-ci` first and exercise it there. **Touches live rules — owner sign-off.**
+**Also corrected:** the rules ARE version-controlled — `firebaseRules.json`, byte-identical to
+the live ruleset. Changing them is a reviewable diff and a revert, not console archaeology.
+
+**The rewrite itself is small.** The whole 21 KB file uses only three auth expressions, because
+Firebase 2.x exposed every field of the token's `d` payload directly on `auth`, whereas a v9
+custom token puts the subject on `auth.uid` and custom claims under `auth.token.*`:
+
+| today | new | count |
+|---|---|---|
+| `auth.id` | `auth.uid` | 86 |
+| `auth.continous_integration_user` | `auth.token.continous_integration_user` | 1 |
+| `auth.uid` (line 717) | unchanged — already the right form | 1 |
+
+- [x] 9.1 **Server mints a Firebase custom token alongside the existing API JWT.** Purely
+  additive: `DuelystFirebase.createCustomToken()` on the existing seam (so the credential is
+  initialised once), surfaced as `firebase_token` on both `POST /session/` and
+  `POST /session/register`. The legacy `token` is untouched, so express-jwt and the 149
+  `req.user.d.id` reads are unaffected, and **minting is deliberately non-fatal** — nothing
+  consumes it yet, so a Firebase hiccup logs and returns null rather than breaking login.
+  *Verified against the running API*: the custom token's `uid` is byte-identical to the legacy
+  token's `d.id`, which is the invariant the whole 9.2 rewrite rests on. — (this commit)
+- [ ] 9.2 **Rewrite the rules to the new shape and deploy them from CI.** Add the `firebase.json`
+  the CLI needs, then `firebase deploy --only database`:
+  - **`duelyst-ci`: automatic**, on any change to `firebaseRules.json`. Every rules edit gets
+    deployed and exercised against a live database by the integration suite, so a bad rule fails
+    in CI. This is the safety net that replaces dual-accept — it fails loudly instead of masking.
+  - **`duelyst-universe`: never automatic.** Separate `workflow_dispatch`, its own secret, run
+    deliberately. **Owner sign-off before the first production deploy.**
 - [ ] 9.3 **Client to `firebase@12` + replace `backfire`.** backfire has no source, so its ~53
   call sites need a replacement binding written against the modular API (a thin
   `Backbone.DuelystFirebase` shim keeps the 30 files unchanged — port the binding, not the callers).
-  Auth becomes `signInWithCustomToken`.
-- [ ] 9.4 **Drop the legacy path**: remove the dual-accept branches from the rules and stop
-  minting the v2-shaped token for Firebase.
+  Auth becomes `signInWithCustomToken(auth, firebase_token)`.
+- [ ] 9.4 **Cutover + cleanup**: ship rules and client together, then stop minting the v2-shaped
+  token for Firebase and make 9.1's mint fatal.
 
 *Sequencing note:* tier-2 deps (7.3) come after this, per owner.
 

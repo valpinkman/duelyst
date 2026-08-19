@@ -17,6 +17,7 @@ const Promise = require('bluebird');
  */
 const { initializeApp, cert, deleteApp } = require('firebase-admin/app');
 const { getDatabase, enableLogging } = require('firebase-admin/database');
+const { getAuth } = require('firebase-admin/auth');
 const colors = require('colors');
 const moment = require('moment');
 const util = require('util');
@@ -137,6 +138,27 @@ class DuelystFirebaseModule {
     });
 
     this.promise.catch((error) => delete DuelystFirebaseModule.apps[this.key]);
+  }
+
+  /*
+   * Mint a Firebase custom token (plan 9.1).
+   *
+   * The client currently authenticates to Firebase with the SAME HS256 JWT it
+   * sends to our API, because Firebase 2.x accepted tokens signed with the
+   * database secret and exposed their `d` payload to the security rules as
+   * `auth`. No SDK past 2.x understands that, so moving the client off
+   * firebase@2 requires a real custom token: RS256, signed by the service
+   * account, subject in `uid`, everything else under `claims` (which the rules
+   * then read as `auth.token.*`).
+   *
+   * `userId` MUST be the value the rules currently compare against `auth.id`,
+   * because it becomes `auth.uid`.
+   *
+   * Reuses the existing app so the credential is initialised exactly once.
+   */
+  static createCustomToken(userId, claims, firebaseUrl) {
+    return this.connect(firebaseUrl).promise
+      .then((app) => getAuth(app).createCustomToken(userId, claims));
   }
 
   // Returns a Promise with the Firebase root reference
