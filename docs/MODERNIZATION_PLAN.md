@@ -503,11 +503,16 @@ server and worker. What remains is *typing* (5T.4), not converting.
      commented out at the top and fail as `No test suite found`. They need excluding from the
      vitest `include`, not fixing.
 
-  **Ready for CI today:** `misc` (already there) and `firebase` — the firebase suite passes
-  6/6 against a real RTDB. Its only requirement is env plumbing, NOT the keep/replace
-  decision: `.env` stores `FIREBASE_PRIVATE_KEY` with literal `\n`, which Compose decodes on
-  interpolation but a plain shell does not, so a CI secret must carry real newlines (or
-  `config` should decode). See 7.3's firebase-admin entry.
+  **`firebase` is now wired into CI** (this commit). The step is gated on
+  `env.FIREBASE_PROJECT_ID != ''`, so it runs when the four repo secrets exist and skips with
+  a GitHub notice when they do not — which also means PRs from forks (where secrets are never
+  exposed) skip it rather than failing. **Owner action to actually enable it:** set
+  `FIREBASE_URL`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` and `FIREBASE_PRIVATE_KEY`
+  as repository secrets. Prefer a Firebase project **dedicated to CI**: the suite writes to a
+  fixed `/test-ref-server` path, so two concurrent runs would race on it.
+  The `\n` footgun is gone: `duelyst_firebase_module` now un-escapes `\n` in the private key,
+  so the same value works from Compose, a plain shell and an Actions secret alike (it was
+  only Compose's `.env` interpolation that made this work before).
 
   *(Superseded note kept for history: the original spike claimed revival was "blocked on the
   Firebase decision below (owner)". Measurement shows credentials are not what blocks it.)*

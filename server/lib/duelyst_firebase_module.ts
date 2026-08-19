@@ -34,7 +34,17 @@ try {
   firebaseServiceAccount = {
     project_id: config.get('firebase.projectId'),
     client_email: config.get('firebase.clientEmail'),
-    private_key: config.get('firebase.privateKey'),
+    /*
+     * PEM keys are single-line-hostile: a service account's private_key is a
+     * multi-line PEM, so every transport that carries it as one env var
+     * escapes the newlines. Docker Compose un-escapes them when it
+     * interpolates from .env, but a plain shell export and a GitHub Actions
+     * secret do not - and firebase-admin's cert() rejects the result with
+     * "Failed to parse private key". Decoding here (what Firebase's own docs
+     * recommend) makes the same value work from every source; it is a no-op
+     * when the key already has real newlines.
+     */
+    private_key: (config.get('firebase.privateKey') || '').replace(/\\n/g, '\n'),
   };
   if (!firebaseServiceAccount.project_id) {
     throw new Error('FIREBASE_PROJECT_ID must be set!');

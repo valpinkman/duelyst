@@ -19,6 +19,16 @@ jobs:
   integration_tests:
     runs-on: ubuntu-latest
     container: node:24-bookworm-slim
+    # Carried at job level so the firebase step can test for their presence.
+    # Unset secrets interpolate to '', which is how that step skips itself.
+    # Note: secrets are not exposed to pull requests from forks, so the
+    # firebase step is expected to skip there - it is additive coverage, never
+    # a gate on someone else's PR.
+    env:
+      FIREBASE_URL: ${{ secrets.FIREBASE_URL }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+      FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
     services:
       redis:
         image: redis:6
@@ -45,10 +55,26 @@ jobs:
         NODE_ENV: development
         POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
 
-    - name: run integration tests
+    - name: run integration tests (misc - needs no external services)
       run: pnpm test:integration:misc
       env:
         REDIS_HOST: redis
         POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
-        # TODO: Create a Firebase Realtime Database for CI.
+        # misc needs no real database; the dummy satisfies the config format
         FIREBASE_URL: "https://test-url.firebaseio.com/"
+
+    # Runs against a REAL Realtime Database: it connects, writes to
+    # /test-ref-server, reads it back and disconnects. Prefer a Firebase
+    # project dedicated to CI over a shared one - the write path is fixed, so
+    # two concurrent runs would race on it.
+    - name: run integration tests (firebase - needs a real RTDB)
+      if: env.FIREBASE_PROJECT_ID != ''
+      run: pnpm test:integration:firebase
+      env:
+        REDIS_HOST: redis
+        POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
+
+    - name: note skipped firebase tests
+      if: env.FIREBASE_PROJECT_ID == ''
+      run: |
+        echo "::notice title=Firebase integration tests skipped::Set the         FIREBASE_URL, FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL and         FIREBASE_PRIVATE_KEY repository secrets to enable them.         FIREBASE_PRIVATE_KEY may be pasted with either real or escaped         newlines; both are handled."
