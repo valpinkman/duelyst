@@ -41,8 +41,8 @@ const CosmeticsFactory = require('../../app/sdk/cosmetics/cosmeticsFactory');
 
 const createSinglePlayerGame = require('../lib/create_single_player_game');
 
-const isMatchmakingActiveAsync = require('../../worker/get_matchmaking_status.coffee');
-const getGameServerAsync = require('../../worker/get_gameserver.coffee');
+const isMatchmakingActiveAsync = require('../../worker/get_matchmaking_status');
+const getGameServerAsync = require('../../worker/get_gameserver');
 
 // redis
 const Redis = require('../redis');

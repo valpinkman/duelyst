@@ -93,7 +93,7 @@ startWorker = ()->
   process.on "SIGQUIT", cleanShutdown
   process.on "SIGABRT", cleanShutdown
 
-  matchmakingSearchRanked = require '../../worker/jobs/matchmaking-search-ranked.coffee'
+  matchmakingSearchRanked = require '../../worker/jobs/matchmaking-search-ranked'
   worker.process('matchmaking-search-ranked', matchmakingSearchRanked)
 
 # start worker

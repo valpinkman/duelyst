@@ -10,7 +10,7 @@ if (!config.get('aws.accessKey') || !config.get('aws.secretKey')) {
 
 // Run the uploader.
 try {
-  const uploadGameToS3 = require('../worker/upload_game_to_s3.coffee');
+  const uploadGameToS3 = require('../worker/upload_game_to_s3');
   uploadGameToS3('123', '{"game":true}', '{"mouse":true}');
 } catch (error) {
   console.log(error.message);

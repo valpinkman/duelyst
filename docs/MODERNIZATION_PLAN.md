@@ -255,6 +255,9 @@ mocha + vitest + both builds + wire-format tests.
     pre-existing latent bugs (out-of-scope identifiers in logging/rare paths, a missing
     `Errors` require in games.js) — preserved, downgraded per convention, listed here for a
     future correctness pass. api+worker rebuilt and boot-verified. — (this commit)
+  - [x] 6.2d `worker/` (29 files): fully scripted, zero failures; rebuilt worker image boots,
+    registers all jobs and processes them (only the expected dummy-Firebase credential
+    failure). — (this commit)
 - [ ] 6.3 Retire `coffeescript/register` from `bin/*` when no `.coffee` remains server-side.
 
 ### Phase 7 — Test & dependency endgame
