@@ -225,7 +225,7 @@ mocha + vitest + both builds + wire-format tests.
 - [x] 5.1 Leaf lookups → JS: `cardType`, `factionsLookup`, `racesLookup`, `rarityLookup`,
   `cardsLookup`, `cardsLookupComplete` (6 files); `app/sdk/**/*.js` eslint override added
   following the app/ui/app/view convention. — (this commit)
-- [ ] 5.2 Declarative modifiers & spells via scripted decaffeinate (JS while gulp lives):
+- [x] 5.2 Declarative modifiers & spells via scripted decaffeinate (superseded by 5.2a-c; **0 `.coffee` remain**):
   - [x] 5.2a all 716 `app/sdk/modifiers/*` except `modifier.coffee` + `modifierFactory.coffee`
     (714 scripted + 2 hand-converted where CS used `this` before `super`). Two latent-bug
     classes surfaced: decaffeinate silently refuses invalid constructors while exiting 0
@@ -284,7 +284,7 @@ mocha + vitest + both builds + wire-format tests.
 - [~] 6.1 Reframed: no TS on the server yet (JS-first policy while gulp lives), so no build
   step is needed — the server now runs plain JS directly. A tsx/tsc build lands with the
   TS rename pass.
-- [ ] 6.2 Convert in order: `server/redis/` → `server/routes/` → `server/lib/data_access/` →
+- [x] 6.2 (done via 6.2a-d; **0 `.coffee` remain**) Convert in order: `server/redis/` → `server/routes/` → `server/lib/data_access/` →
   `worker/` → `game.coffee` / `single_player.coffee` last.
   - [x] 6.2a `server/redis/` (15 files). Landmine found & defused repo-wide: decaffeinate
     emits `let exports;` for the `module.exports = exports = …` idiom — a CJS SyntaxError
@@ -622,10 +622,9 @@ server and worker. What remains is *typing* (5T.4), not converting.
       but now emits `X-XSS-Protection: 0` where 0.8 emitted `1; mode=block` — deliberate on
       helmet's part, since the browser XSS auditor was removed from Chrome/Edge after it was shown
       to *introduce* vulnerabilities. Documented at the call site.
-  - [ ] **Client `firebase` 2.0.3 → 12** is NOT a bump and is deliberately not listed here: it
-    crosses three API generations (v3 namespaced, v9 modular), replaces `.auth(legacyToken)`
-    with `signInWithCustomToken`, and invalidates the vendored `backfire` Backbone binding.
-    It is the "keep vs replace RTDB" decision in concrete form — see Later/optional.
+  - [x] **Client `firebase` 2.0.3 → 12** — done as **Phase 9**, not as a tier-2 bump, because it
+    crossed three API generations and changed the auth model. `firebase@2.0.3` is now gone from
+    the repo entirely (9.5).
 
   **Latent bug found while doing this, deliberately NOT fixed here** (belongs with the other
   preserved bugs in the correctness pass, 5.2c): `config/config.js` documents
