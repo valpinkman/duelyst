@@ -1,0 +1,116 @@
+# OpenDuelyst — guide for coding agents
+
+Duelyst is a 2016 collectible-card / tactics game (Counterplay Games), open-sourced after
+shutdown. This repo contains the browser client (Backbone/Marionette + Cocos2d-html5), the
+shared game engine (`app/sdk`), the backend services (Express API, socket.io game servers,
+Kue worker) and the tooling around them. Most of it is still CoffeeScript built with
+gulp + browserify. **We are in the middle of modernizing the whole stack** — read
+"Modernization program" below before making structural changes.
+
+## Package manager: pnpm only
+
+- Use **pnpm** for everything. Never run `yarn` or `npm install`; never commit a
+  `yarn.lock` / `package-lock.json`. The pinned version is in `package.json#packageManager`
+  (corepack/proto/volta pick it up).
+- Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks). `desktop/` is
+  **not** in the workspace yet and still has its own `yarn.lock` — leave it alone unless
+  the task is about desktop.
+- Local packages are `workspace:*` deps; `resolutions` live under `pnpm.overrides`;
+  packages that need build scripts go in `pnpm.onlyBuiltDependencies` (currently `bcrypt`).
+- If a dependency is required in code but missing from `package.json` (yarn used to hoist
+  it), add it explicitly — do **not** enable `shamefully-hoist` / `node-linker=hoisted`.
+
+## Everyday commands
+
+```bash
+pnpm install                                   # after clone or lockfile change
+pnpm tsc:chroma-js                             # required once before build (packages/chroma-js has no committed dist)
+FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # gulp client build -> dist/src (dummy URL is fine for build)
+pnpm test:unit                                 # mocha, ~1300 tests, ~6s, no external services
+pnpm test:integration:misc                     # the only integration suite that runs in CI (rest need Postgres/Redis/Firebase)
+pnpm lint:js:all && pnpm lint:coffee:all       # eslint (airbnb-base) + coffeelint
+pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
+docker compose up                              # full local stack (Docker images not yet re-verified after the pnpm switch)
+```
+
+Playing the game locally requires a Firebase Realtime Database (`FIREBASE_URL`, legacy
+token, service account) — see `docs/QUICKSTART.md`. Building and unit-testing do not.
+
+## Repo map (where things are)
+
+| Path | What | Language |
+|---|---|---|
+| `app/sdk/` | Game engine shared by client and server: `gameSession`, actions, modifiers (718), spells (257), cards + `cards/factory/*` (card definitions), challenges, quests… | CoffeeScript (100%) |
+| `app/common/` | `config.js` (mutable global CONFIG), `logger`, `eventbus`, `utils/*` | JS + Coffee |
+| `app/ui/`, `app/view/`, `app/audio/` | Marionette views/managers, Cocos2d layers/nodes/fx, audio | JS (decaffeinated) |
+| `app/application.coffee`, `app/index.coffee` | client boot, router, `window.*` singletons | Coffee |
+| `app/data/` | `resources.js` (RSX asset manifest), `fx.js`, `packages.js` (**generated, gitignored**) | JS |
+| `app/resources/`, `app/original_resources/` | 1.2 GB of art/audio — never touch, never bundle | assets |
+| `app/vendor/` | cocos2d-html5 3.3, jquery-ui, aws-sdk (not npm managed) | JS |
+| `server/` | `api.coffee`/`express.coffee` (API, port 3000), `game.coffee` (8001), `single_player.coffee` (8000), `lib/data_access` (knex), `redis/` (kue, matchmaking), `routes/`, `ai/` (JS), `migrations/` (JS) | mixed |
+| `worker/` | Kue jobs (`worker.coffee` registers them explicitly) | Coffee |
+| `bin/` | entrypoints: `app-module-path` → `coffeescript/register` → `config/config` → main | JS |
+| `config/` | convict schema `config.js` + `{development,staging,production}.json` | JS |
+| `test/` | mocha: `unit/` (sdk, ai, firebase, misc), `integration/`, `rest/` (broken), `perf/` (Benchmark.js) | JS |
+| `gulp/`, `gulpfile.babel.js` | build: browserify+coffeeify+hbsfy+glslify+envify, sass, vendor concat, asset copy | JS |
+| `scripts/generate_packages.js` | **build-critical**: scans `//pragma PKGS:` comments and RSX refs to emit `app/data/packages.js` | JS |
+| `packages/` | vendored forks: `chroma-js` (TS), `warlock`, `backfire`, `Backbone.VirtualCollection` | mixed |
+| `desktop/` | Electron shell wrapping `dist/src` | JS |
+| `docs/` | `QUICKSTART.md`, `ARCHITECTURE.md`, `GULP.md`, **`MODERNIZATION_AUDIT.md`** (full dependency analysis) | |
+
+## Conventions and gotchas that bite
+
+- **Root-absolute requires.** `require 'app/sdk/…'`, `require 'server/lib/…'`, `require 'config/config'`
+  resolve from the repo root via `app-module-path` (registered in `bin/*`, `gulpfile.babel.js`,
+  every test file) and via browserify `paths`. Any new bundler/test runner needs the same alias.
+- **CoffeeScript is compiled at runtime** on the server (`coffeescript/register`) — there is no
+  server build step today. `.coffee` and `.js` are both resolvable extension-less; ~190 requires
+  carry an explicit `.coffee` extension and break on rename.
+- **Singletons everywhere.** `GameSession.getInstance()/current()/reset()`, 20 UI managers, `CONFIG`,
+  `EventBus`. Unit tests share the `GameSession` singleton within a file: files may run in
+  parallel, tests inside a file may not.
+- **Serialization is structural.** `SDKObject` + `fastExtend(this, data)` — instance property
+  layout *is* the wire format (game state, replays). Moving CoffeeScript prototype defaults into
+  instance fields, or renaming properties, silently breaks replays. Add round-trip tests first.
+- **`@type` (static) vs `type:` (prototype) on the same class** — `ModifierFactory`/`CardFactory`
+  dispatch on the static, instances carry the prototype value. Keep both when converting.
+- **Card factories** (`app/sdk/cards/factory/**`) are *text-parsed* by `generate_packages.js`;
+  keep the `Cards.X` / `RSX.Y` literal shape or the asset packages break.
+- **CommonJS "export before require" idiom** (`module.exports = X` at the top of managers, class
+  defined before requires in `gameSession.coffee`) exists to survive circular requires. It does not
+  survive ESM — restructure, don't just rename.
+- **Build-time env → client** via envify: `API_URL`, `FIREBASE_URL`, `VERSION`, `NODE_ENV`,
+  `AI_TOOLS_ENABLED`, `ALL_CARDS_AVAILABLE`, … (`gulp/bundler.js`). Gulp refuses to build without
+  a `FIREBASE_URL` ending in `firebaseio.com/`.
+- Style: 2-space indent, LF, single quotes, semicolons in JS (`.editorconfig`, `.eslintrc.json`,
+  `coffeelint.json`). ESLint has many per-directory rule downgrades — don't "fix" them wholesale.
+
+## Modernization program
+
+Target stack: **pnpm monorepo · TypeScript · vitest (+ Playwright later for e2e) · a modern
+bundler (Vite-class) instead of gulp/browserify.** The full analysis, dependency graph and
+rationale are in `docs/MODERNIZATION_AUDIT.md` — read it before structural work.
+
+How we work on it:
+- All work happens on the **`modernization`** branch (or branches stacked on it), **one commit
+  per step**, each step leaving `pnpm build` and `pnpm test:unit` green so any step can be
+  reverted in isolation. No big-bang rewrites.
+- Order of operations (see audit §4.5): ✅ pnpm switch → vitest alongside mocha for
+  `test/unit/sdk` → extract the few cross-layer couplings (`app/sdk/networkManager`, card
+  factories → `config/config.js`, `utils_ui` → `audio_engine`, `app/common/chroma.js` relative
+  require, `app/sdk.coffee` barrel) → lift `app/sdk` + `app/common` into `packages/sdk` →
+  Vite for the client → decaffeinate → TypeScript (leaf enums/lookups → declarative
+  modifiers/spells → actions → entities/card → gameSession; server: redis → routes →
+  data_access → socket servers, last).
+- Coffee → TS: go through decaffeinate → JS first (that's how `app/ui`, `app/view`, `server/ai`
+  were done), then rename to `.ts` under a *loose* tsconfig; the strict root `tsconfig.json` is
+  the destination, not the starting point. Do not hand-rewrite files that a codemod can convert.
+- Tests: chai `expect` stays; convert `this.timeout()` → per-test options and `done` → async;
+  keep mocha and vitest both green until the switch is complete. `test/perf` is not a test suite.
+- Don't move or rename `app/resources`, `app/vendor`, or the card factories without a plan for
+  `generate_packages.js` and RSX paths.
+
+Status log (newest first):
+- 2026-08-19 — repo switched from Yarn 4 to pnpm 10 (workspace over `packages/*`; CI/Docker
+  converted, Docker images not yet rebuilt). Baseline: `pnpm build` and `pnpm test:unit`
+  (1287 passing) green. Audit written.
