@@ -3,7 +3,6 @@
 const path = require('path');
 const _ = require('underscore');
 require('app-module-path').addPath(path.join(__dirname, '../'));
-require('coffeescript/register');
 
 const config = require('../config/config');
 const knex = require('../server/lib/data_access/knex');

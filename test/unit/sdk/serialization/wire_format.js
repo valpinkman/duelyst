@@ -24,7 +24,6 @@
  */
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../../'));
-require('coffeescript/register');
 const { expect } = require('chai');
 const fs = require('fs');
 const CONFIG = require('app/common/config');

@@ -1,5 +1,3 @@
-require('coffeescript/register');
-
 const fs = require('fs');
 const { expect } = require('chai');
 const semver = require('semver');

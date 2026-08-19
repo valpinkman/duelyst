@@ -32,7 +32,7 @@ pnpm test:integration:misc                     # the only integration suite that
 pnpm typecheck                                 # tsc (loose config) - a METRIC during the migration, not a gate
 pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
                                                # (needs: real Firebase in .env, pnpm build, docker compose up)
-pnpm lint:js:all && pnpm lint:coffee:all       # eslint (airbnb-base) + coffeelint
+pnpm lint:js:all                               # eslint (airbnb-base), .js + .ts
 pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
 docker compose up                              # full local stack (rebuild images after source changes: they are NOT live-mounted)
 ```
@@ -128,6 +128,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — CoffeeScript is gone from the repo entirely: dead ops deleted, useful tools
+  converted, toolchain and lint_coffeescript workflow removed.
 - 2026-08-19 — Playwright e2e added: boots the client and plays a practice game vs the AI,
   asserting zero console errors. Caught the upstream questParticipationWithFaction bug.
 - 2026-08-19 — mocha retired; vitest is the only test runner (unit + integration configs).
@@ -189,9 +191,8 @@ Status log (newest first):
 - 2026-08-19 — vitest covers all of test/unit (1287/1287 parity, `unit_tests_vitest` CI job added).
 - 2026-08-19 — test/unit cleaned of dead weight (stale aggregators, unused sinon/power-assert);
   codemods live in `scripts/codemods/`.
-- 2026-08-19 — vitest runs beside mocha for `test/unit/sdk` (`pnpm test:vitest`, 1285/1285
-  parity). CJS native-require passthrough, no coffee plugin yet; gate's coffee-lint = CI scope
-  (`lint:coffee app server worker`) — `lint:coffee:all` has pre-existing errors in dead dirs.
+- 2026-08-19 — vitest ran beside mocha for `test/unit/sdk` (1285/1285 parity) before mocha
+  was retired.
 - 2026-08-19 — repo switched from Yarn 4 to pnpm 10 (workspace over `packages/*`; CI/Docker
   converted, Docker images not yet rebuilt). Baseline: `pnpm build` and `pnpm test:unit`
   (1287 passing) green. Audit written.

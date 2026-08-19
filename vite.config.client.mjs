@@ -2,13 +2,12 @@
  * Vite build for the browser client (MODERNIZATION_PLAN.md Phase 4).
  *
  * Replaces gulp's browserify bundle (gulp/bundler.js) only: it produces
- * dist/src/duelyst.js from app/index.coffee. Everything else (vendor.js
+ * dist/src/duelyst.js from app/index.ts. Everything else (vendor.js
  * concat, css, index.html, resource packages/copy, locales) still comes from
  * gulp until later Phase 4 steps. Run `pnpm build:vite` after a normal gulp
  * build (it needs the generated app/data/packages.js).
  *
  * Legacy semantics preserved:
- * - CoffeeScript sources compile per-file (coffeeify equivalent)
  * - .hbs templates precompile against hbsfy/runtime (hbsfy equivalent)
  * - glslify('<path>') CALL SITES are statically replaced with the compiled
  *   shader source (glslify-transform equivalent), via the glslify v7
@@ -29,7 +28,6 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
-const coffee = require('coffeescript');
 const Handlebars = require('handlebars');
 const glslify = require('glslify7');
 
@@ -75,16 +73,6 @@ const define = Object.fromEntries(
 // anything else reading process.env at runtime gets an empty object
 define['process.env'] = '{}';
 
-function coffeePlugin() {
-  return {
-    name: 'duelyst:coffeescript',
-    transform(code, id) {
-      if (!id.endsWith('.coffee')) return null;
-      return { code: coffee.compile(code, { bare: true, header: false }), map: null };
-    },
-  };
-}
-
 function hbsPlugin() {
   return {
     name: 'duelyst:hbsfy',
@@ -101,7 +89,7 @@ function hbsPlugin() {
 
 // Statically replace glslify('<relative path>') calls with the compiled
 // shader source as a string literal. Runs with enforce:'pre' on the RAW
-// source, before the coffee transform - the call syntax is identical in JS
+// source. The call syntax is identical in JS and TS
 // and CoffeeScript, and a JSON string literal is valid in both.
 function glslifyCallPlugin() {
   const CALL_RE = /glslify\((['"])([^'"]+)\1\)/g;
@@ -109,7 +97,7 @@ function glslifyCallPlugin() {
     name: 'duelyst:glslify-calls',
     enforce: 'pre',
     transform(code, id) {
-      if (!/\.(js|ts|coffee)$/.test(id) || !code.includes('glslify(')) return null;
+      if (!/\.(js|ts)$/.test(id) || !code.includes('glslify(')) return null;
       const out = code.replace(CALL_RE, (match, _q, rel) => {
         const file = path.resolve(path.dirname(id), rel);
         const source = glslify.file(file);
@@ -140,7 +128,7 @@ function umdThisShimPlugin() {
   };
 }
 
-// gulp adds app/tools/editor.coffee as a second browserify entry when
+// the editor is a second entry point when
 // datGuiEditorEnabled (development); both land in the single duelyst.js.
 // A virtual entry reproduces that multi-entry-single-bundle behavior.
 const VIRTUAL_ENTRY = '\0duelyst-entry';
@@ -170,18 +158,18 @@ export default defineConfig({
       // runtime glslify import is dead after static replacement; stub it
       glslify: path.resolve(rootDir, 'app/tools/glslify-stub.js'),
       // node builtins used by client code (browserify shimmed these):
-      // events -> session2.coffee, url -> landing.js
+      // events -> app/common/session2.ts, url -> app/common/landing.ts
       events: path.resolve(rootDir, 'node_modules/events'),
       url: path.resolve(rootDir, 'node_modules/url'),
       os: path.resolve(rootDir, 'node_modules/os-browserify/browser.js'),
     },
-    extensions: ['.js', '.ts', '.coffee', '.json'],
+    extensions: ['.ts', '.js', '.json'],
     // browserify parity: use the CJS builds of dependencies (browser/main),
     // never the ESM "module" entry - the CJS code in this repo expects
     // require() to return module.exports (e.g. i18next.use), not a namespace
     mainFields: ['browser', 'main'],
   },
-  plugins: [entryPlugin(), glslifyCallPlugin(), coffeePlugin(), hbsPlugin(), umdThisShimPlugin()],
+  plugins: [entryPlugin(), glslifyCallPlugin(), hbsPlugin(), umdThisShimPlugin()],
   build: {
     outDir: 'dist/src',
     emptyOutDir: false, // dist/src is shared with the gulp outputs
@@ -191,7 +179,7 @@ export default defineConfig({
     commonjsOptions: {
       // the entire app graph is CommonJS, not just node_modules
       include: [/node_modules/, /app\//, /packages\//],
-      extensions: ['.js', '.ts', '.coffee'],
+      extensions: ['.ts', '.js'],
       transformMixedEsModules: true,
       // preserve require-time execution order: the codebase's circular-
       // dependency idiom (export-before-require) needs real CJS semantics

@@ -1,6 +1,5 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../'));
-require('coffeescript/register');
 const { expect } = require('chai');
 const loginHelpers = require('../../../server/lib/hash_helpers');
 

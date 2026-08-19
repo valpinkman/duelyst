@@ -1,4 +1,3 @@
-require('coffeescript/register');
 const config = require('../config/config');
 
 // Validate config.

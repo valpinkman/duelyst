@@ -51,21 +51,14 @@ You can run the linter with `pnpm lint:js`.
 You can automatically format JS code to meet these standards by running
 `pnpm format:js`.
 
-For CoffeeScript code, we use CoffeeLint to enforce code style.
-Its configuration can be found in `coffeelint.json`.
-You can run linters with `pnpm lint:coffee`, `pnpm lint:coffee:app`, or
-`pnpm lint:coffee:backend`.
+(The codebase was CoffeeScript until 2026; it is now entirely TypeScript,
+so there is no CoffeeScript linter any more.)
 
 #### Regarding JavaScript, CoffeeScript, and TypeScript
 
-Most of the code is written in CoffeeScript, which compiles into JavaScript. We
-are considering replacing CoffeeScript with JavaScript (see
-[Issue #4](https://github.com/open-duelyst/duelyst/issues/4)).
-
-We should also consider moving to TypeScript where possible.
-There is a fairly strict `tsconfig.json` in the repo which has been
-preconfigured for new code. After writing new TypeScript code, you can run
-`pnpm tsc` to build it using this config.
+The codebase is TypeScript. It is typed loosely for now (`tsconfig.json`);
+`tsconfig.strict.json` is the destination, and `pnpm typecheck` /
+`pnpm tsc:strict` measure the distance. Type things as you touch them.
 
 ## Running Tests <a id="tests" />
 

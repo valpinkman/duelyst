@@ -2,7 +2,6 @@
 
 var path = require('path')
 require('app-module-path').addPath(path.join(__dirname, '../../../'))
-require('coffeescript/register')
 var chai = require('chai');
 chai.config.includeStack = true;
 var expect = chai.expect;

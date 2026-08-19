@@ -1,5 +1,3 @@
-require('coffeescript/register');
-
 const { expect } = require('chai');
 const supertest = require('supertest');
 const api = require('../../server/express');

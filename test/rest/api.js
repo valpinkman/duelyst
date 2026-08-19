@@ -1,5 +1,3 @@
-require('coffeescript/register');
-
 const { expect } = require('chai');
 const jwt = require('jsonwebtoken');
 const util = require('util');

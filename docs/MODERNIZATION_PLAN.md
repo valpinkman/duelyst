@@ -32,8 +32,7 @@ step it describes, so it can never drift from the code.
     as they go clean.
   - 7.2 integration revival in CI (needs the referral-code seed + a CI Firebase project).
   - 7.3 dependency upgrades (bluebird→native promises, moment, underscore, kue, winston…).
-  - Delete `cli/` + `scripts/` legacy ops (last CoffeeScript, ~57 files) after confirming
-    nothing operational depends on them.
+
   - 5T.3: replace the tsx require-hook with a real build for production images.
 - **Known dirty state:** none.
 
@@ -431,6 +430,23 @@ server and worker. What remains is *typing* (5T.4), not converting.
   orchestrator now resolves the envify values under the real environment and passes them via
   `DUELYST_BUILD_CONFIG`; direct `pnpm build:vite` forces development unless `DUELYST_ENV`
   says otherwise.
+
+### Phase 8 — Remove the CoffeeScript era entirely ✅
+
+- [x] 8.1 **Zero `.coffee` files in the repo.** Deleted `cli/` (paypal/mailchimp/analytics CLI
+  that rsync'd to a host that no longer exists) and 15 dead `scripts/` directories (aws-utility,
+  analytics, wipe, temp, user_scripts, one-offs, sarlac_prime, news, data_retrieval, sdk_to_csv,
+  simulation, daily_challenges, image-utils, firebase_to_sql, codex asset-authoring). Verified
+  zero external references first.
+  **Kept and converted** the tooling worth having: `scripts/localization/*` (finds missing and
+  out-of-date i18n keys) and `scripts/add_index`, `generate_invite_codes`.
+  **Dropped as unfixable:** `delete_user`, `find_user`, `find_userid_by_name` — all three
+  `require('server/lib/users_module')`, which has never existed in this repo (it was in the
+  audit's unresolved list); they cannot ever have run.
+- [x] 8.2 Toolchain removed with it: `coffeelint.json`, the `lint_coffeescript` workflow, the
+  `coffeescript` + `@coffeelint/cli` dependencies, the `lint:coffee*` scripts, Vite's
+  CoffeeScript plugin and `.coffee` resolution, the `coffeescript/register` calls left in
+  8 test/server/script files, and 9 dependencies only the deleted ops used. — (this commit)
 
 ### Phase 7 — Test & dependency endgame
 
