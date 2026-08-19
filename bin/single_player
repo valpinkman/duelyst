@@ -2,6 +2,9 @@
 'use strict'
 
 const path = require('path')
+
+// Lets require() resolve and compile .ts during the JS -> TypeScript migration
+require('tsx/cjs')
 require('app-module-path').addPath(path.join(__dirname, '..'))
 
 // Load config first so it has chance to synchronously validate .json config files

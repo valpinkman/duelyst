@@ -175,7 +175,7 @@ export default defineConfig({
       url: path.resolve(rootDir, 'node_modules/url'),
       os: path.resolve(rootDir, 'node_modules/os-browserify/browser.js'),
     },
-    extensions: ['.js', '.coffee', '.json'],
+    extensions: ['.js', '.ts', '.coffee', '.json'],
     // browserify parity: use the CJS builds of dependencies (browser/main),
     // never the ESM "module" entry - the CJS code in this repo expects
     // require() to return module.exports (e.g. i18next.use), not a namespace
@@ -191,7 +191,7 @@ export default defineConfig({
     commonjsOptions: {
       // the entire app graph is CommonJS, not just node_modules
       include: [/node_modules/, /app\//, /packages\//],
-      extensions: ['.js', '.coffee'],
+      extensions: ['.js', '.ts', '.coffee'],
       transformMixedEsModules: true,
       // preserve require-time execution order: the codebase's circular-
       // dependency idiom (export-before-require) needs real CJS semantics

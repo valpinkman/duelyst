@@ -20,8 +20,9 @@
     "import/resolver": {
       "node": {
         "extensions": [
-          ".coffee",
-          ".js"
+          ".ts",
+          ".js",
+          ".coffee"
         ],
         "moduleDirectory": [
           "node_modules"
@@ -108,7 +109,13 @@
       "warn"
     ],
     "import/extensions": [
-      "error"
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "ts": "never",
+        "coffee": "always"
+      }
     ],
     "import/no-extraneous-dependencies": [
       "warn"
@@ -129,7 +136,8 @@
   "overrides": [
     {
       "files": [
-        "app/**/*.js"
+        "app/**/*.js",
+        "app/**/*.ts"
       ],
       "rules": {
         "camelcase": [
@@ -139,7 +147,8 @@
     },
     {
       "files": [
-        "app/sdk/**/*.js"
+        "app/sdk/**/*.js",
+        "app/sdk/**/*.ts"
       ],
       "rules": {
         "consistent-return": "warn",
@@ -184,7 +193,13 @@
         "app/replay/**/*.js",
         "app/localization/**/*.js",
         "app/shaders/**/*.js",
-        "app/data/**/*.js"
+        "app/data/**/*.js",
+        "app/*.ts",
+        "app/common/**/*.ts",
+        "app/replay/**/*.ts",
+        "app/localization/**/*.ts",
+        "app/shaders/**/*.ts",
+        "app/data/**/*.ts"
       ],
       "rules": {
         "consistent-return": "warn",
@@ -245,7 +260,8 @@
     },
     {
       "files": [
-        "app/tools/**/*.js"
+        "app/tools/**/*.js",
+        "app/tools/**/*.ts"
       ],
       "rules": {
         "block-scoped-var": [
@@ -315,7 +331,8 @@
     },
     {
       "files": [
-        "app/ui/**/*.js"
+        "app/ui/**/*.js",
+        "app/ui/**/*.ts"
       ],
       "rules": {
         "array-callback-return": [
@@ -433,7 +450,8 @@
     },
     {
       "files": [
-        "app/view/**/*.js"
+        "app/view/**/*.js",
+        "app/view/**/*.ts"
       ],
       "rules": {
         "block-scoped-var": [
@@ -578,7 +596,8 @@
     },
     {
       "files": [
-        "server/ai/**/*.js"
+        "server/ai/**/*.js",
+        "server/ai/**/*.ts"
       ],
       "rules": {
         "block-scoped-var": [
@@ -636,7 +655,8 @@
     },
     {
       "files": [
-        "test/**/*.js"
+        "test/**/*.js",
+        "test/**/*.ts"
       ],
       "rules": {
         "no-unused-expressions": [
@@ -665,7 +685,8 @@
     },
     {
       "files": [
-        "test/unit/sdk/cards/**/*.js"
+        "test/unit/sdk/cards/**/*.js",
+        "test/unit/sdk/cards/**/*.ts"
       ],
       "rules": {
         "block-scoped-var": [
@@ -691,7 +712,8 @@
     {
       "files": [
         "test/unit/sdk/serialization/**/*.js",
-        "test/unit/sdk/package_identity.js"
+        "test/unit/sdk/package_identity.js",
+        "test/unit/sdk/serialization/**/*.ts"
       ],
       "rules": {
         "import/no-unresolved": "off",
@@ -705,7 +727,13 @@
         "server/routes/**/*.js",
         "server/middleware/**/*.js",
         "server/*.js",
-        "worker/**/*.js"
+        "worker/**/*.js",
+        "server/redis/**/*.ts",
+        "server/lib/**/*.ts",
+        "server/routes/**/*.ts",
+        "server/middleware/**/*.ts",
+        "server/*.ts",
+        "worker/**/*.ts"
       ],
       "rules": {
         "consistent-return": "warn",
@@ -776,6 +804,22 @@
       ],
       "parserOptions": {
         "sourceType": "module"
+      }
+    },
+    {
+      "files": [
+        "**/*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2022,
+        "sourceType": "script"
+      },
+      "rules": {
+        "no-undef": "off",
+        "no-unused-vars": "off",
+        "import/extensions": "off",
+        "import/no-unresolved": "off"
       }
     }
   ],

@@ -321,9 +321,23 @@ mocha + vitest + both builds + wire-format tests.
   prefers the **prototype** type (what instances carry and asset lookup uses). Fixing the typo
   is a behavior change and belongs in a correctness pass, not a mechanical migration step.
   — (this commit)
-- [ ] 5T.2 Rename `.js` → `.ts` in batches (leaf lookups first), adding `declare` members for
-  prototype props so TS sees them without emitting instance fields.
-- [ ] 5T.3 Server `.ts` execution: `tsx` for dev/bin, a build step for Docker.
+- [x] 5T.2a **`.ts` execution wired everywhere**, then the first rename batch (10 SDK leaf
+  lookups/enums: cardType, factionsLookup, racesLookup, rarityLookup, cardSetLookup,
+  cardLocation, gameStatus, gameFormat, intentType, ribbonLookup). node's CJS loader only
+  knows `.js/.json/.node`, so `tsx/cjs` is registered in `bin/*` (all five services),
+  `.mocharc.js`, a vitest setup file, `scripts/generate_packages.js` and the build
+  orchestrator; Vite/eslint resolve `.ts`; eslint gets `@typescript-eslint/parser` and the
+  per-directory overrides now cover `.ts` too.
+  **TypeScript pinned to 5.9**: TS 7 (the native port) is installed-able but
+  `@typescript-eslint` refuses it ("does not support TS 7.0"), and it drops `baseUrl` /
+  `moduleResolution: node`. Ecosystem support wins for a migration.
+  Hardened the build: `packages.js` is deleted before regeneration, so a crashed generator
+  can no longer leave a truncated file that the manifest guard reports as a false regression
+  (which is exactly what it did once here). — (this commit)
+- [ ] 5T.2b Rename the rest in batches, adding `declare` members for prototype props so TS
+  sees them without emitting instance fields.
+- [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
+  compiles on every boot; fine for dev, wasteful for prod).
 
 ### Phase 6b — post-conversion correctness (found by playing the game)
 

@@ -21,10 +21,10 @@ const require = createRequire(import.meta.url);
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 process.chdir(rootDir);
 
-// app/data/packages.js requires .coffee modules (cardsLookupComplete) with
-// root-absolute paths - same runtime environment as the gulpfile provided
+// app/data/packages.js requires SDK modules with root-absolute paths, and the
+// tree is mid-migration to TypeScript - give require() both abilities
 require('app-module-path').addPath(rootDir);
-require('coffeescript/register');
+require('tsx/cjs');
 
 const config = require(path.join(rootDir, 'config/config'));
 const env = config.get('env');
@@ -40,6 +40,10 @@ const PACKAGES_MANIFEST = path.join(rootDir, 'scripts/build/packages-manifest.js
 function step1Packages() {
   const flags = ['-d'];
   if (development) flags.push('-fa');
+  // remove the previous output first: a crashed generator run would otherwise
+  // leave a truncated packages.js that the manifest check below reads as a
+  // (false) regression
+  fs.rmSync(path.join(rootDir, 'app/data/packages.js'), { force: true });
   execFileSync('node', ['scripts/generate_packages.js', ...flags], { stdio: 'inherit' });
   log('packages', 'app/data/packages.js generated');
 
