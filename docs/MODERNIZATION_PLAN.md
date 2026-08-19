@@ -244,6 +244,11 @@ mocha + vitest + both builds + wire-format tests.
     every in-container gate claim now rebuilds first. All 4 service images rebuilt from the
     current tree: api 200, game 8001, sp 8000, worker processing (only the expected
     dummy-Firebase job failure). — (this commit)
+  - [x] 6.2b `server/routes/` (37) + `server/middleware/` (6): fully scripted, zero failures.
+    `require-dir` autoloading kept (works unchanged over `.js`); its removal is folded into the
+    TS rename pass. Fixed stale `app/sdk/package.json` main field (`index.coffee` → `index.js`).
+    api rebuilt+booted: 200 on `/` and `/healthcheck`, 401 on the jwt-guarded session route
+    (auth middleware intact). — (this commit)
 - [ ] 6.3 Retire `coffeescript/register` from `bin/*` when no `.coffee` remains server-side.
 
 ### Phase 7 — Test & dependency endgame

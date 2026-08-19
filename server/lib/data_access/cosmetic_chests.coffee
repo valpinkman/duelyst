@@ -20,7 +20,7 @@ generatePushId = require '../../../app/common/generate_push_id'
 SDK = require '../../../app/sdk'
 UtilsGameSession = require '../../../app/common/utils/utils_game_session'
 
-InventoryModule = require './inventory.coffee'
+InventoryModule = require './inventory'
 
 class CosmeticChestsModule
 

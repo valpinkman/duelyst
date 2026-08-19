@@ -116,6 +116,7 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — server routes+middleware decaffeinated (6.2b); api boot-verified in container.
 - 2026-08-19 — server/redis decaffeinated (6.2a); let-exports ESM-fallback landmine defused;
   all service images rebuilt fresh and boot-verified.
 - 2026-08-19 — app/ is 100% CoffeeScript-free (client boot files + common converted in 5.5b).

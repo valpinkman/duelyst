@@ -754,7 +754,12 @@
         "new-cap": "warn",
         "no-param-reassign": "warn",
         "class-methods-use-this": "off",
-        "import/order": "off"
+        "import/order": "off",
+        "import/extensions": "off",
+        "import/no-unresolved": "off",
+        "no-path-concat": "warn",
+        "no-underscore-dangle": "warn",
+        "function-paren-newline": "warn"
       }
     }
   ]

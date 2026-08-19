@@ -3,5 +3,5 @@
   "version": "1.97.13",
   "private": true,
   "description": "Duelyst game engine (GameSession, actions, modifiers, spells, cards). Shared by the browser client and the game servers. Still CoffeeScript; consumed in place - physical relocation happens with the TypeScript conversion.",
-  "main": "index.coffee"
+  "main": "index.js"
 }
