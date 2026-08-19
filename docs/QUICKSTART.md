@@ -24,18 +24,17 @@
 
 ### Node.js
 
-To build the code, you will need Node.js, NPM, and Yarn.
+To build the code, you will need Node.js v24 and pnpm. The exact pnpm version
+is pinned in the `packageManager` field of `package.json`; any version manager
+that honors that field (corepack, proto, volta) will pick it up automatically.
 
-For Windows environments, install Volta, Node.js v24, and Yarn v1.
-
-For Unix environments:
+For example, with corepack (bundled with Node.js):
 ```bash
-curl https://get.volta.sh | bash
-volta install node@24
-volta install yarn@1
 corepack enable
-yarn set version berry
+pnpm install
 ```
+
+Or install pnpm directly: `npm install -g pnpm`.
 
 ### Google Firebase
 
@@ -95,9 +94,9 @@ will appear in the main menu.
 Now that dependencies are installed, you can build the game code and its
 assets. This step will take a few minutes.
 ```bash
-yarn workspaces focus
-yarn tsc:chroma-js
-FIREBASE_URL=<your-firebase-url> yarn build
+pnpm install
+pnpm tsc:chroma-js
+FIREBASE_URL=<your-firebase-url> pnpm build
 ```
 
 The value of `<your-firebase-url>` should be
@@ -107,10 +106,13 @@ with the server code.
 
 ## Building Desktop Clients <a id="desktop" />
 
-After building the app, the desktop clients can be built separately:
+After building the app, the desktop clients can be built separately.
+Note: `desktop/` is not part of the pnpm workspace yet and still carries its
+own `yarn.lock` (its build shells out to `yarn install`); it will be folded into
+the workspace as part of the monorepo migration.
 ```bash
 cd desktop
-yarn workspaces focus
+yarn install
 # replace <platform> with 'mac', 'windows', 'linux', or 'all'
 yarn build:<platform>
 yarn start:<platform>

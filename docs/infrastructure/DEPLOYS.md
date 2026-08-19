@@ -94,7 +94,7 @@ done, we can test it out using the desktop client:
 ```bash
 # From the repo root:
 cd desktop
-yarn build:mac && yarn start:mac # Or windows or linux.
+pnpm build:mac && pnpm start:mac # Or windows or linux.
 ```
 
 Log in and play a practice game. Keep an eye out for visual glitches such as
@@ -110,7 +110,7 @@ export AWS_ACCESS_KEY=foo
 export AWS_SECRET_KEY=bar
 export AWS_REGION=my-region
 export S3_ASSETS_BUCKET=my-bucket
-yarn cdn:upload:web
+pnpm cdn:upload:web
 ```
 
 If the build includes changes to static assets and not just the code, you can
@@ -123,7 +123,7 @@ export AWS_ACCESS_KEY=foo
 export AWS_SECRET_KEY=bar
 export AWS_REGION=my-region
 export S3_ASSETS_BUCKET=my-bucket
-yarn cdn:upload:all
+pnpm cdn:upload:all
 ```
 
 Since the web client is heavily cached in CloudFront, we can create a cache

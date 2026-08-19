@@ -14,7 +14,7 @@ on:
       - server/**
       - test/**
       - worker/**
-      - yarn.lock
+      - pnpm-lock.yaml
 
 jobs:
   unit_tests:
@@ -26,26 +26,17 @@ jobs:
     - name: install system dependencies
       run: sudo apt install -y libpng-dev
 
+    - name: install pnpm
+      uses: pnpm/action-setup@v4
+
     - name: install node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 24
-
-    # Caching node_modules saves 50s on builds which don't modify dependencies.
-    # Compared to yarn caching, it saves an additional 27 seconds.
-    - name: cache node_modules
-      uses: actions/cache@v3
-      with:
-        path: /home/runner/work/duelyst/duelyst/node_modules
-        key: node-modules-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node-modules-
-
-    - name: enable corepack
-      run: corepack enable
+        cache: pnpm
 
     - name: install node dependencies
-      run: yarn workspaces focus
+      run: pnpm install --frozen-lockfile
 
     - name: run unit tests
-      run: yarn test:unit
+      run: pnpm test:unit

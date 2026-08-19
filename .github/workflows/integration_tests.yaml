@@ -14,7 +14,7 @@ on:
       - server/**
       - test/**
       - worker/**
-      - yarn.lock
+      - pnpm-lock.yaml
 
 jobs:
   integration_tests:
@@ -34,30 +34,20 @@ jobs:
     - name: check out code
       uses: actions/checkout@v3
 
-    # Caching node_modules saves 50s on builds which don't modify dependencies.
-    # Compared to yarn caching, it saves an additional 27 seconds.
-    - name: cache node_modules
-      uses: actions/cache@v3
-      with:
-        path: /home/runner/work/duelyst/duelyst/node_modules
-        key: node-modules-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node-modules-
-
-    - name: enable corepack
-      run: corepack enable
+    - name: install pnpm
+      uses: pnpm/action-setup@v4
 
     - name: install node dependencies
-      run: yarn workspaces focus
+      run: pnpm install --frozen-lockfile
 
     - name: run database migrations
-      run: yarn migrate:latest
+      run: pnpm migrate:latest
       env:
         NODE_ENV: development
         POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"
 
     - name: run integration tests
-      run: yarn test:integration:misc
+      run: pnpm test:integration:misc
       env:
         REDIS_HOST: redis
         POSTGRES_CONNECTION: "pg://duelyst:duelyst@db/duelyst"

@@ -4,12 +4,12 @@ RUN apt update && apt -y install python3 make gcc g++
 
 WORKDIR /duelyst
 COPY package.json /duelyst/
-COPY .yarnrc.yml /duelyst/
-COPY yarn.lock /duelyst/
+COPY .npmrc /duelyst/
+COPY pnpm-lock.yaml /duelyst/
+COPY pnpm-workspace.yaml /duelyst/
 COPY packages /duelyst/packages
-RUN corepack enable
-RUN yarn set version berry
-RUN yarn install && yarn cache clean
+RUN npm install -g pnpm@10.12.1
+RUN pnpm install --frozen-lockfile && pnpm store prune
 
 COPY version.json /duelyst/
 COPY app/*.coffee /duelyst/app/
@@ -23,4 +23,4 @@ COPY server /duelyst/server
 COPY worker /duelyst/worker
 
 EXPOSE 3000
-ENTRYPOINT ["yarn", "api"]
+ENTRYPOINT ["pnpm", "api"]

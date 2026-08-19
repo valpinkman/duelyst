@@ -11,7 +11,7 @@ fi
 
 # Clean and reinstall dependencies.
 rm -rf node_modules
-yarn workspaces focus || exit 1
+pnpm install --frozen-lockfile || exit 1
 
 # Build the game client.
-NODE_ENV=staging yarn build:withallrsx || exit 1
+NODE_ENV=staging pnpm build:withallrsx || exit 1

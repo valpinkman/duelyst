@@ -47,14 +47,14 @@ directories commonly used when working on the game:
 
 For JavaScript code, we use ESLint to enforce code style.
 Its configuration can be found in `.eslintrc.json`.
-You can run the linter with `yarn lint:js`.
+You can run the linter with `pnpm lint:js`.
 You can automatically format JS code to meet these standards by running
-`yarn format:js`.
+`pnpm format:js`.
 
 For CoffeeScript code, we use CoffeeLint to enforce code style.
 Its configuration can be found in `coffeelint.json`.
-You can run linters with `yarn lint:coffee`, `yarn lint:coffee:app`, or
-`yarn lint:coffee:backend`.
+You can run linters with `pnpm lint:coffee`, `pnpm lint:coffee:app`, or
+`pnpm lint:coffee:backend`.
 
 #### Regarding JavaScript, CoffeeScript, and TypeScript
 
@@ -65,21 +65,21 @@ are considering replacing CoffeeScript with JavaScript (see
 We should also consider moving to TypeScript where possible.
 There is a fairly strict `tsconfig.json` in the repo which has been
 preconfigured for new code. After writing new TypeScript code, you can run
-`yarn tsc` to build it using this config.
+`pnpm tsc` to build it using this config.
 
 ## Running Tests <a id="tests" />
 
 We use `mocha` and `chai` to run unit and integration tests in the project. Both
-of these are triggered by `yarn`.
+of these are triggered by `pnpm`.
 
 To run unit tests:
 ```
-yarn test:unit
+pnpm test:unit
 ```
 
 To run integration tests:
 ```
-yarn test:integration
+pnpm test:integration
 ```
 
 ## Opening Pull Requests <a id="pull-requests" />
