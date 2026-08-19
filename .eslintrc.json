@@ -765,7 +765,8 @@
         "no-restricted-globals": "warn",
         "function-call-argument-newline": "warn",
         "no-unreachable-loop": "warn",
-        "operator-assignment": "warn"
+        "operator-assignment": "warn",
+        "prefer-spread": "warn"
       }
     }
   ]

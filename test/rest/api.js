@@ -12,7 +12,7 @@ const UsersModule = require('../../server/lib/data_access/users');
 const SDK = require('../../app/sdk/index');
 
 // configure where to run the tests against
-const api = require('../../server/express.coffee');
+const api = require('../../server/express');
 
 const { version } = require('../../version.json');
 

@@ -3,7 +3,7 @@ require('coffeescript/register');
 const { expect } = require('chai');
 const supertest = require('supertest');
 const jwt = require('jsonwebtoken');
-const api = require('../../server/express.coffee');
+const api = require('../../server/express');
 const { version } = require('../../version.json');
 
 const UsersModule = require('../../server/lib/data_access/users');

@@ -234,7 +234,9 @@ mocha + vitest + both builds + wire-format tests.
 
 ### Phase 6 — Server: build step + TS
 
-- [ ] 6.1 Introduce a real server build/run (tsx or tsc) coexisting with `coffeescript/register`; Dockerfiles updated.
+- [~] 6.1 Reframed: no TS on the server yet (JS-first policy while gulp lives), so no build
+  step is needed — the server now runs plain JS directly. A tsx/tsc build lands with the
+  TS rename pass.
 - [ ] 6.2 Convert in order: `server/redis/` → `server/routes/` → `server/lib/data_access/` →
   `worker/` → `game.coffee` / `single_player.coffee` last.
   - [x] 6.2a `server/redis/` (15 files). Landmine found & defused repo-wide: decaffeinate
@@ -257,8 +259,16 @@ mocha + vitest + both builds + wire-format tests.
     future correctness pass. api+worker rebuilt and boot-verified. — (this commit)
   - [x] 6.2d `worker/` (29 files): fully scripted, zero failures; rebuilt worker image boots,
     registers all jobs and processes them (only the expected dummy-Firebase credential
-    failure). — (this commit)
-- [ ] 6.3 Retire `coffeescript/register` from `bin/*` when no `.coffee` remains server-side.
+    failure).
+  - [x] 6.2e Server root: `api`, `express`, `http`, `shutdown`, `winston`, and the two socket
+    servers `game.coffee` (1.5k) + `single_player.coffee` (2.1k) — fully scripted, zero
+    failures. **The entire runtime (app + server + worker) is CoffeeScript-free.** Remaining
+    coffee: `cli/` + `scripts/` only (dead-ops dirs, deletion candidates). — (this commit)
+- [x] 6.3 `coffeescript/register` removed from all `bin/*` entrypoints; every service boots
+  and serves from freshly rebuilt images without it. The register hook now exists only in
+  test preludes (drop in 7.1), the gulpfile (dies in 4.5), and generate_packages (no longer
+  loads coffee but harmless). The `coffeescript` dependency itself goes when those do.
+  — (this commit)
 
 ### Phase 7 — Test & dependency endgame
 

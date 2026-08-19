@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — Phase 6 conversion done: entire runtime (app+server+worker) CoffeeScript-free;
+  coffeescript/register removed from bin; all services boot from rebuilt images.
 - 2026-08-19 — server/lib decaffeinated (6.2c); custom_errors hand-generated; 8 latent bugs
   catalogued in plan for a future correctness pass.
 - 2026-08-19 — server routes+middleware decaffeinated (6.2b); api boot-verified in container.
