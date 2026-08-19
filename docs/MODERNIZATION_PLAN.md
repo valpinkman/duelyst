@@ -170,8 +170,14 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
 
 ### Phase 5 — CoffeeScript → TypeScript (client + sdk)
 
-Order (mechanical first, god-objects last). Each bullet is many small commits:
-- [ ] 5.1 Leaf enums/lookups: `cardType`, `factionsLookup`, `racesLookup`, `rarityLookup`, `cardsLookup` → TS `as const`.
+Order (mechanical first, god-objects last). **While gulp lives (until 4.5), conversion targets
+decaffeinated JS** — browserify cannot bundle `.ts`; the `.js → .ts` rename is a later
+mechanical pass. Batch tool: `scripts/codemods/decaffeinate-batch.mjs` (decaffeinate →
+delete `.coffee` → repo-wide require-extension rewrite → eslint --fix); every batch gates on
+mocha + vitest + both builds + wire-format tests.
+- [x] 5.1 Leaf lookups → JS: `cardType`, `factionsLookup`, `racesLookup`, `rarityLookup`,
+  `cardsLookup`, `cardsLookupComplete` (6 files); `app/sdk/**/*.js` eslint override added
+  following the app/ui/app/view convention. — (this commit)
 - [ ] 5.2 Declarative modifiers & spells (~600 files) via scripted decaffeinate → `.ts` under a loose tsconfig.
 - [ ] 5.3 `actions/` (65), `validators/`, `helpers/`.
 - [ ] 5.4 `entities/`, `cards/card.coffee`, factories (watch `@type` vs `type:` and prototype defaults — see audit §3.1 risks).

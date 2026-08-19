@@ -138,6 +138,31 @@
     },
     {
       "files": [
+        "app/sdk/**/*.js"
+      ],
+      "rules": {
+        "consistent-return": "warn",
+        "guard-for-in": "warn",
+        "no-var": "warn",
+        "vars-on-top": "warn",
+        "block-scoped-var": "warn",
+        "no-redeclare": "warn",
+        "no-use-before-define": "warn",
+        "no-loop-func": "warn",
+        "no-restricted-syntax": "warn",
+        "no-mixed-operators": "warn",
+        "no-cond-assign": "warn",
+        "no-return-assign": "warn",
+        "no-multi-assign": "warn",
+        "no-shadow": "warn",
+        "prefer-const": "warn",
+        "prefer-destructuring": "warn",
+        "import/no-unresolved": "off",
+        "import/extensions": "off"
+      }
+    },
+    {
+      "files": [
         "app/tools/**/*.js"
       ],
       "rules": {

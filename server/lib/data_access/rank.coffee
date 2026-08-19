@@ -26,7 +26,7 @@ RankFactory = require '../../../app/sdk/rank/rankFactory'
 GameSession = require '../../../app/sdk/gameSession.coffee'
 UtilsGameSession = require '../../../app/common/utils/utils_game_session.coffee'
 CardFactory = require '../../../app/sdk/cards/cardFactory.coffee'
-Rarity = require '../../../app/sdk/cards/rarityLookup.coffee'
+Rarity = require '../../../app/sdk/cards/rarityLookup'
 
 class RankModule
 

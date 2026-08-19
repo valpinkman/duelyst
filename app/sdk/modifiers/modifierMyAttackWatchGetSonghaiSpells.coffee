@@ -1,6 +1,6 @@
 ModifierMyAttackWatch = require './modifierMyAttackWatch'
 CardType = require 'app/sdk/cards/cardType'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
 PutCardInHandAction = require 'app/sdk/actions/putCardInHandAction'
 GameFormat = require 'app/sdk/gameFormat'
 

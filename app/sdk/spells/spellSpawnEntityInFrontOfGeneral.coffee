@@ -1,5 +1,5 @@
 SpellSpawnEntity = require './spellSpawnEntity'
-CardType = require './../cards/cardType.coffee'
+CardType = require './../cards/cardType'
 
 class SpellSpawnEntityInFrontOfGeneral extends SpellSpawnEntity
 

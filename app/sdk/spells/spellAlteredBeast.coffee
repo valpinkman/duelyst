@@ -1,6 +1,6 @@
 SpellAspectBase = require './spellAspectBase'
-Cards = require 'app/sdk/cards/cardsLookup.coffee'
-Races = require 'app/sdk/cards/racesLookup.coffee'
+Cards = require 'app/sdk/cards/cardsLookup'
+Races = require 'app/sdk/cards/racesLookup'
 _ = require 'underscore'
 
 class SpellAlteredBeast extends SpellAspectBase

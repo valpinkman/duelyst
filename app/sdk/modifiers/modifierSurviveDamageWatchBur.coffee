@@ -2,8 +2,8 @@ _ = require 'underscore'
 ModifierSurviveDamageWatch =  require './modifierSurviveDamageWatch'
 PlayCardAsTransformAction = require 'app/sdk/actions/playCardAsTransformAction'
 RemoveAction = require 'app/sdk/actions/removeAction'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
-Races = require 'app/sdk/cards/racesLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
+Races = require 'app/sdk/cards/racesLookup'
 
 class ModifierSurviveDamageWatchBur extends ModifierSurviveDamageWatch
 

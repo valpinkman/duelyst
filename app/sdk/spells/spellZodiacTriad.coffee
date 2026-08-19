@@ -1,6 +1,6 @@
 Spell = require './spell'
 PutCardInHandAction = require 'app/sdk/actions/putCardInHandAction'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
 CardType = require 'app/sdk/cards/cardType'
 ModifierManaCostChange = require 'app/sdk/modifiers/modifierManaCostChange'
 GameFormat = require 'app/sdk/gameFormat'

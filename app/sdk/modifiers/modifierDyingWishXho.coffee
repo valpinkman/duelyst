@@ -2,7 +2,7 @@ ModifierDyingWish = require './modifierDyingWish'
 ModifierManaCostChange = require './modifierManaCostChange'
 PutCardInHandAction = require 'app/sdk/actions/putCardInHandAction'
 CardType = require 'app/sdk/cards/cardType'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
 
 class ModifierDyingWishXho extends ModifierDyingWish
 

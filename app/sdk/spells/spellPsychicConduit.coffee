@@ -1,5 +1,5 @@
 SpellApplyModifiers =  require './spellApplyModifiers.coffee'
-CardType = require 'app/sdk/cards/cardType.coffee'
+CardType = require 'app/sdk/cards/cardType'
 SpellFilterType = require './spellFilterType.coffee'
 SwapUnitAllegianceAction = require 'app/sdk/actions/swapUnitAllegianceAction.coffee'
 RefreshExhaustionAction =  require 'app/sdk/actions/refreshExhaustionAction.coffee'

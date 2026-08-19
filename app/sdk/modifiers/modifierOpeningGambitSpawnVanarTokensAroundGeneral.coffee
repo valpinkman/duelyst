@@ -5,7 +5,7 @@ CardType = require 'app/sdk/cards/cardType'
 Modifier = require './modifier'
 PlayCardSilentlyAction = require 'app/sdk/actions/playCardSilentlyAction'
 Cards = require 'app/sdk/cards/cardsLookupComplete'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
 
 class ModifierOpeningGambitSpawnVanarTokensAroundGeneral extends ModifierOpeningGambit
 

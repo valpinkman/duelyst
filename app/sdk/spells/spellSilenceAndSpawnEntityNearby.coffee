@@ -2,7 +2,7 @@ CardType = require 'app/sdk/cards/cardType'
 ModifierSilence =     require 'app/sdk/modifiers/modifierSilence'
 SpellSpawnEntityRandomlyAroundTarget = require './spellSpawnEntityRandomlyAroundTarget.coffee'
 _ = require 'underscore'
-Cards = require '../cards/cardsLookupComplete.coffee'
+Cards = require '../cards/cardsLookupComplete'
 UtilsGameSession = require '../../common/utils/utils_game_session.coffee'
 
 class SpellSilenceAndSpawnEntityNearby extends SpellSpawnEntityRandomlyAroundTarget

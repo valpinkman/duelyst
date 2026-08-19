@@ -99,6 +99,7 @@
     "commander": "2.8.1",
     "concurrent-transform": "^1.0.0",
     "csv-write-stream": "^1.0.0",
+    "decaffeinate": "^8.1.4",
     "del": "^2.2.0",
     "envify": "^3.4.0",
     "eslint": "^8.23.0",

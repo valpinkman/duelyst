@@ -1,7 +1,7 @@
 CONFIG = require '../../common/config'
 SpellSpawnEntity = require './spellSpawnEntity.coffee'
-CardType = require './../cards/cardType.coffee'
-Cards = require '../cards/cardsLookupComplete.coffee'
+CardType = require './../cards/cardType'
+Cards = require '../cards/cardsLookupComplete'
 UtilsGameSession = require '../../common/utils/utils_game_session.coffee'
 _ = require 'underscore'
 

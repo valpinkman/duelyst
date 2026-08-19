@@ -24,8 +24,8 @@
   const _ = require('underscore');
   const helpers = require('./helpers');
   const coffeScript = require('coffeescript/register');
-  const Cards = require('app/sdk/cards/cardsLookupComplete.coffee');
-  const FactionsLookup = require('app/sdk/cards/factionsLookup.coffee');
+  const Cards = require('app/sdk/cards/cardsLookupComplete');
+  const FactionsLookup = require('app/sdk/cards/factionsLookup');
   const FactionFactory = require('app/sdk/cards/factionFactory.coffee');
   const CodexChapters = require('app/sdk/codex/codexChapterLookup.coffee');
   const CosmeticsLookup = require('app/sdk/cosmetics/cosmeticsLookup.coffee');

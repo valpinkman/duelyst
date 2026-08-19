@@ -1,6 +1,6 @@
 ModifierDyingWish = require './modifierDyingWish'
 PutCardInHandAction = require 'app/sdk/actions/putCardInHandAction'
-Races = require 'app/sdk/cards/racesLookup.coffee'
+Races = require 'app/sdk/cards/racesLookup'
 
 class ModifierDyingWishDrawMechazorCard extends ModifierDyingWish
 

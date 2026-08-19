@@ -6,7 +6,7 @@ PlayCardSilentlyAction = require 'app/sdk/actions/playCardSilentlyAction'
 CardType = require 'app/sdk/cards/cardType'
 CONFIG = require 'app/common/config'
 Cards = require 'app/sdk/cards/cardsLookupComplete'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
 _ = require 'underscore'
 i18next = require 'i18next'
 

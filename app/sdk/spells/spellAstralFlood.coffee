@@ -1,7 +1,7 @@
 Spell = require './spell'
 PutCardInHandAction = require 'app/sdk/actions/putCardInHandAction'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
-Races = require 'app/sdk/cards/racesLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
+Races = require 'app/sdk/cards/racesLookup'
 
 class SpellAstralFlood extends Spell
 

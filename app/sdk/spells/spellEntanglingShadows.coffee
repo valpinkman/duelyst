@@ -1,6 +1,6 @@
 SpellSpawnEntity =   require './spellSpawnEntity.coffee'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
-Races = require 'app/sdk/cards/racesLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
+Races = require 'app/sdk/cards/racesLookup'
 PlayCardAction = require 'app/sdk/actions/playCardAction'
 Cards = require 'app/sdk/cards/cardsLookupComplete'
 

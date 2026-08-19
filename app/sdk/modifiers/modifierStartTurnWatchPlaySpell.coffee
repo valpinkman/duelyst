@@ -7,7 +7,7 @@ PlayCardAction = require 'app/sdk/actions/playCardAction'
 CardType = require 'app/sdk/cards/cardType'
 CONFIG = require 'app/common/config'
 Cards = require 'app/sdk/cards/cardsLookupComplete'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
 _ = require 'underscore'
 
 class ModifierStartTurnWatchPlaySpell extends ModifierStartTurnWatch

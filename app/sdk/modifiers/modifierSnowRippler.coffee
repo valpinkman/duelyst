@@ -1,8 +1,8 @@
 UtilsGameSession = require 'app/common/utils/utils_game_session'
 ModifierDealDamageWatch = require './modifierDealDamageWatch'
 PutCardInHandAction = require 'app/sdk/actions/putCardInHandAction'
-Factions = require 'app/sdk/cards/factionsLookup.coffee'
-Races = require 'app/sdk/cards/racesLookup.coffee'
+Factions = require 'app/sdk/cards/factionsLookup'
+Races = require 'app/sdk/cards/racesLookup'
 i18next = require 'i18next'
 
 class ModifierSnowRippler extends ModifierDealDamageWatch
