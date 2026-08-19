@@ -6,6 +6,7 @@ const CONFIG = require('app/common/config');
 const EventBus = require('app/common/eventbus');
 const EVENTS = require('app/common/event_types');
 const SDK = require('app/sdk');
+const NetworkManager = require('app/networkManager');
 const DATA = require('app/data');
 const Promise = require('bluebird');
 const _ = require('underscore');
@@ -1429,7 +1430,7 @@ var GameLayer = FXCompositeLayer.extend({
     this.skipShowActionCardSequence();
     this.stopShowingInspectCard();
     this.updateReadinessTagForAllEntities();
-    SDK.NetworkManager.getInstance().broadcastGameEvent({ type: EVENTS.network_game_mouse_clear, timestamp: Date.now() });
+    NetworkManager.getInstance().broadcastGameEvent({ type: EVENTS.network_game_mouse_clear, timestamp: Date.now() });
   },
 
   updateCurrentPlayer() {
@@ -6224,7 +6225,7 @@ var GameLayer = FXCompositeLayer.extend({
             hoverEventData.player1SignatureCard = true;
           }
         }
-        SDK.NetworkManager.getInstance().broadcastGameEvent(hoverEventData);
+        NetworkManager.getInstance().broadcastGameEvent(hoverEventData);
       }
 
       // show hover as needed
@@ -6338,7 +6339,7 @@ var GameLayer = FXCompositeLayer.extend({
 
         if (selectionChanged) {
           // broadcast the selection during mulligan
-          SDK.NetworkManager.getInstance().broadcastGameEvent({
+          NetworkManager.getInstance().broadcastGameEvent({
             type: EVENTS.network_game_select,
             timestamp: Date.now(),
             handIndex: cardNode.getHandIndex(),
@@ -6465,7 +6466,7 @@ var GameLayer = FXCompositeLayer.extend({
 
       // broadcast hover position
       if (this._player.getHoverDirty()) {
-        SDK.NetworkManager.getInstance().broadcastGameEvent({
+        NetworkManager.getInstance().broadcastGameEvent({
           type: EVENTS.network_game_hover,
           timestamp: Date.now(),
           boardPosition: this._player.getMouseBoardPosition(),

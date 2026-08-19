@@ -4,6 +4,7 @@ const UtilsEnv = require('app/common/utils/utils_env');
 const Scene = require('app/view/Scene');
 const GameLayer = require('app/view/layers/game/GameLayer');
 const SDK = require('app/sdk');
+const NetworkManager = require('app/networkManager');
 const PackageManager = require('app/ui/managers/package_manager');
 const _ = require('underscore');
 
@@ -353,15 +354,15 @@ var PERF = {
     const action_response_stats = PERF.stats_by_id['Server Action Response (ms)'] = new Performance_Stats(1000);
 
     // reference original methods
-    const method_broadcastGameEvent = PERF._method_broadcastGameEvent = SDK.NetworkManager.getInstance().broadcastGameEvent;
+    const method_broadcastGameEvent = PERF._method_broadcastGameEvent = NetworkManager.getInstance().broadcastGameEvent;
 
     // replace original methods
     PERF.step_timestamp = performance.now();
-    SDK.NetworkManager.getInstance().broadcastGameEvent = function (eventData) {
+    NetworkManager.getInstance().broadcastGameEvent = function (eventData) {
       const timestamp = performance.now();
 
       // call original method
-      const validForBroadcast = method_broadcastGameEvent.call(SDK.NetworkManager.getInstance(), eventData);
+      const validForBroadcast = method_broadcastGameEvent.call(NetworkManager.getInstance(), eventData);
 
       // valid step broadcast
       if (validForBroadcast) {
@@ -374,7 +375,7 @@ var PERF = {
 
       return validForBroadcast;
     };
-    SDK.NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_event, PERF._on_game_event, PERF);
+    NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_event, PERF._on_game_event, PERF);
   },
 
   _on_game_event(eventData) {
@@ -390,10 +391,10 @@ var PERF = {
 
   _stop_tracking_network() {
     if (PERF._method_broadcastGameEvent != null) {
-      SDK.NetworkManager.getInstance().broadcastGameEvent = PERF._method_broadcastGameEvent;
+      NetworkManager.getInstance().broadcastGameEvent = PERF._method_broadcastGameEvent;
       PERF._method_broadcastGameEvent = null;
     }
-    SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_event, PERF._on_game_event, PERF);
+    NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_event, PERF._on_game_event, PERF);
     PERF.step_timestamp = null;
   },
 

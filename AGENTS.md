@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — Phase 2 complete: barrel is app/sdk/index.coffee; dependency scan confirms
+  sdk+common have zero edges to client/server/config.
 - 2026-08-19 — utils_ui moved app/common → app/ui; app/common has no client-directed requires.
 - 2026-08-19 — app/ no longer requires config/config.js anywhere (factories + progression_manager
   use the process.env.ALL_CARDS_AVAILABLE pattern).

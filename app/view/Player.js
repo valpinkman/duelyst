@@ -3,6 +3,7 @@ const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
 const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
+const NetworkManager = require('app/networkManager');
 const RSX = require('app/data/resources');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const audio_engine = require('app/audio/audio_engine');
@@ -642,7 +643,7 @@ const Player = cc.Class.extend({
         if (this.selectedEntityNode != null) {
           selectEventData.cardIndex = this.selectedEntityNode.getSdkCard().getIndex();
         }
-        SDK.NetworkManager.getInstance().broadcastGameEvent(selectEventData);
+        NetworkManager.getInstance().broadcastGameEvent(selectEventData);
       }
     }
   },
@@ -774,7 +775,7 @@ const Player = cc.Class.extend({
         const rootCard = this.followupCard.getRootCard();
         const playedByAction = rootCard && rootCard.getAppliedToBoardByAction();
         if (playedByAction instanceof SDK.PlayCardFromHandAction) {
-          SDK.NetworkManager.getInstance().broadcastGameEvent({
+          NetworkManager.getInstance().broadcastGameEvent({
             type: EVENTS.network_game_select, timestamp: Date.now(), handIndex: playedByAction.getIndexOfCardInHand(), intentType: this.getIntentType(),
           });
         } else if (playedByAction instanceof SDK.PlaySignatureCardAction) {
@@ -788,10 +789,10 @@ const Player = cc.Class.extend({
           } else {
             selectEventData.player1SignatureCard = true;
           }
-          SDK.NetworkManager.getInstance().broadcastGameEvent(selectEventData);
+          NetworkManager.getInstance().broadcastGameEvent(selectEventData);
         }
       } else {
-        SDK.NetworkManager.getInstance().broadcastGameEvent({ type: EVENTS.network_game_select, timestamp: Date.now(), intentType: this.getIntentType() });
+        NetworkManager.getInstance().broadcastGameEvent({ type: EVENTS.network_game_select, timestamp: Date.now(), intentType: this.getIntentType() });
       }
     }
   },
@@ -919,7 +920,7 @@ const Player = cc.Class.extend({
             selectEventData.player1SignatureCard = true;
           }
         }
-        SDK.NetworkManager.getInstance().broadcastGameEvent(selectEventData);
+        NetworkManager.getInstance().broadcastGameEvent(selectEventData);
       }
     }
   },
@@ -993,7 +994,7 @@ const Player = cc.Class.extend({
             gameLayer.updateMouseCursor(true);
 
             // broadcast event over network if i'm the source of this event
-            SDK.NetworkManager.getInstance().broadcastGameEvent({
+            NetworkManager.getInstance().broadcastGameEvent({
               type: EVENTS.network_game_hover,
               timestamp: Date.now(),
               cardIndex: this.getMouseOverSdkEntityIndex(),
@@ -1129,7 +1130,7 @@ const Player = cc.Class.extend({
             hoverEventData.handIndex = this.mouseOverHandIndex;
           }
         }
-        SDK.NetworkManager.getInstance().broadcastGameEvent(hoverEventData);
+        NetworkManager.getInstance().broadcastGameEvent(hoverEventData);
       }
     }
   },

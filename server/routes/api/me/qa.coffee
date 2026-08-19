@@ -25,7 +25,7 @@ DataAccessHelpers = require '../../../lib/data_access/helpers'
 Logger = require '../../../../app/common/logger.coffee'
 Errors = require '../../../lib/custom_errors'
 # sdk
-SDK = require '../../../../app/sdk.coffee'
+SDK = require '../../../../app/sdk'
 FactionFactory = require '../../../../app/sdk/cards/factionFactory'
 RankFactory = require '../../../../app/sdk/rank/rankFactory.coffee'
 GiftCrateLookup = require '../../../../app/sdk/giftCrates/giftCrateLookup.coffee'

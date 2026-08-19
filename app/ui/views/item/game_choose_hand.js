@@ -2,6 +2,7 @@
 
 var EVENTS = require('app/common/event_types');
 var SDK = require('app/sdk');
+const NetworkManager = require('app/networkManager');
 var Animations = require('app/ui/views/animations');
 var GameChooseHandTemplate = require('app/ui/templates/item/game_choose_hand.hbs');
 
@@ -38,11 +39,11 @@ var GameChooseHandItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onShow: function () {
-    this.listenTo(SDK.NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this._updateOpponentConnection);
+    this.listenTo(NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this._updateOpponentConnection);
   },
 
   _updateOpponentConnection: function () {
-    if (SDK.NetworkManager.getInstance().isOpponentConnected) {
+    if (NetworkManager.getInstance().isOpponentConnected) {
       this.ui.$opponentConnecting.removeClass('active');
       this.ui.$opponentConnected.addClass('active');
     } else {

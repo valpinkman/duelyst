@@ -3,6 +3,7 @@
 'use strict';
 
 var SDK = require('app/sdk');
+const NetworkManager = require('app/networkManager');
 var _ = require('underscore');
 var CONFIG = require('app/common/config');
 var EVENTS = require('app/common/event_types');
@@ -370,7 +371,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
         var emoteTimestamp = Date.now();
         if (this._emoteSentAt + CONFIG.EMOTE_DELAY * 1000.0 <= emoteTimestamp) {
           this._emoteSentAt = emoteTimestamp;
-          SDK.NetworkManager.getInstance().broadcastGameEvent({
+          NetworkManager.getInstance().broadcastGameEvent({
             type: EVENTS.show_emote,
             id: emoteId,
             playerId: this.model.get('playerId'),

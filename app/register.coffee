@@ -112,7 +112,7 @@ App.main = ->
       # App.cleanupGame()
 
       # # always make sure we're disconnected from the last game
-      # SDK.NetworkManager.getInstance().disconnect()
+      # NetworkManager.getInstance().disconnect()
 
       # # reset routes to main
       # NavigationManager.getInstance().resetRoutes()

@@ -7,7 +7,7 @@ const Promise = require('bluebird');
 
 const CONFIG = require('../../../../app/common/config');
 const Logger = require('../../../../app/common/logger.coffee');
-const SDK = require('../../../../app/sdk.coffee');
+const SDK = require('../../../../app/sdk/index.coffee');
 const BeginnerAbyssianChallenge2 = require('../../../../app/sdk/challenges/abyssian/BeginnerAbyssianChallenge2.coffee');
 const BeginnerSonghaiChallenge1 = require('../../../../app/sdk/challenges/songhai/BeginnerSonghaiChallenge1.coffee');
 const BeginnerMagmarChallenge2 = require('../../../../app/sdk/challenges/magmar/BeginnerMagmarChallenge2.coffee');

@@ -8,7 +8,7 @@ const { expect } = require('chai');
 
 const CONFIG = require('../../../../app/common/config');
 const Logger = require('../../../../app/common/logger.coffee');
-const SDK = require('../../../../app/sdk.coffee');
+const SDK = require('../../../../app/sdk/index.coffee');
 const UtilsSDK = require('../../../utils/utils_sdk');
 
 // disable the logger for cleaner test output

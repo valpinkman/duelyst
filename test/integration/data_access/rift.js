@@ -18,7 +18,7 @@ const FirebasePromises = require('../../../server/lib/firebase_promises.coffee')
 const config = require('../../../config/config');
 const CONFIG = require('../../../app/common/config');
 const Logger = require('../../../app/common/logger.coffee');
-const SDK = require('../../../app/sdk.coffee');
+const SDK = require('../../../app/sdk/index.coffee');
 const knex = require('../../../server/lib/data_access/knex.coffee');
 const generatePushId = require('../../../app/common/generate_push_id');
 

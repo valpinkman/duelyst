@@ -7,7 +7,7 @@ const _ = require('underscore');
 
 const CONFIG = require('../../../../app/common/config');
 const Logger = require('../../../../app/common/logger.coffee');
-const SDK = require('../../../../app/sdk.coffee');
+const SDK = require('../../../../app/sdk/index.coffee');
 const CardFactory = require('../../../../app/sdk/cards/cardFactory.coffee');
 const UtilsSDK = require('../../../utils/utils_sdk');
 const UsableDecks = require('../../../../server/ai/decks/usable_decks');

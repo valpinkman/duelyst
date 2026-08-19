@@ -15,7 +15,7 @@ const DecksModule = require('../../../server/lib/data_access/decks.coffee');
 const FirebasePromises = require('../../../server/lib/firebase_promises.coffee');
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger.coffee');
-const SDK = require('../../../app/sdk.coffee');
+const SDK = require('../../../app/sdk/index.coffee');
 const knex = require('../../../server/lib/data_access/knex.coffee');
 
 // disable the logger for cleaner test output

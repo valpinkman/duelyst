@@ -19,7 +19,7 @@ const FirebasePromises = require('../../../server/lib/firebase_promises.coffee')
 const generatePushId = require('../../../app/common/generate_push_id');
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger.coffee');
-const SDK = require('../../../app/sdk.coffee');
+const SDK = require('../../../app/sdk/index.coffee');
 const knex = require('../../../server/lib/data_access/knex.coffee');
 const FirstReferralPurchaseAchievement = require('../../../app/sdk/achievements/referralBasedAchievements/firstReferralPurchaseAchievement.coffee');
 

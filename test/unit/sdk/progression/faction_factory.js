@@ -6,7 +6,7 @@ const Promise = require('bluebird');
 const _ = require('underscore');
 const config = require('../../../../config/config');
 const Logger = require('../../../../app/common/logger.coffee');
-const SDK = require('../../../../app/sdk.coffee');
+const SDK = require('../../../../app/sdk/index.coffee');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

@@ -17,7 +17,7 @@ request = require 'superagent'
 # Our modules
 shutdownLib = require './shutdown'
 StarterAI = require './ai/starter_ai'
-SDK = require '../app/sdk.coffee'
+SDK = require '../app/sdk'
 Logger = require '../app/common/logger.coffee'
 EVENTS = require '../app/common/event_types'
 UtilsGameSession = require '../app/common/utils/utils_game_session.coffee'

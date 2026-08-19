@@ -11,7 +11,7 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 2.5 — move the `app/sdk.coffee` barrel inside `app/sdk/`.
+- **Next step:** 3.1 — golden-file serialization guard rails (before any file moves).
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -65,7 +65,7 @@ step it describes, so it can never drift from the code.
   connected); `game` (8001), `sp` (8000) and `worker` boot (worker's rotate-bosses job fails
   only on the dummy Firebase key — expected without real creds). — (this commit)
 
-### Phase 2 — Decouple the SDK (small, independent commits)
+### Phase 2 — Decouple the SDK ✅
 
 - [x] 2.1 `networkManager.coffee` moved out of the SDK to `app/networkManager.coffee` (client
   layer). The one sdk→network edge (`gameSession.submitExplicitAction` broadcasting a step) is
@@ -85,8 +85,22 @@ step it describes, so it can never drift from the code.
   consumer paths updated. `app/common` now has zero client-directed requires. — (this commit)
 - [x] 2.4 `app/common/chroma.js` requires `@counterplay/chromajs` by name (resolves through the
   pnpm workspace link instead of a relative path into `packages/`). — (this commit)
-- [ ] 2.5 Move the `app/sdk.coffee` barrel inside `app/sdk/` (leave a re-export shim; ~29 server requires + 154 client requires keep working).
-  *Accept for all:* dependency scan shows sdk+common have zero edges to client/server/config; baseline green.
+- [x] 2.5 Barrel moved to `app/sdk/index.coffee` (no shim needed: extension-less
+  `require 'app/sdk'` hits it via directory resolution in node and browserify). Codemod
+  `scripts/codemods/sdk-barrel-move.js`: root-absolute `app/sdk.coffee` → `app/sdk`; relative
+  `../…/app/sdk.coffee` → `…/app/sdk/index.coffee` (keeps eslint import/extensions honest);
+  barrel no longer exports `SDK.NetworkManager` — its 8 consumer files require
+  `app/networkManager` directly. — (this commit)
+  *Phase 2 accepted:* fresh dependency scan confirms `app/sdk` + `app/common` have **zero**
+  edges to client, server, worker or config. Gate green (mocha 1287, vitest 1287, build,
+  lint, integration:misc 13).
+
+**Phase 2 summary:** the SDK is now a clean isomorphic island. Four cuts did it: networkManager
+extracted to the client layer with an injected step-submitter hook on GameSession (2.1); the
+server convict module out of factories/managers via the established `process.env` pattern (2.2);
+utils_ui relocated to `app/ui` where all its consumers live (2.3); chroma by package name (2.4);
+barrel inside `app/sdk/` minus its client-directed export (2.5). Nothing moved that
+`generate_packages.js` parses; wire format untouched. Ready for Phase 3's package lift.
 
 ### Phase 3 — `packages/sdk`
 

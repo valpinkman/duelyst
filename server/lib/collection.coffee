@@ -3,7 +3,7 @@ Promise = require 'bluebird'
 
 CONFIG = require '../../app/common/config'
 Logger = require '../../app/common/logger.coffee'
-SDK = require '../../app/sdk.coffee'
+SDK = require '../../app/sdk'
 InventoryModule = require './data_access/inventory.coffee'
 knex = require './data_access/knex.coffee'
 

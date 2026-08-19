@@ -31,11 +31,12 @@ PKGS = window.PKGS = require 'app/data/packages'
 EventBus = window.EventBus = require 'app/common/eventbus'
 EVENTS = require 'app/common/event_types'
 SDK = window.SDK = require 'app/sdk'
+NetworkManager = require 'app/networkManager'
 
 # Wire the SDK's network hook: non-authoritative game sessions hand submitted
 # steps to the NetworkManager for transmission (the SDK itself is network-free).
 SDK.GameSession.setStepSubmitter (eventData) ->
-  SDK.NetworkManager.getInstance().broadcastGameEvent(eventData)
+  NetworkManager.getInstance().broadcastGameEvent(eventData)
 Analytics = window.Analytics = require 'app/common/analytics'
 AnalyticsUtil = require 'app/common/analyticsUtil'
 UtilsJavascript = require 'app/common/utils/utils_javascript'
@@ -537,7 +538,7 @@ App.main = ->
       App.cleanupGame()
 
       # always make sure we're disconnected from the last game
-      SDK.NetworkManager.getInstance().disconnect()
+      NetworkManager.getInstance().disconnect()
 
       # reset routes to main
       NavigationManager.getInstance().resetRoutes()
@@ -1321,7 +1322,7 @@ App._spectateGame = (e) ->
     joinGamePromise = App._subscribeToJoinGameEventsPromise()
 
     # join game and if a game server is assigned to this listing, connect there
-    SDK.NetworkManager.getInstance().connect(
+    NetworkManager.getInstance().connect(
       gameListingData["game_type"],
       gameListingData["game_id"],
       playerId,
@@ -1905,15 +1906,15 @@ App._startGameForReplay = (replayData) ->
 # --- Game Connecting ---- #
 #
 App._unsubscribeFromJoinGameEvents = () ->
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.join_game)
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.reconnect_failed)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.join_game)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.reconnect_failed)
 
 App._subscribeToJoinGameEventsPromise = () ->
   App._unsubscribeFromJoinGameEvents()
 
   return new Promise((resolve, reject) ->
     # wait for join_game event
-    SDK.NetworkManager.getInstance().getEventBus().once(EVENTS.join_game, (response) ->
+    NetworkManager.getInstance().getEventBus().once(EVENTS.join_game, (response) ->
       # handle response
       if response.error
         reject(response.error)
@@ -1921,7 +1922,7 @@ App._subscribeToJoinGameEventsPromise = () ->
         resolve(response.gameSessionData)
     )
 
-    SDK.NetworkManager.getInstance().getEventBus().once(EVENTS.spectate_game, (response) ->
+    NetworkManager.getInstance().getEventBus().once(EVENTS.spectate_game, (response) ->
       # handle response
       if response.error
         reject(response.error)
@@ -1930,7 +1931,7 @@ App._subscribeToJoinGameEventsPromise = () ->
     )
 
     # wait for reconnect_failed event
-    SDK.NetworkManager.getInstance().getEventBus().once(EVENTS.reconnect_failed, () ->
+    NetworkManager.getInstance().getEventBus().once(EVENTS.reconnect_failed, () ->
       # reject and cancel reconnect
       reject("Reconnect failed!")
     )
@@ -1956,7 +1957,7 @@ App._joinGame = (gameListingData, loadMyGameResourcesPromise, loadOpponentGameRe
     joinGamePromise = App._subscribeToJoinGameEventsPromise()
 
     # join game and if a game server is assigned to this listing, connect there
-    SDK.NetworkManager.getInstance().connect(
+    NetworkManager.getInstance().connect(
       gameListingData["game_type"],
       gameListingData["game_id"],
       ProfileManager.getInstance().get('id'),
@@ -2065,7 +2066,7 @@ App._onNetworkGameEvent = (eventData) ->
 
 App._onOpponentConnectionStatusChanged = (eventData) ->
   # when opponent disconnects, force mouse clear
-  if !SDK.NetworkManager.getInstance().isOpponentConnected
+  if !NetworkManager.getInstance().isOpponentConnected
     Scene.getInstance().getGameLayer()?.onNetworkMouseClear({type:EVENTS.network_game_mouse_clear, timestamp: Date.now()})
 
 App._onNetworkGameError = (errorData) ->
@@ -2078,7 +2079,7 @@ App._onGameServerShutdown = (errorData) ->
     lastGameModel.set('gameServer',ip)
 
     # reconnect
-    SDK.NetworkManager.getInstance().reconnect(ip)
+    NetworkManager.getInstance().reconnect(ip)
 
     # show reconnecting
     return App._onReconnectToGame()
@@ -2399,7 +2400,7 @@ App._onGameOver = () ->
   # disconnect from game room on network side
   # defer it until the call stack clears so any actions that caused the game to be over get broadcast during the current JS tick
   _.defer () ->
-    SDK.NetworkManager.getInstance().disconnect()
+    NetworkManager.getInstance().disconnect()
 
 #
 # --- Game Turn Over---- #
@@ -3444,19 +3445,19 @@ App._unsubscribeFromGameLocalEvents = () ->
 
 App._subscribeToGameNetworkEvents = () ->
   Logger.module("APPLICATION").log "App._subscribeToGameNetworkEvents"
-  SDK.NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_event, App._onNetworkGameEvent, App)
-  SDK.NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_error, App._onNetworkGameError, App)
-  SDK.NetworkManager.getInstance().getEventBus().on(EVENTS.game_server_shutdown, App._onGameServerShutdown, App)
-  SDK.NetworkManager.getInstance().getEventBus().on(EVENTS.reconnect_to_game, App._onReconnectToGame, App)
-  SDK.NetworkManager.getInstance().getEventBus().on(EVENTS.opponent_connection_status_changed, App._onOpponentConnectionStatusChanged, App)
+  NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_event, App._onNetworkGameEvent, App)
+  NetworkManager.getInstance().getEventBus().on(EVENTS.network_game_error, App._onNetworkGameError, App)
+  NetworkManager.getInstance().getEventBus().on(EVENTS.game_server_shutdown, App._onGameServerShutdown, App)
+  NetworkManager.getInstance().getEventBus().on(EVENTS.reconnect_to_game, App._onReconnectToGame, App)
+  NetworkManager.getInstance().getEventBus().on(EVENTS.opponent_connection_status_changed, App._onOpponentConnectionStatusChanged, App)
 
 App._unsubscribeFromGameNetworkEvents = () ->
   Logger.module("APPLICATION").log "App._unsubscribeFromGameNetworkEvents"
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_event, App._onNetworkGameEvent, App)
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_error, App._onNetworkGameError, App)
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.game_server_shutdown, App._onGameServerShutdown, App)
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.reconnect_to_game, App._onReconnectToGame, App)
-  SDK.NetworkManager.getInstance().getEventBus().off(EVENTS.opponent_connection_status_changed, App._onOpponentConnectionStatusChanged, App)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_event, App._onNetworkGameEvent, App)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.network_game_error, App._onNetworkGameError, App)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.game_server_shutdown, App._onGameServerShutdown, App)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.reconnect_to_game, App._onReconnectToGame, App)
+  NetworkManager.getInstance().getEventBus().off(EVENTS.opponent_connection_status_changed, App._onOpponentConnectionStatusChanged, App)
 
 App.onVisibilityChange = () ->
   # TODO: look into why this causes errors

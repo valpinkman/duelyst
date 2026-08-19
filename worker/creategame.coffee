@@ -1,6 +1,6 @@
 ## ALL LOGIC FOR CREATING A GAME HERE
 ## SHOULD BE PLACE WHERE SDK IS USED
-SDK     = require '../app/sdk.coffee'
+SDK     = require '../app/sdk'
 RSX     = require '../app/data/resources.js'
 Logger     = require '../app/common/logger.coffee'
 _       = require 'underscore'

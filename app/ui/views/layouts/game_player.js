@@ -4,6 +4,7 @@ var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var SDK = require('app/sdk');
+const NetworkManager = require('app/networkManager');
 var Scene = require('app/view/Scene');
 var BottomDeckCardNode = require('app/view/nodes/cards/BottomDeckCardNode');
 var UtilsPosition = require('app/common/utils/utils_position');
@@ -180,7 +181,7 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
     // listen to global events
     this.listenTo(ProfileManager.getInstance().profile, 'change:showPlayerDetails', this.bindUser);
     this.listenTo(EventBus.getInstance(), EVENTS.resize, this.onResize);
-    this.listenTo(SDK.NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this.bindConnectionStatus);
+    this.listenTo(NetworkManager.getInstance().getEventBus(), EVENTS.opponent_connection_status_changed, this.bindConnectionStatus);
 
     // rebind player properties that do not require action state
     this.bindPlayerNonActionProperties();
@@ -395,7 +396,7 @@ var GamePlayerLayout = Backbone.Marionette.LayoutView.extend({
     // in non-multiplayer games or for my player, connection status is not relevant
     if (!SDK.GameType.isMultiplayerGameType(SDK.GameSession.getInstance().getGameType()) || SDK.GameSession.getInstance().getIsSpectateMode() || this.getSdkPlayer().getPlayerId() == SDK.GameSession.getInstance().getMyPlayerId()) {
       this.ui.$connectionStatus.remove();
-    } else if (SDK.NetworkManager.getInstance().isOpponentConnected) {
+    } else if (NetworkManager.getInstance().isOpponentConnected) {
       this.ui.$connectionStatus.addClass('connected');
       this.ui.$connectionStatus.attr('data-status-msg', i18next.t('game_ui.connected_label'));
     } else {
