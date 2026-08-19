@@ -598,7 +598,48 @@ server and worker. What remains is *typing* (5T.4), not converting.
   allowlisted with a pointer rather than hidden; fixing it changes user-visible quest names and
   belongs in a correctness pass.
   Not in CI yet: it needs a real Firebase project. Local-only for now.
-- [ ] Firebase RTDB: keep vs replace (shapes client/server boundary; decide before 7.2).
+- [x] **Firebase RTDB: KEEP** (owner, 2026-08-19). Settles the last open architectural question. The consequence is Phase 9 — the client SDK has to move off `firebase@2.0.3`.
+
+### Phase 9 — Client Firebase SDK: 2.0.3 → 12 (RTDB kept)
+
+**This is not a dependency bump.** Measured surface:
+
+| | |
+|---|---|
+| `firebase` client | **2.0.3** (2015) → 12.17.1; three API generations |
+| direct `require('firebase')` | 9 files |
+| files touching Firebase at all | 47 |
+| `Backbone.DuelystFirebase.Model/Collection` | **30 files, 53 usages** — all backed by `backfire` |
+| `backfire` | vendored **minified 8 KB build, no source in repo**; a Firebase-**2.x**-only Backbone binding |
+| live RTDB security rules | 21,869 bytes, **`auth.id` referenced 86 times** |
+
+**The hard constraint:** Firebase 2.x legacy auth tokens are only understood by the 2.x SDK.
+Today ONE JWT does double duty — `server/routes/session.ts` signs `{d:{id,username},v:0}` HS256
+with `firebase.legacyToken`, and the client both sends it as `Authorization: Bearer` (express-jwt,
+149 `req.user.d.id` reads) AND passes it to `fbRef.authWithCustomToken()`, where Firebase v2
+exposes `d` to the rules as `auth`. Any SDK upgrade forces a move to real Firebase custom tokens
+(`signInWithCustomToken`), whose claims arrive as `auth.uid` + `auth.token.*` — so **all 86
+`auth.id` references have to change**, on rules that guard live player data.
+*Spiked and confirmed*: `firebase-admin`'s `getAuth().createCustomToken(uid, {username})` mints
+the right thing (RS256, service-account-signed, `uid` + `claims.username`).
+
+Staged so each step is independently revertible and no step can lock players out:
+
+- [ ] 9.1 **Server mints a Firebase custom token alongside the existing API JWT.** Purely
+  additive — the API token is untouched, so the 149 `req.user.d.id` reads and express-jwt keep
+  working. Ship and verify before anything else moves.
+- [ ] 9.2 **Make the rules accept BOTH shapes** (`auth.id == $uid || auth.uid == $uid`, and
+  `auth.token.username` beside `auth.username`). This is what de-risks the whole migration: with
+  dual-accepting rules deployed, old and new clients both work, so 9.3 can be rolled back freely.
+  Deploy to `duelyst-ci` first and exercise it there. **Touches live rules — owner sign-off.**
+- [ ] 9.3 **Client to `firebase@12` + replace `backfire`.** backfire has no source, so its ~53
+  call sites need a replacement binding written against the modular API (a thin
+  `Backbone.DuelystFirebase` shim keeps the 30 files unchanged — port the binding, not the callers).
+  Auth becomes `signInWithCustomToken`.
+- [ ] 9.4 **Drop the legacy path**: remove the dual-accept branches from the rules and stop
+  minting the v2-shaped token for Firebase.
+
+*Sequencing note:* tier-2 deps (7.3) come after this, per owner.
 
 ## Decisions log
 
