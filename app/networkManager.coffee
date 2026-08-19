@@ -5,8 +5,7 @@ EVENTS = require 'app/common/event_types'
 Logger = require 'app/common/logger'
 CONFIG = require 'app/common/config'
 Storage = require 'app/common/storage'
-GameSession = require './gameSession'
-ApplyCardToBoardAction = require './actions/applyCardToBoardAction'
+GameSession = require 'app/sdk/gameSession'
 GameType = require 'app/sdk/gameType.coffee'
 
 class NetworkManager

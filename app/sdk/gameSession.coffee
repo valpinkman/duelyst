@@ -27,6 +27,16 @@ class GameSession
       @instance.terminate()
       @instance = null
 
+  # Injectable network hook (see app/networkManager.coffee). The SDK itself is
+  # network-agnostic: when a non-authoritative session submits an explicit
+  # action, the resulting step is handed to this callback for transmission.
+  # The browser client registers it at boot (application.coffee); servers and
+  # tests run authoritative sessions and never need it.
+  @_stepSubmitter: null
+
+  @setStepSubmitter: (submitter) ->
+    @_stepSubmitter = submitter
+
   # endregion INSTANCE
 
   # region CACHES
@@ -308,7 +318,6 @@ PlayerModifier = require './playerModifiers/playerModifier'
 ModifierFactory = require './modifiers/modifierFactory'
 GameStatus = require './gameStatus'
 Step = require './step'
-NetworkManager = require './networkManager'
 ChallengeCategory = require './challenges/challengeCategory'
 CosmeticsFactory = require './cosmetics/cosmeticsFactory'
 ModifierCustomSpawn = require './modifiers/modifierCustomSpawn'
@@ -1457,8 +1466,11 @@ class _GameSession extends SDKObject
           step = new Step(@, action.getOwnerId())
           step.setAction(action)
 
-          # send the step over the network
-          NetworkManager.getInstance().broadcastGameEvent({type:EVENTS.step, step: step})
+          # send the step over the network (via the injected submitter)
+          if GameSession._stepSubmitter?
+            GameSession._stepSubmitter({type:EVENTS.step, step: step})
+          else
+            Logger.module("SDK").error "GameSession.submitExplicitAction: no step submitter registered - step not transmitted"
 
         return true
 

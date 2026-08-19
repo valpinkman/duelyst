@@ -31,6 +31,11 @@ PKGS = window.PKGS = require 'app/data/packages'
 EventBus = window.EventBus = require 'app/common/eventbus'
 EVENTS = require 'app/common/event_types'
 SDK = window.SDK = require 'app/sdk'
+
+# Wire the SDK's network hook: non-authoritative game sessions hand submitted
+# steps to the NetworkManager for transmission (the SDK itself is network-free).
+SDK.GameSession.setStepSubmitter (eventData) ->
+  SDK.NetworkManager.getInstance().broadcastGameEvent(eventData)
 Analytics = window.Analytics = require 'app/common/analytics'
 AnalyticsUtil = require 'app/common/analyticsUtil'
 UtilsJavascript = require 'app/common/utils/utils_javascript'
