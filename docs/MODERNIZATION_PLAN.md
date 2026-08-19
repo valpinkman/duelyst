@@ -277,7 +277,11 @@ mocha + vitest + both builds + wire-format tests.
 - [ ] 7.1 Full mocha removal; vitest only; drop `app-module-path`/register preludes from all test files.
 - [ ] 7.2 Integration tests: revive against dockerized Postgres/Redis (+ Firebase decision below); get more than `misc` running in CI.
 - [ ] 7.3 Legacy dependency upgrades (bluebird→native promises, moment, underscore, kue, winston, express-jwt/jsonwebtoken, knex) — each its own step, after TS conversion of the code that uses them.
-- [ ] 7.4 Fold `desktop/` into the pnpm workspace; unpin Electron 2.
+- [x] 7.4 (workspace half) `desktop/` is a pnpm workspace member: own `yarn.lock` removed,
+  `electron` allowlisted in `pnpm.onlyBuiltDependencies` (binary installs, v21.4.4), the
+  build's `yarn install` shell-out now runs pnpm, docs updated. **Electron-2 unpinning left
+  open**: `desktop/gulp/desktop.js` still pins `electronVersion: '2.0.18'` for packaging —
+  needs a real packaging run to validate a bump (owner/QA, alongside 4.5). — (this commit)
 
 ### Later / optional
 

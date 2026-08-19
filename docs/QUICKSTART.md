@@ -107,15 +107,13 @@ with the server code.
 ## Building Desktop Clients <a id="desktop" />
 
 After building the app, the desktop clients can be built separately.
-Note: `desktop/` is not part of the pnpm workspace yet and still carries its
-own `yarn.lock` (its build shells out to `yarn install`); it will be folded into
-the workspace as part of the monorepo migration.
+`desktop/` is a pnpm workspace member; `pnpm install` at the repo root
+installs its dependencies (including Electron).
 ```bash
 cd desktop
-yarn install
 # replace <platform> with 'mac', 'windows', 'linux', or 'all'
-yarn build:<platform>
-yarn start:<platform>
+pnpm build:<platform>
+pnpm start:<platform>
 ```
 
 The compiled client will be in the `dist/src` directory.

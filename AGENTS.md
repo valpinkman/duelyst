@@ -12,9 +12,9 @@ gulp + browserify. **We are in the middle of modernizing the whole stack** — r
 - Use **pnpm** for everything. Never run `yarn` or `npm install`; never commit a
   `yarn.lock` / `package-lock.json`. The pinned version is in `package.json#packageManager`
   (corepack/proto/volta pick it up).
-- Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks). `desktop/` is
-  **not** in the workspace yet and still has its own `yarn.lock` — leave it alone unless
-  the task is about desktop.
+- Workspace: `pnpm-workspace.yaml` covers `packages/*` (vendored forks), the in-place members
+  `app/sdk` + `app/common`, and `desktop/` (Electron shell; `electron` is allowlisted in
+  `pnpm.onlyBuiltDependencies`).
 - Local packages are `workspace:*` deps; `resolutions` live under `pnpm.overrides`;
   packages that need build scripts go in `pnpm.onlyBuiltDependencies` (currently `bcrypt`).
 - If a dependency is required in code but missing from `package.json` (yarn used to hoist
@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — desktop/ folded into the pnpm workspace (yarn.lock removed, electron allowlisted);
+  Electron-2 packaging unpin deferred to a packaging QA run.
 - 2026-08-19 — Phase 6 conversion done: entire runtime (app+server+worker) CoffeeScript-free;
   coffeescript/register removed from bin; all services boot from rebuilt images.
 - 2026-08-19 — server/lib decaffeinated (6.2c); custom_errors hand-generated; 8 latent bugs

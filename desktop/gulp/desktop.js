@@ -20,7 +20,7 @@ const ncpAsync = Promise.promisify(ncp);
 
 // Installs the desktop's Yarn packages
 export function yarn(cb) {
-  execSync('yarn install');
+  execSync('pnpm install');
   cb();
 }
 
