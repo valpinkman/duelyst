@@ -503,13 +503,28 @@ server and worker. What remains is *typing* (5T.4), not converting.
      commented out at the top and fail as `No test suite found`. They need excluding from the
      vitest `include`, not fixing.
 
-  **`firebase` is now wired into CI** (this commit). The step is gated on
-  `env.FIREBASE_PROJECT_ID != ''`, so it runs when the four repo secrets exist and skips with
-  a GitHub notice when they do not — which also means PRs from forks (where secrets are never
-  exposed) skip it rather than failing. **Owner action to actually enable it:** set
-  `FIREBASE_URL`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` and `FIREBASE_PRIVATE_KEY`
-  as repository secrets. Prefer a Firebase project **dedicated to CI**: the suite writes to a
-  fixed `/test-ref-server` path, so two concurrent runs would race on it.
+  **`firebase` runs in CI, against its own database.** ✅ A dedicated Firebase project
+  **`duelyst-ci`** (project number 265598851007) with RTDB
+  `https://duelyst-ci-default-rtdb.firebaseio.com/` was created for this, so CI never touches
+  `duelyst-universe` — which matters because the suite writes to a fixed `/test-ref-server`
+  path that concurrent runs would race on. The four repo secrets (`FIREBASE_URL`,
+  `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`) are set from a
+  service-account key for `firebase-adminsdk-fbsvc@duelyst-ci.iam.gserviceaccount.com`.
+  Verified by dispatching the workflow: the step went from `skipped` to green, and the row it
+  wrote was read back out of the CI database independently.
+  The step stays gated on `env.FIREBASE_PROJECT_ID != ''` so PRs from forks — where GitHub
+  never exposes secrets — skip it rather than failing on a contributor's PR.
+  RTDB rules are left at the default `auth != null`; the suite authenticates as a service
+  account, and admin credentials bypass rules, so there is no reason to open the database.
+
+  *Provisioning notes, if this ever needs redoing:* `firebase database:instances:create`
+  refuses to create a project's FIRST instance ("run firebase init database"), and
+  `firebase init database` cannot run non-interactively because the location prompt has no
+  default. Both were sidestepped by calling the management API directly —
+  `POST firebasedatabase.googleapis.com/v1beta/projects/<id>/locations/<loc>/instances`
+  with `{"type":"DEFAULT_DATABASE"}`. The service-account key likewise came from
+  `POST iam.googleapis.com/v1/projects/<id>/serviceAccounts/<acct>/keys`. Note the Firebase
+  MCP's `firebase_init` writes local config ONLY — it enables the API but creates no instance.
   The `\n` footgun is gone: `duelyst_firebase_module` now un-escapes `\n` in the private key,
   so the same value works from Compose, a plain shell and an Actions secret alike (it was
   only Compose's `.env` interpolation that made this work before).

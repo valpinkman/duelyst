@@ -128,6 +128,11 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — the firebase integration suite runs in CI against its own project
+  (`duelyst-ci`, RTDB `duelyst-ci-default-rtdb`), so CI never writes to the database you play
+  on; four repo secrets set from a service-account key, step gated so fork PRs skip it.
+  Also: `duelyst_firebase_module` now un-escapes `\n` in the private key, so the same value
+  works from Compose, a plain shell and an Actions secret alike.
 - 2026-08-19 — firebase-admin 11 → 14 (advisories 148 → 128; its subtree 21 vulnerable paths
   → 1). v14 is fully modular, so the namespaced calls moved to `firebase-admin/app` +
   `firebase-admin/database` in the one seam (`server/lib/duelyst_firebase_module.ts`); the
