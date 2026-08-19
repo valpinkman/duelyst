@@ -17,7 +17,7 @@ changes.
 - [Quick Start Guide](QUICKSTART.md)
 - [Architecture Documentation](ARCHITECTURE.md)
 - [Open Issues](https://github.com/open-duelyst/duelyst/issues)
-- [Mocha Unit Testing API Reference](https://mochajs.org/api/)
+- [Vitest API Reference](https://vitest.dev/api/)
 - [Chai Assertion API Reference](https://www.chaijs.com/api/)
 
 ## Code Structure <a id="code-structure" />
@@ -69,8 +69,7 @@ preconfigured for new code. After writing new TypeScript code, you can run
 
 ## Running Tests <a id="tests" />
 
-We use `mocha` and `chai` to run unit and integration tests in the project. Both
-of these are triggered by `pnpm`.
+We use `vitest` (with `chai` assertions) to run unit and integration tests.
 
 To run unit tests:
 ```

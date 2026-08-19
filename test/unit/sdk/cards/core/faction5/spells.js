@@ -369,7 +369,6 @@ describe('faction5', () => {
 
     /* Test disabled: slow
     it('expect chrysalis burst eggs to hatch before owner\'s next turn', function() {
-      this.timeout(50000);
       for(var i = 0; i < 50; i++) {
         var player1Deck = [
           {id: SDK.Cards.Faction6.General}

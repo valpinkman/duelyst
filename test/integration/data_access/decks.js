@@ -25,8 +25,7 @@ describe('decks module', () => {
   let userId = null;
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {

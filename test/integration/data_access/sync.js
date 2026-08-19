@@ -25,13 +25,11 @@ const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newP
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('sync module', function () {
+describe('sync module', () => {
   const userId = null;
-  this.timeout(25000);
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')

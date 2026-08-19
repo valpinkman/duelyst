@@ -26,15 +26,13 @@ const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newP
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('gift crates module', function () {
+describe('gift crates module', () => {
   let userId = null;
-  this.timeout(25000);
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() =>
     // Logger.module("UNITTEST").log("creating user");
-    return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
+    UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
         // Logger.module("UNITTEST").log("created user ",userIdCreated);
         userId = userIdCreated;
@@ -49,8 +47,7 @@ describe('gift crates module', function () {
         })).catch((error) => {
         Logger.module('UNITTEST').log('unexpected error: ', error);
         throw error;
-      });
-  });
+      }));
 
   describe('unlockGiftCrate()', () => {
     const UNIT_TEST_CRATE = 'UNIT_TEST_CRATE';

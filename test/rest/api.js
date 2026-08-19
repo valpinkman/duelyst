@@ -29,8 +29,7 @@ const cardIds = [];
 
 describe('api', () => {
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(5000);
+  before(() => {
     const escapedEmail = fbUtil.escapeEmail('unittestdummy@gmail.com');
     return DuelystFirebase.connect().getRootRef()
       .bind({})
@@ -66,8 +65,7 @@ describe('api', () => {
   });
 
   // Will delete unittestdummy user created after tests run
-  after(function () {
-    this.timeout(5000);
+  after(() => {
     const escapedEmail = fbUtil.escapeEmail('unittestdummy@gmail.com');
     return DuelystFirebase.connect().getRootRef()
       .bind({})
@@ -103,41 +101,36 @@ describe('api', () => {
   });
 
   describe('login', () => {
-    it('expect 400 if not providing client version header', function (done) {
-      this.timeout(1500);
+    it('expect 400 if not providing client version header', () => new Promise((done) => {
       request
         .post('/session')
         .expect(400, done);
-    });
+    }));
 
-    it('expect 400 if not providing a valid login request parameters', function (done) {
-      this.timeout(1500);
+    it('expect 400 if not providing a valid login request parameters', () => new Promise((done) => {
       request
         .post('/session')
         .set('Client-Version', version)
         .expect(400, done);
-    });
+    }));
 
-    it('expect 401 if not providing valid login', function (done) {
-      this.timeout(1500);
+    it('expect 401 if not providing valid login', () => new Promise((done) => {
       request
         .post('/session')
         .set('Client-Version', version)
         .send({ email: 'thisemailshouldreallynotexist@notemail.com', password: 'password' })
         .expect(401, done);
-    });
+    }));
 
-    it('expect 401 if providing an invalid password', function (done) {
-      this.timeout(1500);
+    it('expect 401 if providing an invalid password', () => new Promise((done) => {
       request
         .post('/session')
         .set('Client-Version', version)
         .send({ email: 'unittestdummy@gmail.com', password: 'thisisnotthepassword' })
         .expect(401, done);
-    });
+    }));
 
-    it('expect a token when logging in with new account credentials', function (done) {
-      this.timeout(5000);
+    it('expect a token when logging in with new account credentials', () => new Promise((done) => {
       request
         .post('/session')
         .set('Client-Version', version)
@@ -151,21 +144,19 @@ describe('api', () => {
           token = res.body.token;
           done();
         });
-    });
+    }));
   });
 
   describe('register', () => {
-    it('does not allow you to register without a username', function (done) {
-      this.timeout(10000);
+    it('does not allow you to register without a username', () => new Promise((done) => {
       request
         .post('/session/register')
         .set('Client-Version', version)
         .send({ email: 'unittestdummy@gmail.com', password: 'password', keycode: 'kumite14' })
         .expect(400, done);
-    });
+    }));
 
-    it('expect a new user id when registering with valid credentials', function (done) {
-      this.timeout(30000);
+    it('expect a new user id when registering with valid credentials', () => new Promise((done) => {
       request
         .post('/session/register')
         .set('Client-Version', version)
@@ -173,45 +164,41 @@ describe('api', () => {
           email: 'unittestdummy@gmail.com', username: 'unittestdummy', password: 'password', keycode: 'kumite14',
         })
         .expect(200, done);
-    });
+    }));
   });
 
   describe('/api/me/', () => {
-    it('returns 404', function (done) {
-      this.timeout(2500);
+    it('returns 404', () => new Promise((done) => {
       request
         .get('/api')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .expect(404, done);
-    });
+    }));
   });
 
   describe('/api/me/securetest', () => {
-    it('returns 200 OK', function (done) {
-      this.timeout(2500);
+    it('returns 200 OK', () => new Promise((done) => {
       request
         .get('/api/me/securetest')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .expect(200, done);
-    });
+    }));
   });
 
   describe('/api/me/ladder/ranking', () => {
-    it('returns 200 OK', function (done) {
-      this.timeout(2500);
+    it('returns 200 OK', () => new Promise((done) => {
       request
         .post('/api/me/rank')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .expect(304, done);
-    });
+    }));
   });
 
   describe('/api/me/quests/daily/generate', () => {
-    it('returns 200 OK the first time', function (done) {
-      this.timeout(2500);
+    it('returns 200 OK the first time', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/generate')
         .set('Client-Version', version)
@@ -223,10 +210,9 @@ describe('api', () => {
           expect(res.body.quests.length).to.not.equal(0);
           done();
         });
-    });
+    }));
 
-    it('returns 304 the next time you try to call it', function (done) {
-      this.timeout(2500);
+    it('returns 304 the next time you try to call it', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/generate')
         .set('Client-Version', version)
@@ -236,12 +222,11 @@ describe('api', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
   });
 
   describe('/api/me/quests/daily/mulligan', () => {
-    it('returns 400 if you don\'t provide a quest index', function (done) {
-      this.timeout(2500);
+    it('returns 400 if you don\'t provide a quest index', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/mulligan')
         .set('Client-Version', version)
@@ -251,10 +236,9 @@ describe('api', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
 
-    it('returns 200 OK for mulliganing quest 1', function (done) {
-      this.timeout(2500);
+    it('returns 200 OK for mulliganing quest 1', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/mulligan')
         .set('Client-Version', version)
@@ -265,10 +249,9 @@ describe('api', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
 
-    it('returns 200 OK for mulliganing quest 2', function (done) {
-      this.timeout(2500);
+    it('returns 200 OK for mulliganing quest 2', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/mulligan')
         .set('Client-Version', version)
@@ -279,10 +262,9 @@ describe('api', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
 
-    it('returns 200 OK for mulliganing quest 3', function (done) {
-      this.timeout(2500);
+    it('returns 200 OK for mulliganing quest 3', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/mulligan')
         .set('Client-Version', version)
@@ -293,10 +275,9 @@ describe('api', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
 
-    it('returns 304 for subsequent attempts to mulligan a quest for the day', function (done) {
-      this.timeout(2500);
+    it('returns 304 for subsequent attempts to mulligan a quest for the day', () => new Promise((done) => {
       request
         .post('/api/me/quests/daily/mulligan')
         .set('Client-Version', version)
@@ -307,13 +288,12 @@ describe('api', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
   });
 
   describe('/api/me/booster_packs/buy', () => {
     // add some gold to the wallet
-    before(function () {
-      this.timeout(5000);
+    before(() => {
       const escapedEmail = fbUtil.escapeEmail('unittestdummy@gmail.com');
       return DuelystFirebase.connect().getRootRef()
         .then((fbRootRef) => UsersModule.userIdForEmail('unittestdummy@gmail.com'))
@@ -326,8 +306,7 @@ describe('api', () => {
         });
     });
 
-    it('returns 400 if not providing currency_type', function (done) {
-      this.timeout(2500);
+    it('returns 400 if not providing currency_type', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/buy')
         .set('Client-Version', version)
@@ -338,10 +317,9 @@ describe('api', () => {
           // Logger.module("UNITTEST").log(res.body);
           done();
         });
-    });
+    }));
 
-    it('returns 400 if providing currency_type=hard and no SKU', function (done) {
-      this.timeout(2500);
+    it('returns 400 if providing currency_type=hard and no SKU', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/buy')
         .set('Client-Version', version)
@@ -353,10 +331,9 @@ describe('api', () => {
           // Logger.module("UNITTEST").log(res.body);
           done();
         });
-    });
+    }));
 
-    it('returns 400 if providing currency_type=hard and bad SKU', function (done) {
-      this.timeout(2500);
+    it('returns 400 if providing currency_type=hard and bad SKU', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/buy')
         .set('Client-Version', version)
@@ -368,10 +345,9 @@ describe('api', () => {
           // Logger.module("UNITTEST").log(res.body);
           done();
         });
-    });
+    }));
 
-    it('returns 200 and booster data if buying with gold', function (done) {
-      this.timeout(2500);
+    it('returns 200 and booster data if buying with gold', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/buy')
         .set('Client-Version', version)
@@ -387,10 +363,9 @@ describe('api', () => {
           boosterId = res.body.id;
           done();
         });
-    });
+    }));
 
-    it('returns 403 if not enough gold', function (done) {
-      this.timeout(2500);
+    it('returns 403 if not enough gold', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/buy')
         .set('Client-Version', version)
@@ -403,12 +378,11 @@ describe('api', () => {
           expect(res.body).to.exist;
           done();
         });
-    });
+    }));
   });
 
   describe('/api/me/booster_packs/unlock', () => {
-    it('expect 400 if not providing a pack_id', function (done) {
-      this.timeout(2500);
+    it('expect 400 if not providing a pack_id', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/unlock')
         .set('Client-Version', version)
@@ -418,10 +392,9 @@ describe('api', () => {
           // Logger.module("UNITTEST").log(res.body);
           done();
         });
-    });
+    }));
 
-    it('expect 200 and unlocked booster data when providing valid booster id', function (done) {
-      this.timeout(2500);
+    it('expect 200 and unlocked booster data when providing valid booster id', () => new Promise((done) => {
       request
         .post('/api/me/booster_packs/unlock')
         .set('Client-Version', version)
@@ -439,42 +412,38 @@ describe('api', () => {
           });
           done();
         });
-    });
+    }));
   });
 
   describe('/api/me/shop/customer', () => {
-    it('returns 400 for not providing a card_token or card_last_four_digits', function (done) {
-      this.timeout(2500);
+    it('returns 400 for not providing a card_token or card_last_four_digits', () => new Promise((done) => {
       request
         .post('/api/me/shop/customer')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .expect(400, done);
-    });
+    }));
   });
 
   describe('/api/me/craft/disenchant', () => {
-    it('returns 400 for not providing card ids', function (done) {
-      this.timeout(2500);
+    it('returns 400 for not providing card ids', () => new Promise((done) => {
       request
         .post('/api/me/craft/disenchant')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .expect(400, done);
-    });
+    }));
 
-    it('returns 500 for providing any fixed card', function (done) {
-      this.timeout(2500);
+    it('returns 500 for providing any fixed card', () => new Promise((done) => {
       request
         .post('/api/me/craft/disenchant')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .send({ card_ids: [SDK.Cards.Faction1.SilverguardSquire, SDK.Cards.Faction1.SunstoneMaiden] })
         .expect(500, done);
-    });
+    }));
 
-    it('returns 200 and rewardData when giving valid ids', function (done) {
-      this.timeout(2500);
+    it('returns 200 and rewardData when giving valid ids', () => new Promise((done) => {
       request
         .post('/api/me/craft/disenchant')
         .set('Client-Version', version)
@@ -486,12 +455,11 @@ describe('api', () => {
           Logger.module('UNITTEST').log(res.body);
           done();
         });
-    });
+    }));
   });
 
   describe('/api/me/craft/card', () => {
-    before(function () {
-      this.timeout(5000);
+    before(() => {
       const escapedEmail = fbUtil.escapeEmail('unittestdummy@gmail.com');
       return DuelystFirebase.connect().getRootRef()
         .then((fbRootRef) => UsersModule.userIdForEmail('unittestdummy@gmail.com'))
@@ -508,27 +476,24 @@ describe('api', () => {
         });
     });
 
-    it('returns 400 for not providing a card', function (done) {
-      this.timeout(2500);
+    it('returns 400 for not providing a card', () => new Promise((done) => {
       request
         .post('/api/me/craft/card')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .expect(400, done);
-    });
+    }));
 
-    it('returns 500 for providing a fixed card', function (done) {
-      this.timeout(2500);
+    it('returns 500 for providing a fixed card', () => new Promise((done) => {
       request
         .post('/api/me/craft/card')
         .set('Client-Version', version)
         .set('Authorization', `Bearer ${token}`)
         .send({ card_id: SDK.Cards.Faction1.SilverguardSquire })
         .expect(500, done);
-    });
+    }));
 
-    it('returns 200 and rewardData when giving valid ids', function (done) {
-      this.timeout(2500);
+    it('returns 200 and rewardData when giving valid ids', () => new Promise((done) => {
       request
         .post('/api/me/craft/card')
         .set('Client-Version', version)
@@ -540,6 +505,6 @@ describe('api', () => {
           Logger.module('UNITTEST').log(res.body);
           done();
         });
-    });
+    }));
   });
 });

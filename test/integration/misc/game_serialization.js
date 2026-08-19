@@ -8,7 +8,7 @@ const SDK = require('../../../app/sdk/index');
 describe('game serialization', () => {
   describe('action serialization', () => {
     describe('actions with subactions', () => {
-      it('expect a deep copy with sub-actions when serialized', (done) => {
+      it('expect a deep copy with sub-actions when serialized', () => new Promise((done) => {
         function replacer(key, value) {
           if (key[0] === '_') return undefined;
           return value;
@@ -30,7 +30,7 @@ describe('game serialization', () => {
         expect(json3).to.equal(json);
 
         done();
-      });
+      }));
     });
   });
 });

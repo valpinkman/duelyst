@@ -26,9 +26,8 @@ const { SRankManager } = require('../../../server/redis/index');
 // for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('rank module', function () {
+describe('rank module', () => {
   let userId = null;
-  this.timeout(25000);
 
   const userIdsByUsername = {};
   const createOrWipeUser = function (userEmail, userName, initialRank, rankStartingAt) {
@@ -76,9 +75,7 @@ describe('rank module', function () {
   };
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
-
+  before(() => {
     SRankManager.unitTestMode = true;
 
     Logger.module('UNITTEST').log('creating user');
@@ -309,13 +306,12 @@ describe('rank module', function () {
 
     let initialRank = null;
 
-    before(function () {
+    before(() => {
       initialRank = {
         rank: 19,
         stars: 0,
         stars_required: SDK.RankFactory.starsNeededToAdvanceRank(19),
       };
-      this.timeout(5000);
       return knex('users').where('id', userId).update({
         rank: initialRank.rank,
         rank_stars: initialRank.stars,
@@ -524,20 +520,17 @@ describe('rank module', function () {
       return knex('users').where('id', userId).update(rankData);
     };
 
-    before(function () {
-      this.timeout(10000);
-      return Promise.all([
-        createOrWipeUser('unit-test-rating-1@duelyst.local', player1UserName, 20),
-        createOrWipeUser('unit-test-rating-2@duelyst.local', player2UserName, 20),
-        createOrWipeUser('unit-test-rating-3@duelyst.local', player3UserName, 0),
-        createOrWipeUser('unit-test-rating-4@duelyst.local', player4UserName, 0),
-      ]).spread((player1CreatedId, player2CreatedId, player3CreatedId, player4CreatedId) => {
-        player1Id = player1CreatedId;
-        player2Id = player2CreatedId;
-        player3Id = player3CreatedId;
-        player4Id = player4CreatedId;
-      });
-    });
+    before(() => Promise.all([
+      createOrWipeUser('unit-test-rating-1@duelyst.local', player1UserName, 20),
+      createOrWipeUser('unit-test-rating-2@duelyst.local', player2UserName, 20),
+      createOrWipeUser('unit-test-rating-3@duelyst.local', player3UserName, 0),
+      createOrWipeUser('unit-test-rating-4@duelyst.local', player4UserName, 0),
+    ]).spread((player1CreatedId, player2CreatedId, player3CreatedId, player4CreatedId) => {
+      player1Id = player1CreatedId;
+      player2Id = player2CreatedId;
+      player3Id = player3CreatedId;
+      player4Id = player4CreatedId;
+    }));
 
     after(() => {
     });
@@ -772,9 +765,7 @@ describe('rank module', function () {
     let startOfSeasonMoment = null;
 
     // Create or wipe 6 s-rank users then perform a series of matches
-    before(function () {
-      this.timeout(10000);
-
+    before(() => {
       const oldSeasonTime = moment().utc().year(1999).month(2); // Set to an old season so this can happen in isolation
       startOfSeasonMoment = moment(oldSeasonTime).utc().startOf('month');
       return Promise.all([
@@ -845,10 +836,7 @@ describe('rank module', function () {
   describe('claimRewardsForSeasonRank()', () => {
     const daySoFar = moment().utc();
 
-    before(function () {
-      this.timeout(25000);
-      return SyncModule.wipeUserData(userId).then(() => RankModule.cycleUserSeasonRanking(userId));
-    });
+    before(() => SyncModule.wipeUserData(userId).then(() => RankModule.cycleUserSeasonRanking(userId)));
 
     it('expect to NOT be able to claim rewards if no rank achieved last season', () => {
       const lastSeasonMoment = moment(daySoFar).subtract(1, 'month');

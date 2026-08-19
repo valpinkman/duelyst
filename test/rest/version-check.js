@@ -18,10 +18,8 @@ const Logger = require('../../app/common/logger');
 
 Logger.enabled = false;
 
-describe('version check', function () {
-  this.timeout(5000);
-
-  it(`is newer than the version in ${env}`, (done) => {
+describe('version check', () => {
+  it(`is newer than the version in ${env}`, () => new Promise((done) => {
     request
       .get('version')
       .set('Accept', 'application/json')
@@ -32,5 +30,5 @@ describe('version check', function () {
         expect(semver.gt(version, res.body.version)).to.be.true;
         done();
       });
-  });
+  }));
 });

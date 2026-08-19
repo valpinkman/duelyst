@@ -26,13 +26,11 @@ const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newP
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && true;
 
-describe('challenges module', function () {
+describe('challenges module', () => {
   let userId = null;
-  this.timeout(25000);
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -57,9 +55,7 @@ describe('challenges module', function () {
     let challengeType = null;
     const attemptedAt = null;
 
-    before(function () {
-      this.timeout(5000);
-
+    before(() => {
       // Create a test challenge
       challengeType = 'UnitTestChallenge';
 
@@ -89,9 +85,7 @@ describe('challenges module', function () {
     let challengeType = null;
     let completedAt = null;
 
-    before(function () {
-      this.timeout(5000);
-
+    before(() => {
       // Create a test challenge
       challengeType = 'UnitTestChallenge';
 
@@ -188,11 +182,8 @@ describe('challenges module', function () {
       }));
 
     describe('beginner challenge quests', () => {
-      before(function () {
-        this.timeout(5000);
-        return SyncModule.wipeUserData(userId)
-          .then(() => UsersModule.setNewPlayerFeatureProgression(userId, SDK.NewPlayerProgressionModuleLookup.Core, SDK.NewPlayerProgressionStageEnum.FirstGameDone.key)).then(() => QuestsModule.generateBeginnerQuests(userId));
-      });
+      before(() => SyncModule.wipeUserData(userId)
+        .then(() => UsersModule.setNewPlayerFeatureProgression(userId, SDK.NewPlayerProgressionModuleLookup.Core, SDK.NewPlayerProgressionStageEnum.FirstGameDone.key)).then(() => QuestsModule.generateBeginnerQuests(userId)));
 
       it('expect beginner challenge quests to progress with challenge completion', () => {
         const questChallenge1Type = 'UnitTestQuestChallenge1';
@@ -242,16 +233,13 @@ describe('challenges module', function () {
     const challengeId = 'unit-test-daily-challenge';
     const challengeDate = moment.utc('2016-05-01');
 
-    before(function () {
-      this.timeout(5000);
-
+    before(() =>
       // clear any existing data
-      return DuelystFirebase.connect().getRootRef()
+      DuelystFirebase.connect().getRootRef()
         .then((rootRef) => FirebasePromises.set(rootRef.child('daily-challenges').child(challengeDate.format('YYYY-MM-DD')), {
           challenge_id: challengeId,
           gold: 5,
-        })).then((rootRef) => SyncModule.wipeUserData(userId));
-    });
+        })).then((rootRef) => SyncModule.wipeUserData(userId)));
 
     it('expect marking invalid challenge ID as completed to ERROR out', () => ChallengesModule.markDailyChallengeAsCompleted(userId, 'invalid-challenge', null, challengeDate, challengeDate)
       .bind({})

@@ -27,8 +27,9 @@ pnpm install                                   # after clone or lockfile change
 pnpm tsc:chroma-js                             # required once before build (packages/chroma-js has no committed dist)
 FIREBASE_URL=https://test-url.firebaseio.com/ pnpm build   # client build -> dist/src (dummy URL fine unless you want to play)
 pnpm build:vite                                # JS bundle only (~2.4s); build:client:watch for the dev loop
-pnpm test:unit                                 # mocha, ~1300 tests, ~6s, no external services
+pnpm test:unit                                 # vitest, ~1300 tests, no external services
 pnpm test:integration:misc                     # the only integration suite that runs in CI (rest need Postgres/Redis/Firebase)
+pnpm typecheck                                 # tsc (loose config) - a METRIC during the migration, not a gate
 pnpm lint:js:all && pnpm lint:coffee:all       # eslint (airbnb-base) + coffeelint
 pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
 docker compose up                              # full local stack (rebuild images after source changes: they are NOT live-mounted)
@@ -116,12 +117,13 @@ How we work on it:
 - Coffee → TS: go through decaffeinate → JS first (that's how `app/ui`, `app/view`, `server/ai`
   were done), then rename to `.ts` under a *loose* tsconfig; the strict root `tsconfig.json` is
   the destination, not the starting point. Do not hand-rewrite files that a codemod can convert.
-- Tests: chai `expect` stays; convert `this.timeout()` → per-test options and `done` → async;
-  keep mocha and vitest both green until the switch is complete. `test/perf` is not a test suite.
+- Tests: vitest only (mocha retired). chai `expect` stays. `test/perf` is a Benchmark.js
+  harness, not a suite.
 - Don't move or rename `app/resources`, `app/vendor`, or the card factories without a plan for
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — mocha retired; vitest is the only test runner (unit + integration configs).
 - 2026-08-19 — server + worker are TypeScript. The whole runtime is now TS; a practice game
   plays end-to-end against it. Remaining work is typing, not converting.
 - 2026-08-19 — the entire client (app/) is TypeScript; only app/data data/generated files stay .js.

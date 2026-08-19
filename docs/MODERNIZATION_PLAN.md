@@ -410,7 +410,17 @@ server and worker. What remains is *typing* (5T.4), not converting.
 
 ### Phase 7 — Test & dependency endgame
 
-- [ ] 7.1 Full mocha removal; vitest only; drop `app-module-path`/register preludes from all test files.
+- [x] 7.1 **Mocha retired — vitest is the runner.** `scripts/codemods/mocha-to-vitest.mjs`
+  removed 123 `this.timeout()` calls (the budget moved to `testTimeout` in the configs, which
+  loosens per-suite limits into one global limit — a deliberate trade) and promise-wrapped 69
+  `done`-callback tests via AST ranges, preserving `done(err)` rejection semantics.
+  `vitest.config.mjs` (unit) + `vitest.integration.config.mjs` (integration, serial, longer
+  timeouts) replace `.mocharc.js`; mocha and eslint-plugin-mocha are gone; CI's duplicate
+  mocha job collapsed into one.
+  One more sloppy-`this` bug fixed: `hash_helpers` wrote `this.hash` inside a `.then` callback
+  — under mocha that hit the global object and was never read; in strict mode it throws.
+  `app-module-path` preludes stay for now: they are what lets the CommonJS suites resolve
+  root-absolute requires. — (this commit)
 - [~] 7.2 Spike done (in-container against compose Postgres/Redis, post-conversion): the
   `data_access` suites all LOAD and RUN — no module errors from the conversion. Two
   environment gates found: (1) test setup expects a seeded referral code — fix with

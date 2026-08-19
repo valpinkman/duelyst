@@ -7,18 +7,16 @@ const api = require('../../server/express');
 const request = supertest(api);
 
 describe('password reset', () => {
-  describe('POST /forgot', function () {
-    this.timeout(5000);
-
-    it('returns 200 and sends email if given user exists', (done) => {
+  describe('POST /forgot', () => {
+    it('returns 200 and sends email if given user exists', () => new Promise((done) => {
       request
         .post('/forgot')
         .set('Accept', 'application/json')
         .send({ email: 'unit-test@duelyst.local' })
         .expect(200, done);
-    });
+    }));
 
-    it('returns 400 if email is invalid', (done) => {
+    it('returns 400 if email is invalid', () => new Promise((done) => {
       request
         .post('/forgot')
         .set('Accept', 'application/json')
@@ -28,9 +26,9 @@ describe('password reset', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
 
-    it('returns 400 if user does not exist', (done) => {
+    it('returns 400 if user does not exist', () => new Promise((done) => {
       request
         .post('/forgot')
         .set('Accept', 'application/json')
@@ -40,6 +38,6 @@ describe('password reset', () => {
           expect(err).to.be.equal(null);
           done();
         });
-    });
+    }));
   });
 });

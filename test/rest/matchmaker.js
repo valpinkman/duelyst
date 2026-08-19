@@ -29,8 +29,7 @@ describe('matchmaking', () => {
   let matchmakingToken2;
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating users');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -68,8 +67,7 @@ describe('matchmaking', () => {
 
   // Get a token for player 1
   describe('login player 1', () => {
-    it('expect a player 1 token when logging in', function (done) {
-      this.timeout(5000);
+    it('expect a player 1 token when logging in', () => new Promise((done) => {
       request
         .post('/session')
         .set('Client-Version', version)
@@ -84,13 +82,12 @@ describe('matchmaking', () => {
           p1Id = jwt.decode(res.body.token).d.id;
           done();
         });
-    });
+    }));
   });
 
   // Get a token for player 2
   describe('login player 2', (done) => {
-    it('expect a player 2 token when logging in', function (done) {
-      this.timeout(5000);
+    it('expect a player 2 token when logging in', () => new Promise((done) => {
       request
         .post('/session')
         .set('Client-Version', version)
@@ -105,37 +102,37 @@ describe('matchmaking', () => {
           p2Id = jwt.decode(res.body.token).d.id;
           done();
         });
-    });
+    }));
   });
 
   describe('POST /matchmaking', () => {
-    it('returns 400 for if no client version', (done) => {
+    it('returns 400 for if no client version', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Accept', 'application/json')
         .send()
         .expect(400, done);
-    });
+    }));
 
-    it('returns 400 for if wrong client version', (done) => {
+    it('returns 400 for if wrong client version', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', 'wrong')
         .set('Accept', 'application/json')
         .send()
         .expect(400, done);
-    });
+    }));
 
-    it('returns 401 for if no login data', (done) => {
+    it('returns 401 for if no login data', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
         .set('Accept', 'application/json')
         .send()
         .expect(401, done);
-    });
+    }));
 
-    it('returns 400 if no matchmaking request data', (done) => {
+    it('returns 400 if no matchmaking request data', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -143,9 +140,9 @@ describe('matchmaking', () => {
         .set('Accept', 'application/json')
         .send()
         .expect(400, done);
-    });
+    }));
 
-    it('returns 400 with invalid deck message with a deck with fewer than 40 cards', (done) => {
+    it('returns 400 with invalid deck message with a deck with fewer than 40 cards', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -159,9 +156,9 @@ describe('matchmaking', () => {
           // expect(res.body.error).to.be.equal('Deck has fewer than 40 cards')
           done();
         });
-    });
+    }));
 
-    it('returns 400 with invalid general message if deck has no general', (done) => {
+    it('returns 400 with invalid general message if deck has no general', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -184,9 +181,9 @@ describe('matchmaking', () => {
           // expect(res.body.error).to.be.equal('First card in the deck must be a general')
           done();
         });
-    });
+    }));
 
-    it('returns 400 with invalid deck message if sent an invalid deck with more than 3 of a card', (done) => {
+    it('returns 400 with invalid deck message if sent an invalid deck with more than 3 of a card', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -209,9 +206,9 @@ describe('matchmaking', () => {
           // expect(res.body.error).to.be.equal('Deck has more than 3 of a card')
           done();
         });
-    });
+    }));
 
-    it('returns 200 when using a valid deck', (done) => {
+    it('returns 200 when using a valid deck', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -238,11 +235,11 @@ describe('matchmaking', () => {
           // matchmakingToken1 = res.body.token;
           done();
         });
-    });
+    }));
   });
 
   describe('GET /matchmaking', () => {
-    it('returns 200 and current token', (done) => {
+    it('returns 200 and current token', () => new Promise((done) => {
       request
         .get('/matchmaking')
         .set('Client-Version', version)
@@ -253,11 +250,11 @@ describe('matchmaking', () => {
           expect(res.body).to.have.property('id');
           done();
         });
-    });
+    }));
   });
 
   describe('DELETE /matchmaking', () => {
-    it('returns 204', (done) => {
+    it('returns 204', () => new Promise((done) => {
       request
         .del('/matchmaking')
         .set('Client-Version', version)
@@ -267,11 +264,11 @@ describe('matchmaking', () => {
           expect(res.status).to.be.equal(204);
           done();
         });
-    });
+    }));
   });
 
   describe('GET /matchmaking (after delete)', () => {
-    it('returns 404', (done) => {
+    it('returns 404', () => new Promise((done) => {
       request
         .get('/matchmaking')
         .set('Client-Version', version)
@@ -281,13 +278,13 @@ describe('matchmaking', () => {
           expect(res.status).to.be.equal(404);
           done();
         });
-    });
+    }));
   });
 
   // TODO: before() : probe redis to get the current game id
   // Player 1 joins
   describe('matchmaking POST player 1', () => {
-    it('returns 200', (done) => {
+    it('returns 200', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -314,12 +311,12 @@ describe('matchmaking', () => {
           matchmakingToken1 = res.body.tokenId;
           done();
         });
-    });
+    }));
   });
 
   // Player 2 joins
   describe('matchmaking POST player 2', () => {
-    it('returns 200', (done) => {
+    it('returns 200', () => new Promise((done) => {
       request
         .post('/matchmaking')
         .set('Client-Version', version)
@@ -348,7 +345,7 @@ describe('matchmaking', () => {
           expect(matchmakingToken2).to.not.be.equal(matchmakingToken1);
           done();
         });
-    });
+    }));
   });
 
   // TODO: after() : probe redis again to see if game id ++

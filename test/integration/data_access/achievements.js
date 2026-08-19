@@ -24,7 +24,6 @@ var knex = require('../../../server/lib/data_access/knex')
 Logger.enabled = Logger.enabled && false;
 
 describe("achievements module", function() {
-  this.timeout(25000);
 
   const userId = null;
 

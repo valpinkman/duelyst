@@ -26,13 +26,11 @@ const FirstReferralPurchaseAchievement = require('../../../app/sdk/achievements/
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('referrals module', function () {
+describe('referrals module', () => {
   let userId = null;
-  this.timeout(25000);
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {

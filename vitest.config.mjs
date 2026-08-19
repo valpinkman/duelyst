@@ -1,23 +1,25 @@
 import { defineConfig } from 'vitest/config';
 
-// Vitest runs alongside mocha during the modernization (MODERNIZATION_PLAN.md
-// Phase 1). The unit tests are CommonJS files which register
-// `app-module-path` + `coffeescript/register` in their own preludes, exactly
-// as they do under mocha, so no CoffeeScript transform or alias is needed
-// here yet: vite-node executes the CJS test file and every `require` from
-// there on (including all of app/sdk's .coffee modules) resolves natively.
-// This changes when the client moves to Vite (Phase 4).
+/*
+ * Vitest is the project's test runner (mocha was retired in plan step 7.1).
+ *
+ * The suites are CommonJS and register `app-module-path` themselves, so app
+ * modules load through node's require() chain; `test/setup-tsx.mjs` gives that
+ * chain the ability to load TypeScript.
+ */
 export default defineConfig({
   test: {
     include: ['test/unit/**/*.{js,ts}'],
-    globals: true, // tests use bare mocha-style describe/it/before hooks
-    // the CJS require() chain inside the tests must be able to load .ts too
-    setupFiles: ['./test/setup-tsx.mjs'],
+    globals: true, // the suites use bare describe/it/before hooks
     environment: 'node',
-    testTimeout: 10000, // mocha runs with -t 1000; a whole-file run is ~6s, 10s catches hangs
-    hookTimeout: 30000,
-    // The SDK GameSession is a per-process singleton: parallel files are fine
-    // (each fork has its own module registry), tests within a file are not.
+    setupFiles: ['./test/setup-tsx.mjs'],
+    // mocha ran with -t 1000 plus per-suite this.timeout() overrides up to
+    // 300s; those calls are gone (see scripts/codemods/mocha-to-vitest.mjs)
+    // and the budget lives here instead.
+    testTimeout: 30000,
+    hookTimeout: 60000,
+    // The SDK GameSession is a per-process singleton: parallel FILES are fine
+    // (each fork gets its own module registry), tests within a file are not.
     pool: 'forks',
     isolate: true,
     sequence: { concurrent: false },

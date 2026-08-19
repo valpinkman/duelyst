@@ -25,9 +25,7 @@ const generatePushId = require('../../../app/common/generate_push_id');
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('rift module', function () {
-  this.timeout(25000);
-
+describe('rift module', () => {
   let userId = null;
   let fakeGameSessionData = null;
 
@@ -359,8 +357,7 @@ describe('rift module', function () {
         expect(error).to.be.an.instanceof(Error);
       }));
 
-    it('expect a won game to update the win counter and increase rift rating', function () {
-      this.timeout(90000);
+    it('expect a won game to update the win counter and increase rift rating', () => {
       const gameId = generatePushId();
 
       let riftRatingBefore;

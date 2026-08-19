@@ -35,24 +35,3 @@ jobs:
 
     - name: run unit tests
       run: pnpm test:unit
-
-  unit_tests_vitest:
-    runs-on: ubuntu-latest
-    steps:
-    - name: check out code
-      uses: actions/checkout@v4
-
-    - name: install pnpm
-      uses: pnpm/action-setup@v4
-
-    - name: install node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 24
-        cache: pnpm
-
-    - name: install node dependencies
-      run: pnpm install --frozen-lockfile
-
-    - name: run unit tests (vitest)
-      run: pnpm test:vitest

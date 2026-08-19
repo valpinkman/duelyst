@@ -9,12 +9,10 @@
   "extends": [
     "airbnb-base",
     "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:mocha/recommended"
+    "plugin:import/warnings"
   ],
   "plugins": [
-    "import",
-    "mocha"
+    "import"
   ],
   "settings": {
     "import/resolver": {
@@ -32,7 +30,18 @@
   },
   "globals": {
     "cc": "readonly",
-    "gl": "readonly"
+    "gl": "readonly",
+    "describe": "readonly",
+    "it": "readonly",
+    "test": "readonly",
+    "expect": "readonly",
+    "before": "readonly",
+    "after": "readonly",
+    "beforeEach": "readonly",
+    "afterEach": "readonly",
+    "beforeAll": "readonly",
+    "afterAll": "readonly",
+    "vi": "readonly"
   },
   "rules": {
     "global-require": [
@@ -125,12 +134,6 @@
       {
         "commonjs": true
       }
-    ],
-    "mocha/no-mocha-arrows": [
-      "warn"
-    ],
-    "mocha/no-setup-in-describe": [
-      "warn"
     ]
   },
   "overrides": [
@@ -804,7 +807,8 @@
       ],
       "parserOptions": {
         "sourceType": "module"
-      }
+      },
+      "rules": {}
     },
     {
       "files": [

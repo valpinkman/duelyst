@@ -26,16 +26,13 @@ const generatePushId = require('../../../app/common/generate_push_id');
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('cosmetic chests module', function () {
-  this.timeout(25000);
-
+describe('cosmetic chests module', () => {
   let userId = null;
   let user2Id = null;
   let fbRootRef = null;
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
@@ -388,7 +385,6 @@ describe('cosmetic chests module', function () {
 
     /* Test disabled: slow
     it('expect that no unlockable cards are rewarded by unlocking ~50 chests', function() {
-      this.timeout(300000);
 
       const txPromise = knex.transaction(function (tx) {
         return knex("users").where('id',userId)

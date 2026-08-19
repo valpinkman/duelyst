@@ -24,7 +24,6 @@ var knex = require('../../../server/lib/data_access/knex')
 Logger.enabled = Logger.enabled && true;
 
 describe("achievements module", function() {
-  this.timeout(25000);
 
   const userId = null;
 
@@ -60,8 +59,6 @@ describe("achievements module", function() {
   // });
 
   describe("Seven Sisters Achievement", function() {
-
-    this.timeout(100000);
 
     it('expect that collecting some, but not all, Lyonar rares does not award the Sun Sister achievement', function() {
 

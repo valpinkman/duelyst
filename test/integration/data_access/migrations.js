@@ -28,14 +28,12 @@ const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newP
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('migrations module', function () {
+describe('migrations module', () => {
   let userId = null;
   let user2Id = null;
-  this.timeout(25000);
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     const createOrInsertUser = function (userEmail, userName) {
       return UsersModule.createNewUser(userEmail, userName, 'hash', 'kumite14')
@@ -205,8 +203,7 @@ describe('migrations module', function () {
       */
   });
 
-  describe('userBackfillPrismaticRewards()', function () {
-    this.timeout(100000);
+  describe('userBackfillPrismaticRewards()', () => {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive no prismatic backfill rewards if they have opened 10 spirit orbs before cutoff', () => {
@@ -497,7 +494,6 @@ describe('migrations module', function () {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive 2 prismatic backfill reward chunks if they have opened 119 spirit orbs before cutoff (very long)', function () {
-      this.timeout(200000);
 
       const dateToOpenSpiritOrbs = moment.utc('2016-07-12 03:30');
 

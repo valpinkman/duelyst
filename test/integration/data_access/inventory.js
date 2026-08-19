@@ -23,16 +23,13 @@ const generatePushId = require('../../../app/common/generate_push_id');
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('inventory module', function () {
-  this.timeout(25000);
-
+describe('inventory module', () => {
   let userId = null;
   let fbRootRef = null;
   const unlockableCardSets = [SDK.CardSet.Bloodborn, SDK.CardSet.Unity];
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -275,7 +272,6 @@ describe('inventory module', function () {
     const cardSetSDKData = SDK.CardSetFactory.cardSetForIdentifier(cardSetId);
     describe(`addBoosterPackToUser() - ${cardSetSDKData.name}`, () => {
       it(`expect to be able to add 5 ${cardSetSDKData.name} packs to a user`, function () {
-        this.timeout(100000);
 
         return SyncModule.wipeUserData(userId)
           .then(() => {
@@ -294,7 +290,6 @@ describe('inventory module', function () {
       });
 
       it(`expect to be able to add 13 ${cardSetSDKData.name} packs to a user`, function () {
-        this.timeout(100000);
 
         return SyncModule.wipeUserData(userId)
           .then(() => {
@@ -313,7 +308,6 @@ describe('inventory module', function () {
       });
 
       it(`expect to be able to add 5 ${cardSetSDKData.name} packs to a user, but then fail to add 10 more`, function () {
-        this.timeout(100000);
 
         return SyncModule.wipeUserData(userId)
           .then(() => {
@@ -368,74 +362,68 @@ describe('inventory module', function () {
         expect(userOrbRows.length).to.equal(13);
       }));
 
-    it('expect to be able to add a full set of orbs to user with 3 orbs for that set, expect 900 gold to be awarded', function () {
-      this.timeout(100000);
-      return SyncModule.wipeUserData(userId)
-        .then(() => {
-          const txPromise = knex.transaction((tx) => Promise.all([
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          ]));
-          return txPromise;
-        }).then(() => {
-          const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
-          return txPromise;
-        }).then(() => Promise.all([
+    it('expect to be able to add a full set of orbs to user with 3 orbs for that set, expect 900 gold to be awarded', () => SyncModule.wipeUserData(userId)
+      .then(() => {
+        const txPromise = knex.transaction((tx) => Promise.all([
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+        ]));
+        return txPromise;
+      }).then(() => {
+        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
+        return txPromise;
+      }).then(() => Promise.all([
+        knex('users').where('id', userId).first(),
+        knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
+      ]))
+      .spread((userRow, userOrbRows) => {
+        expect(userRow.wallet_gold).to.equal(3 * 300);
+        expect(userRow.total_orb_count_set_3).to.equal(13);
+        expect(userOrbRows.length).to.equal(13);
+      }));
+
+    it('expect to be not fail when trying to add remaining set of orbs to user with max orbs for that set, expect no gold to be awarded', () => SyncModule.wipeUserData(userId)
+      .then(() => {
+        const txPromise = knex.transaction((tx) => Promise.all([
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()), // 5
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()), // 10
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+          InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
+        ]));
+        return txPromise;
+      }).then(() => {
+        const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
+        return txPromise;
+      }).then((result) => {
+        // Never reach
+        expect(result).to.exist;
+        expect(result).to.not.exist;
+      })
+      .catch((error) => {
+        expect(error).to.exist;
+        expect(error).to.not.be.an.instanceof(chai.AssertionError);
+        expect(error).to.be.an.instanceof(Errors.MaxOrbsForSetReachedError);
+
+        return Promise.all([
           knex('users').where('id', userId).first(),
           knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
-        ]))
-        .spread((userRow, userOrbRows) => {
-          expect(userRow.wallet_gold).to.equal(3 * 300);
-          expect(userRow.total_orb_count_set_3).to.equal(13);
-          expect(userOrbRows.length).to.equal(13);
-        });
-    });
-
-    it('expect to be not fail when trying to add remaining set of orbs to user with max orbs for that set, expect no gold to be awarded', function () {
-      this.timeout(100000);
-      return SyncModule.wipeUserData(userId)
-        .then(() => {
-          const txPromise = knex.transaction((tx) => Promise.all([
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()), // 5
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()), // 10
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-            InventoryModule.addBoosterPackToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, 'qa unit test', generatePushId()),
-          ]));
-          return txPromise;
-        }).then(() => {
-          const txPromise = knex.transaction((tx) => InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, SDK.CardSet.Bloodborn, false, 'qa unit test', generatePushId()));
-          return txPromise;
-        }).then((result) => {
-          // Never reach
-          expect(result).to.exist;
-          expect(result).to.not.exist;
-        })
-        .catch((error) => {
-          expect(error).to.exist;
-          expect(error).to.not.be.an.instanceof(chai.AssertionError);
-          expect(error).to.be.an.instanceof(Errors.MaxOrbsForSetReachedError);
-
-          return Promise.all([
-            knex('users').where('id', userId).first(),
-            knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
-          ]);
-        })
-        .spread((userRow, userOrbRows) => {
-          expect(userRow.wallet_gold).to.equal(0);
-          expect(userRow.total_orb_count_set_3).to.equal(13);
-          expect(userOrbRows.length).to.equal(13);
-        });
-    });
+        ]);
+      })
+      .spread((userRow, userOrbRows) => {
+        expect(userRow.wallet_gold).to.equal(0);
+        expect(userRow.total_orb_count_set_3).to.equal(13);
+        expect(userOrbRows.length).to.equal(13);
+      }));
   });
 
   describe('buyRemainingSpiritOrbsWithSpirit', () => {
@@ -548,7 +536,6 @@ describe('inventory module', function () {
     const cardSetSDKData = SDK.CardSetFactory.cardSetForIdentifier(cardSetId);
     describe(`unlockBoosterPack() - ${cardSetSDKData.name} set`, () => {
       it('expect to open 13 bloodborn orbs 3 times and always end up with exactly the same cards', function () {
-        this.timeout(50000);
         const allBBCardIds = SDK.GameSession.getCardCaches().getCardSet(cardSetId).getIsUnlockable(true).getIsPrismatic(false)
           .getCardIds();
         expect(allBBCardIds.length).to.equal(39);
@@ -813,7 +800,6 @@ describe('inventory module', function () {
 
     /* Test disabled: slow
     it('expect that no unlockable cards are rewarded by unlocking ~100 boosters', function() {
-      this.timeout(100000);
 
       return SyncModule.wipeUserData(userId)
         .then(function () {
@@ -850,7 +836,6 @@ describe('inventory module', function () {
     });
 
     it('expect that no skinned cards are rewarded by unlocking ~100 boosters', function() {
-      this.timeout(100000);
 
       return SyncModule.wipeUserData(userId)
         .then(function () {
@@ -888,7 +873,6 @@ describe('inventory module', function () {
 
     //
     it('expect that no legacy cards are rewarded by unlocking ~500 boosters', function() {
-      this.timeout(200000);
 
       return SyncModule.wipeUserData(userId)
         .then(function () {
@@ -988,8 +972,7 @@ describe('inventory module', function () {
 
     describe('when ALL_CARDS_AVAILABLE is FALSE', () => {
       // before cleanup to check if user already exists and delete
-      before(function () {
-        this.timeout(25000);
+      before(() => {
         process.env.ALL_CARDS_AVAILABLE = false;
         config.set('allCardsAvailable', false);
         InventoryModule._allCollectibleCards = null;
@@ -1212,8 +1195,7 @@ describe('inventory module', function () {
 
     describe('when ALL_CARDS_AVAILABLE is TRUE', () => {
       // before cleanup to check if user already exists and delete
-      before(function () {
-        this.timeout(25000);
+      before(() => {
         process.env.ALL_CARDS_AVAILABLE = true;
         config.set('allCardsAvailable', true);
         InventoryModule._allCollectibleCards = null;
@@ -1228,8 +1210,7 @@ describe('inventory module', function () {
       });
 
       // before cleanup to check if user already exists and delete
-      after(function () {
-        this.timeout(25000);
+      after(() => {
         process.env.ALL_CARDS_AVAILABLE = allCardsAvailableBefore;
         config.set('allCardsAvailable', allCardsAvailableBefore);
         InventoryModule._allCollectibleCards = null;
@@ -1251,17 +1232,14 @@ describe('inventory module', function () {
 
   describe('disenchantCard()', () => {
     // before cleanup to check if user already exists and delete
-    before(function () {
-      this.timeout(25000);
-      return DuelystFirebase.connect().getRootRef()
-        .bind({})
-        .then((fbRootRef) => Promise.all([
-          FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
-          knex('user_cards').where('user_id', userId).delete(),
-          knex('user_card_log').where('user_id', userId).delete(),
-          knex('user_card_collection').where('user_id', userId).delete(),
-        ]));
-    });
+    before(() => DuelystFirebase.connect().getRootRef()
+      .bind({})
+      .then((fbRootRef) => Promise.all([
+        FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
+        knex('user_cards').where('user_id', userId).delete(),
+        knex('user_card_log').where('user_id', userId).delete(),
+        knex('user_card_collection').where('user_id', userId).delete(),
+      ])));
 
     it('expect NOT to be able to disenchant a COMMON card you do not own', () => InventoryModule.disenchantCards(userId, [SDK.Cards.Faction1.Lightchaser])
       .then((result) => {
@@ -1692,17 +1670,14 @@ describe('inventory module', function () {
 
   describe('giveUserCards()', () => {
     // before cleanup to check if user already exists and delete
-    before(function () {
-      this.timeout(25000);
-      return DuelystFirebase.connect().getRootRef()
-        .bind({})
-        .then((fbRootRef) => Promise.all([
-          FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
-          knex('user_cards').where('user_id', userId).delete(),
-          knex('user_card_log').where('user_id', userId).delete(),
-          knex('user_card_collection').where('user_id', userId).delete(),
-        ]));
-    });
+    before(() => DuelystFirebase.connect().getRootRef()
+      .bind({})
+      .then((fbRootRef) => Promise.all([
+        FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
+        knex('user_cards').where('user_id', userId).delete(),
+        knex('user_card_log').where('user_id', userId).delete(),
+        knex('user_card_collection').where('user_id', userId).delete(),
+      ])));
 
     it('to work with giving some cards', () => {
       const txPromise = knex.transaction((tx) => {
@@ -1768,15 +1743,12 @@ describe('inventory module', function () {
   });
 
   describe('giveUserCodexChapter()', () => {
-    before(function () {
-      this.timeout(25000);
-      return DuelystFirebase.connect().getRootRef()
-        .bind({})
-        .then((fbRootRef) => Promise.all([
-          FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
-          knex('user_codex_inventory').where('user_id', userId).delete(),
-        ]));
-    });
+    before(() => DuelystFirebase.connect().getRootRef()
+      .bind({})
+      .then((fbRootRef) => Promise.all([
+        FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
+        knex('user_codex_inventory').where('user_id', userId).delete(),
+      ])));
 
     it('to correctly give a user a codex chapter', () => {
       const txPromise = knex.transaction((tx) => {
@@ -1832,27 +1804,24 @@ describe('inventory module', function () {
   });
 
   describe('giveUserMissingCodexChapters()', () => {
-    before(function () {
-      this.timeout(25000);
-      return DuelystFirebase.connect().getRootRef()
-        .bind({})
-        .then((fbRootRef) => Promise.all([
-          FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
-          knex('user_codex_inventory').where('user_id', userId).delete(),
-          knex('user_progression').where('user_id', userId).delete(),
-        ])
-          .then(() => {
-            const progressionRowData = {
-              user_id: userId,
-              game_count: 5,
-              win_streak: 0,
-              loss_count: 0,
-              draw_count: 0,
-              unscored_count: 0,
-            };
-            return knex('user_progression').insert(progressionRowData);
-          }));
-    });
+    before(() => DuelystFirebase.connect().getRootRef()
+      .bind({})
+      .then((fbRootRef) => Promise.all([
+        FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('codex')),
+        knex('user_codex_inventory').where('user_id', userId).delete(),
+        knex('user_progression').where('user_id', userId).delete(),
+      ])
+        .then(() => {
+          const progressionRowData = {
+            user_id: userId,
+            game_count: 5,
+            win_streak: 0,
+            loss_count: 0,
+            draw_count: 0,
+            unscored_count: 0,
+          };
+          return knex('user_progression').insert(progressionRowData);
+        })));
 
     it('to correctly give a user their missing codex chapters', () => {
       const numCodexChapters = 0;
@@ -1886,23 +1855,20 @@ describe('inventory module', function () {
 
   describe('markCardAsReadInUserCollection()', () => {
     // before cleanup to check if user already exists and delete
-    before(function () {
-      this.timeout(25000);
-      return DuelystFirebase.connect().getRootRef()
-        .bind({})
-        .then((fbRootRef) => Promise.all([
-          FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
-          FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-lore')),
-          knex('user_cards').where('user_id', userId).delete(),
-          knex('user_card_log').where('user_id', userId).delete(),
-          knex('user_card_collection').where('user_id', userId).delete(),
-          knex('user_card_lore_inventory').where('user_id', userId).delete(),
-        ]))
-        .then(() => {
-          const txPromise = knex.transaction((tx) => InventoryModule.giveUserCards(txPromise, tx, userId, [20157, 10974]));
-          return txPromise;
-        });
-    });
+    before(() => DuelystFirebase.connect().getRootRef()
+      .bind({})
+      .then((fbRootRef) => Promise.all([
+        FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-collection')),
+        FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('card-lore')),
+        knex('user_cards').where('user_id', userId).delete(),
+        knex('user_card_log').where('user_id', userId).delete(),
+        knex('user_card_collection').where('user_id', userId).delete(),
+        knex('user_card_lore_inventory').where('user_id', userId).delete(),
+      ]))
+      .then(() => {
+        const txPromise = knex.transaction((tx) => InventoryModule.giveUserCards(txPromise, tx, userId, [20157, 10974]));
+        return txPromise;
+      }));
 
     it('to mark a card as read', () => InventoryModule.markCardAsReadInUserCollection(userId, 20157)
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
@@ -2039,9 +2005,7 @@ describe('inventory module', function () {
     });
   });
 
-  describe('softWipeUserCardInventory()', function () {
-    this.timeout(100000);
-
+  describe('softWipeUserCardInventory()', () => {
     before(() => {
       InventoryModule.SOFTWIPE_AVAILABLE_UNTIL = moment().utc().add(4, 'days');
     });

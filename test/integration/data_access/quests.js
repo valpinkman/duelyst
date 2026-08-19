@@ -28,13 +28,11 @@ const generatePushId = require('../../../app/common/generate_push_id');
 // disable the logger for cleaner test output
 Logger.enabled = Logger.enabled && false;
 
-describe('quests module', function () {
+describe('quests module', () => {
   let userId = null;
-  this.timeout(25000);
 
   // before cleanup to check if user already exists and delete
-  before(function () {
-    this.timeout(25000);
+  before(() => {
     Logger.module('UNITTEST').log('creating user');
     return UsersModule.createNewUser('unit-test@duelyst.local', 'unittest', 'hash', 'kumite14')
       .then((userIdCreated) => {
@@ -154,8 +152,7 @@ describe('quests module', function () {
       let updatedAt = null;
       let generatedAt = null;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
       });
 
       after(() => {
@@ -284,8 +281,7 @@ describe('quests module', function () {
     describe('mulliganDailyQuest()', () => {
       let mulliganedAt = null;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
       });
 
       after(() => {
@@ -408,8 +404,7 @@ describe('quests module', function () {
     describe('updateQuestProgressWithGame()', () => {
       let fakeGameSessionData;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
         const systemTime = moment().add(50, 'hours');
 
         fakeGameSessionData = {};
@@ -535,8 +530,7 @@ describe('quests module', function () {
     describe('updateQuestProgressWithGame() - rift', () => {
       let fakeGameSessionData;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
         const systemTime = moment().add(100, 'hours');
 
         fakeGameSessionData = {};
@@ -639,8 +633,7 @@ describe('quests module', function () {
     describe('updateQuestProgressWithGame() - receive spirit orb', () => {
       let fakeGameSessionData;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
         const systemTime = moment().utc();
 
         fakeGameSessionData = {};
@@ -697,8 +690,7 @@ describe('quests module', function () {
       let fakeGameSessionData;
       let catchUpChargesGiven = 0;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
         const systemTime = moment().utc();
 
         return knex('user_quests').delete().where('user_id', userId).andWhere('quest_slot_index', QuestsModule.CATCH_UP_QUEST_SLOT);
@@ -808,8 +800,7 @@ describe('quests module', function () {
     describe('generateDailyQuests() - catch up quest', () => {
       let fakeGameSessionData;
 
-      before(function () {
-        this.timeout(5000);
+      before(() => {
         const systemTime = moment().utc();
 
         return Promise.all([
@@ -1264,8 +1255,7 @@ describe('quests module', function () {
       describe('updateQuestProgressWithGame() - Frostfire 2016 Quest', () => {
         let fakeGameSessionData;
 
-        before(function () {
-          this.timeout(5000);
+        before(() => {
           const systemTime = moment().add(50, 'hours');
           //
           fakeGameSessionData = {};
@@ -1407,8 +1397,7 @@ describe('quests module', function () {
       //
       // })
       describe('updateQuestProgressWithCompletedQuest() - Frostfire 2016 Quest', () => {
-        before(function () {
-          this.timeout(5000);
+        before(() => {
           const systemTime = moment().add(50, 'hours');
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
@@ -1454,15 +1443,12 @@ describe('quests module', function () {
     describe('February 2017 Quest', () => {
       const FebQuestId = 30002;
 
-      before(function () {
-        this.timeout(5000);
-        return SyncModule.wipeUserData(userId)
-          .then(() => knex('user_new_player_progression').insert({
-            user_id: userId,
-            module_name: NewPlayerProgressionModuleLookup.Core,
-            stage: NewPlayerProgressionStageEnum.Skipped.key,
-          }));
-      });
+      before(() => SyncModule.wipeUserData(userId)
+        .then(() => knex('user_new_player_progression').insert({
+          user_id: userId,
+          module_name: NewPlayerProgressionModuleLookup.Core,
+          stage: NewPlayerProgressionStageEnum.Skipped.key,
+        })));
 
       describe('generateDailyQuests() - February 2017 Quest', () => {
         it('expect not to generate the seasonal February-2017 quest before February 1st 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-01-31'))
@@ -1523,8 +1509,7 @@ describe('quests module', function () {
       });
 
       describe('updateQuestProgressWithCompletedQuest() - February 2017 Quest', () => {
-        before(function () {
-          this.timeout(5000);
+        before(() => {
           const systemTime = moment().add(50, 'hours');
           // set up user quests as Lyonar and Songhai participation quests
           return SyncModule.wipeUserData(userId)
@@ -1570,8 +1555,7 @@ describe('quests module', function () {
     //
 
     describe('updateQuestProgressWithCompletedQuest() - Frostfire 2016 Quest', () => {
-      before(function () {
-        this.timeout(5000);
+      before(() => {
         const systemTime = moment().add(50, 'hours');
         // set up user quests as Lyonar and Songhai participation quests
         return SyncModule.wipeUserData(userId)
@@ -1617,15 +1601,12 @@ describe('quests module', function () {
   describe('Promo Quest', () => {
     const annQuestId = 40001;
 
-    before(function () {
-      this.timeout(5000);
-      return SyncModule.wipeUserData(userId)
-        .then(() => knex('user_new_player_progression').insert({
-          user_id: userId,
-          module_name: NewPlayerProgressionModuleLookup.Core,
-          stage: NewPlayerProgressionStageEnum.Skipped.key,
-        }));
-    });
+    before(() => SyncModule.wipeUserData(userId)
+      .then(() => knex('user_new_player_progression').insert({
+        user_id: userId,
+        module_name: NewPlayerProgressionModuleLookup.Core,
+        stage: NewPlayerProgressionStageEnum.Skipped.key,
+      })));
 
     describe('generateDailyQuests() - Anniversary 2017 Quest', () => {
       it('expect not to generate the promo Anniversary-2017 quest before May 1st 2017', () => QuestsModule.generateDailyQuests(userId, moment.utc('2017-04-29'))

@@ -24,7 +24,6 @@ var knex = require('../../../server/lib/data_access/knex')
 Logger.enabled = Logger.enabled && true;
 
 describe("achievements module", function() {
-  this.timeout(25000);
 
   const userId = null;
 
@@ -63,8 +62,6 @@ describe("achievements module", function() {
 
     it('expect that collecting one of each Shimzar set Neutral Commons, normal or prismatic, does not award the Collector Supreme achievement', function() {
 
-      this.timeout(10000);
-
       const allCommonCards = SDK.GameSession.getCardCaches().getCardSet(SDK.CardSet.Shimzar).getRarity(SDK.Rarity.Common).getIsCollectible(true).getIsUnlockable(false).getIsPrismatic(false).getCards();
       const allCommonCardIds = _.map(allCommonCards,function(c) {
         return Math.random() < 0.5 ? SDK.Cards.getPrismaticCardId(c.getId()) : c.getId();
@@ -88,8 +85,6 @@ describe("achievements module", function() {
     })
 
     it('expect that collecting one of each Core set Neutral Commons, normal or prismatic, awards the Collector Supreme achievement', function() {
-
-      this.timeout(10000);
 
       const allCommonCards = SDK.GameSession.getCardCaches().getCardSet(SDK.CardSet.Core).getRarity(SDK.Rarity.Common).getIsCollectible(true).getIsUnlockable(false).getIsPrismatic(false).getCards();
       const allCommonCardIds = _.map(allCommonCards,function(c) {
