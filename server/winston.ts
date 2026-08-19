@@ -1,76 +1,52 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-const os = require('os');
+const util = require('util');
 const winston = require('winston');
-const {
-  Papertrail,
-} = require('winston-papertrail');
 const config = require('../config/config.js');
 
+/*
+ * Routes console.* through winston (plan 7.3, tier 2).
+ *
+ * Opt-in: `config.get('winston')` defaults to false and no environment file
+ * turns it on, so nothing loads this unless WINSTON_ENABLE=true is set.
+ *
+ * The Papertrail transport that used to sit alongside the console one is gone.
+ * It shipped every log line to logs.papertrailapp.com - Counterplay's log
+ * aggregator, which went away with the shutdown - and it carried no
+ * credentials, so it could only ever have failed. Its transport package
+ * (winston-papertrail) is also unmaintained and winston-2 only, so it would
+ * have blocked this upgrade regardless.
+ */
 const setup = function (systemName) {
   if (systemName == null) { systemName = 'n/a'; }
   console.log(`CONFIGURING WINSTON LOGS for ${config.get('env')}`);
 
-  // Winston Logger setup
-  const loggerTransports = [];
+  /*
+   * winston 3 replaced `new winston.Logger(...)` with `createLogger`, and
+   * moved per-transport `colorize`/`prettyPrint` options into composable
+   * formats set on the logger.
+   */
+  const logger = winston.createLogger({
+    level: config.get('winston_level'),
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.printf(({ level, message }) => `${level}: ${message}`),
+    ),
+    transports: [new winston.transports.Console()],
+  });
 
-  // file log
-  // loggerTransports.push(new (winston.transports.File)(filename: "server/server.log"))
-
-  // console log
-  loggerTransports.push(
-    new (winston.transports.Console)({
-      level: config.get('winston_level'),
-      colorize: true,
-    }),
-  );
-
-  // papertrail log
-  loggerTransports.push(
-    new Papertrail({
-      host: 'logs.papertrailapp.com',
-      port: 32677,
-      program: `${config.get('env')}-${systemName}`,
-      level: config.get('winston_level'),
-      colorize: true,
-      prettyPrint: true,
-      timestamp: false,
-      // Custom format to remove the log level from message
-      logFormat(level, message) {
-        return message;
-      },
-    }),
-  );
-  // Winston Logger create
-  const logger = new (winston.Logger)({ transports: loggerTransports });
-
-  // console.log override
-  // TODO : need better override method ?
-  console.log = function () {
-    logger.info.apply(logger, arguments);
+  /*
+   * console.* takes any number of arguments and formats them the way
+   * util.format does; winston 3 takes (message, meta) and would swallow every
+   * argument after the first into metadata. Formatting here keeps the
+   * overridden console.* behaving exactly like the real one.
+   */
+  const forward = (level) => function (...args) {
+    logger[level](util.format(...args));
   };
 
-  // console.log override
-  // TODO : need better override method ?
-  console.debug = function () {
-    logger.debug.apply(logger, arguments);
-  };
-
-  // console.log override
-  // TODO : need better override method ?
-  console.warn = function () {
-    logger.warn.apply(logger, arguments);
-  };
-
-  // console.log override
-  // TODO : need better override method ?
-  return console.error = function () {
-    logger.error.apply(logger, arguments);
-  };
+  console.log = forward('info');
+  console.debug = forward('debug');
+  console.warn = forward('warn');
+  console.error = forward('error');
 };
 
 module.exports = {

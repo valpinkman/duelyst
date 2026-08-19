@@ -556,8 +556,25 @@ server and worker. What remains is *typing* (5T.4), not converting.
     from `firebase-admin/database`) in the single seam `server/lib/duelyst_firebase_module.ts` —
     the only consumer in the repo. The CLASS API is unchanged, so all 352 `DuelystFirebase.connect()`
     call sites are untouched. Verified against the REAL RTDB, not just a build. — (this commit)
-  - [ ] **Tier 2 — needs seam-typing first**: `bluebird` → native promises, `redis` v4,
-    `knex` 3, `winston` 3, `kue`. Each changes an API surface that many call sites depend on.
+  - [~] **Tier 2.** Measured breadth first — `winston` 1 file, `knex` 1, `redis` 3, `kue` 9,
+    **`bluebird` 215**. `kue` is already at its final release (0.11.6, unmaintained), so there is
+    no bump to make; replacing it is a project, not an upgrade.
+    - [x] **`winston` 2.1.1 → 3.19.0**, and **`winston-papertrail` deleted**. `createLogger`
+      replaces `new winston.Logger`, and per-transport `colorize`/`prettyPrint` became composable
+      formats. The console overrides now format through `util.format`, which is what console.*
+      actually does — winston 3 takes `(message, meta)` and would otherwise have swallowed every
+      argument after the first into metadata.
+      The Papertrail transport shipped every line to `logs.papertrailapp.com` (Counterplay's
+      aggregator, gone with the shutdown) with **no credentials**, so it could only ever have
+      failed; its package is unmaintained and winston-2 only, so it blocked the upgrade anyway.
+      **This is opt-in** (`config.get('winston')` defaults false, no env file enables it), so it
+      was verified by actually turning it on: multi-arg and printf formatting both behave like
+      console.*, and the API boots to "started on port 3000" with every line routed at the right
+      level. — (this commit)
+    - [ ] `redis` 2.8 → v4+ (3 files; v4 is promise-native, which also removes bluebird usage)
+    - [ ] `knex` 0.19 → 3 (1 file, but 86 migrations and all of data_access sit behind it)
+    - [ ] `bluebird` 2.11 → native promises (**215 files** — the endgame, and entangled with the
+      `_chainState` rewrite; `.catch(SomeError, handler)` has no native equivalent)
   - [ ] **Client `firebase` 2.0.3 → 12** is NOT a bump and is deliberately not listed here: it
     crosses three API generations (v3 namespaced, v9 modular), replaces `.auth(legacyToken)`
     with `signInWithCustomToken`, and invalidates the vendored `backfire` Backbone binding.
