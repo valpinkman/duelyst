@@ -31,8 +31,9 @@
     "express": "^4.8.5",
     "express-jwt": "^8.5.1",
     "express-real-ip": "^1.0.0",
-    "firebase": "2.0.3",
+    "firebase": "12.17.1",
     "firebase-admin": "^14.2.0",
+    "firebase-v2": "npm:firebase@2.0.3",
     "font-awesome": "4.7.0",
     "form-urlencoded": "^1.2.1",
     "glicko2": "^0.8.4",
@@ -79,6 +80,7 @@
     "winston-papertrail": "1.0.1"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@playwright/test": "^1.62.1",
     "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
@@ -94,6 +96,7 @@
     "eslint-plugin-import": "^2.26.0",
     "events": "^3.3.0",
     "fast-stats": "0.0.3",
+    "firebase-tools": "^14.27.0",
     "glsl-fxaa": "^3.0.0",
     "glslify": "2.1.2",
     "glslify7": "npm:glslify@^7.1.1",
@@ -138,7 +141,8 @@
     "tsc:strict": "tsc -p tsconfig.strict.json",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test:rules": "firebase emulators:exec --only database \"vitest run --config vitest.rules.config.mjs\""
   },
   "packageManager": "pnpm@10.12.1",
   "pnpm": {

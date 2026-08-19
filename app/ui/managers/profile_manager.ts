@@ -12,7 +12,7 @@ module.exports = _ProfileManager;
 
 var Logger = require('app/common/logger');
 var Profile = require('app/ui/models/profile');
-var Firebase = require('firebase');
+var Firebase = require('firebase-v2');
 var Manager = require('./manager');
 
 var ProfileManager = Manager.extend({

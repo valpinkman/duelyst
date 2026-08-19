@@ -652,13 +652,45 @@ custom token puts the subject on `auth.uid` and custom claims under `auth.token.
   consumes it yet, so a Firebase hiccup logs and returns null rather than breaking login.
   *Verified against the running API*: the custom token's `uid` is byte-identical to the legacy
   token's `d.id`, which is the invariant the whole 9.2 rewrite rests on. — (this commit)
-- [ ] 9.2 **Rewrite the rules to the new shape and deploy them from CI.** Add the `firebase.json`
-  the CLI needs, then `firebase deploy --only database`:
-  - **`duelyst-ci`: automatic**, on any change to `firebaseRules.json`. Every rules edit gets
-    deployed and exercised against a live database by the integration suite, so a bad rule fails
-    in CI. This is the safety net that replaces dual-accept — it fails loudly instead of masking.
-  - **`duelyst-universe`: never automatic.** Separate `workflow_dispatch`, its own secret, run
-    deliberately. **Owner sign-off before the first production deploy.**
+- [x] 9.2 **Rules rewritten to the new shape, tested against the emulator, deployed from CI.**
+  66 lines changed; `auth.id` → 0, `auth.uid` → 87, one `auth.token.*`. — (this commit)
+
+  **Correction to the plan above:** the integration suite *cannot* validate rules. It connects
+  with a service account, and **admin credentials bypass security rules entirely** — it stays
+  green with the rules completely broken. Deploying to `duelyst-ci` was never going to be the
+  safety net on its own.
+
+  So rules are tested against the **emulator** instead (`pnpm test:rules`,
+  `test/rules/firebase_rules.spec.mjs`, `@firebase/rules-unit-testing`), which is the only thing
+  that can assert a **denial** — and which needs no cloud project, no secrets, and therefore runs
+  on fork PRs too. **Proven to discriminate**: run against the OLD `auth.id` rules the two
+  "allow" cases fail while the denials still pass; against the new rules all 5 pass. A rules test
+  that only ever denies would pass vacuously, so this was checked explicitly.
+
+  *Attempted and abandoned*: validating against real Firebase by exchanging a custom token for an
+  ID token. `signInWithCustomToken` needs Firebase Auth initialised, and
+  `identityPlatform:initializeAuth` returns `BILLING_NOT_ENABLED` on the Spark plan. The emulator
+  is the better tool anyway.
+
+  **Enabling change — the two SDKs now coexist.** `@firebase/rules-unit-testing` requires
+  `firebase@^12` under that exact name, but the client needs 2.0.3. So `firebase` is now **12.17.1**
+  and the legacy SDK is aliased as **`firebase-v2` (`npm:firebase@2.0.3`)**, with all 15 legacy
+  requires repointed. Client behaviour is byte-identical (verified: bundle still contains
+  `authWithCustomToken`, contains **zero** v12 internals, e2e plays a practice game). This is not
+  just for the tests — **it lets 9.3 migrate the 30 backfire files incrementally** instead of in
+  one big-bang commit, which the project's rules forbid anyway.
+
+  `firebase-tools` pinned to **^14**: v15 requires JDK 21 and the emulator JAR is what needs it;
+  14 accepts the JDK 17 that is installed. Bump when JDK 21 is available.
+
+  CI (`.github/workflows/firebase_rules.yaml`): emulator tests on every change (incl. fork PRs),
+  automatic deploy to `duelyst-ci`, and production behind `workflow_dispatch` + an explicit
+  checkbox + its own `FIREBASE_PRODUCTION_SERVICE_ACCOUNT` secret (deliberately **not set**).
+
+  ⚠ **`firebaseRules.json` now DIVERGES from production on purpose.** Deploying it to
+  `duelyst-universe` before 9.3 would make `auth.uid` undefined for every live player and deny
+  them their own data. A warning to that effect is at the top of the file; the deploy happens in
+  9.4, with the new client.
 - [ ] 9.3 **Client to `firebase@12` + replace `backfire`.** backfire has no source, so its ~53
   call sites need a replacement binding written against the modular API (a thin
   `Backbone.DuelystFirebase` shim keeps the 30 files unchanged — port the binding, not the callers).

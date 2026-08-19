@@ -8,7 +8,7 @@
 
 // Configuration object
 const config = require('../config/config.js');
-const Firebase = require('firebase');
+const Firebase = require('firebase-v2');
 const _ = require('underscore');
 
 const fbRef = new Firebase(config.get('firebase'));

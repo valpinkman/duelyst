@@ -1,5 +1,5 @@
 // Configuration object
-const Firebase = require('firebase');
+const Firebase = require('firebase-v2');
 const _ = require('underscore');
 const config = require('../config/config');
 

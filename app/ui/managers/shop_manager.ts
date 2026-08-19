@@ -14,7 +14,7 @@ module.exports = _ShopManager;
 
 var _ = require('underscore');
 var Promise = require('bluebird');
-var Firebase = require('firebase');
+var Firebase = require('firebase-v2');
 var Logger = require('app/common/logger');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');

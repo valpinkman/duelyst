@@ -1,6 +1,6 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../..'));
-const Firebase = require('firebase');
+const Firebase = require('firebase-v2');
 const c = require('../../config/config');
 // const Logger = require('app/common/logger')
 

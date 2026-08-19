@@ -7,7 +7,7 @@
 const debug = require('debug')('session');
 const { EventEmitter } = require('events');
 const Promise = require('bluebird');
-const Firebase = require('firebase');
+const Firebase = require('firebase-v2');
 const fetch = require('isomorphic-fetch');
 const moment = require('moment');
 const Storage = require('app/common/storage');

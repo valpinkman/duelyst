@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const Firebase = require('firebase');
+const Firebase = require('firebase-v2');
 
 const firebaseUrl = 'https://wargame.firebaseio.com';
 const duelystFB = new Firebase(firebaseUrl);

@@ -1,4 +1,21 @@
-/* Ordering guideline:
+/* ⚠ DO NOT DEPLOY THESE RULES TO PRODUCTION YET (plan 9.2 → 9.4).
+
+These rules read `auth.uid`, which is what a Firebase CUSTOM token produces.
+The shipped client still authenticates with the legacy firebase@2 token, where
+the same value arrived as `auth.id`. Deploying this file to duelyst-universe
+before the client migration (9.3) lands would make `auth.uid` undefined for
+every real player and deny them access to their own data.
+
+Deployed automatically to duelyst-ci only. Production is a manual
+workflow_dispatch with an explicit checkbox and its own secret
+(.github/workflows/firebase_rules.yaml), to be run as part of the 9.4 cutover
+together with the new client.
+
+Verified by test/rules/firebase_rules.spec.mjs against the emulator - the
+integration suite cannot check rules, because it connects as a service account
+and admin credentials bypass them.
+
+Ordering guideline:
 
 - Any read/write rules ->
 - Validation for this node ->
@@ -30,14 +47,14 @@
 				"$conversation_id": {
 					"messages": {
 						// users can read the tree of all of their messages of any conversation they are a part of
-						".read": "$conversation_id.contains(auth.id)",
+						".read": "$conversation_id.contains(auth.uid)",
 
 
 						"$message_id": {
 							// TODO: test this after figuring out issue with challenges
 							// Prevent users from writing to a conversation with a null userID,
 							// - allow users to write to a message in a conversation they are a part of, but don't let them delete it
-							".write": "auth.id != null && $conversation_id.contains(auth.id) && newData.exists()",
+							".write": "auth.uid != null && $conversation_id.contains(auth.uid) && newData.exists()",
 							// Validate that any message created has all the required fields
 							".validate": "newData.hasChildren(['body','.priority','fromId','id','timestamp','toId'])",
 
@@ -60,17 +77,17 @@
 			"users": {
 				"$user_id": {
 					// Users can read their own buddy invites
-					".read": "$user_id == auth.id",
+					".read": "$user_id == auth.uid",
 					"portrait_id": {
-						".write": "$user_id == auth.id"
+						".write": "$user_id == auth.uid"
 					},
 					// holds pending buddy invites for $user_id
 					"buddy-invites": {
 						"$sender_id": {
 							// Prevent writing to a null sender-id, allow users to write to a sender-id matching their own, but don't let them delete it
-							// ".write": "auth.id != null && $sender_id == auth.id && newData.exists()"//,
+							// ".write": "auth.uid != null && $sender_id == auth.uid && newData.exists()"//,
 							// allow deletion
-							".write": "auth.id != null && ($sender_id == auth.id || $user_id == auth.id)"//,
+							".write": "auth.uid != null && ($sender_id == auth.uid || $user_id == auth.uid)"//,
 							/* TODO: Test when internets back up
 							"fromUserId": {".validate": "newData.isString()"},
 							"fromName": {".validate": "newData.isString()"},
@@ -134,7 +151,7 @@
 		*/
 
 		"boss-events": {
-			".read" : "auth.id != null",
+			".read" : "auth.uid != null",
 			// Structure definition, no further rules needed
 			"$event-id": {
 				//event_id
@@ -154,7 +171,7 @@
 		*/
 
 		"shop-sales": {
-			".read" : "auth.id != null"
+			".read" : "auth.uid != null"
 		},
 
 		/* GAMES DATA TREE
@@ -169,7 +186,7 @@
 			"$game_id": {
 				// Allow users to read games-data if they are in the game
 				// TODO: I believe this is the problem with games getting started // maybe not...
-				".read": "data.child('players').child('0').child('playerId').val() == auth.id || data.child('players').child('1').child('playerId').val() == auth.id"
+				".read": "data.child('players').child('0').child('playerId').val() == auth.uid || data.child('players').child('1').child('playerId').val() == auth.uid"
 			}
 		},
 
@@ -203,8 +220,8 @@
 						// Allow a user to edit invite request queue if they are adding or editing a request with their id or editing a request that doesn't yet exist
 						// - Allows deletion
 
-						".read": "auth.id != null && data.child('id').val() == auth.id",
-						".write": "auth.id != null && (!data.exists() || data.child('id').val() == auth.id || newData.child('id').val() == auth.id)"
+						".read": "auth.uid != null && data.child('id').val() == auth.uid",
+						".write": "auth.uid != null && (!data.exists() || data.child('id').val() == auth.uid || newData.child('id').val() == auth.uid)"
 
 						/* TODO: test when internets back up
 						"deck": {".validate": "newData.isString()"}, // TODO: match deck model (array of ints I think?)
@@ -226,8 +243,8 @@
 
 						// TODO: prevent junk data from being written here, users only need to be able to delete this entry (if they are a part of it)
 						// Allow users to delete matchmaking queue item by ref
-						".read": "auth.id != null && data.child('id').val() == auth.id",
-						".write": "auth.id != null && data.child('id').val() == auth.id"
+						".read": "auth.uid != null && data.child('id').val() == auth.uid",
+						".write": "auth.uid != null && data.child('id').val() == auth.uid"
 					}
 				},
 				// Invite requests - game requests from friend challenges
@@ -236,8 +253,8 @@
 						// should be identical to /matchmaking/$namespace/game-request-queue/$request_id
 
 						// Allow a user to edit invite request queue if they are adding or editing a request with their id or editing a request that doesn't yet exist
-						".read": "auth.id != null && data.child('id').val() == auth.id",
-						".write": "auth.id != null && (!data.exists() || data.child('id').val() == auth.id || newData.child('id').val() == auth.id)"
+						".read": "auth.uid != null && data.child('id').val() == auth.uid",
+						".write": "auth.uid != null && (!data.exists() || data.child('id').val() == auth.uid || newData.child('id').val() == auth.uid)"
 
 						/* TODO: test when internets back up
             "deck": {".validate": "newData.isString()"}, // TODO: match deck model (array of ints I think?)
@@ -262,20 +279,20 @@
 						// TODO: prevent junk data from being written here, users only need to be able to delete this entry (if they are a part of it)
 
 						// Allow users to delete matchmaking queue item by ref
-						".read": "auth.id != null && data.child('id').val() == auth.id",
-						".write": "auth.id != null && data.child('id').val() == auth.id"
+						".read": "auth.uid != null && data.child('id').val() == auth.uid",
+						".write": "auth.uid != null && data.child('id').val() == auth.uid"
 					}
 				},
 				"invites": {
 					"to": {
 						"$recipient_id": {
 							// Allow users to read invites directed to themselves
-							".read": "auth.id == $recipient_id",
+							".read": "auth.uid == $recipient_id",
 							"$invite_id": {
 								// Allow users to read game request if they are the sender
-								".read": "auth.id == data.child('fromId').val()",// TODO: test that this works
+								".read": "auth.uid == data.child('fromId').val()",// TODO: test that this works
 								// Allow users to write a game request to a user
-								".write": "auth.id != null",
+								".write": "auth.uid != null",
 
 								/* TODO Verify after internet is back up
 								"createdAt": {".validate": "newData.isString()"},// Verify if number or string
@@ -293,12 +310,12 @@
 				},
 				"failed-invite-request-queue": {
 					"$request_id": {
-						".read": "auth.id != null && (!data.exists() || data.child('id').val() == auth.id)"
+						".read": "auth.uid != null && (!data.exists() || data.child('id').val() == auth.uid)"
 					}
 				},
 				"failed-game-request-queue": {
 					"$request_id": {
-						".read": "auth.id != null && (!data.exists() || data.child('id').val() == auth.id)"
+						".read": "auth.uid != null && (!data.exists() || data.child('id').val() == auth.uid)"
 					}
 				}
 			}
@@ -314,7 +331,7 @@
 				"$type": {
 					"$status_id": {
 						// TODO: make a validation
-						// ".write": "auth.id == newData.child('u').val() || 'anon' == newData.child('u').val()"
+						// ".write": "auth.uid == newData.child('u').val() || 'anon' == newData.child('u').val()"
 						// Users can write to or delete telemetry data by a status id
 						".write": "true",
 						"u": {
@@ -372,7 +389,7 @@
 
 		"user-premium-receipts": {
 			"$user_id": {
-				".read": "auth.id == $user_id"
+				".read": "auth.uid == $user_id"
 			}
 		},
 
@@ -387,10 +404,10 @@
 		"user-decks": {
 			"$user_id": {
 				// allow reads for individual records if the user owns the record
-				".read": "auth.id == $user_id",
+				".read": "auth.uid == $user_id",
 				"$deck_id": {
 					// Allow users to add or delete custom decks
-					".write": "auth.id != null && auth.id == $user_id"
+					".write": "auth.uid != null && auth.uid == $user_id"
 				}
 			}
 		},
@@ -405,7 +422,7 @@
 
 		"user-game-job-status": {
 			"$user_id": {
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 			}
 		},
 
@@ -419,8 +436,8 @@
 
 		"user-games": {
 			"$user_id": {
-				".read" : "auth.id == $user_id",
-				".write": "auth.id != null && auth.id == $user_id"
+				".read" : "auth.uid == $user_id",
+				".write": "auth.uid != null && auth.uid == $user_id"
 			}
 		},
 
@@ -433,14 +450,14 @@
 
 		"user-inventory": {
 			"$user_id": {
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				"card-collection": {
 					"$card_id": {
 						"is_unread": {
-							".write": "auth.id == $user_id"
+							".write": "auth.uid == $user_id"
 						},
 						"is_new": {
-							".write": "auth.id == $user_id"
+							".write": "auth.uid == $user_id"
 						}
 					}
 				},
@@ -476,14 +493,14 @@
 
 		"user-quests": {
 			"$user_id": {
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				"daily": {
 					"current": {
 						"quests": {
 							"$quest_index": {
 								"is_unread": {
 									// Allow users to mark their own quests as read
-									".write": "auth.id == $user_id"
+									".write": "auth.uid == $user_id"
 								}
 							}
 						}
@@ -502,12 +519,12 @@
 		"user-ranking": {
 			"$user_id": {
 				// Any user can lookup another users ranking, if signed on
-				".read" : "auth.id != null",
+				".read" : "auth.uid != null",
 
 				"current": {
 					"is_unread": {
 						// Allow users to mark their own ranking as read
-						".write": "auth.id == $user_id"
+						".write": "auth.uid == $user_id"
 					}
 				}
 			}
@@ -523,7 +540,7 @@
 		"user-stats": {
 			"$user_id": {
 				// Any user can lookup another users ranking, if signed on
-				".read" : "auth.id == $user_id"
+				".read" : "auth.uid == $user_id"
 			}
 		},
 
@@ -547,7 +564,7 @@
 
 		"username-index": {
 			"$username": {
-				".read" : "auth.id != null" // allow reads for individual records for logged in users
+				".read" : "auth.uid != null" // allow reads for individual records for logged in users
 			}
 		},
 
@@ -562,28 +579,28 @@
 
 		"users": {
 			"$user_id": {
-				".read": "auth.id != null",
-				".write": "auth.id == $user_id",
+				".read": "auth.uid != null",
+				".write": "auth.uid == $user_id",
 				"username": {
 					".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 18"
 				},
 				"presence": {
-					".write": "auth.id != null && auth.id == $user_id",
-					".read": "auth.id != null",
+					".write": "auth.uid != null && auth.uid == $user_id",
+					".read": "auth.uid != null",
 					"username": {
 						".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 18"
 					}
 				},
 				"buddy-list": {
 					"$buddy_id": {
-						".write" : "auth.id != null && !data.exists() || $buddy_id == auth.id || $buddy_id == $user_id"
+						".write" : "auth.uid != null && !data.exists() || $buddy_id == auth.uid || $buddy_id == $user_id"
 					}
 				},
 				"buddies": {
 					"$buddy_id": {
 						// Allow users to write themselves into others buddy list
 						// TODO: verify this came from a buddy invite
-						".write": "auth.id == $buddy_id"
+						".write": "auth.uid == $buddy_id"
 					}
 				}
 			}
@@ -600,17 +617,17 @@
 		"user-achievements": {
 			"$user_id": {
 				// Any user can lookup another users ranking, if signed on
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				"completed": {
 					".indexOn": "completed_at",
 					"$achievement_id": {
 						"is_unread": {
-							".write": "auth.id == $user_id"
+							".write": "auth.uid == $user_id"
 						}
 					}
 				},
 				"status": {
-					".write": "auth.id == $user_id"
+					".write": "auth.uid == $user_id"
 				}
 			}
 		},
@@ -625,9 +642,9 @@
 
 		"user-twitch-rewards": {
 			"$user_id": {
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				"status": {
-					".write": "auth.id == $user_id"
+					".write": "auth.uid == $user_id"
 				}
 			}
 		},
@@ -646,7 +663,7 @@
 					// Any user can lookup another users ranking, if signed on
 
 					"ladder_position": {
-						".read": "auth.id != null",
+						".read": "auth.uid != null",
 						".indexOn": "ladder_position"
 					}
 				}
@@ -664,13 +681,13 @@
 		"user-progression": {
 			"$user_id": {
 				// Any user can lookup another users ranking, if signed on
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 
 				"game-counter-rewards": {
 					"$reward_id":{
 						"is_unread": {
 							// Allow users to mark their own ranking as read
-							".write": "auth.id == $user_id"
+							".write": "auth.uid == $user_id"
 						}
 					}
 				}
@@ -688,7 +705,7 @@
 		"user-bosses-defeated": {
 			"$user_id": {
 				// Any user can lookup another users ranking, if signed on
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 
 				// Structure definition, no further rules needed
 				"boss-id": {
@@ -707,14 +724,14 @@
 		*/
 		"user-matchmaking-errors": {
 			"$user_id": {
-				".read" : "auth.id == $user_id"
+				".read" : "auth.uid == $user_id"
 			}
 		},
 
 
 		"system-status": {
 			".read": true,
-			".write" : "auth.uid == '1372d9b92f1e' && auth.continous_integration_user == true"
+			".write" : "auth.uid == '1372d9b92f1e' && auth.token.continous_integration_user == true"
 		},
 
 
@@ -742,8 +759,8 @@
 		"user-news": {
 			"$user_id": {
 				// Users can manage their own news datarecords
-				".read" : "auth.id == $user_id",
-				".write" : "auth.id == $user_id"
+				".read" : "auth.uid == $user_id",
+				".write" : "auth.uid == $user_id"
 			}
 		},
 
@@ -758,7 +775,7 @@
 		"user-faction-progression": {
 			"$user_id": {
 				// Users can manage their own news datarecords
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				".write" : false
 			}
 		},
@@ -766,8 +783,8 @@
 		"user-new-player-progression": {
 			"$user_id": {
 				// Users can manage their own news datarecords
-				".read" : "auth.id == $user_id",
-				".write" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
+				".write" : "auth.uid == $user_id",
 			}
 		},
 
@@ -782,11 +799,11 @@
 			"$user_id": {
 				// Only the server can write because we want users to get rewards,
 				// but users can read their challenge progress
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				".write" : false,
 				"$challenge_type": {
 					"last_attempted_at": {
-						".write" : "auth.id == $user_id"
+						".write" : "auth.uid == $user_id"
 					}
 				}
 			}
@@ -816,8 +833,8 @@
 		"user-gauntlet-run": {
 			"$user_id": {
 				// Users can manage their own news datarecords
-				".read" : "auth.id == $user_id",
-				".write" : "auth.id == $user_id"
+				".read" : "auth.uid == $user_id",
+				".write" : "auth.uid == $user_id"
 			}
 		},
 
@@ -831,7 +848,7 @@
 		"user-receipts": {
 			"$user_id": {
 				// Users can read their own receipts
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 			}
 		},
 
@@ -844,7 +861,7 @@
 		"user-notifications": {
 			"$user_id": {
 				// Users can read their own receipts
-				".read" : "auth.id == $user_id",
+				".read" : "auth.uid == $user_id",
 				".indexOn": "created_at"
 			}
 		},

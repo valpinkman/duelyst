@@ -14,7 +14,7 @@ var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var Logger = require('app/common/logger');
-var Firebase = require('firebase');
+var Firebase = require('firebase-v2');
 var Manager = require('./manager');
 var ProfileManager = require('./profile_manager');
 
