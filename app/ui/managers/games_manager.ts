@@ -84,7 +84,7 @@ var GamesManager = Manager.extend({
         this.userStatsModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-stats/' + userId });
 
         // init player games collection
-        this.playerGames = new DuelystFirebase.Collection(null, { firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limit(1) });
+        this.playerGames = new DuelystFirebase.Collection(null, { firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1) });
 
         // init game invites collection
         this.receivedInvitesCollection = new DuelystFirebase.Collection(null, { firebase: process.env.FIREBASE_URL + '/matchmaking/' + process.env.NODE_ENV + '/invites/to/' + userId });
@@ -445,7 +445,8 @@ var GamesManager = Manager.extend({
       this.listenTo(this.lastSentInviteModel, 'change:status', this._onSentInviteStatusChanged);
 
       // also keep an invite id for matchmaking
-      this.inviteId = inviteRef.name();
+      // v2's ref.name() is v9's ref.key (a property, not a call)
+      this.inviteId = inviteRef.key;
 
       // create notification model
       var notificationModel = new NotificationModel({

@@ -7,7 +7,7 @@ var UtilsEnv = require('app/common/utils/utils_env');
 var GameDataManager = require('app/ui/managers/game_data_manager');
 var ProgressionManager = require('app/ui/managers/progression_manager');
 var CardsCollection = require('app/ui/collections/cards');
-var Firebase = require('firebase-v2');
+var Firebase = require('app/firebase');
 var i18next = require('i18next');
 
 var DeckModel = Backbone.Model.extend({

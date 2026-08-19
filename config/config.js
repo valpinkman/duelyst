@@ -67,6 +67,19 @@ const config = convict({
       default: '',
       env: 'FIREBASE_PRIVATE_KEY',
     },
+    apiKey: {
+      /*
+       * Required by Firebase Auth (signInWithCustomToken) from firebase v3 on;
+       * the v2 SDK never needed it because legacy tokens were checked by the
+       * RTDB itself. NOT a secret - the web API key identifies the project and
+       * is shipped in every Firebase web client; access is controlled by the
+       * security rules, not by hiding this.
+       */
+      doc: 'Firebase Web API key (public; needed for custom-token sign-in).',
+      format: String,
+      default: '',
+      env: 'FIREBASE_API_KEY',
+    },
     authServiceUrl: {
       doc: 'Firebase URL for auth service',
       // format: "url",

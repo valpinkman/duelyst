@@ -1,6 +1,37 @@
 var Promise = require('bluebird');
 var _ = require('underscore');
 
+/*
+ * backfire (app/vendor/backfire) is a Backbone<->Firebase binding written for
+ * firebase 2.x and shipped only as a minified build. Rather than edit that
+ * blob, the one place it is incompatible with a modern SDK is corrected here.
+ *
+ * backfire derives a child's id with:
+ *     typeof snap.key === 'function' ? snap.key() : snap.name()
+ * In firebase 2.x `key` was a METHOD; from v3 on it is a plain string
+ * property, so that test falls through to `name()`, which no longer exists -
+ * every synced model would come back with `id === undefined`.
+ *
+ * See app/firebase.ts for why the rest of backfire works untouched.
+ */
+if (Backbone.Firebase && Backbone.Firebase.prototype) {
+  Backbone.Firebase.prototype._getKey = function (snapshotOrRef) {
+    return typeof snapshotOrRef.key === 'function' ? snapshotOrRef.key() : snapshotOrRef.key;
+  };
+}
+
+/*
+ * firebase 2.x exposed `.ref()` as a METHOD on snapshots and refs; from v3 on
+ * `.ref` is a plain property. Both shapes are accepted here so this file does
+ * not care which SDK is underneath. (backfire's own 12 `.ref()` calls are to
+ * ITS OWN Backbone.Firebase#ref method, not the SDK's, so they are unaffected.)
+ */
+function toRef(target) {
+  if (target == null) return target;
+  return typeof target.ref === 'function' ? target.ref() : (target.ref || target);
+}
+exports.toRef = toRef;
+
 Backbone.DuelystFirebase = {};
 
 Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
@@ -45,7 +76,7 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
       }
     });
     if (_.size(modelObj)) {
-      this.firebase.ref().update(modelObj, this._log);
+      toRef(this.firebase).update(modelObj, this._log);
     }
   },
 

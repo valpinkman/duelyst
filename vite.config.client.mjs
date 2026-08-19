@@ -52,6 +52,7 @@ if (process.env.DUELYST_BUILD_CONFIG) {
     VERSION: version,
     API_URL: config.get('api'),
     FIREBASE_URL: config.get('firebase.url'),
+    FIREBASE_API_KEY: config.get('firebase.apiKey'),
     ALL_CARDS_AVAILABLE: config.get('allCardsAvailable'),
     AI_TOOLS_ENABLED: config.get('aiToolsEnabled'),
     RECORD_CLIENT_LOGS: config.get('recordClientLogs'),
