@@ -13,7 +13,7 @@ RUN npm install -g pnpm@10.12.1
 RUN pnpm install --frozen-lockfile && pnpm store prune
 
 COPY version.json /duelyst/
-COPY app/*.coffee /duelyst/app/
+COPY app/*.ts /duelyst/app/
 COPY app/common /duelyst/app/common
 COPY app/data /duelyst/app/data
 COPY app/localization /duelyst/app/localization
@@ -23,3 +23,7 @@ COPY config /duelyst/config
 COPY server /duelyst/server
 COPY worker /duelyst/worker
 COPY test /duelyst/test
+# vitest needs its configs (and tsconfig for tsx's path resolution)
+COPY vitest.config.mjs /duelyst/
+COPY vitest.integration.config.mjs /duelyst/
+COPY tsconfig.json /duelyst/

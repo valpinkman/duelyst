@@ -1,4 +1,3 @@
-require('coffeescript/register');
 const _ = require('underscore');
 const moment = require('moment');
 const Promise = require('bluebird');

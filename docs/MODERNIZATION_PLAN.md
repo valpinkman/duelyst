@@ -77,6 +77,16 @@ step it describes, so it can never drift from the code.
 - [x] 1.3 vitest covers all of `test/unit` (101 files); `unit_tests_vitest` CI job added beside
   the mocha job in `unit_tests.yaml`.
   *Accepted:* vitest 1287/1287 == mocha 1287/1287 on `test/unit`. — (this commit)
+- [x] 1.4b **CI verified for real** (first push to `valpinkman/duelyst`): `build_app`,
+  `unit_tests`, `lint_javascript`, `lint_coffeescript`, `lint_terraform` green;
+  `integration_tests` failed and exposed three things only a clean CI checkout could:
+  (a) knex migrations still registered `coffeescript/register` and then imported SDK modules
+  that are now `.ts` — the hook now lives once in `server/knexfile.js` (knex loads it before
+  any migration) and the dead coffee registers are gone; (b) every Dockerfile still ran
+  `COPY app/*.coffee`, which matches nothing since the conversion — and the root barrels it
+  existed to copy are now `.ts`; (c) the test image never copied the vitest configs.
+  Locally reproduced by wiping `.pgdata` and migrating from scratch: 86/86 migrations, then
+  integration:misc 13/13 in-container. — (this commit)
 - [x] 1.4 Workflow verification, static half: all workflows pass `actionlint`; fixed
   `actions/checkout@v3` → `v4` (v3 no longer runs on current GitHub runners — pre-existing
   breakage). **Runtime half deferred**: needs the branch pushed to GitHub (goal forbids

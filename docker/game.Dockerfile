@@ -13,7 +13,7 @@ RUN npm install -g pnpm@10.12.1
 RUN pnpm install --frozen-lockfile && pnpm store prune
 
 COPY version.json /duelyst/
-COPY app/*.coffee /duelyst/app/
+COPY app/*.ts /duelyst/app/
 COPY app/common /duelyst/app/common
 COPY app/data /duelyst/app/data
 COPY app/localization /duelyst/app/localization

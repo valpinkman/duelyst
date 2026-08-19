@@ -1,4 +1,3 @@
-require('coffeescript/register');
 const NewPlayerProgressionStageEnum = require('../../app/sdk/progression/newPlayerProgressionStageEnum');
 const NewPlayerProgressionHelper = require('../../app/sdk/progression/newPlayerProgressionHelper');
 

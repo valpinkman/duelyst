@@ -1,5 +1,8 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '..'));
+// Migrations import SDK modules, which are TypeScript. knex loads this file
+// before any migration, so registering the hook here covers all of them.
+require('tsx/cjs');
 const config = require('../config/config');
 
 const environmentName = process.env.NODE_ENV;
