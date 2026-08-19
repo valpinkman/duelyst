@@ -171,8 +171,26 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
   resources built by `pnpm build:client`. Dev loop: `pnpm build:client:watch` (vite --watch
   rebuilds the bundle in ~2.4s on change; run `build:client` once first for assets). A full
   HMR dev server is deliberately out of scope until the client is ESM/TS. — (this commit)
-- [ ] 4.5 Delete gulp pipeline + dead tasks (cdn, revision, git, docker, bump, shop) once Vite output is byte-for-byte-equivalent in behavior.
-  *Accept:* game client boots and plays a practice game from the Vite build.
+- [x] 4.5 **Gulp is gone.** Deleted `gulp/` (14 task files), `gulpfile.babel.js`, `.babelrc`,
+  `docs/GULP.md`, `bulk-decaffeinate.config.js`, and 65 build-era devDependencies
+  (browserify/coffeeify/watchify/envify/uglify, the whole gulp-* and imagemin-* stack,
+  gulp-only helpers). `pnpm build` now points at `scripts/build/build-client.mjs`.
+  Re-declared the 11 packages that source code genuinely requires but only the gulp stack had
+  pulled in (glsl-fxaa + glslify for shaders, clipboard for the replay dialog, benchmark and
+  fast-stats for tests, and the cli/scripts legacy-ops deps) — keeping the "declared ==
+  required" invariant from the pnpm switch. `del`/`minimist`/`read-pkg` stay dropped at the
+  root: they belong to `desktop/`, which declares them itself.
+  Note: the standalone register-page bundle (`build:register`) is gone with gulp; it was
+  never part of the default build (old `dist/src` had no `register.html` either), and the
+  in-client Create Account flow covers registration. `app/register.js` +
+  `app/index.register.js` are now unbuilt deletion candidates.
+  *Accepted (the gate):* against a REAL Firebase RTDB — registered an account, logged in,
+  skipped tutorial, reached the main menu, started a Practice game vs the Magmar AI,
+  mulliganed, played a minion, ended turn, watched the AI summon and respond (steps 2→15),
+  conceded to a clean game-over. Then deleted `dist/`, rebuilt from scratch gulp-free, and
+  re-verified the client boots to the main menu with **0 console errors**. Full gate green:
+  mocha 1300 + vitest 1300 + integration:misc 13 + lint + packages manifest (2795).
+  — (this commit)
 
 ### Phase 5 — CoffeeScript → TypeScript (client + sdk)
 
@@ -275,6 +293,25 @@ mocha + vitest + both builds + wire-format tests.
   test preludes (drop in 7.1), the gulpfile (dies in 4.5), and generate_packages (no longer
   loads coffee but harmless). The `coffeescript` dependency itself goes when those do.
   — (this commit)
+
+### Phase 6b — post-conversion correctness (found by playing the game)
+
+- [x] 6b.1 **Promise-chain state**: CoffeeScript thin-arrow `.then` callbacks compiled to
+  sloppy-mode functions where `this` was the *global object* — the original code passed state
+  between chain steps through accidental globals (shared across concurrent requests!).
+  decaffeinate faithfully emitted `this.x`, which inside ES6 class bodies is strict-mode
+  `undefined` → `TypeError` at runtime. Surfaced as a 500 on `/session` right after a
+  successful registration. Codemod `scripts/codemods/fix-then-this.mjs` (AST-based, only
+  rewrites `this` inside callbacks passed to promise combinators) scoped **1,531 references
+  across 15 files** to a per-call `_chainState` object — fixing the crash *and* the latent
+  cross-request state bleed. `this` in other callbacks (e.g. knex grouped-where, which binds
+  deliberately) untouched.
+- [x] 6b.2 **Build config vs NODE_ENV**: `vite build` sets `NODE_ENV=production` before loading
+  its config, which silently flipped convict onto `production.json` (`api: ""`), baking the
+  wrong API URL into the bundle (client called `localhost:5000` → CORS failures). The
+  orchestrator now resolves the envify values under the real environment and passes them via
+  `DUELYST_BUILD_CONFIG`; direct `pnpm build:vite` forces development unless `DUELYST_ENV`
+  says otherwise.
 
 ### Phase 7 — Test & dependency endgame
 

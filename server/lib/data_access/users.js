@@ -135,6 +135,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will return the userId on completion.
    */
   static createNewUser(username, password, inviteCode, referralCode, campaignData, registrationSource = null) {
+    const _chainState = {};
     // validate referral code and force it to lower case
     if (inviteCode == null) { inviteCode = 'kumite14'; }
     referralCode = referralCode != null ? referralCode.toLowerCase().trim() : undefined;
@@ -172,7 +173,7 @@ class UsersModule {
           throw new Errors.AlreadyExistsError('Username not available');
         }
 
-        this.referralCodeRow = referralCodeRow;
+        _chainState.referralCodeRow = referralCodeRow;
 
         return hashHelpers.generateHash(password);
       })
@@ -204,17 +205,17 @@ class UsersModule {
           }
 
           let updateReferralCodePromise = Promise.resolve();
-          if (this.referralCodeRow != null) {
-            Logger.module('USERS').debug(`createNewUser() -> using referral code ${referralCode.yellow} for user ${userId.blue} `, this.referralCodeRow.params);
+          if (_chainState.referralCodeRow != null) {
+            Logger.module('USERS').debug(`createNewUser() -> using referral code ${referralCode.yellow} for user ${userId.blue} `, _chainState.referralCodeRow.params);
             userRecord.referral_code = referralCode;
             updateReferralCodePromise = knex('referral_codes').where('code', referralCode).increment('signup_count', 1).transacting(tx);
-            if (this.referralCodeRow.params != null ? this.referralCodeRow.params.gold : undefined) {
+            if (_chainState.referralCodeRow.params != null ? _chainState.referralCodeRow.params.gold : undefined) {
               if (userRecord.wallet_gold == null) { userRecord.wallet_gold = 0; }
-              userRecord.wallet_gold += this.referralCodeRow.params != null ? this.referralCodeRow.params.gold : undefined;
+              userRecord.wallet_gold += _chainState.referralCodeRow.params != null ? _chainState.referralCodeRow.params.gold : undefined;
             }
-            if (this.referralCodeRow.params != null ? this.referralCodeRow.params.spirit : undefined) {
+            if (_chainState.referralCodeRow.params != null ? _chainState.referralCodeRow.params.spirit : undefined) {
               if (userRecord.wallet_spirit == null) { userRecord.wallet_spirit = 0; }
-              userRecord.wallet_spirit += this.referralCodeRow.params != null ? this.referralCodeRow.params.spirit : undefined;
+              userRecord.wallet_spirit += _chainState.referralCodeRow.params != null ? _chainState.referralCodeRow.params.spirit : undefined;
             }
           }
 
@@ -246,8 +247,8 @@ class UsersModule {
                 hasAcceptedEula: false,
               };
 
-              const starting_gold = __guard__(this.referralCodeRow != null ? this.referralCodeRow.params : undefined, (x) => x.gold) || 0;
-              const starting_spirit = __guard__(this.referralCodeRow != null ? this.referralCodeRow.params : undefined, (x1) => x1.spirit) || 0;
+              const starting_gold = __guard__(_chainState.referralCodeRow != null ? _chainState.referralCodeRow.params : undefined, (x) => x.gold) || 0;
+              const starting_spirit = __guard__(_chainState.referralCodeRow != null ? _chainState.referralCodeRow.params : undefined, (x1) => x1.spirit) || 0;
 
               allPromises.push(FirebasePromises.set(rootRef.child('users').child(userId), userData));
               allPromises.push(FirebasePromises.set(rootRef.child('username-index').child(username), userId));
@@ -314,6 +315,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will return on completion.
    */
   static changeUsername(userId, newUsername, forceItForNoGold, systemTime) {
+    const _chainState = {};
     if (forceItForNoGold == null) { forceItForNoGold = false; }
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const this_obj = {};
@@ -346,8 +348,8 @@ class UsersModule {
                   }
                 }
 
-                this.price = price;
-                this.oldUsername = userRow.username;
+                _chainState.price = price;
+                _chainState.oldUsername = userRow.username;
 
                 if ((price > 0) && (userRow.wallet_gold < price)) {
                   throw new Errors.InsufficientFundsError('Insufficient gold to update username');
@@ -356,7 +358,7 @@ class UsersModule {
                 const allUpdates = [];
 
                 // if username was null, we skip setting the updated_at flag since it is being set for first time
-                if (!this.oldUsername) {
+                if (!_chainState.oldUsername) {
                   userUpdateParams = { username: newUsername };
                 } else {
                   userUpdateParams = {
@@ -389,7 +391,7 @@ class UsersModule {
                 const updateWalletData = (walletData) => {
                   if (walletData == null) { walletData = {}; }
                   if (walletData.gold_amount == null) { walletData.gold_amount = 0; }
-                  walletData.gold_amount -= this.price;
+                  walletData.gold_amount -= _chainState.price;
                   walletData.updated_at = MOMENT_NOW_UTC.valueOf();
                   return walletData;
                 };
@@ -400,14 +402,14 @@ class UsersModule {
                 ];
                 // if username was null, we skip setting the updated_at flag since it is being set for first time
                 // and there is no old index to remove
-                if (!this.oldUsername) {
+                if (!_chainState.oldUsername) {
                   allPromises.push(FirebasePromises.update(rootRef.child('users').child(userId), { username: newUsername }));
                 } else {
-                  allPromises.push(FirebasePromises.remove(rootRef.child('username-index').child(this.oldUsername)));
+                  allPromises.push(FirebasePromises.remove(rootRef.child('username-index').child(_chainState.oldUsername)));
                   allPromises.push(FirebasePromises.update(rootRef.child('users').child(userId), { username: newUsername, username_updated_at: MOMENT_NOW_UTC.valueOf() }));
                 }
 
-                if (this.price > 0) {
+                if (_chainState.price > 0) {
                   allPromises.push(FirebasePromises.safeTransaction(rootRef.child('user-inventory').child(userId).child('wallet'), updateWalletData));
                 }
 
@@ -589,6 +591,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will return synced when done
    */
   static bumpSessionCountAndSyncDataIfNeeded(userId, userData = null, systemTime = null) {
+    const _chainState = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     let startPromise = null;
@@ -601,14 +604,14 @@ class UsersModule {
     return startPromise
 
       .then(function (userData) {
-        this.userData = userData;
+        _chainState.userData = userData;
 
-        if ((this.userData == null)) {
+        if ((_chainState.userData == null)) {
           throw new Errors.NotFoundError('User not found');
         }
 
         // Check if user needs to have emotes migrated to cosmetics inventory
-        return MigrationsModule.checkIfUserNeedsMigrateEmotes20160708(this.userData);
+        return MigrationsModule.checkIfUserNeedsMigrateEmotes20160708(_chainState.userData);
       }).then(function (userNeedsMigrateEmotes) {
         if (userNeedsMigrateEmotes) {
           return MigrationsModule.userMigrateEmotes20160708(userId, MOMENT_NOW_UTC);
@@ -616,7 +619,7 @@ class UsersModule {
           return Promise.resolve();
         }
       }).then(function () {
-        return MigrationsModule.checkIfUserNeedsPrismaticBackfillReward(this.userData);
+        return MigrationsModule.checkIfUserNeedsPrismaticBackfillReward(_chainState.userData);
       }).then(function (userNeedsPrismaticBackfill) {
         if (userNeedsPrismaticBackfill) {
           return MigrationsModule.userBackfillPrismaticRewards(userId, MOMENT_NOW_UTC);
@@ -625,7 +628,7 @@ class UsersModule {
         }
       })
       .then(function () { // migrate user charge counts for purchase limits
-        return MigrationsModule.checkIfUserNeedsChargeCountsMigration(this.userData).then(function (needsMigration) {
+        return MigrationsModule.checkIfUserNeedsChargeCountsMigration(_chainState.userData).then(function (needsMigration) {
           if (needsMigration) {
             return MigrationsModule.userCreateChargeCountsMigration(userId);
           } else {
@@ -634,7 +637,7 @@ class UsersModule {
         });
       })
       .then(function () {
-        return MigrationsModule.checkIfUserNeedsIncompleteGauntletRefund(this.userData).then(function (needsMigration) {
+        return MigrationsModule.checkIfUserNeedsIncompleteGauntletRefund(_chainState.userData).then(function (needsMigration) {
           if (needsMigration) {
             return MigrationsModule.userIncompleteGauntletRefund(userId);
           } else {
@@ -643,7 +646,7 @@ class UsersModule {
         });
       })
       .then(function () {
-        return MigrationsModule.checkIfUserNeedsUnlockableOrbsRefund(this.userData).then(function (needsMigration) {
+        return MigrationsModule.checkIfUserNeedsUnlockableOrbsRefund(_chainState.userData).then(function (needsMigration) {
           if (needsMigration) {
             return MigrationsModule.userUnlockableOrbsRefund(userId);
           } else {
@@ -652,10 +655,10 @@ class UsersModule {
         });
       })
       .then(function () {
-        const lastSessionTime = moment.utc(this.userData.last_session_at).valueOf() || 0;
+        const lastSessionTime = moment.utc(_chainState.userData.last_session_at).valueOf() || 0;
         const duration = moment.duration(MOMENT_NOW_UTC.valueOf() - lastSessionTime);
 
-        if (moment.utc(this.userData.created_at).isBefore(moment.utc('2016-06-18')) && moment.utc(this.userData.last_session_at).isBefore(moment.utc('2016-06-18'))) {
+        if (moment.utc(_chainState.userData.created_at).isBefore(moment.utc('2016-06-18')) && moment.utc(_chainState.userData.last_session_at).isBefore(moment.utc('2016-06-18'))) {
           Logger.module('UsersModule').debug(`bumpSessionCountAndSyncDataIfNeeded() -> starting inventory achievements for user - ${userId.blue}.`);
           // Kick off job to update achievements
           Jobs.create('update-user-achievements', {
@@ -669,7 +672,7 @@ class UsersModule {
 
         if (duration.asHours() > 2) {
           return knex('users').where('id', userId).update({
-            session_count: this.userData.session_count + 1,
+            session_count: _chainState.userData.session_count + 1,
             last_session_at: MOMENT_NOW_UTC.toDate(),
           });
         } else {
@@ -679,7 +682,7 @@ class UsersModule {
       .then(function () {
       // Update a user's last seen session if needed
 
-        if ((this.userData.last_session_version == null) || (this.userData.last_session_version !== version)) {
+        if ((_chainState.userData.last_session_version == null) || (_chainState.userData.last_session_version !== version)) {
           return knex('users').where('id', userId).update({
             last_session_version: version,
           });
@@ -688,7 +691,7 @@ class UsersModule {
         }
       })
       .then(function () {
-        return SyncModule.syncUserDataIfTrasactionCountMismatched(userId, this.userData);
+        return SyncModule.syncUserDataIfTrasactionCountMismatched(userId, _chainState.userData);
       })
       .then((synced) => // # Job: Sync user buddy data
       // Jobs.create("data-sync-user-buddy-list",
@@ -1057,6 +1060,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static createFactionProgressionRecord(userId, factionId, gameId, gameType, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not createFactionProgressionRecord(): invalid user ID - ${userId}`));
@@ -1082,7 +1086,7 @@ class UsersModule {
 
         // faction progression row
         if (factionProgressionRow == null) { factionProgressionRow = { user_id: userId, faction_id: factionId }; }
-        this.factionProgressionRow = factionProgressionRow;
+        _chainState.factionProgressionRow = factionProgressionRow;
         if (factionProgressionRow.xp == null) { factionProgressionRow.xp = 0; }
         if (factionProgressionRow.game_count == null) { factionProgressionRow.game_count = 0; }
         if (factionProgressionRow.unscored_count == null) { factionProgressionRow.unscored_count = 0; }
@@ -1115,9 +1119,9 @@ class UsersModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (rootRef) {
-        delete this.factionProgressionRow.user_id;
-        this.factionProgressionRow.updated_at = moment.utc(this.factionProgressionRow.updated_at).valueOf();
-        return FirebasePromises.set(rootRef.child('user-faction-progression').child(userId).child(factionId).child('stats'), this.factionProgressionRow);
+        delete _chainState.factionProgressionRow.user_id;
+        _chainState.factionProgressionRow.updated_at = moment.utc(_chainState.factionProgressionRow.updated_at).valueOf();
+        return FirebasePromises.set(rootRef.child('user-faction-progression').child(userId).child(factionId).child('stats'), _chainState.factionProgressionRow);
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
       .timeout(10000)
@@ -1143,6 +1147,7 @@ class UsersModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateUserFactionProgressionWithGameOutcome(userId, factionId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserFactionProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -1164,14 +1169,14 @@ class UsersModule {
       ])).spread(function (userRow, factionProgressionRow) {
       // Logger.module("UsersModule").debug "updateUserFactionProgressionWithGameOutcome() -> ACQUIRED LOCK ON #{userId}".yellow
 
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         const allPromises = [];
 
         const needsInsert = _.isUndefined(factionProgressionRow);
         if (factionProgressionRow == null) { factionProgressionRow = { user_id: userId, faction_id: factionId }; }
 
-        this.factionProgressionRow = factionProgressionRow;
+        _chainState.factionProgressionRow = factionProgressionRow;
         if (factionProgressionRow.xp == null) { factionProgressionRow.xp = 0; }
         if (factionProgressionRow.game_count == null) { factionProgressionRow.game_count = 0; }
         if (factionProgressionRow.unscored_count == null) { factionProgressionRow.unscored_count = 0; }
@@ -1251,25 +1256,25 @@ class UsersModule {
           allPromises.push(knex('user_faction_progression').where({ user_id: userId, faction_id: factionId }).update(factionProgressionRow).transacting(tx));
         }
 
-        if (!isUnscored && (!this.factionProgressionRow.xp_earned > 0)) {
+        if (!isUnscored && (!_chainState.factionProgressionRow.xp_earned > 0)) {
           Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> F${factionId} MAX level reached`);
 
           // update the user game params
-          this.updateUserGameParams = {
-            faction_xp: this.factionProgressionRow.xp,
+          _chainState.updateUserGameParams = {
+            faction_xp: _chainState.factionProgressionRow.xp,
             faction_xp_earned: 0,
           };
 
-          allPromises.push(knex('user_games').where({ user_id: userId, game_id: gameId }).update(this.updateUserGameParams).transacting(tx));
+          allPromises.push(knex('user_games').where({ user_id: userId, game_id: gameId }).update(_chainState.updateUserGameParams).transacting(tx));
         } else {
-          const level = SDK.FactionProgression.levelForXP(this.factionProgressionRow.xp);
+          const level = SDK.FactionProgression.levelForXP(_chainState.factionProgressionRow.xp);
 
-          Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> At F${factionId} L:${level} [${this.factionProgressionRow.xp}] earned ${this.factionProgressionRow.xp_earned} for G:${gameId}`);
+          Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> At F${factionId} L:${level} [${_chainState.factionProgressionRow.xp}] earned ${_chainState.factionProgressionRow.xp_earned} for G:${gameId}`);
 
           const progressData = {
             user_id: userId,
             faction_id: factionId,
-            xp_earned: this.factionProgressionRow.xp_earned,
+            xp_earned: _chainState.factionProgressionRow.xp_earned,
             is_winner: isWinner || false,
             is_draw: isDraw || false,
             game_id: gameId,
@@ -1277,13 +1282,13 @@ class UsersModule {
             is_scored: !isUnscored,
           };
 
-          this.updateUserGameParams = {
-            faction_xp: this.factionProgressionRow.xp - this.factionProgressionRow.xp_earned,
-            faction_xp_earned: this.factionProgressionRow.xp_earned,
+          _chainState.updateUserGameParams = {
+            faction_xp: _chainState.factionProgressionRow.xp - _chainState.factionProgressionRow.xp_earned,
+            faction_xp_earned: _chainState.factionProgressionRow.xp_earned,
           };
 
           allPromises.push(knex('user_faction_progression_events').insert(progressData).transacting(tx));
-          allPromises.push(knex('user_games').where({ user_id: userId, game_id: gameId }).update(this.updateUserGameParams).transacting(tx));
+          allPromises.push(knex('user_games').where({ user_id: userId, game_id: gameId }).update(_chainState.updateUserGameParams).transacting(tx));
         }
 
         return Promise.all(allPromises);
@@ -1293,14 +1298,14 @@ class UsersModule {
           rewardRowData;
         let allPromises = [];
 
-        if ((!isUnscored && this.factionProgressionRow) && SDK.FactionProgression.hasLeveledUp(this.factionProgressionRow.xp, this.factionProgressionRow.xp_earned)) {
+        if ((!isUnscored && _chainState.factionProgressionRow) && SDK.FactionProgression.hasLeveledUp(_chainState.factionProgressionRow.xp, _chainState.factionProgressionRow.xp_earned)) {
         // Logger.module("UsersModule").debug "updateUserFactionProgressionWithGameOutcome() -> LEVELED up"
 
           factionName = SDK.FactionFactory.factionForIdentifier(factionId).devName;
-          const level = SDK.FactionProgression.levelForXP(this.factionProgressionRow.xp);
+          const level = SDK.FactionProgression.levelForXP(_chainState.factionProgressionRow.xp);
           const rewardData = SDK.FactionProgression.rewardDataForLevel(factionId, level);
 
-          this.rewardRows = [];
+          _chainState.rewardRows = [];
 
           if (rewardData != null) {
             rewardRowData = {
@@ -1313,7 +1318,7 @@ class UsersModule {
               is_unread: true,
             };
 
-            this.rewardRows.push(rewardRowData);
+            _chainState.rewardRows.push(rewardRowData);
 
             rewardData.created_at = MOMENT_NOW_UTC.valueOf();
             rewardData.level = level;
@@ -1366,8 +1371,8 @@ class UsersModule {
         }
 
         // let's see if we need to add any faction ribbons for this user
-        const winCountForRibbons = this.factionProgressionRow.win_count - (this.factionProgressionRow.single_player_win_count + this.factionProgressionRow.friendly_win_count);
-        if (isWinner && (winCountForRibbons > 0) && ((winCountForRibbons % 100) === 0) && !this.userRow.is_bot) {
+        const winCountForRibbons = _chainState.factionProgressionRow.win_count - (_chainState.factionProgressionRow.single_player_win_count + _chainState.factionProgressionRow.friendly_win_count);
+        if (isWinner && (winCountForRibbons > 0) && ((winCountForRibbons % 100) === 0) && !_chainState.userRow.is_bot) {
           Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} earned WIN RIBBON for faction ${factionId}`);
 
           const ribbonId = `f${factionId}_champion`;
@@ -1391,7 +1396,7 @@ class UsersModule {
             created_at: MOMENT_NOW_UTC.toDate(),
           };
 
-          this.ribbon = ribbon;
+          _chainState.ribbon = ribbon;
 
           allPromises = allPromises.concat([
             knex('user_ribbons').insert(ribbon).transacting(tx),
@@ -1404,9 +1409,9 @@ class UsersModule {
       })
       .then(function () {
       // Update quests if a faction has leveled up
-        if (SDK.FactionProgression.hasLeveledUp(this.factionProgressionRow.xp, this.factionProgressionRow.xp_earned)) {
-          if (this.factionProgressionRow) { // and shouldProcessQuests # TODO: shouldprocessquests? also this may fail for people who already have faction lvl 10 by the time they reach this stage
-            return QuestsModule.updateQuestProgressWithProgressedFactionData(txPromise, tx, userId, this.factionProgressionRow, MOMENT_NOW_UTC);
+        if (SDK.FactionProgression.hasLeveledUp(_chainState.factionProgressionRow.xp, _chainState.factionProgressionRow.xp_earned)) {
+          if (_chainState.factionProgressionRow) { // and shouldProcessQuests # TODO: shouldprocessquests? also this may fail for people who already have faction lvl 10 by the time they reach this stage
+            return QuestsModule.updateQuestProgressWithProgressedFactionData(txPromise, tx, userId, _chainState.factionProgressionRow, MOMENT_NOW_UTC);
           }
         }
 
@@ -1415,22 +1420,22 @@ class UsersModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (rootRef) {
-        this.fbRootRef = rootRef;
+        _chainState.fbRootRef = rootRef;
 
         const allPromises = [];
 
-        delete this.factionProgressionRow.user_id;
-        this.factionProgressionRow.updated_at = moment.utc(this.factionProgressionRow.updated_at).valueOf();
+        delete _chainState.factionProgressionRow.user_id;
+        _chainState.factionProgressionRow.updated_at = moment.utc(_chainState.factionProgressionRow.updated_at).valueOf();
 
-        allPromises.push(FirebasePromises.set(rootRef.child('user-faction-progression').child(userId).child(factionId).child('stats'), this.factionProgressionRow));
+        allPromises.push(FirebasePromises.set(rootRef.child('user-faction-progression').child(userId).child(factionId).child('stats'), _chainState.factionProgressionRow));
 
-        for (var key in this.updateUserGameParams) {
-          var val = this.updateUserGameParams[key];
+        for (var key in _chainState.updateUserGameParams) {
+          var val = _chainState.updateUserGameParams[key];
           allPromises.push(FirebasePromises.set(rootRef.child('user-games').child(userId).child(gameId).child(key), val));
         }
 
-        if (this.ribbon) {
-          let ribbonData = _.omit(this.ribbon, ['user_id']);
+        if (_chainState.ribbon) {
+          let ribbonData = _.omit(_chainState.ribbon, ['user_id']);
           ribbonData = DataAccessHelpers.restifyData(ribbonData);
           allPromises.push(FirebasePromises.safeTransaction(rootRef.child('user-ribbons').child(userId).child(ribbonData.ribbon_id), function (data) {
             if (data == null) { data = {}; }
@@ -1463,7 +1468,7 @@ class UsersModule {
       })).bind(this_obj)
       .then(function () {
       // Update achievements if leveled up
-        if (SDK.FactionProgression.hasLeveledUp(this.factionProgressionRow.xp, this.factionProgressionRow.xp_earned) || (this.factionProgressionRow.game_count === 1)) {
+        if (SDK.FactionProgression.hasLeveledUp(_chainState.factionProgressionRow.xp, _chainState.factionProgressionRow.xp_earned) || (_chainState.factionProgressionRow.game_count === 1)) {
           Jobs.create('update-user-achievements', {
             name: 'Update User Faction Achievements',
             title: util.format('User %s :: Update Faction Achievements', userId),
@@ -1473,8 +1478,8 @@ class UsersModule {
           ).removeOnComplete(true).save();
         }
 
-        Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} (${this.factionProgressionRow.game_count}) faction progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green);
-        return this.factionProgressionRow;
+        Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} (${_chainState.factionProgressionRow.game_count}) faction progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green);
+        return _chainState.factionProgressionRow;
       }).catch(Errors.MaxFactionXPForSinglePlayerReachedError, function (e) {
         Logger.module('UsersModule').debug(`updateUserFactionProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} for faction ${factionId} not recorded. MAX LVL 11 for single player games reached.`);
         return null;
@@ -1496,6 +1501,7 @@ class UsersModule {
    * @return  {Promise}        Promise that will notify when complete.
    */
   static updateUserProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -1533,16 +1539,16 @@ class UsersModule {
 
           let hasReachedDailyPlayRewardMaxium = false;
           const hasReachedDailyWinRewardMaxium = false;
-          this.hasReachedDailyWinCountBonusLimit = false;
+          _chainState.hasReachedDailyWinCountBonusLimit = false;
           let canEarnFirstWinOfTheDayReward = true;
 
-          this.progressionDayRow = progressionDayRow || { user_id: userId, date: start_of_day_int };
-          if (this.progressionDayRow.game_count == null) { this.progressionDayRow.game_count = 0; }
-          if (this.progressionDayRow.unscored_count == null) { this.progressionDayRow.unscored_count = 0; }
-          this.progressionDayRow.game_count += 1;
+          _chainState.progressionDayRow = progressionDayRow || { user_id: userId, date: start_of_day_int };
+          if (_chainState.progressionDayRow.game_count == null) { _chainState.progressionDayRow.game_count = 0; }
+          if (_chainState.progressionDayRow.unscored_count == null) { _chainState.progressionDayRow.unscored_count = 0; }
+          _chainState.progressionDayRow.game_count += 1;
 
           // controls for daily maximum of play rewards
-          if ((this.progressionDayRow.game_count - this.progressionDayRow.unscored_count) > UsersModule.DAILY_REWARD_GAME_CAP) {
+          if ((_chainState.progressionDayRow.game_count - _chainState.progressionDayRow.unscored_count) > UsersModule.DAILY_REWARD_GAME_CAP) {
             hasReachedDailyPlayRewardMaxium = true;
           }
 
@@ -1551,14 +1557,14 @@ class UsersModule {
           //   hasReachedDailyWinRewardMaxium = true
 
           if (isDraw) {
-            if (this.progressionDayRow.draw_count == null) { this.progressionDayRow.draw_count = 0; }
-            this.progressionDayRow.draw_count += 1;
+            if (_chainState.progressionDayRow.draw_count == null) { _chainState.progressionDayRow.draw_count = 0; }
+            _chainState.progressionDayRow.draw_count += 1;
           } else if (isWinner) {
           // iterate win count
-            if (this.progressionDayRow.win_count == null) { this.progressionDayRow.win_count = 0; }
-            this.progressionDayRow.win_count += 1;
+            if (_chainState.progressionDayRow.win_count == null) { _chainState.progressionDayRow.win_count = 0; }
+            _chainState.progressionDayRow.win_count += 1;
 
-            if (this.progressionDayRow.win_count > 1) {
+            if (_chainState.progressionDayRow.win_count > 1) {
               canEarnFirstWinOfTheDayReward = false;
             }
 
@@ -1567,19 +1573,19 @@ class UsersModule {
             //            @.hasReachedDailyWinCountBonusLimit = true
           } else {
           // iterate loss count
-            if (this.progressionDayRow.loss_count == null) { this.progressionDayRow.loss_count = 0; }
-            this.progressionDayRow.loss_count += 1;
+            if (_chainState.progressionDayRow.loss_count == null) { _chainState.progressionDayRow.loss_count = 0; }
+            _chainState.progressionDayRow.loss_count += 1;
           }
 
           // if it's an unscored game, iterate unscored counter
           if (isUnscored) {
-            this.progressionDayRow.unscored_count += 1;
+            _chainState.progressionDayRow.unscored_count += 1;
           }
 
           if (progressionDayRow != null) {
-            allPromises.push(knex('user_progression_days').where({ user_id: userId, date: start_of_day_int }).update(this.progressionDayRow).transacting(tx));
+            allPromises.push(knex('user_progression_days').where({ user_id: userId, date: start_of_day_int }).update(_chainState.progressionDayRow).transacting(tx));
           } else {
-            allPromises.push(knex('user_progression_days').insert(this.progressionDayRow).transacting(tx));
+            allPromises.push(knex('user_progression_days').insert(_chainState.progressionDayRow).transacting(tx));
           }
 
           // ######
@@ -1590,153 +1596,153 @@ class UsersModule {
           // ######
           // ######
 
-          this.hasEarnedWinReward = false;
-          this.hasEarnedPlayReward = false;
-          this.hasEarnedFirstWinOfTheDayReward = false;
+          _chainState.hasEarnedWinReward = false;
+          _chainState.hasEarnedPlayReward = false;
+          _chainState.hasEarnedFirstWinOfTheDayReward = false;
 
-          this.progressionRow = progressionRow || { user_id: userId };
-          this.progressionRow.last_opponent_id = opponentId;
+          _chainState.progressionRow = progressionRow || { user_id: userId };
+          _chainState.progressionRow.last_opponent_id = opponentId;
 
           // record total game count
-          if (this.progressionRow.game_count == null) { this.progressionRow.game_count = 0; }
-          if (this.progressionRow.unscored_count == null) { this.progressionRow.unscored_count = 0; }
-          this.progressionRow.last_game_id = gameId || null;
-          this.progressionRow.updated_at = MOMENT_NOW_UTC.toDate();
+          if (_chainState.progressionRow.game_count == null) { _chainState.progressionRow.game_count = 0; }
+          if (_chainState.progressionRow.unscored_count == null) { _chainState.progressionRow.unscored_count = 0; }
+          _chainState.progressionRow.last_game_id = gameId || null;
+          _chainState.progressionRow.updated_at = MOMENT_NOW_UTC.toDate();
 
           // initialize last award records
-          if (this.progressionRow.last_awarded_game_count == null) { this.progressionRow.last_awarded_game_count = 0; }
-          if (this.progressionRow.last_awarded_win_count == null) { this.progressionRow.last_awarded_win_count = 0; }
-          const last_daily_win_at = this.progressionRow.last_daily_win_at || 0;
+          if (_chainState.progressionRow.last_awarded_game_count == null) { _chainState.progressionRow.last_awarded_game_count = 0; }
+          if (_chainState.progressionRow.last_awarded_win_count == null) { _chainState.progressionRow.last_awarded_win_count = 0; }
+          const last_daily_win_at = _chainState.progressionRow.last_daily_win_at || 0;
 
           let play_count_reward_progress = 0;
           let win_count_reward_progress = 0;
 
           if (isUnscored) {
-            this.progressionRow.unscored_count += 1;
+            _chainState.progressionRow.unscored_count += 1;
 
             // mark all rewards as false
-            this.hasEarnedWinReward = false;
-            this.hasEarnedPlayReward = false;
-            this.hasEarnedFirstWinOfTheDayReward = false;
+            _chainState.hasEarnedWinReward = false;
+            _chainState.hasEarnedPlayReward = false;
+            _chainState.hasEarnedFirstWinOfTheDayReward = false;
           } else {
-            this.progressionRow.game_count += 1;
+            _chainState.progressionRow.game_count += 1;
 
             if (!hasReachedDailyPlayRewardMaxium) {
-              play_count_reward_progress = this.progressionRow.game_count - this.progressionRow.last_awarded_game_count;
+              play_count_reward_progress = _chainState.progressionRow.game_count - _chainState.progressionRow.last_awarded_game_count;
 
-              if ((this.progressionRow.game_count > 0) && (play_count_reward_progress > 0) && ((play_count_reward_progress % 4) === 0)) {
-                this.progressionRow.last_awarded_game_count = this.progressionRow.game_count;
-                this.hasEarnedPlayReward = true;
+              if ((_chainState.progressionRow.game_count > 0) && (play_count_reward_progress > 0) && ((play_count_reward_progress % 4) === 0)) {
+                _chainState.progressionRow.last_awarded_game_count = _chainState.progressionRow.game_count;
+                _chainState.hasEarnedPlayReward = true;
               } else {
-                this.hasEarnedPlayReward = false;
+                _chainState.hasEarnedPlayReward = false;
               }
             } else {
-              this.progressionRow.last_awarded_game_count = this.progressionRow.game_count;
-              this.progressionRow.play_awards_last_maxed_at = MOMENT_NOW_UTC.toDate();
-              this.hasEarnedPlayReward = false;
+              _chainState.progressionRow.last_awarded_game_count = _chainState.progressionRow.game_count;
+              _chainState.progressionRow.play_awards_last_maxed_at = MOMENT_NOW_UTC.toDate();
+              _chainState.hasEarnedPlayReward = false;
             }
 
             if (isDraw) {
-              if (this.progressionRow.draw_count == null) { this.progressionRow.draw_count = 0; }
-              this.progressionRow.draw_count += 1;
+              if (_chainState.progressionRow.draw_count == null) { _chainState.progressionRow.draw_count = 0; }
+              _chainState.progressionRow.draw_count += 1;
             } else if (isWinner) {
             // set loss streak to 0
-              this.progressionRow.loss_streak = 0;
+              _chainState.progressionRow.loss_streak = 0;
 
               // is this the first win of the day?
               const hours_since_last_win = MOMENT_NOW_UTC.diff(last_daily_win_at, 'hours');
               if (hours_since_last_win >= UsersModule.DAILY_WIN_CYCLE_HOURS) {
-                this.hasEarnedFirstWinOfTheDayReward = true;
-                this.progressionRow.last_daily_win_at = MOMENT_NOW_UTC.toDate();
+                _chainState.hasEarnedFirstWinOfTheDayReward = true;
+                _chainState.progressionRow.last_daily_win_at = MOMENT_NOW_UTC.toDate();
               } else {
-                this.hasEarnedFirstWinOfTheDayReward = false;
+                _chainState.hasEarnedFirstWinOfTheDayReward = false;
               }
 
               // iterate win count
-              if (this.progressionRow.win_count == null) { this.progressionRow.win_count = 0; }
-              this.progressionRow.win_count += 1;
+              if (_chainState.progressionRow.win_count == null) { _chainState.progressionRow.win_count = 0; }
+              _chainState.progressionRow.win_count += 1;
               // iterate win streak
               if (gameType !== GameType.Casual) {
-                if (this.progressionRow.win_streak == null) { this.progressionRow.win_streak = 0; }
-                this.progressionRow.win_streak += 1;
+                if (_chainState.progressionRow.win_streak == null) { _chainState.progressionRow.win_streak = 0; }
+                _chainState.progressionRow.win_streak += 1;
               }
               // mark last win time
-              this.progressionRow.last_win_at = MOMENT_NOW_UTC.toDate();
+              _chainState.progressionRow.last_win_at = MOMENT_NOW_UTC.toDate();
 
               if (!hasReachedDailyWinRewardMaxium) {
-                win_count_reward_progress = this.progressionRow.win_count - this.progressionRow.last_awarded_win_count;
+                win_count_reward_progress = _chainState.progressionRow.win_count - _chainState.progressionRow.last_awarded_win_count;
 
                 // if we've had 3 wins since last award, the user has earned an award
-                if ((this.progressionRow.win_count - this.progressionRow.last_awarded_win_count) >= CONFIG.WINS_REQUIRED_FOR_WIN_REWARD) {
-                  this.hasEarnedWinReward = true;
-                  this.progressionRow.last_awarded_win_count_at = MOMENT_NOW_UTC.toDate();
-                  this.progressionRow.last_awarded_win_count = this.progressionRow.win_count;
+                if ((_chainState.progressionRow.win_count - _chainState.progressionRow.last_awarded_win_count) >= CONFIG.WINS_REQUIRED_FOR_WIN_REWARD) {
+                  _chainState.hasEarnedWinReward = true;
+                  _chainState.progressionRow.last_awarded_win_count_at = MOMENT_NOW_UTC.toDate();
+                  _chainState.progressionRow.last_awarded_win_count = _chainState.progressionRow.win_count;
                 } else {
-                  this.hasEarnedWinReward = false;
+                  _chainState.hasEarnedWinReward = false;
                 }
               } else {
-                this.progressionRow.last_awarded_win_count_at = MOMENT_NOW_UTC.toDate();
-                this.progressionRow.win_awards_last_maxed_at = MOMENT_NOW_UTC.toDate();
-                this.progressionRow.last_awarded_win_count = this.progressionRow.win_count;
-                this.hasEarnedWinReward = false;
+                _chainState.progressionRow.last_awarded_win_count_at = MOMENT_NOW_UTC.toDate();
+                _chainState.progressionRow.win_awards_last_maxed_at = MOMENT_NOW_UTC.toDate();
+                _chainState.progressionRow.last_awarded_win_count = _chainState.progressionRow.win_count;
+                _chainState.hasEarnedWinReward = false;
               }
             } else {
             // iterate loss count
-              if (this.progressionRow.loss_count == null) { this.progressionRow.loss_count = 0; }
-              this.progressionRow.loss_count += 1;
+              if (_chainState.progressionRow.loss_count == null) { _chainState.progressionRow.loss_count = 0; }
+              _chainState.progressionRow.loss_count += 1;
 
               // only iterate loss streak for scored games
               // NOTE: control flow should never allow this to be reached for unscored, but adding this just in case someone moves code around :)
               if (!isUnscored) {
-                if (this.progressionRow.loss_streak == null) { this.progressionRow.loss_streak = 0; }
-                this.progressionRow.loss_streak += 1;
+                if (_chainState.progressionRow.loss_streak == null) { _chainState.progressionRow.loss_streak = 0; }
+                _chainState.progressionRow.loss_streak += 1;
               }
 
               if (gameType !== GameType.Casual) {
               // reset win streak
-                this.progressionRow.win_streak = 0;
+                _chainState.progressionRow.win_streak = 0;
               }
             }
           }
 
           if (progressionRow != null) {
-            allPromises.push(knex('user_progression').where({ user_id: userId }).update(this.progressionRow).transacting(tx));
+            allPromises.push(knex('user_progression').where({ user_id: userId }).update(_chainState.progressionRow).transacting(tx));
           } else {
-            allPromises.push(knex('user_progression').insert(this.progressionRow).transacting(tx));
+            allPromises.push(knex('user_progression').insert(_chainState.progressionRow).transacting(tx));
           }
 
-          this.updateUserGameParams = {
-            is_daily_win: this.hasEarnedWinReward,
+          _chainState.updateUserGameParams = {
+            is_daily_win: _chainState.hasEarnedWinReward,
             play_count_reward_progress,
             win_count_reward_progress,
             has_maxed_play_count_rewards: hasReachedDailyPlayRewardMaxium,
             has_maxed_win_count_rewards: hasReachedDailyWinRewardMaxium,
           };
-          allPromises.push(knex('user_games').where({ user_id: userId, game_id: gameId }).update(this.updateUserGameParams).transacting(tx));
+          allPromises.push(knex('user_games').where({ user_id: userId, game_id: gameId }).update(_chainState.updateUserGameParams).transacting(tx));
 
           return Promise.all(allPromises);
         })
         .then(function () {
           const {
             hasEarnedWinReward,
-          } = this;
+          } = _chainState;
           const {
             hasEarnedPlayReward,
-          } = this;
+          } = _chainState;
           const {
             hasEarnedFirstWinOfTheDayReward,
-          } = this;
+          } = _chainState;
 
           // let's set up
           const promises = [];
-          this.rewards = [];
+          _chainState.rewards = [];
 
           // if the game is "unscored", assume there are NO rewards
           // otherwise, the game counter rewards might fire multiple times since game_count is not updated for unscored games
           if (!isUnscored) {
             let rewardData;
             if (hasEarnedFirstWinOfTheDayReward) {
-              Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue} HAS earned a FIRST-WIN-OF-THE-DAY reward at ${this.progressionRow.game_count} games!`);
+              Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue} HAS earned a FIRST-WIN-OF-THE-DAY reward at ${_chainState.progressionRow.game_count} games!`);
 
               // set up reward data
               rewardData = {
@@ -1751,7 +1757,7 @@ class UsersModule {
               };
 
               // add it to the rewards array
-              this.rewards.push(rewardData);
+              _chainState.rewards.push(rewardData);
 
               // add the promise to our list of reward promises
               promises.push(knex('user_rewards').insert(rewardData).transacting(tx));
@@ -1842,7 +1848,7 @@ class UsersModule {
             if (hasEarnedWinReward) {
               let gold_amount = CONFIG.WIN_BASED_GOLD_REWARD;
               // hasReachedDailyWinCountBonusLimit is disabled
-              if (this.hasReachedDailyWinCountBonusLimit) {
+              if (_chainState.hasReachedDailyWinCountBonusLimit) {
                 gold_amount = 5;
               }
 
@@ -1861,7 +1867,7 @@ class UsersModule {
               };
 
               // add it to the rewards array
-              this.rewards.push(rewardData);
+              _chainState.rewards.push(rewardData);
 
               // add the promise to our list of reward promises
               promises.push(knex('user_rewards').insert(rewardData).transacting(tx));
@@ -1869,11 +1875,11 @@ class UsersModule {
               promises.push(GamesModule._addRewardIdToUserGame(tx, userId, gameId, rewardData.id));
             }
 
-            this.codexChapterIdsEarned = SDK.Codex.chapterIdsAwardedForGameCount(this.progressionRow.game_count);
+            _chainState.codexChapterIdsEarned = SDK.Codex.chapterIdsAwardedForGameCount(_chainState.progressionRow.game_count);
 
-            if (this.codexChapterIdsEarned && (this.codexChapterIdsEarned.length !== 0)) {
-              Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue} HAS earned codex chapters ${this.codexChapterIdsEarned} reward!`);
-              for (var codexChapterIdEarned of Array.from(this.codexChapterIdsEarned)) {
+            if (_chainState.codexChapterIdsEarned && (_chainState.codexChapterIdsEarned.length !== 0)) {
+              Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue} HAS earned codex chapters ${_chainState.codexChapterIdsEarned} reward!`);
+              for (var codexChapterIdEarned of Array.from(_chainState.codexChapterIdsEarned)) {
               // set up reward data
                 rewardData = {
                   id: generatePushId(),
@@ -1897,24 +1903,24 @@ class UsersModule {
         })
         .then(() => DuelystFirebase.connect().getRootRef())
         .then(function (rootRef) {
-          this.fbRootRef = rootRef;
+          _chainState.fbRootRef = rootRef;
 
           const allPromises = [];
 
-          delete this.progressionRow.user_id;
-          delete this.progressionRow.last_opponent_id;
+          delete _chainState.progressionRow.user_id;
+          delete _chainState.progressionRow.last_opponent_id;
 
-          if (this.progressionRow.last_win_at) { this.progressionRow.last_win_at = moment.utc(this.progressionRow.last_win_at).valueOf(); }
-          if (this.progressionRow.last_daily_win_at) { this.progressionRow.last_daily_win_at = moment.utc(this.progressionRow.last_daily_win_at).valueOf(); }
-          if (this.progressionRow.last_awarded_win_count_at) { this.progressionRow.last_awarded_win_count_at = moment.utc(this.progressionRow.last_awarded_win_count_at).valueOf(); }
-          if (this.progressionRow.play_awards_last_maxed_at) { this.progressionRow.play_awards_last_maxed_at = moment.utc(this.progressionRow.play_awards_last_maxed_at).valueOf(); }
-          if (this.progressionRow.win_awards_last_maxed_at) { this.progressionRow.win_awards_last_maxed_at = moment.utc(this.progressionRow.win_awards_last_maxed_at).valueOf(); }
-          if (this.progressionRow.updated_at) { this.progressionRow.updated_at = moment.utc().valueOf(this.progressionRow.updated_at); }
+          if (_chainState.progressionRow.last_win_at) { _chainState.progressionRow.last_win_at = moment.utc(_chainState.progressionRow.last_win_at).valueOf(); }
+          if (_chainState.progressionRow.last_daily_win_at) { _chainState.progressionRow.last_daily_win_at = moment.utc(_chainState.progressionRow.last_daily_win_at).valueOf(); }
+          if (_chainState.progressionRow.last_awarded_win_count_at) { _chainState.progressionRow.last_awarded_win_count_at = moment.utc(_chainState.progressionRow.last_awarded_win_count_at).valueOf(); }
+          if (_chainState.progressionRow.play_awards_last_maxed_at) { _chainState.progressionRow.play_awards_last_maxed_at = moment.utc(_chainState.progressionRow.play_awards_last_maxed_at).valueOf(); }
+          if (_chainState.progressionRow.win_awards_last_maxed_at) { _chainState.progressionRow.win_awards_last_maxed_at = moment.utc(_chainState.progressionRow.win_awards_last_maxed_at).valueOf(); }
+          if (_chainState.progressionRow.updated_at) { _chainState.progressionRow.updated_at = moment.utc().valueOf(_chainState.progressionRow.updated_at); }
 
-          allPromises.push(FirebasePromises.set(rootRef.child('user-progression').child(userId).child('game-counter'), this.progressionRow));
+          allPromises.push(FirebasePromises.set(rootRef.child('user-progression').child(userId).child('game-counter'), _chainState.progressionRow));
 
-          for (var key in this.updateUserGameParams) {
-            var val = this.updateUserGameParams[key];
+          for (var key in _chainState.updateUserGameParams) {
+            var val = _chainState.updateUserGameParams[key];
             allPromises.push(FirebasePromises.set(rootRef.child('user-games').child(userId).child(gameId).child(key), val));
           }
 
@@ -1936,7 +1942,7 @@ class UsersModule {
           throw e;
         });
     }).bind(this_obj)
-      .then(function () { return Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} G:${this.progressionRow.game_count} W:${this.progressionRow.win_count} L:${this.progressionRow.loss_count} U:${this.progressionRow.unscored_count} progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green); })
+      .then(function () { return Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} G:${_chainState.progressionRow.game_count} W:${_chainState.progressionRow.win_count} L:${_chainState.progressionRow.loss_count} U:${_chainState.progressionRow.unscored_count} progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'progression'));
 
     return txPromise;
@@ -1956,6 +1962,7 @@ class UsersModule {
    * @return  {Promise}        Promise that will notify when complete.
    */
   static updateUserBossProgressionWithGameOutcome(userId, opponentId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserBossProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -1990,12 +1997,12 @@ class UsersModule {
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .bind(this_obj)
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
         return DuelystFirebase.connect().getRootRef();
       }).then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
-        const bossEventsRef = this.fbRootRef.child('boss-events');
+        const bossEventsRef = _chainState.fbRootRef.child('boss-events');
         return FirebasePromises.once(bossEventsRef, 'value');
       })
       .then(function (bossEventsSnapshot) {
@@ -2006,7 +2013,7 @@ class UsersModule {
         //    event_start
         //    event_end
         //    valid_end (event_end + 30 minute buffer)
-        this.matchingEventData = null;
+        _chainState.matchingEventData = null;
         for (var eventId in bossEventsData) {
           var eventData = bossEventsData[eventId];
           if ((eventData.boss_id == null) || (parseInt(eventData.boss_id) !== bossId)) {
@@ -2020,20 +2027,20 @@ class UsersModule {
           }
 
           // Reaching here means we have a matching event
-          this.matchingEventData = eventData;
-          this.matchingEventId = eventData.event_id;
+          _chainState.matchingEventData = eventData;
+          _chainState.matchingEventId = eventData.event_id;
           break;
         }
 
-        if ((this.matchingEventData == null)) {
+        if ((_chainState.matchingEventData == null)) {
           Logger.module('UsersModule').debug(`updateUserBossProgressionWithGameOutcome() -> no matching boss event id for user ${userId} in game ${gameId}.`.red);
           return Promise.reject(new Error(`Can not updateUserBossProgressionWithGameOutcome(): No matching boss event - ${gameId}`));
         }
       })
       .then(function () {
         return Promise.all([
-          this.userRow,
-          tx('user_bosses_defeated').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', this.matchingEventId)
+          _chainState.userRow,
+          tx('user_bosses_defeated').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', _chainState.matchingEventId)
             .first(),
         ]);
       })
@@ -2049,7 +2056,7 @@ class UsersModule {
           user_id: userId,
           boss_id: bossId,
           game_id: gameId,
-          boss_event_id: this.matchingEventId,
+          boss_event_id: _chainState.matchingEventId,
           defeated_at: MOMENT_NOW_UTC.toDate(),
         };
         allPromises.push(tx('user_bosses_defeated').insert(defeatedBossData));
@@ -2069,26 +2076,26 @@ class UsersModule {
         };
 
         // add it to the rewards array
-        this.rewards.push(rewardData);
+        _chainState.rewards.push(rewardData);
 
         // add the promise to our list of reward promises
         allPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
         //        allPromises.push(InventoryModule.giveUserGold(txPromise,tx,userId,rewardData.gold,rewardData.reward_type))
-        allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, rewardData.spirit_orbs, 'boss battle', this.matchingEventId));
+        allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, rewardData.spirit_orbs, 'boss battle', _chainState.matchingEventId));
         allPromises.push(GamesModule._addRewardIdToUserGame(tx, userId, gameId, rewardData.id));
 
         return Promise.all(allPromises);
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (rootRef) {
-        this.fbRootRef = rootRef;
+        _chainState.fbRootRef = rootRef;
 
         const allPromises = [];
 
         // Insert defeated boss row
         const defeatedBossFBData = {
           boss_id: bossId,
-          boss_event_id: this.matchingEventId,
+          boss_event_id: _chainState.matchingEventId,
           defeated_at: MOMENT_NOW_UTC.valueOf(),
         };
 
@@ -2122,6 +2129,7 @@ class UsersModule {
    * @return  {Promise}            Promise that will notify when complete.
    */
   static updateGameCounters(userId, factionId, generalId, isWinner, gameType, isUnscored, isDraw, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserProgressionWithGameOutcome(): invalid user ID - ${userId}`));
@@ -2231,10 +2239,10 @@ class UsersModule {
           allPromises.push(knex('user_game_season_counters').insert(seasonCounter).transacting(tx));
         }
 
-        this.counter = counter;
-        this.factionCounter = factionCounter;
-        this.generalCounter = generalCounter;
-        this.seasonCounter = seasonCounter;
+        _chainState.counter = counter;
+        _chainState.factionCounter = factionCounter;
+        _chainState.generalCounter = generalCounter;
+        _chainState.seasonCounter = seasonCounter;
 
         return Promise.all(allPromises);
       })
@@ -2246,10 +2254,10 @@ class UsersModule {
       .then(function () {
         Logger.module('UsersModule').debug(`updateGameCounters() -> updated ${gameType} game counters for ${userId.blue}`);
         return {
-          counter: this.counter,
-          faction_counter: this.factionCounter,
-          general_counter: this.generalCounter,
-          season_counter: this.seasonCounter,
+          counter: _chainState.counter,
+          faction_counter: _chainState.factionCounter,
+          general_counter: _chainState.generalCounter,
+          season_counter: _chainState.seasonCounter,
         };
       });
   }
@@ -2264,6 +2272,7 @@ class UsersModule {
    * @return  {Promise}        Promise that will post STATDATA on completion.
    */
   static updateUserStatsWithGame(userId, gameId, gameType, gameData, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId || !gameId) {
       return Promise.reject(new Error(`Can not update user-stats : invalid user ID - ${userId} - or game ID - ${gameId}`));
@@ -2275,8 +2284,8 @@ class UsersModule {
     return DuelystFirebase.connect().getRootRef()
       .bind({})
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
-        const statsRef = this.fbRootRef.child('user-stats').child(userId);
+        _chainState.fbRootRef = fbRootRef;
+        const statsRef = _chainState.fbRootRef.child('user-stats').child(userId);
 
         return new Promise((resolve, reject) => statsRef.once('value', (statsSnapshot) => resolve(statsSnapshot.val())));
       })
@@ -2288,7 +2297,7 @@ class UsersModule {
           const {
             isWinner,
           } = playerData;
-          statsRef = this.fbRootRef.child('user-stats').child(userId);
+          statsRef = _chainState.fbRootRef.child('user-stats').child(userId);
 
           if (!statsData) {
             statsData = {};
@@ -2407,6 +2416,7 @@ class UsersModule {
    * @return  {Promise}  Promise that will resolve and give rewards if challenge hasn't been completed before, will resolve false and not give rewards if it has
    */
   static completeChallengeWithType(userId, challengeType, shouldProcessQuests) {
+    const _chainState = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -2435,8 +2445,8 @@ class UsersModule {
                 const boosterPackRewards = SDK.ChallengeFactory.getBoosterPacksRewardedForChallengeType(challengeType);
                 const factionUnlockedReward = SDK.ChallengeFactory.getFactionUnlockedRewardedForChallengeType(challengeType);
 
-                this.rewards = [];
-                this.challengeRow = {
+                _chainState.rewards = [];
+                _chainState.challengeRow = {
                   user_id: userId,
                   challenge_id: challengeType,
                   completed_at: MOMENT_NOW_UTC.toDate(),
@@ -2460,7 +2470,7 @@ class UsersModule {
                   };
 
                   // add it to the rewards array
-                  this.rewards.push(rewardData);
+                  _chainState.rewards.push(rewardData);
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
@@ -2480,7 +2490,7 @@ class UsersModule {
                   };
 
                   // add it to the rewards array
-                  this.rewards.push(rewardData);
+                  _chainState.rewards.push(rewardData);
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
@@ -2500,7 +2510,7 @@ class UsersModule {
                   };
 
                   // add it to the rewards array
-                  this.rewards.push(rewardData);
+                  _chainState.rewards.push(rewardData);
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
@@ -2520,7 +2530,7 @@ class UsersModule {
                   };
 
                   // add it to the rewards array
-                  this.rewards.push(rewardData);
+                  _chainState.rewards.push(rewardData);
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
@@ -2544,48 +2554,48 @@ class UsersModule {
                   };
 
                   // add it to the rewards array
-                  this.rewards.push(rewardData);
+                  _chainState.rewards.push(rewardData);
 
                   // add the promise to our list of reward promises
                   rewardPromises.push(knex('user_rewards').insert(rewardData).transacting(tx));
                 }
 
-                this.challengeRow.reward_ids = _.map(this.rewards, (r) => r.id);
+                _chainState.challengeRow.reward_ids = _.map(_chainState.rewards, (r) => r.id);
 
                 if (challengeRow) {
-                  rewardPromises.push(knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update(this.challengeRow).transacting(tx));
+                  rewardPromises.push(knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update(_chainState.challengeRow).transacting(tx));
                 } else {
-                  rewardPromises.push(knex('user_challenges').insert(this.challengeRow).transacting(tx));
+                  rewardPromises.push(knex('user_challenges').insert(_chainState.challengeRow).transacting(tx));
                 }
 
                 return Promise.all(rewardPromises);
               })
               .then(function () {
-                if (this.challengeRow && shouldProcessQuests) {
+                if (_chainState.challengeRow && shouldProcessQuests) {
                   return QuestsModule.updateQuestProgressWithCompletedChallenge(txPromise, tx, userId, challengeType, MOMENT_NOW_UTC);
                 } else {
                   return Promise.resolve();
                 }
               })
               .then(function (questProgressResponse) {
-                if (this.challengeRow && (__guard__(questProgressResponse != null ? questProgressResponse.rewards : undefined, (x) => x.length) > 0)) {
+                if (_chainState.challengeRow && (__guard__(questProgressResponse != null ? questProgressResponse.rewards : undefined, (x) => x.length) > 0)) {
                   Logger.module('UsersModule').debug(`completeChallengeWithType() -> user ${userId.blue} completed challenge quest rewards count: ${(questProgressResponse != null ? questProgressResponse.rewards.length : undefined)}`);
 
                   for (var reward of Array.from(questProgressResponse.rewards)) {
-                    this.rewards.push(reward);
-                    this.challengeRow.reward_ids.push(reward.id);
+                    _chainState.rewards.push(reward);
+                    _chainState.challengeRow.reward_ids.push(reward.id);
                   }
 
                   return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update({
-                    reward_ids: this.challengeRow.reward_ids,
+                    reward_ids: _chainState.challengeRow.reward_ids,
                   }).transacting(tx);
                 }
               })
               .then(function () {
                 return Promise.all([
                   DuelystFirebase.connect().getRootRef(),
-                  this.challengeRow,
-                  this.rewards,
+                  _chainState.challengeRow,
+                  _chainState.rewards,
                 ]);
               })
               .spread(function (rootRef, challengeRow, rewards) {
@@ -2600,7 +2610,7 @@ class UsersModule {
 
                   allPromises.push(FirebasePromises.set(rootRef.child('user-challenge-progression').child(userId).child(challengeType), challengeRow));
 
-                  this.challengeRow = challengeRow;
+                  _chainState.challengeRow = challengeRow;
                 }
 
                 // if rewards?
@@ -2627,12 +2637,12 @@ class UsersModule {
 
         let responseData = null;
 
-        if (this.challengeRow) {
-          responseData = { challenge: this.challengeRow };
+        if (_chainState.challengeRow) {
+          responseData = { challenge: _chainState.challengeRow };
         }
 
-        if (this.rewards) {
-          responseData.rewards = this.rewards;
+        if (_chainState.rewards) {
+          responseData.rewards = _chainState.rewards;
         }
 
         return responseData;
@@ -2647,6 +2657,7 @@ class UsersModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static markChallengeAsAttempted(userId, challengeType) {
+    const _chainState = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -2664,31 +2675,31 @@ class UsersModule {
       ])
         .bind(this_obj)
         .spread(function (challengeRow) {
-          this.challengeRow = challengeRow;
+          _chainState.challengeRow = challengeRow;
 
-          if (this.challengeRow != null) {
-            this.challengeRow.last_attempted_at = MOMENT_NOW_UTC.toDate();
-            return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update(this.challengeRow).transacting(tx);
+          if (_chainState.challengeRow != null) {
+            _chainState.challengeRow.last_attempted_at = MOMENT_NOW_UTC.toDate();
+            return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).update(_chainState.challengeRow).transacting(tx);
           } else {
-            this.challengeRow = {
+            _chainState.challengeRow = {
               user_id: userId,
               challenge_id: challengeType,
               last_attempted_at: MOMENT_NOW_UTC.toDate(),
             };
-            return knex('user_challenges').insert(this.challengeRow).transacting(tx);
+            return knex('user_challenges').insert(_chainState.challengeRow).transacting(tx);
           }
         }).then(() => DuelystFirebase.connect().getRootRef())
         .then(function (rootRef) {
           const allPromises = [];
 
-          if (this.challengeRow != null) {
-            delete this.challengeRow.user_id;
+          if (_chainState.challengeRow != null) {
+            delete _chainState.challengeRow.user_id;
             // delete @.challengeRow.challenge_id
 
-            if (this.challengeRow.last_attempted_at) { this.challengeRow.last_attempted_at = moment.utc(this.challengeRow.last_attempted_at).valueOf(); }
-            if (this.challengeRow.completed_at) { this.challengeRow.completed_at = moment.utc(this.challengeRow.completed_at).valueOf(); }
+            if (_chainState.challengeRow.last_attempted_at) { _chainState.challengeRow.last_attempted_at = moment.utc(_chainState.challengeRow.last_attempted_at).valueOf(); }
+            if (_chainState.challengeRow.completed_at) { _chainState.challengeRow.completed_at = moment.utc(_chainState.challengeRow.completed_at).valueOf(); }
 
-            allPromises.push(FirebasePromises.set(rootRef.child('user-challenge-progression').child(userId).child(challengeType), this.challengeRow));
+            allPromises.push(FirebasePromises.set(rootRef.child('user-challenge-progression').child(userId).child(challengeType), _chainState.challengeRow));
           }
 
           return Promise.all(allPromises);
@@ -2698,7 +2709,7 @@ class UsersModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        const responseData = { challenge: this.challengeRow };
+        const responseData = { challenge: _chainState.challengeRow };
         return responseData;
       });
 
@@ -2712,6 +2723,7 @@ class UsersModule {
    * @return  {Promise}  Promise that will resolve when complete with the module progression data
    */
   static iterateNewPlayerCoreProgression(userId) {
+    const _chainState = {};
     return knex('user_new_player_progression').where('user_id', userId).andWhere('module_name', NewPlayerProgressionModuleLookup.Core).first()
       .bind({})
       .then(function (moduleProgression) {
@@ -2726,7 +2738,7 @@ class UsersModule {
           knex('user_quests').where('user_id', userId).select(),
           knex('user_quests_complete').where('user_id', userId).select(),
         ])
-          .bind(this)
+          .bind(_chainState)
           .spread(function (quests, questsComplete) {
             let beginnerQuests = NewPlayerProgressionHelper.questsForStage(stage);
             // exclude non-required beginner quests for this tage
@@ -2752,12 +2764,12 @@ class UsersModule {
                 .bind({})
                 .then(function (questData) {
                   if (questData) {
-                    return this.questData = questData;
+                    return _chainState.questData = questData;
                   }
                 }).catch(Errors.NoNeedForNewBeginnerQuestsError, (e) => Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> no need for new quests at ${nextStage.key} for ${userId.blue}`))
                 .then(function () {
-                  this.progressionData = moduleProgression;
-                  return this;
+                  _chainState.progressionData = moduleProgression;
+                  return _chainState;
                 });
             }
 
@@ -2778,16 +2790,16 @@ class UsersModule {
             return UsersModule.setNewPlayerFeatureProgression(userId, NewPlayerProgressionModuleLookup.Core, nextStage.key)
               .bind({})
               .then(function (progressionData) {
-                this.progressionData = progressionData;
+                _chainState.progressionData = progressionData;
                 return QuestsModule.generateBeginnerQuests(userId);
               }).then(function (questData) {
                 if (questData) {
-                  return this.questData = questData;
+                  return _chainState.questData = questData;
                 }
               })
               .catch(Errors.NoNeedForNewBeginnerQuestsError, (e) => Logger.module('SDK').debug(`iterateNewPlayerCoreProgression() -> no need for new quests at ${nextStage.key} for ${userId.blue}`))
               .then(function () {
-                return this;
+                return _chainState;
               });
           }).then((responseData) => responseData);
       });
@@ -2802,6 +2814,7 @@ class UsersModule {
    * @return  {Promise}  Promise that will resolve when complete with the module progression data
    */
   static setNewPlayerFeatureProgression(userId, moduleName, stage) {
+    const _chainState = {};
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
@@ -2825,26 +2838,26 @@ class UsersModule {
             }
           }
 
-          this.progressionRow = progressionRow;
+          _chainState.progressionRow = progressionRow;
           let queryPromise = null;
           if (progressionRow && (progressionRow.stage === stage)) {
             Logger.module('UsersModule').error(`setNewPlayerFeatureProgression() -> ERROR: requested same stage: ${stage}.`);
             throw new Errors.BadRequestError('New player progression stage already at the requested stage');
           } else if (progressionRow) {
           // TODO: this never gets called, here 2 gets called twice for tutorial -> tutorialdone
-            this.progressionRow.stage = stage;
-            this.progressionRow.updated_at = MOMENT_NOW_UTC.toDate();
+            _chainState.progressionRow.stage = stage;
+            _chainState.progressionRow.updated_at = MOMENT_NOW_UTC.toDate();
             queryPromise = tx('user_new_player_progression').where({ user_id: userId, module_name: moduleName }).update({
-              stage: this.progressionRow.stage,
-              updated_at: this.progressionRow.updated_at,
+              stage: _chainState.progressionRow.stage,
+              updated_at: _chainState.progressionRow.updated_at,
             });
           } else {
-            this.progressionRow = {
+            _chainState.progressionRow = {
               user_id: userId,
               module_name: moduleName,
               stage,
             };
-            queryPromise = tx('user_new_player_progression').insert(this.progressionRow);
+            queryPromise = tx('user_new_player_progression').insert(_chainState.progressionRow);
           }
 
           return queryPromise;
@@ -2860,7 +2873,7 @@ class UsersModule {
       .then(function () {
         Logger.module('UsersModule').timeEnd(`setNewPlayerFeatureProgression() -> user ${userId.blue} marking module ${moduleName} as ${stage}.`);
 
-        return this.progressionRow;
+        return _chainState.progressionRow;
       });
 
     return txPromise;

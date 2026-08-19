@@ -65,22 +65,23 @@ class SyncModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static syncUserDataIfTrasactionCountMismatched(userId) {
+    const _chainState = {};
     return DuelystFirebase.connect().getRootRef()
       .bind({})
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
         return Promise.all([
           knex.first('tx_count').from('users').where('id', userId),
-          FirebasePromises.once(this.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), 'value'),
+          FirebasePromises.once(_chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), 'value'),
         ]);
       })
       .spread(function (userRow, txCountSnapshot) {
-        this.firebaseTxCount = txCountSnapshot.val();
+        _chainState.firebaseTxCount = txCountSnapshot.val();
         let shouldSyncBuddyList = false;
 
         // if there is NO transaction count value, sync the buddy list to the one last known in the DB
         // the assumption is that the user record is missing all together and needs a buddy list sync
-        if ((this.firebaseTxCount == null)) {
+        if ((_chainState.firebaseTxCount == null)) {
           shouldSyncBuddyList = true;
         }
 
@@ -88,19 +89,19 @@ class SyncModule {
           throw new Errors.NotFoundError('Could not find user');
         }
 
-        if (userRow.tx_count !== this.firebaseTxCount) {
-          this.needsSync = true;
+        if (userRow.tx_count !== _chainState.firebaseTxCount) {
+          _chainState.needsSync = true;
           return SyncModule._syncUserFromSQLToFirebase(userId, shouldSyncBuddyList);
         } else {
-          return this.needsSync = false;
+          return _chainState.needsSync = false;
         }
       })
       .then(function () {
-        if (this.needsSync) {
-          Logger.module('SyncModule').log(`syncUserDataIfTrasactionCountMismatched() -> ${userId} syncing: ${this.needsSync}`.green);
+        if (_chainState.needsSync) {
+          Logger.module('SyncModule').log(`syncUserDataIfTrasactionCountMismatched() -> ${userId} syncing: ${_chainState.needsSync}`.green);
         }
 
-        return this.needsSync;
+        return _chainState.needsSync;
       });
   }
 
@@ -111,12 +112,13 @@ class SyncModule {
    * @return  {Promise}            Promise that will resolve on completion
    */
   static wipeUserData(userId) {
+    const _chainState = {};
     Logger.module('SyncModule').time(`wipeUserData() -> ${userId.blue} wiped`);
 
     return DuelystFirebase.connect().getRootRef()
       .bind({})
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
         return knex('user_rank_ratings').where('user_id', userId).select('season_starting_at');
       })
@@ -128,7 +130,7 @@ class SyncModule {
       .then(function () {
         const {
           fbRootRef,
-        } = this;
+        } = _chainState;
 
         const allPromises = [
           FirebasePromises.remove(fbRootRef.child('user-transactions').child(userId)),
@@ -388,13 +390,14 @@ class SyncModule {
    * @return  {Promise}              Promise that will resolve on completion
    */
   static _syncUserFromSQLToFirebase(userId, shouldSyncBuddyList) {
+    const _chainState = {};
     if (shouldSyncBuddyList == null) { shouldSyncBuddyList = false; }
     Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green);
 
     return DuelystFirebase.connect().getRootRef()
       .bind({})
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
         return knex.first().from('users').where('id', userId);
       })
       .then(function (userRow) {
@@ -402,9 +405,9 @@ class SyncModule {
           throw new Error('Could not find user');
         }
 
-        this.userData = userRow;
+        _chainState.userData = userRow;
 
-        return Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} `, this.userData);
+        return Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} `, _chainState.userData);
       })
       .then(() => Promise.all([
         knex.select().from('user_cards').where('user_id', userId),
@@ -439,12 +442,12 @@ class SyncModule {
         const allPromises = [];
 
         const userData = {
-          id: this.userData.id,
-          username: this.userData.username,
-          created_at: moment.utc(this.userData.created_at).valueOf(),
-          has_purchased_starter_bundle: this.userData.has_purchased_starter_bundle,
-          rift_stored_upgrade_count: this.userData.rift_stored_upgrade_count,
-          free_card_of_the_day_claimed_at: moment.utc(this.userData.free_card_of_the_day_claimed_at || 0).valueOf(),
+          id: _chainState.userData.id,
+          username: _chainState.userData.username,
+          created_at: moment.utc(_chainState.userData.created_at).valueOf(),
+          has_purchased_starter_bundle: _chainState.userData.has_purchased_starter_bundle,
+          rift_stored_upgrade_count: _chainState.userData.rift_stored_upgrade_count,
+          free_card_of_the_day_claimed_at: moment.utc(_chainState.userData.free_card_of_the_day_claimed_at || 0).valueOf(),
         };
 
         if (shouldSyncBuddyList) {
@@ -455,10 +458,10 @@ class SyncModule {
         }
 
         // user profile
-        allPromises.push(FirebasePromises.update(this.fbRootRef.child('users').child(userId), userData));
+        allPromises.push(FirebasePromises.update(_chainState.fbRootRef.child('users').child(userId), userData));
 
         // indexes
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('username-index').child(this.userData.username), userId));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('username-index').child(_chainState.userData.username), userId));
 
         // Inventory
         if (cardRows.length > 0) {
@@ -470,16 +473,16 @@ class SyncModule {
             return memo;
           }, {});
           console.log(allCardsJson);
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('card-collection'), allCardsJson));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection'), allCardsJson));
         } else {
-          allPromises.push(FirebasePromises.remove(this.fbRootRef.child('user-inventory').child(userId).child('card-collection')));
+          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-inventory').child(userId).child('card-collection')));
         }
 
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('wallet'), {
-          gold_amount: this.userData.wallet_gold,
-          spirit_amount: this.userData.wallet_spirit,
-          updated_at: moment.utc(this.userData.wallet_updated_at).valueOf() || null,
-          card_last_four_digits: this.userData.card_last_four_digits,
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('wallet'), {
+          gold_amount: _chainState.userData.wallet_gold,
+          spirit_amount: _chainState.userData.wallet_spirit,
+          updated_at: moment.utc(_chainState.userData.wallet_updated_at).valueOf() || null,
+          card_last_four_digits: _chainState.userData.card_last_four_digits,
         }));
 
         const fbOrbs = {};
@@ -489,7 +492,7 @@ class SyncModule {
           delete orb.id;
           fbOrbs[orbId] = DataAccessHelpers.restifyData(orb);
         }
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs'), fbOrbs));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs'), fbOrbs));
 
         const fbTickets = {};
         for (var ticket of Array.from(gauntletTicketRows)) {
@@ -498,26 +501,26 @@ class SyncModule {
           delete ticket.id;
           fbTickets[ticketId] = DataAccessHelpers.restifyData(ticket);
         }
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), fbTickets));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), fbTickets));
 
         // Gauntlet
         if (gauntletRun) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-gauntlet-run').child(userId).child('current'), DataAccessHelpers.restifyData(gauntletRun)));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-gauntlet-run').child(userId).child('current'), DataAccessHelpers.restifyData(gauntletRun)));
         }
 
         // Progression
         if (progression) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-progression').child(userId).child('game-counter'), DataAccessHelpers.restifyData(progression)));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-progression').child(userId).child('game-counter'), DataAccessHelpers.restifyData(progression)));
         }
         for (var factionProgression of Array.from(factionProgressionRows)) {
           delete factionProgression.user_id;
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-faction-progression').child(userId).child(factionProgression.faction_id).child('stats'), DataAccessHelpers.restifyData(factionProgression)));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-faction-progression').child(userId).child(factionProgression.faction_id).child('stats'), DataAccessHelpers.restifyData(factionProgression)));
         }
 
         // Quests
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-quests').child(userId).child('daily').child('current'), {
-          updated_at: moment.utc(this.userData.daily_quests_updated_at).valueOf() || null,
-          generated_at: moment.utc(this.userData.daily_quests_generated_at).valueOf() || null,
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current'), {
+          updated_at: moment.utc(_chainState.userData.daily_quests_updated_at).valueOf() || null,
+          generated_at: moment.utc(_chainState.userData.daily_quests_generated_at).valueOf() || null,
         }));
 
         const fbQuests = {};
@@ -527,26 +530,26 @@ class SyncModule {
           delete quest.quest_slot_index;
           fbQuests[slotIndex] = DataAccessHelpers.restifyData(quest);
         }
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
           .child('quests'), fbQuests));
 
         // Rank
-        if (this.userData.rank_starting_at != null) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-ranking').child(userId).child('current'), {
-            rank: this.userData.rank,
-            stars: this.userData.rank_stars,
-            stars_required: this.userData.rank_stars_required,
-            updated_at: moment.utc(this.userData.rank_updated_at).valueOf() || null,
-            created_at: moment.utc(this.userData.rank_created_at).valueOf(),
-            starting_at: moment.utc(this.userData.rank_starting_at).valueOf(),
+        if (_chainState.userData.rank_starting_at != null) {
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ranking').child(userId).child('current'), {
+            rank: _chainState.userData.rank,
+            stars: _chainState.userData.rank_stars,
+            stars_required: _chainState.userData.rank_stars_required,
+            updated_at: moment.utc(_chainState.userData.rank_updated_at).valueOf() || null,
+            created_at: moment.utc(_chainState.userData.rank_created_at).valueOf(),
+            starting_at: moment.utc(_chainState.userData.rank_starting_at).valueOf(),
           }));
         }
 
-        if (this.userData.top_rank_starting_at != null) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-ranking').child(userId).child('top'), {
-            rank: this.userData.top_rank,
-            updated_at: moment.utc(this.userData.top_rank_updated_at).valueOf() || null,
-            starting_at: moment.utc(this.userData.top_rank_starting_at).valueOf(),
+        if (_chainState.userData.top_rank_starting_at != null) {
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ranking').child(userId).child('top'), {
+            rank: _chainState.userData.top_rank,
+            updated_at: moment.utc(_chainState.userData.top_rank_updated_at).valueOf() || null,
+            starting_at: moment.utc(_chainState.userData.top_rank_starting_at).valueOf(),
           }));
         }
 
@@ -575,7 +578,7 @@ class SyncModule {
         for (row of Array.from(completedAchievements)) {
           if (row.completed_at > lastCompletedAt) {
             lastCompletedAt = row.completed_at;
-            allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-achievements').child(userId).child('status').child('last_read_at'), lastCompletedAt));
+            allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-achievements').child(userId).child('status').child('last_read_at'), lastCompletedAt));
           }
 
           delete row.user_id;
@@ -585,7 +588,7 @@ class SyncModule {
           fbAchievements[row.achievement_id] = DataAccessHelpers.restifyData(row);
         }
 
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-achievements').child(userId).child('completed'), fbAchievements));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-achievements').child(userId).child('completed'), fbAchievements));
 
         // Codex inventory
         for (row of Array.from(userCodexRows)) {
@@ -596,7 +599,7 @@ class SyncModule {
             updated_at: moment.utc(row.updated_at).valueOf(),
             created_at: moment.utc(row.created_at).valueOf(),
           };
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('codex').child(row.chapter_id), fbCodexInventoryChapterData));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('codex').child(row.chapter_id), fbCodexInventoryChapterData));
         }
 
         // Cosmetic chests
@@ -607,9 +610,9 @@ class SyncModule {
           fbUserCosmeticChestData[row.chest_id] = fbCosmeticChestData;
         }
         if (userCosmeticChests.length > 0) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'), fbUserCosmeticChestData));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'), fbUserCosmeticChestData));
         } else {
-          allPromises.push(FirebasePromises.remove(this.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'), fbUserCosmeticChestData));
+          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chests'), fbUserCosmeticChestData));
         }
 
         // Cosmetic chest keys
@@ -620,9 +623,9 @@ class SyncModule {
           fbUserCosmeticChestKeyData[row.key_id] = fbCosmeticChestKeyData;
         }
         if (userCosmeticChestKeys.length > 0) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chest-keys'), fbUserCosmeticChestKeyData));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chest-keys'), fbUserCosmeticChestKeyData));
         } else {
-          allPromises.push(FirebasePromises.remove(this.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chest-keys'), fbUserCosmeticChestKeyData));
+          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-chest-keys'), fbUserCosmeticChestKeyData));
         }
 
         // Cosmetic inventory
@@ -632,7 +635,7 @@ class SyncModule {
             cosmetic_id: row.cosmetic_id,
             created_at: moment.utc(row.created_at).valueOf(),
           };
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('cosmetic-inventory').child(row.cosmetic_id), fbCosmeticData));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('cosmetic-inventory').child(row.cosmetic_id), fbCosmeticData));
         }
 
         // for row in gameCounterRows
@@ -655,7 +658,7 @@ class SyncModule {
           if (fbRibbonData[ribbon.ribbon_id] == null) { fbRibbonData[ribbon.ribbon_id] = { ribbon_id: ribbon.ribbon_id, count: 0, updated_at: moment.utc(ribbon.created_at).valueOf() }; }
           fbRibbonData[ribbon.ribbon_id].count += 1;
         }
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-ribbons').child(userId), fbRibbonData));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ribbons').child(userId), fbRibbonData));
 
         // sync ladder positions
         if (userRankRatings) {
@@ -665,12 +668,12 @@ class SyncModule {
               ladder_position: seasonRankRating.ladder_position,
               updated_at: moment.utc(seasonRankRating.updated_at).valueOf(),
             };
-            allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-ladder-position').child(fbSeasonStartAt).child(userId), fbUserRatingData));
+            allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-ladder-position').child(fbSeasonStartAt).child(userId), fbUserRatingData));
           }
         }
 
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Bloodborn), this.userData.total_orb_count_set_3));
-        allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Unity), this.userData.total_orb_count_set_4));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Bloodborn), _chainState.userData.total_orb_count_set_3));
+        allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(SDK.CardSet.Unity), _chainState.userData.total_orb_count_set_4));
 
         // Codex inventory
         for (row of Array.from(userBossesDefeated)) {
@@ -680,7 +683,7 @@ class SyncModule {
             boss_event_id: row.boss_event_id,
             defeated_at: moment.utc(row.defeated_at).valueOf(),
           };
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-bosses-defeated').child(userId).child(row.boss_id), fbDefeatedBossData));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-bosses-defeated').child(userId).child(row.boss_id), fbDefeatedBossData));
         }
 
         const userRiftRunsFBData = {};
@@ -690,9 +693,9 @@ class SyncModule {
           userRiftRunsFBData[fbRiftRunData.ticket_id] = fbRiftRunData;
         }
         if ((userRiftRuns != null) && (userRiftRuns.length !== 0)) {
-          allPromises.push(FirebasePromises.set(this.fbRootRef.child('user-rift-runs').child(userId), userRiftRunsFBData));
+          allPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-rift-runs').child(userId), userRiftRunsFBData));
         } else {
-          allPromises.push(FirebasePromises.remove(this.fbRootRef.child('user-rift-runs').child(userId)));
+          allPromises.push(FirebasePromises.remove(_chainState.fbRootRef.child('user-rift-runs').child(userId)));
         }
 
         return Promise.all(allPromises);
@@ -701,12 +704,13 @@ class SyncModule {
         Logger.module('UsersModule').timeEnd(`_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green);
         return Promise.all([
           knex('users').where('id', userId).update({ synced_firebase_at: moment().utc().toDate() }),
-          FirebasePromises.set(this.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), this.userData.tx_count),
+          FirebasePromises.set(_chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), _chainState.userData.tx_count),
         ]);
       });
   }
 
   static _syncUserFromFirebaseToSQL(srcRootRef, userId, forceResync) {
+    const _chainState = {};
     if (forceResync == null) { forceResync = false; }
     Logger.module('UsersModule').time(`_syncUserFromFirebaseToSQL() -> ${userId} done`.green);
 
@@ -750,39 +754,39 @@ class SyncModule {
       })
       .spread(function (user, inventory, quests, ranking, decks, games, progression, factionProgression, challengeProgression, arenaRun, news, matchmakingErrors, stats, rewards, receipts, newPlayerProgression, achievements, logs, aggregates) {
         let i;
-        this.user = user.val();
-        this.buddies = __guard__(user.val(), (x) => x.buddies);
-        this.inventory = inventory != null ? inventory.val() : undefined;
-        this.quests = quests != null ? quests.val() : undefined;
-        this.ranking = ranking != null ? ranking.val() : undefined;
-        this.decks = decks != null ? decks.val() : undefined;
-        this.games = games != null ? games.val() : undefined;
-        this.progression = progression != null ? progression.val() : undefined;
-        this.factionProgression = factionProgression != null ? factionProgression.val() : undefined;
-        this.challengeProgression = challengeProgression != null ? challengeProgression.val() : undefined;
-        this.arenaRun = arenaRun != null ? arenaRun.val() : undefined;
-        this.news = news != null ? news.val() : undefined;
-        this.matchmakingErrors = matchmakingErrors != null ? matchmakingErrors.val() : undefined;
-        this.stats = stats != null ? stats.val() : undefined;
-        this.rewards = rewards != null ? rewards.val() : undefined;
-        this.receipts = receipts != null ? receipts.val() : undefined;
+        _chainState.user = user.val();
+        _chainState.buddies = __guard__(user.val(), (x) => x.buddies);
+        _chainState.inventory = inventory != null ? inventory.val() : undefined;
+        _chainState.quests = quests != null ? quests.val() : undefined;
+        _chainState.ranking = ranking != null ? ranking.val() : undefined;
+        _chainState.decks = decks != null ? decks.val() : undefined;
+        _chainState.games = games != null ? games.val() : undefined;
+        _chainState.progression = progression != null ? progression.val() : undefined;
+        _chainState.factionProgression = factionProgression != null ? factionProgression.val() : undefined;
+        _chainState.challengeProgression = challengeProgression != null ? challengeProgression.val() : undefined;
+        _chainState.arenaRun = arenaRun != null ? arenaRun.val() : undefined;
+        _chainState.news = news != null ? news.val() : undefined;
+        _chainState.matchmakingErrors = matchmakingErrors != null ? matchmakingErrors.val() : undefined;
+        _chainState.stats = stats != null ? stats.val() : undefined;
+        _chainState.rewards = rewards != null ? rewards.val() : undefined;
+        _chainState.receipts = receipts != null ? receipts.val() : undefined;
         // @.logs = logs?.val()
         // @.aggregates = aggregates?.val()
-        this.newPlayerProgression = newPlayerProgression != null ? newPlayerProgression.val() : undefined;
-        this.achievements = achievements != null ? achievements.val() : undefined;
+        _chainState.newPlayerProgression = newPlayerProgression != null ? newPlayerProgression.val() : undefined;
+        _chainState.achievements = achievements != null ? achievements.val() : undefined;
 
-        this.currencyLogGold = 0;
-        this.currencyLogSpirit = 0;
+        _chainState.currencyLogGold = 0;
+        _chainState.currencyLogSpirit = 0;
 
         // map the faction progression to an object
-        if (this.factionProgression instanceof Array) {
+        if (_chainState.factionProgression instanceof Array) {
           let j;
           const map = {};
-          for (j = 0, i = j; j < this.factionProgression.length; j++, i = j) {
-            var item = this.factionProgression[i];
+          for (j = 0, i = j; j < _chainState.factionProgression.length; j++, i = j) {
+            var item = _chainState.factionProgression[i];
             map[i] = item;
           }
-          this.factionProgression = m;
+          _chainState.factionProgression = m;
         }
 
         Logger.module('UsersModule').timeEnd('_syncUserFromFirebaseToSQL() -> firebase data loaded');
@@ -803,59 +807,59 @@ class SyncModule {
             run;
           const userData = {
             id: userId,
-            username: this.user.username.toLowerCase(),
-            invite_code: this.authUser.inviteCode,
-            created_at: toPgDate(this.user.createdAt),
-            updated_at: toPgDate(this.user.updatedAt),
-            last_session_at: toPgDate(this.user.presence != null ? this.user.presence.began : undefined),
-            ltv: this.user.ltv || 0,
-            portrait_id: (this.user.presence != null ? this.user.presence.portrait_id : undefined),
-            card_back_id: (this.user.presence != null ? this.user.presence.card_back_id : undefined),
+            username: _chainState.user.username.toLowerCase(),
+            invite_code: _chainState.authUser.inviteCode,
+            created_at: toPgDate(_chainState.user.createdAt),
+            updated_at: toPgDate(_chainState.user.updatedAt),
+            last_session_at: toPgDate(_chainState.user.presence != null ? _chainState.user.presence.began : undefined),
+            ltv: _chainState.user.ltv || 0,
+            portrait_id: (_chainState.user.presence != null ? _chainState.user.presence.portrait_id : undefined),
+            card_back_id: (_chainState.user.presence != null ? _chainState.user.presence.card_back_id : undefined),
           };
 
-          if (this.buddies) {
-            userData.buddy_count = _.keys(this.buddies).length;
+          if (_chainState.buddies) {
+            userData.buddy_count = _.keys(_chainState.buddies).length;
           }
 
-          if (this.ranking != null ? this.ranking.current : undefined) {
-            userData.rank = this.ranking.current.rank;
-            userData.rank_created_at = toPgDate(this.ranking.current.created_at);
-            userData.rank_starting_at = toPgDate(this.ranking.current.starting_at);
-            userData.rank_stars = this.ranking.current.stars;
-            userData.rank_stars_required = this.ranking.current.stars_required;
-            userData.rank_updated_at = toPgDate(this.ranking.current.updated_at);
-            userData.rank_win_streak = this.ranking.current.win_streak;
-            userData.rank_top_rank = this.ranking.current.top_rank;
-            userData.rank_is_unread = this.ranking.current.is_unread || false;
-            userData.top_rank = this.ranking.top != null ? this.ranking.top.rank : undefined;
-            userData.top_rank_starting_at = toPgDate(this.ranking.top != null ? this.ranking.top.starting_at : undefined);
-            userData.top_rank_updated_at = toPgDate(this.ranking.top != null ? this.ranking.top.updated_at : undefined);
+          if (_chainState.ranking != null ? _chainState.ranking.current : undefined) {
+            userData.rank = _chainState.ranking.current.rank;
+            userData.rank_created_at = toPgDate(_chainState.ranking.current.created_at);
+            userData.rank_starting_at = toPgDate(_chainState.ranking.current.starting_at);
+            userData.rank_stars = _chainState.ranking.current.stars;
+            userData.rank_stars_required = _chainState.ranking.current.stars_required;
+            userData.rank_updated_at = toPgDate(_chainState.ranking.current.updated_at);
+            userData.rank_win_streak = _chainState.ranking.current.win_streak;
+            userData.rank_top_rank = _chainState.ranking.current.top_rank;
+            userData.rank_is_unread = _chainState.ranking.current.is_unread || false;
+            userData.top_rank = _chainState.ranking.top != null ? _chainState.ranking.top.rank : undefined;
+            userData.top_rank_starting_at = toPgDate(_chainState.ranking.top != null ? _chainState.ranking.top.starting_at : undefined);
+            userData.top_rank_updated_at = toPgDate(_chainState.ranking.top != null ? _chainState.ranking.top.updated_at : undefined);
           }
 
-          if (this.inventory != null ? this.inventory.wallet : undefined) {
-            const total_pack_count = _.keys(this.inventory != null ? this.inventory['booster-packs'] : undefined).length + _.keys(this.inventory != null ? this.inventory['used-booster-packs'] : undefined).length;
-            const total_ticket_count = _.keys(this.inventory != null ? this.inventory['arena-tickets'] : undefined).length + _.keys(this.inventory != null ? this.inventory['arena-tickets-used'] : undefined).length;
+          if (_chainState.inventory != null ? _chainState.inventory.wallet : undefined) {
+            const total_pack_count = _.keys(_chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined).length + _.keys(_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined).length;
+            const total_ticket_count = _.keys(_chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined).length + _.keys(_chainState.inventory != null ? _chainState.inventory['arena-tickets-used'] : undefined).length;
             const total_gold_spent = (total_pack_count * 100) + (total_ticket_count * 150);
 
-            userData.wallet_gold = (this.inventory != null ? this.inventory.wallet.gold_amount : undefined) || 0;
-            userData.wallet_spirit = (this.inventory != null ? this.inventory.wallet.spirit_amount : undefined) || 0;
-            userData.wallet_updated_at = toPgDate(this.inventory != null ? this.inventory.wallet.updated_at : undefined) || null;
+            userData.wallet_gold = (_chainState.inventory != null ? _chainState.inventory.wallet.gold_amount : undefined) || 0;
+            userData.wallet_spirit = (_chainState.inventory != null ? _chainState.inventory.wallet.spirit_amount : undefined) || 0;
+            userData.wallet_updated_at = toPgDate(_chainState.inventory != null ? _chainState.inventory.wallet.updated_at : undefined) || null;
             userData.total_gold_earned = userData.wallet_gold + total_gold_spent;
           }
 
-          if (__guard__(this.quests != null ? this.quests.daily : undefined, (x1) => x1.current)) {
-            userData.daily_quests_generated_at = toPgDate(__guard__(__guard__(this.quests != null ? this.quests.daily : undefined, (x3) => x3.current), (x2) => x2.generated_at));
-            userData.daily_quests_updated_at = toPgDate(__guard__(__guard__(this.quests != null ? this.quests.daily : undefined, (x5) => x5.current), (x4) => x4.updated_at));
+          if (__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x1) => x1.current)) {
+            userData.daily_quests_generated_at = toPgDate(__guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x3) => x3.current), (x2) => x2.generated_at));
+            userData.daily_quests_updated_at = toPgDate(__guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x5) => x5.current), (x4) => x4.updated_at));
           }
 
           userData.top_gauntlet_win_count = null;
 
           // top arena win count
-          if ((this.arenaRun != null ? this.arenaRun.history : undefined) != null) {
+          if ((_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) != null) {
           // console.log("history")
-            for (key in (this.arenaRun != null ? this.arenaRun.history : undefined)) {
+            for (key in (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)) {
             // console.log("run #{run.win_count}")
-              run = (this.arenaRun != null ? this.arenaRun.history : undefined)[key];
+              run = (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)[key];
               if (run.win_count > userData.top_gauntlet_win_count) {
               // console.log("run set")
                 userData.top_gauntlet_win_count = run.win_count;
@@ -865,14 +869,14 @@ class SyncModule {
 
           // top arena win count
           // console.log("current run #{@.arenaRun?.current?.win_count}")
-          if (__guard__(this.arenaRun != null ? this.arenaRun.current : undefined, (x6) => x6.win_count) > userData.top_gauntlet_win_count) {
+          if (__guard__(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined, (x6) => x6.win_count) > userData.top_gauntlet_win_count) {
           // console.log("run set")
-            userData.top_gauntlet_win_count = __guard__(this.arenaRun != null ? this.arenaRun.current : undefined, (x7) => x7.win_count);
+            userData.top_gauntlet_win_count = __guard__(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined, (x7) => x7.win_count);
           }
 
           // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving user data."
 
-          this.userData = userData;
+          _chainState.userData = userData;
 
           return trx.insert(userData).into('users')
 
@@ -880,11 +884,11 @@ class SyncModule {
             .then(function () { // buddies
               const inserts = [];
 
-              if (this.buddies) {
+              if (_chainState.buddies) {
                 // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving buddy list."
 
-                for (key in this.buddies) {
-                  var obj = this.buddies[key];
+                for (key in _chainState.buddies) {
+                  var obj = _chainState.buddies[key];
                   inserts.push(trx.insert({
                     user_id: userId,
                     buddy_id: key,
@@ -904,11 +908,11 @@ class SyncModule {
               // Mark seasons older than this as read, newer are marked as unread
               const beginUnreadSeasonsTimestamp = moment('9-1-2015 +0000', 'MM-DD-YYYY Z').utc().valueOf();
 
-              if ((this.ranking != null ? this.ranking.history : undefined) != null) {
-                for (key in (this.ranking != null ? this.ranking.history : undefined)) {
+              if ((_chainState.ranking != null ? _chainState.ranking.history : undefined) != null) {
+                for (key in (_chainState.ranking != null ? _chainState.ranking.history : undefined)) {
                   var rewardIds,
                     rewardsClaimedAt;
-                  var historyRank = (this.ranking != null ? this.ranking.history : undefined)[key];
+                  var historyRank = (_chainState.ranking != null ? _chainState.ranking.history : undefined)[key];
                   var isUnread = historyRank.starting_at >= beginUnreadSeasonsTimestamp;
 
                   if (isUnread) {
@@ -947,11 +951,11 @@ class SyncModule {
               let quest;
               const inserts = [];
 
-              if (__guard__(__guard__(this.quests != null ? this.quests.daily : undefined, (x9) => x9.current), (x8) => x8.quests) != null) {
-                for (key in __guard__(__guard__(this.quests != null ? this.quests.daily : undefined, (x11) => x11.current), (x10) => x10.quests)) {
+              if (__guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x9) => x9.current), (x8) => x8.quests) != null) {
+                for (key in __guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x11) => x11.current), (x10) => x10.quests)) {
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving CURRENT quest at slot #{key}."
 
-                  quest = __guard__(__guard__(this.quests != null ? this.quests.daily : undefined, (x11) => x11.current), (x10) => x10.quests)[key];
+                  quest = __guard__(__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x11) => x11.current), (x10) => x10.quests)[key];
                   inserts.push(trx.insert({
                     user_id: userId,
                     quest_slot_index: key,
@@ -972,11 +976,11 @@ class SyncModule {
                 }
               }
 
-              if (__guard__(this.quests != null ? this.quests.daily : undefined, (x12) => x12.completed) != null) {
-                for (key in __guard__(this.quests != null ? this.quests.daily : undefined, (x13) => x13.completed)) {
+              if (__guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x12) => x12.completed) != null) {
+                for (key in __guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x13) => x13.completed)) {
                   // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> #{userId} saving completed quest #{key}."
 
-                  quest = __guard__(this.quests != null ? this.quests.daily : undefined, (x13) => x13.completed)[key];
+                  quest = __guard__(_chainState.quests != null ? _chainState.quests.daily : undefined, (x13) => x13.completed)[key];
                   inserts.push(trx.insert({
                     id: key,
                     user_id: userId,
@@ -1018,7 +1022,7 @@ class SyncModule {
                   }).into('user_currency_log'),
                   );
 
-                  this.currencyLogGold += quest.gold;
+                  _chainState.currencyLogGold += quest.gold;
                 }
               }
 
@@ -1032,8 +1036,8 @@ class SyncModule {
                 rewardIds;
               const inserts = [];
 
-              if (this.arenaRun != null ? this.arenaRun.current : undefined) {
-                run = this.arenaRun != null ? this.arenaRun.current : undefined;
+              if (_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined) {
+                run = _chainState.arenaRun != null ? _chainState.arenaRun.current : undefined;
 
                 rewardIds = null;
                 if (run.rewards) {
@@ -1081,8 +1085,8 @@ class SyncModule {
                 );
               }
 
-              for (key in (this.arenaRun != null ? this.arenaRun.history : undefined)) {
-                run = (this.arenaRun != null ? this.arenaRun.history : undefined)[key];
+              for (key in (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)) {
+                run = (_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined)[key];
                 rewardIds = [];
 
                 for (reward of Array.from(run.rewards)) {
@@ -1120,8 +1124,8 @@ class SyncModule {
                     }).into('user_currency_log'),
                     );
 
-                    this.currencyLogGold += reward.gold || 0;
-                    this.currencyLogSpirit += reward.spirit || 0;
+                    _chainState.currencyLogGold += reward.gold || 0;
+                    _chainState.currencyLogSpirit += reward.spirit || 0;
                   }
                 }
 
@@ -1159,8 +1163,8 @@ class SyncModule {
               const boosterPackGoldDelta = -100;
               const gauntletTicketGoldDelta = -150;
 
-              for (key in (this.inventory != null ? this.inventory['booster-packs'] : undefined)) {
-                pack = (this.inventory != null ? this.inventory['booster-packs'] : undefined)[key];
+              for (key in (_chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined)) {
+                pack = (_chainState.inventory != null ? _chainState.inventory['booster-packs'] : undefined)[key];
                 inserts.push(trx.insert({
                   id: key,
                   user_id: userId,
@@ -1181,12 +1185,12 @@ class SyncModule {
                   }).into('user_currency_log'),
                   );
 
-                  this.currencyLogGold += boosterPackGoldDelta;
+                  _chainState.currencyLogGold += boosterPackGoldDelta;
                 }
               }
 
-              for (key in (this.inventory != null ? this.inventory['used-booster-packs'] : undefined)) {
-                pack = (this.inventory != null ? this.inventory['used-booster-packs'] : undefined)[key];
+              for (key in (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)) {
+                pack = (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)[key];
                 inserts.push(trx.insert({
                   id: key,
                   user_id: userId,
@@ -1208,12 +1212,12 @@ class SyncModule {
                   }).into('user_currency_log'),
                   );
 
-                  this.currencyLogGold += boosterPackGoldDelta;
+                  _chainState.currencyLogGold += boosterPackGoldDelta;
                 }
               }
 
-              for (key in (this.inventory != null ? this.inventory['arena-tickets'] : undefined)) {
-                ticket = (this.inventory != null ? this.inventory['arena-tickets'] : undefined)[key];
+              for (key in (_chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined)) {
+                ticket = (_chainState.inventory != null ? _chainState.inventory['arena-tickets'] : undefined)[key];
                 inserts.push(trx.insert({
                   id: key,
                   user_id: userId,
@@ -1234,12 +1238,12 @@ class SyncModule {
                   }).into('user_currency_log'),
                   );
 
-                  this.currencyLogGold += gauntletTicketGoldDelta;
+                  _chainState.currencyLogGold += gauntletTicketGoldDelta;
                 }
               }
 
-              for (key in (this.inventory != null ? this.inventory['used-arena-tickets'] : undefined)) {
-                ticket = (this.inventory != null ? this.inventory['used-arena-tickets'] : undefined)[key];
+              for (key in (_chainState.inventory != null ? _chainState.inventory['used-arena-tickets'] : undefined)) {
+                ticket = (_chainState.inventory != null ? _chainState.inventory['used-arena-tickets'] : undefined)[key];
                 inserts.push(trx.insert({
                   id: key,
                   user_id: userId,
@@ -1260,7 +1264,7 @@ class SyncModule {
                   }).into('user_currency_log'),
                   );
 
-                  this.currencyLogGold += gauntletTicketGoldDelta;
+                  _chainState.currencyLogGold += gauntletTicketGoldDelta;
                 }
               }
 
@@ -1271,8 +1275,8 @@ class SyncModule {
 
               const inserts = [];
 
-              for (key in this.receipts) {
-                var charge = this.receipts[key];
+              for (key in _chainState.receipts) {
+                var charge = _chainState.receipts[key];
                 var amount = 0;
                 var currency = 'usd';
 
@@ -1312,8 +1316,8 @@ class SyncModule {
 
               const inserts = [];
 
-              for (key in this.decks) {
-                var deck = this.decks[key];
+              for (key in _chainState.decks) {
+                var deck = _chainState.decks[key];
                 if ((deck.factionId == null)) {
                   Logger.module('UsersModule').log(`_syncUserFromFirebaseToSQL() -> ${userId} skipping deck ${key} due to no faction id.`.red);
                   continue;
@@ -1348,8 +1352,8 @@ class SyncModule {
               const factionGameCounters = {};
               const seasonGameCounters = {};
 
-              for (key in this.games) {
-                var game = this.games[key];
+              for (key in _chainState.games) {
+                var game = _chainState.games[key];
                 if (game.gameType === 'arena') {
                   game.gameType = SDK.GameType.Gauntlet;
                 }
@@ -1437,14 +1441,14 @@ class SyncModule {
 
               const inserts = [];
 
-              if (!this.factionProgression) {
+              if (!_chainState.factionProgression) {
                 return;
               }
 
-              for (var factionId in this.factionProgression) {
+              for (var factionId in _chainState.factionProgression) {
                 // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> saving faction #{factionId} data."
 
-                progression = this.factionProgression[factionId];
+                progression = _chainState.factionProgression[factionId];
                 if (progression != null ? progression.stats : undefined) {
                   ({
                     stats,
@@ -1544,10 +1548,10 @@ class SyncModule {
               const cardCounts = {};
 
               // faction xp cards
-              if (this.factionProgression) {
+              if (_chainState.factionProgression) {
                 // faction XP cards
-                for (var factionId in this.factionProgression) {
-                  progression = this.factionProgression[factionId];
+                for (var factionId in _chainState.factionProgression) {
+                  progression = _chainState.factionProgression[factionId];
                   if (progression != null) {
                     var factionName = SDK.FactionFactory.factionForIdentifier(factionId).devName;
 
@@ -1597,9 +1601,9 @@ class SyncModule {
               }
 
               // gauntlet reward cards
-              const allRuns = _.values(this.arenaRun != null ? this.arenaRun.history : undefined) || [];
-              if (__guard__(this.arenaRun != null ? this.arenaRun.current : undefined, (x8) => x8.rewards)) {
-                allRuns.push(this.arenaRun != null ? this.arenaRun.current : undefined);
+              const allRuns = _.values(_chainState.arenaRun != null ? _chainState.arenaRun.history : undefined) || [];
+              if (__guard__(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined, (x8) => x8.rewards)) {
+                allRuns.push(_chainState.arenaRun != null ? _chainState.arenaRun.current : undefined);
               }
 
               for (run of Array.from(allRuns)) {
@@ -1636,9 +1640,9 @@ class SyncModule {
               }
 
               // achievement reward cards
-              if (this.achievements != null ? this.achievements.completed : undefined) {
-                for (var achievementId in this.achievements.completed) {
-                  var achievementData = this.achievements.completed[achievementId];
+              if (_chainState.achievements != null ? _chainState.achievements.completed : undefined) {
+                for (var achievementId in _chainState.achievements.completed) {
+                  var achievementData = _chainState.achievements.completed[achievementId];
                   if (achievementData.rewards.card_ids) {
                     for (cardId of Array.from(achievementData.rewards.card_ids)) {
                       // Logger.module("UsersModule").log "_syncUserFromFirebaseToSQL() -> earned #{cardId} via achievement."
@@ -1671,11 +1675,11 @@ class SyncModule {
               }
 
               // booster cards
-              for (var packId in (this.inventory != null ? this.inventory['used-booster-packs'] : undefined)) {
+              for (var packId in (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)) {
                 // console.log "PACK: #{packId}".red
                 // console.log "CARDS: #{packId}",pack.cards
 
-                var pack = (this.inventory != null ? this.inventory['used-booster-packs'] : undefined)[packId];
+                var pack = (_chainState.inventory != null ? _chainState.inventory['used-booster-packs'] : undefined)[packId];
                 ({
                   cards,
                 } = pack);
@@ -1708,16 +1712,16 @@ class SyncModule {
               }
 
               // all other cards
-              if (this.inventory != null ? this.inventory['card-collection'] : undefined) {
-                if (this.inventory != null) {
-                  delete this.inventory['card-collection'].tx_id;
+              if (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined) {
+                if (_chainState.inventory != null) {
+                  delete _chainState.inventory['card-collection'].tx_id;
                 }
               }
 
               // before going through actual collection, mark all cards earned so far but missing from collection as disenchanted, and update its card count
               for (cardId in cardCounts) {
                 card = cardCounts[cardId];
-                if (!(this.inventory != null ? this.inventory['card-collection'][cardId] : undefined)) {
+                if (!(_chainState.inventory != null ? _chainState.inventory['card-collection'][cardId] : undefined)) {
                   var asc,
                     end;
                   Logger.module('UsersModule').log(`_syncUserFromFirebaseToSQL() -> missing card ${cardId} - marking as disenchanted.`);
@@ -1739,9 +1743,9 @@ class SyncModule {
               }
 
               // ... ok process actual collection
-              for (cardId in (this.inventory != null ? this.inventory['card-collection'] : undefined)) {
+              for (cardId in (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined)) {
                 // if there is an "undefined" in the card count, just feel free to skip
-                card = (this.inventory != null ? this.inventory['card-collection'] : undefined)[cardId];
+                card = (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined)[cardId];
                 if ((card.count == null)) {
                   continue;
                 }
@@ -1809,10 +1813,10 @@ class SyncModule {
                 }
               }
 
-              if (this.inventory != null ? this.inventory['card-collection'] : undefined) {
+              if (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined) {
                 inserts.push(trx.insert({
                   user_id: userId,
-                  cards: (this.inventory != null ? this.inventory['card-collection'] : undefined),
+                  cards: (_chainState.inventory != null ? _chainState.inventory['card-collection'] : undefined),
                   created_at: moment().utc().toDate(),
                 }).into('user_card_collection'),
                 );
@@ -1825,8 +1829,8 @@ class SyncModule {
 
               const inserts = [];
 
-              if (this.progression != null ? this.progression['game-counter'] : undefined) {
-                stats = this.progression != null ? this.progression['game-counter'] : undefined;
+              if (_chainState.progression != null ? _chainState.progression['game-counter'] : undefined) {
+                stats = _chainState.progression != null ? _chainState.progression['game-counter'] : undefined;
                 inserts.push(trx.insert({
                   user_id: userId,
                   game_count: stats.game_count || 0,
@@ -1848,8 +1852,8 @@ class SyncModule {
                 );
               }
 
-              for (key in (this.progression != null ? this.progression['game-counter-days'] : undefined)) {
-                var day = (this.progression != null ? this.progression['game-counter-days'] : undefined)[key];
+              for (key in (_chainState.progression != null ? _chainState.progression['game-counter-days'] : undefined)) {
+                var day = (_chainState.progression != null ? _chainState.progression['game-counter-days'] : undefined)[key];
                 inserts.push(trx.insert({
                   user_id: userId,
                   date: key,
@@ -1864,8 +1868,8 @@ class SyncModule {
               }
 
               // daily win / 4-game count / etc.
-              for (key in (this.progression != null ? this.progression['game-counter-rewards'] : undefined)) {
-                var reward = (this.progression != null ? this.progression['game-counter-rewards'] : undefined)[key];
+              for (key in (_chainState.progression != null ? _chainState.progression['game-counter-rewards'] : undefined)) {
+                var reward = (_chainState.progression != null ? _chainState.progression['game-counter-rewards'] : undefined)[key];
                 inserts.push(trx.insert({
                   id: key,
                   user_id: userId,
@@ -1889,7 +1893,7 @@ class SyncModule {
                 }).into('user_currency_log'),
                 );
 
-                this.currencyLogGold += reward.gold_amount;
+                _chainState.currencyLogGold += reward.gold_amount;
               }
 
               return Promise.all(inserts);
@@ -1900,8 +1904,8 @@ class SyncModule {
               const inserts = [];
 
               // daily quest rewards
-              for (var challengeType in this.challengeProgression) {
-                var challenge = this.challengeProgression[challengeType];
+              for (var challengeType in _chainState.challengeProgression) {
+                var challenge = _chainState.challengeProgression[challengeType];
                 var goldReward = SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType);
 
                 var allPromises = [];
@@ -1935,7 +1939,7 @@ class SyncModule {
                   }).into('user_currency_log'),
                   );
 
-                  this.currencyLogGold += goldReward;
+                  _chainState.currencyLogGold += goldReward;
                 }
 
                 inserts.push(trx.insert({
@@ -1957,8 +1961,8 @@ class SyncModule {
               const inserts = [];
 
               // daily quest rewards
-              for (var moduleName in this.newPlayerProgression) {
-                var data = this.newPlayerProgression[moduleName];
+              for (var moduleName in _chainState.newPlayerProgression) {
+                var data = _chainState.newPlayerProgression[moduleName];
                 inserts.push(trx.insert({
                   user_id: userId,
                   module_name: moduleName,
@@ -1999,9 +2003,9 @@ class SyncModule {
               const inserts = [];
 
               // ...
-              if (this.achievements != null ? this.achievements.completed : undefined) {
-                for (id in this.achievements.completed) {
-                  data = this.achievements.completed[id];
+              if (_chainState.achievements != null ? _chainState.achievements.completed : undefined) {
+                for (id in _chainState.achievements.completed) {
+                  data = _chainState.achievements.completed[id];
                   achievement = SDK.AchievementsFactory.achievementForIdentifier(id);
                   var rewardId = generatePushId();
 
@@ -2047,17 +2051,17 @@ class SyncModule {
                     }).into('user_currency_log'),
                     );
 
-                    this.currencyLogGold += data.rewards.gold || 0;
-                    this.currencyLogSpirit += data.rewards.spirit || 0;
+                    _chainState.currencyLogGold += data.rewards.gold || 0;
+                    _chainState.currencyLogSpirit += data.rewards.spirit || 0;
                   }
                 }
               }
 
               // ...
-              if (this.achievements != null ? this.achievements.progress : undefined) {
-                for (id in this.achievements.progress) {
-                  data = this.achievements.progress[id];
-                  if (__guard__(this.achievements != null ? this.achievements.completed : undefined, (x8) => x8[id])) {
+              if (_chainState.achievements != null ? _chainState.achievements.progress : undefined) {
+                for (id in _chainState.achievements.progress) {
+                  data = _chainState.achievements.progress[id];
+                  if (__guard__(_chainState.achievements != null ? _chainState.achievements.completed : undefined, (x8) => x8[id])) {
                     continue;
                   }
 
@@ -2083,8 +2087,8 @@ class SyncModule {
               let purchase_count = 0;
               let last_purchase_at = 0;
 
-              for (key in this.receipts) {
-                var charge = this.receipts[key];
+              for (key in _chainState.receipts) {
+                var charge = _chainState.receipts[key];
                 purchase_count += 1;
 
                 if (charge.created && (charge.created > last_purchase_at)) {
@@ -2114,11 +2118,11 @@ class SyncModule {
               });
             })
             .then(function () { // Handle currency log mismatch
-              const userWalletGold = (this.inventory != null ? this.inventory.wallet.gold_amount : undefined) || 0;
-              const userWalletSpirit = (this.inventory != null ? this.inventory.wallet.spirit_amount : undefined) || 0;
-              if ((userWalletGold !== this.currencyLogGold) || (userWalletSpirit !== this.currencyLogSpirit)) {
-                const goldDelta = userWalletGold - this.currencyLogGold;
-                const spiritDelta = userWalletSpirit - this.currencyLogSpirit;
+              const userWalletGold = (_chainState.inventory != null ? _chainState.inventory.wallet.gold_amount : undefined) || 0;
+              const userWalletSpirit = (_chainState.inventory != null ? _chainState.inventory.wallet.spirit_amount : undefined) || 0;
+              if ((userWalletGold !== _chainState.currencyLogGold) || (userWalletSpirit !== _chainState.currencyLogSpirit)) {
+                const goldDelta = userWalletGold - _chainState.currencyLogGold;
+                const spiritDelta = userWalletSpirit - _chainState.currencyLogSpirit;
                 return trx.insert({
                   id: generatePushId(),
                   user_id: userId,
@@ -2136,10 +2140,10 @@ class SyncModule {
       .then(function () {
         Logger.module('UsersModule').timeEnd(`_syncUserFromFirebaseToSQL() -> ${userId} done`.green);
 
-        this.userData.portrait_id = (this.user.presence != null ? this.user.presence.portrait_id : undefined) || null;
-        this.userData.card_back_id = (this.user.presence != null ? this.user.presence.card_back_id : undefined) || null;
+        _chainState.userData.portrait_id = (_chainState.user.presence != null ? _chainState.user.presence.portrait_id : undefined) || null;
+        _chainState.userData.card_back_id = (_chainState.user.presence != null ? _chainState.user.presence.card_back_id : undefined) || null;
 
-        return this.userData;
+        return _chainState.userData;
       });
   }
 }

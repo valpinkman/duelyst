@@ -90,6 +90,7 @@ class GiftCrateModule {
    * @return  {Promise}            Promise that will return rewards array on completion.
    */
   static unlockGiftCrate(userId, crateId, keyId, systemTime) {
+    const _chainState = {};
     let txPromise;
     const current_utc = systemTime || moment().utc();
 
@@ -120,11 +121,11 @@ class GiftCrateModule {
             return Promise.reject(new Errors.NotFoundError('The gift crate ID provided does not exist or belong to you.'));
           }
 
-          this.giftCrateRow = giftCrateRow;
+          _chainState.giftCrateRow = giftCrateRow;
 
           const allPromises = [];
           const rewardRows = [];
-          this.rewardsToReturn = [];
+          _chainState.rewardsToReturn = [];
 
           const giftTemplateData = GiftCrateFactory.giftCrateTemplateForType(giftCrateRow.crate_type);
 
@@ -149,7 +150,7 @@ class GiftCrateModule {
               is_unread: true,
             });
 
-            this.rewardsToReturn.push({ spirit: giftTemplateData.rewards.spirit });
+            _chainState.rewardsToReturn.push({ spirit: giftTemplateData.rewards.spirit });
 
             allPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, giftTemplateData.rewards.spirit, 'gift crate reward', crateId));
           }
@@ -167,7 +168,7 @@ class GiftCrateModule {
               is_unread: true,
             });
 
-            this.rewardsToReturn.push({ gold: giftTemplateData.rewards.gold });
+            _chainState.rewardsToReturn.push({ gold: giftTemplateData.rewards.gold });
 
             allPromises.push(InventoryModule.giveUserGold(txPromise, tx, userId, giftTemplateData.rewards.gold, 'gift crate reward', crateId));
           }
@@ -199,7 +200,7 @@ class GiftCrateModule {
               }
             }
 
-            this.rewardsToReturn.push({ cards: cardsRewardRow.cards });
+            _chainState.rewardsToReturn.push({ cards: cardsRewardRow.cards });
 
             allPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, cardsRewardRow.cards, 'gift crate reward', crateId));
           }
@@ -220,7 +221,7 @@ class GiftCrateModule {
                 is_unread: true,
               });
 
-              this.rewardsToReturn.push({ spirit_orbs: cardSetId });
+              _chainState.rewardsToReturn.push({ spirit_orbs: cardSetId });
 
               allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, cardSetId, 'gift crate reward', crateId));
             }
@@ -241,7 +242,7 @@ class GiftCrateModule {
                 is_unread: true,
               });
 
-              this.rewardsToReturn.push({ gauntlet_tickets: 1 });
+              _chainState.rewardsToReturn.push({ gauntlet_tickets: 1 });
 
               allPromises.push(InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'gift crate reward', crateId));
             }
@@ -262,7 +263,7 @@ class GiftCrateModule {
               allPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, keyType, 1, 'gift crate reward', crateId));
             }
 
-            this.rewardsToReturn.push({ cosmetic_keys: giftTemplateData.rewards.crate_keys });
+            _chainState.rewardsToReturn.push({ cosmetic_keys: giftTemplateData.rewards.crate_keys });
           }
 
           if ((giftTemplateData.rewards.cosmetics != null ? giftTemplateData.rewards.cosmetics.length : undefined) > 0) {
@@ -280,7 +281,7 @@ class GiftCrateModule {
 
               allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmetic_id, 'gift crate reward', crateId, null, current_utc));
 
-              this.rewardsToReturn.push({ cosmetic_id });
+              _chainState.rewardsToReturn.push({ cosmetic_id });
             }
           }
 
@@ -299,7 +300,7 @@ class GiftCrateModule {
               }
 
               allPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, spiritBoxReward, 'gift crate reward', crateId));
-              this.rewardsToReturn.push({ spirit: spiritBoxReward });
+              _chainState.rewardsToReturn.push({ spirit: spiritBoxReward });
             } else {
               return Promise.reject(new Errors.NotFoundError('No spirit box template for this gift crate type'));
             }
@@ -339,12 +340,12 @@ class GiftCrateModule {
               allPromises.push(InventoryModule.giveUserCosmeticId(txPromise, tx, userId, cosmeticBoxReward, 'gift crate reward', crateId, overrideSpiritRefundAmount, current_utc)
                 .then((resValue) => {
                   if (resValue.spirit != null) {
-                    return this.rewardsToReturn.push({
+                    return _chainState.rewardsToReturn.push({
                       cosmetic_id: resValue.cosmetic_id,
                       spirit: resValue.spirit,
                     });
                   } else {
-                    return this.rewardsToReturn.push({ cosmetic_id: resValue.cosmetic_id });
+                    return _chainState.rewardsToReturn.push({ cosmetic_id: resValue.cosmetic_id });
                   }
                 }));
 
@@ -359,20 +360,20 @@ class GiftCrateModule {
             allPromises.push(knex('user_rewards').insert(reward).transacting(tx));
           }
 
-          this.rewards = rewardRows;
+          _chainState.rewards = rewardRows;
 
           return Promise.all(allPromises);
         })
         .then(function () {
         // Logger.module("GiftCrateModule").debug "unlockGiftCrate() -> reward rows #{util.inspect(@.rewards)}."
 
-          this.giftCrateRow.rewards_claimed_at = current_utc.toDate();
-          this.giftCrateRow.reward_ids = _.map(this.rewards, (reward) => reward.id);
-          delete this.giftCrateRow.is_unread;
+          _chainState.giftCrateRow.rewards_claimed_at = current_utc.toDate();
+          _chainState.giftCrateRow.reward_ids = _.map(_chainState.rewards, (reward) => reward.id);
+          delete _chainState.giftCrateRow.is_unread;
 
           return Promise.all([
-            knex('user_gift_crates').where('crate_id', this.crateId).delete().transacting(tx),
-            knex.insert(this.giftCrateRow).into('user_gift_crates_opened').transacting(tx),
+            knex('user_gift_crates').where('crate_id', _chainState.crateId).delete().transacting(tx),
+            knex.insert(_chainState.giftCrateRow).into('user_gift_crates_opened').transacting(tx),
           ]);
         })
         .then(() => DuelystFirebase.connect().getRootRef())
@@ -386,9 +387,9 @@ class GiftCrateModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('GiftCrateModule').debug(`unlockGiftCrate() -> user ${userId.blue} `.green + ` unlocked gift crate ${this.crateId}`.green);
+        Logger.module('GiftCrateModule').debug(`unlockGiftCrate() -> user ${userId.blue} `.green + ` unlocked gift crate ${_chainState.crateId}`.green);
 
-        return Promise.resolve(this.rewardsToReturn);
+        return Promise.resolve(_chainState.rewardsToReturn);
       });
   }
 }

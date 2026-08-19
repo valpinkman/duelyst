@@ -35,6 +35,7 @@ class ReferralsModule {
    * @return  {Promise}
    */
   static markUserAsReferredByFriend(userId, referrerId) {
+    const _chainState = {};
     const MOMENT_NOW_UTC = moment().utc();
     const this_obj = {};
 
@@ -46,7 +47,7 @@ class ReferralsModule {
       ])
         .bind(this_obj)
         .spread(function (userRow, referrerRow, progressionRow) {
-          this.userRow = userRow;
+          _chainState.userRow = userRow;
 
           if (!userRow || !referrerRow) {
             throw new Errors.NotFoundError('Could not find user or referrer.');
@@ -112,19 +113,19 @@ class ReferralsModule {
       .then(function () { // backfill any events a user has achieved
         const allPromises = [];
 
-        Logger.module('ReferralsModule').debug(`markUserAsReferredByFriend() -> ${userId} backfilling`, this.userRow);
+        Logger.module('ReferralsModule').debug(`markUserAsReferredByFriend() -> ${userId} backfilling`, _chainState.userRow);
 
         // if the user has made any purchases
-        if (this.userRow.purchase_count > 0) {
+        if (_chainState.userRow.purchase_count > 0) {
           allPromises.push(ReferralsModule.processReferralEventForUser(userId, referrerId, 'purchase'));
         }
 
         // if the user has achieved any rank so far
-        if (this.userRow.top_rank) {
-          if (this.userRow.top_rank <= 20) {
+        if (_chainState.userRow.top_rank) {
+          if (_chainState.userRow.top_rank <= 20) {
             allPromises.push(ReferralsModule.processReferralEventForUser(userId, referrerId, 'silver'));
           }
-          if (this.userRow.top_rank <= 10) {
+          if (_chainState.userRow.top_rank <= 10) {
             allPromises.push(ReferralsModule.processReferralEventForUser(userId, referrerId, 'gold'));
           }
         }
@@ -149,6 +150,7 @@ class ReferralsModule {
    * @return  {Promise}          Promise that will resolve when complete
    */
   static processReferralEventForUser(userId, referrerId, eventType) {
+    const _chainState = {};
     const MOMENT_NOW_UTC = moment().utc();
     const this_obj = {};
 
@@ -159,7 +161,7 @@ class ReferralsModule {
       ])
         .bind(this_obj)
         .spread(function (userRow, referralRow) {
-          this.userRow = userRow;
+          _chainState.userRow = userRow;
 
           if (!userRow.referred_by_user_id || (userRow.referred_by_user_id !== referrerId)) {
             throw new Errors.NotFoundError('Invalid referral process event request: user has invalid referrer');
@@ -187,7 +189,7 @@ class ReferralsModule {
           }
 
           if (referralRow.level_reached < levelReached) {
-            this.claimableReferralRewardsUpdated = true;
+            _chainState.claimableReferralRewardsUpdated = true;
 
             allPromises.push(tx('user_referrals').where('referred_user_id', userId).update({
               level_reached: levelReached,
@@ -212,8 +214,8 @@ class ReferralsModule {
           // kick off a job to process this referral event
             return Jobs.create('update-user-achievements', {
               name: 'Process User Referral Achievements',
-              title: util.format('User %s :: Received Achievement Eligble Referral Event %s', this.userRow.referred_by_user_id, 'purchase'),
-              userId: this.userRow.referred_by_user_id,
+              title: util.format('User %s :: Received Achievement Eligble Referral Event %s', _chainState.userRow.referred_by_user_id, 'purchase'),
+              userId: _chainState.userRow.referred_by_user_id,
               referralEventType: 'purchase',
             },
             ).removeOnComplete(true).ttl(15000).save();
@@ -221,7 +223,7 @@ class ReferralsModule {
         })
         .then(() => DuelystFirebase.connect().getRootRef())
         .then(function (rootRef) {
-          if (this.claimableReferralRewardsUpdated) {
+          if (_chainState.claimableReferralRewardsUpdated) {
             return FirebasePromises.update(rootRef.child('users').child(referrerId), { referral_rewards_updated_at: MOMENT_NOW_UTC.valueOf() });
           } else {
             return Promise.resolve(true);
@@ -239,6 +241,7 @@ class ReferralsModule {
    * @return  {Promise}          Promise that will resolve when complete
    */
   static claimReferralRewards(userId) {
+    const _chainState = {};
     const MOMENT_NOW_UTC = moment().utc();
     const this_obj = {};
 
@@ -258,7 +261,7 @@ class ReferralsModule {
         .then(function (referralEventRows) {
           const allPromises = [];
 
-          const rewards = (this.rewards = []);
+          const rewards = (_chainState.rewards = []);
 
           // for each referral event type, check for unclaimed rewards
           for (var referralEvent of Array.from(referralEventRows)) {
@@ -328,8 +331,8 @@ class ReferralsModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('ReferralsModule').debug(`claimReferralRewards() -> user ${userId} rewards`, this.rewards);
-        return this.rewards;
+        Logger.module('ReferralsModule').debug(`claimReferralRewards() -> user ${userId} rewards`, _chainState.rewards);
+        return _chainState.rewards;
       });
 
     return trxPromise;

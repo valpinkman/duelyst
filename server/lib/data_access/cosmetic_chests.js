@@ -52,6 +52,7 @@ class CosmeticChestsModule {
    * @return  {Promise}                Promise that will resolve on completion.
    */
   static giveUserChest(trxPromise, trx, userId, chestType, bossId, eventId, chestAmount, transactionType, transactionId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('CosmeticChestsModule').debug(`giveUserChest() -> invalid user ID - ${userId}.`.red);
@@ -153,22 +154,22 @@ class CosmeticChestsModule {
         trxPromise
           .bind(this_obj)
           .then(() => DuelystFirebase.connect().getRootRef()).then(function (rootRef) {
-            this.rootRef = rootRef;
+            _chainState.rootRef = rootRef;
             const allFbPromises = [];
-            for (var chestData of Array.from(this.chestDatas)) {
+            for (var chestData of Array.from(_chainState.chestDatas)) {
               var fbChestData = _.extend({}, chestData);
               fbChestData.created_at = NOW_UTC_MOMENT.valueOf();
               if (expirationMoment != null) {
                 fbChestData.expires_at = expirationMoment.valueOf();
               }
 
-              allFbPromises.push(FirebasePromises.set(this.rootRef.child('user-inventory').child(userId).child('cosmetic-chests').child(chestData.chest_id), fbChestData));
+              allFbPromises.push(FirebasePromises.set(_chainState.rootRef.child('user-inventory').child(userId).child('cosmetic-chests').child(chestData.chest_id), fbChestData));
             }
             return Promise.all(allFbPromises);
           });
 
         // Resolve to the chest data being received
-        return Promise.resolve(this.chestDatas);
+        return Promise.resolve(_chainState.chestDatas);
       });
   }
 
@@ -262,6 +263,7 @@ class CosmeticChestsModule {
    * @return  {Promise}            Promise that will post UNLOCKED BOOSTER PACK DATA on completion.
    */
   static openChest(userId, chestId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('CosmeticChestsModule').debug(`openChest() -> invalid user ID - ${userId}.`.red);
@@ -306,7 +308,7 @@ class CosmeticChestsModule {
             }
           }
 
-          this.chestRow = chestRow;
+          _chainState.chestRow = chestRow;
           // @.keyRow = keyRow
 
           // if not keyRow? or keyRow.user_id != userId
@@ -316,140 +318,140 @@ class CosmeticChestsModule {
           //  return Promise.reject(new Errors.ChestAndKeyTypeDoNotMatchError("The chest and key you provided do not match in type."))
 
           // Gather rewards
-          this.rewardDatas = CosmeticChestsModule._generateChestOpeningRewards(this.chestRow);
+          _chainState.rewardDatas = CosmeticChestsModule._generateChestOpeningRewards(_chainState.chestRow);
 
-          this.ownedCosmeticIds = [];
+          _chainState.ownedCosmeticIds = [];
           if (userCosmeticRows != null) {
-            this.ownedCosmeticIds = _.map(userCosmeticRows, (cosmeticRow) => cosmeticRow.cosmetic_id);
+            _chainState.ownedCosmeticIds = _.map(userCosmeticRows, (cosmeticRow) => cosmeticRow.cosmetic_id);
           }
 
-          this.resValue = [];
+          _chainState.resValue = [];
 
           // Create promises to give rewards
-          return Promise.each(this.rewardDatas, (rewardData) => {
+          return Promise.each(_chainState.rewardDatas, (rewardData) => {
             let prismaticCardIds,
               rewardedCardId;
             if (rewardData.cosmetic_common != null) {
-              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', this.chestRow.chest_id, SDK.Rarity.Common, null, this.ownedCosmeticIds, NOW_UTC_MOMENT)
+              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', _chainState.chestRow.chest_id, SDK.Rarity.Common, null, _chainState.ownedCosmeticIds, NOW_UTC_MOMENT)
                 .then((cosmeticReward) => {
                   if ((cosmeticReward != null) && (cosmeticReward.cosmetic_id != null)) {
-                    this.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
+                    _chainState.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
                   }
-                  return this.resValue.push(cosmeticReward);
+                  return _chainState.resValue.push(cosmeticReward);
                 });
             } else if (rewardData.cosmetic_rare != null) {
-              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', this.chestRow.chest_id, SDK.Rarity.Rare, null, this.ownedCosmeticIds, NOW_UTC_MOMENT)
+              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', _chainState.chestRow.chest_id, SDK.Rarity.Rare, null, _chainState.ownedCosmeticIds, NOW_UTC_MOMENT)
                 .then((cosmeticReward) => {
                   if ((cosmeticReward != null) && (cosmeticReward.cosmetic_id != null)) {
-                    this.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
+                    _chainState.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
                   }
-                  return this.resValue.push(cosmeticReward);
+                  return _chainState.resValue.push(cosmeticReward);
                 });
             } else if (rewardData.cosmetic_epic != null) {
-              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', this.chestRow.chest_id, SDK.Rarity.Epic, null, this.ownedCosmeticIds, NOW_UTC_MOMENT)
+              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', _chainState.chestRow.chest_id, SDK.Rarity.Epic, null, _chainState.ownedCosmeticIds, NOW_UTC_MOMENT)
                 .then((cosmeticReward) => {
                   if ((cosmeticReward != null) && (cosmeticReward.cosmetic_id != null)) {
-                    this.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
+                    _chainState.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
                   }
-                  return this.resValue.push(cosmeticReward);
+                  return _chainState.resValue.push(cosmeticReward);
                 });
             } else if (rewardData.cosmetic_legendary != null) {
-              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', this.chestRow.chest_id, SDK.Rarity.Legendary, null, this.ownedCosmeticIds, NOW_UTC_MOMENT)
+              return InventoryModule.giveUserNewPurchasableCosmetic(txPromise, tx, userId, 'cosmetic chest', _chainState.chestRow.chest_id, SDK.Rarity.Legendary, null, _chainState.ownedCosmeticIds, NOW_UTC_MOMENT)
                 .then((cosmeticReward) => {
                   if ((cosmeticReward != null) && (cosmeticReward.cosmetic_id != null)) {
-                    this.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
+                    _chainState.ownedCosmeticIds.push(cosmeticReward.cosmetic_id);
                   }
-                  return this.resValue.push(cosmeticReward);
+                  return _chainState.resValue.push(cosmeticReward);
                 });
             } else if (rewardData.spirit_orb != null) {
-              return InventoryModule.addBoosterPackToUser(txPromise, tx, userId, rewardData.spirit_orb, 'cosmetic chest', this.chestRow.chest_id)
-                .then((spiritOrbRewardedId) => this.resValue.push({ spirit_orbs: rewardData.spirit_orb }));
+              return InventoryModule.addBoosterPackToUser(txPromise, tx, userId, rewardData.spirit_orb, 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then((spiritOrbRewardedId) => _chainState.resValue.push({ spirit_orbs: rewardData.spirit_orb }));
             } else if (rewardData.prismatic_common != null) {
               prismaticCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Common).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(true)
                 .getCardIds();
               rewardedCardId = _.sample(prismaticCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.prismatic_rare != null) {
               prismaticCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Rare).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(true)
                 .getCardIds();
               rewardedCardId = _.sample(prismaticCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.prismatic_epic != null) {
               prismaticCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Epic).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(true)
                 .getCardIds();
               rewardedCardId = _.sample(prismaticCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.prismatic_legendary != null) {
               prismaticCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Legendary).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(true)
                 .getCardIds();
               rewardedCardId = _.sample(prismaticCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.chest_key != null) {
-              return CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, rewardData.chest_key, 1, 'cosmetic chest', this.chestRow.chest_id, NOW_UTC_MOMENT)
-                .then(() => this.resValue.push({ chest_key: rewardData.chest_key }));
+              return CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, rewardData.chest_key, 1, 'cosmetic chest', _chainState.chestRow.chest_id, NOW_UTC_MOMENT)
+                .then(() => _chainState.resValue.push({ chest_key: rewardData.chest_key }));
             } else if (rewardData.gold != null) {
-              return InventoryModule.giveUserGold(txPromise, tx, userId, rewardData.gold, 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ gold: rewardData.gold }));
+              return InventoryModule.giveUserGold(txPromise, tx, userId, rewardData.gold, 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ gold: rewardData.gold }));
             } else if (rewardData.spirit != null) {
-              return InventoryModule.giveUserSpirit(txPromise, tx, userId, rewardData.spirit, 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ spirit: rewardData.spirit }));
+              return InventoryModule.giveUserSpirit(txPromise, tx, userId, rewardData.spirit, 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ spirit: rewardData.spirit }));
             } else if (rewardData.common_card != null) {
               const commonCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Common).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(false)
                 .getCardIds();
               rewardedCardId = _.sample(commonCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.rare_card != null) {
               const rareCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Rare).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(false)
                 .getCardIds();
               rewardedCardId = _.sample(rareCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.epic_card != null) {
               const epicCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Epic).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(false)
                 .getCardIds();
               rewardedCardId = _.sample(epicCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.legendary_card != null) {
               const legendaryCardIds = SDK.GameSession.getCardCaches().getRarity(SDK.Rarity.Legendary).getIsUnlockable(false).getIsCollectible(true)
                 .getIsPrismatic(false)
                 .getCardIds();
               rewardedCardId = _.sample(legendaryCardIds);
-              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ card_id: rewardedCardId }));
+              return InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ card_id: rewardedCardId }));
             } else if (rewardData.card_ids != null) {
-              return InventoryModule.giveUserCards(txPromise, tx, userId, rewardData.card_ids, 'cosmetic chest', this.chestRow.chest_id)
+              return InventoryModule.giveUserCards(txPromise, tx, userId, rewardData.card_ids, 'cosmetic chest', _chainState.chestRow.chest_id)
                 .then(() => Array.from(rewardData.card_ids).map((card_id) =>
-                  this.resValue.push({ card_id })));
+                  _chainState.resValue.push({ card_id })));
             } else if (rewardData.gauntlet_tickets != null) {
-              return InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'cosmetic chest', this.chestRow.chest_id)
-                .then(() => this.resValue.push({ gauntlet_tickets: rewardData.gauntlet_tickets }));
+              return InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'cosmetic chest', _chainState.chestRow.chest_id)
+                .then(() => _chainState.resValue.push({ gauntlet_tickets: rewardData.gauntlet_tickets }));
             } else {
-              Logger.module('CosmeticChestsModule').debug(`openChest() -> Error opening chest id ${this.chestRow.chest_id}.`.red);
+              Logger.module('CosmeticChestsModule').debug(`openChest() -> Error opening chest id ${_chainState.chestRow.chest_id}.`.red);
               return Promise.reject(new Error(`Error opening chest: Unknown reward type in data - ${JSON.stringify(rewardData)}`));
             }
           }, { concurrency: 1 });
         })
         .then(function () {
         // NOTE: The following is the cosmetic ids generated, some may be dupes and reward spirit instead
-          this.rewardedCosmeticIds = _.map(_.filter(this.resValue, (rewardData) => rewardData.cosmetic_id != null), (rewardData) => rewardData.cosmetic_id);
+          _chainState.rewardedCosmeticIds = _.map(_.filter(_chainState.resValue, (rewardData) => rewardData.cosmetic_id != null), (rewardData) => rewardData.cosmetic_id);
 
-          this.openedChestRow = _.extend({}, this.chestRow);
-          this.openedChestRow.opened_with_key_id = '-1';
-          this.openedChestRow.rewarded_cosmetic_ids = this.rewardedCosmeticIds;
-          this.openedChestRow.opened_at = NOW_UTC_MOMENT.toDate();
+          _chainState.openedChestRow = _.extend({}, _chainState.chestRow);
+          _chainState.openedChestRow.opened_with_key_id = '-1';
+          _chainState.openedChestRow.rewarded_cosmetic_ids = _chainState.rewardedCosmeticIds;
+          _chainState.openedChestRow.opened_at = NOW_UTC_MOMENT.toDate();
 
           // @.usedKeyRow = _.extend({},@.keyRow)
           // @.usedKeyRow.used_with_chest_id = @.chestRow.chest_id
@@ -457,8 +459,8 @@ class CosmeticChestsModule {
 
           // Move key and chest into used tables
           return Promise.all([
-            tx('user_cosmetic_chests').where('chest_id', this.chestRow.chest_id).delete(),
-            tx('user_cosmetic_chests_opened').insert(this.openedChestRow),
+            tx('user_cosmetic_chests').where('chest_id', _chainState.chestRow.chest_id).delete(),
+            tx('user_cosmetic_chests_opened').insert(_chainState.openedChestRow),
           ]);
         })
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
@@ -473,13 +475,13 @@ class CosmeticChestsModule {
           .bind(this_obj)
           .then(() => DuelystFirebase.connect().getRootRef()).then(function (rootRef) {
             return Promise.all([
-              FirebasePromises.remove(rootRef.child('user-inventory').child(userId).child('cosmetic-chests').child(this.chestRow.chest_id)),
+              FirebasePromises.remove(rootRef.child('user-inventory').child(userId).child('cosmetic-chests').child(_chainState.chestRow.chest_id)),
             ]);
           });
 
         Logger.module('CosmeticChestsModule').timeEnd(`openChest() -> User ${userId.blue}`.green + ` opened chest ID ${chestId}.`.green);
 
-        return Promise.resolve(this.resValue);
+        return Promise.resolve(_chainState.resValue);
       });
   }
 
@@ -674,6 +676,7 @@ class CosmeticChestsModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateUserChestRewardWithGameOutcome(userId, isWinner, gameId, gameType, isUnscored, isDraw, systemTime, probabilityOverride) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserChestRewardWithGameOutcome(): invalid user ID - ${userId}`));
@@ -695,7 +698,7 @@ class CosmeticChestsModule {
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .bind(this_obj)
       .then(() => tx('user_progression').where('user_id', userId).first().forUpdate()).then(function (userProgressionRow) {
-        this.userProgressionRow = userProgressionRow;
+        _chainState.userProgressionRow = userProgressionRow;
         if (userProgressionRow.last_game_id !== gameId) {
           return Promise.reject(new Error(`Can not updateUserChestRewardWithGameOutcome(): game ID - ${gameId} does not match user ID's ${userId} last game ID in progression ${userProgressionRow.last_game_id}`));
         }
@@ -718,18 +721,18 @@ class CosmeticChestsModule {
         return Promise.resolve([]);
       })
       .then(function (awardedChestData) {
-        this.awardedChestData = awardedChestData;
+        _chainState.awardedChestData = awardedChestData;
 
         const allPromises = [];
-        if (this.awardedChestData.length > 0) {
+        if (_chainState.awardedChestData.length > 0) {
         // reward row
           let rewardData;
-          this.rewardData = (rewardData = {
+          _chainState.rewardData = (rewardData = {
             id: generatePushId(),
             user_id: userId,
             reward_category: 'loot crate',
-            reward_type: this.awardedChestData[0].chest_type,
-            cosmetic_chests: [this.awardedChestData[0].chest_type],
+            reward_type: _chainState.awardedChestData[0].chest_type,
+            cosmetic_chests: [_chainState.awardedChestData[0].chest_type],
             game_id: gameId,
             created_at: MOMENT_NOW_UTC.toDate(),
             is_unread: true,
@@ -738,8 +741,8 @@ class CosmeticChestsModule {
           allPromises.push(GamesModule._addRewardIdToUserGame(tx, userId, gameId, rewardData.id));
           allPromises.push(tx('user_progression').where('user_id', userId).update({
             last_crate_awarded_at: MOMENT_NOW_UTC.toDate(),
-            last_crate_awarded_win_count: this.userProgressionRow.win_count,
-            last_crate_awarded_game_count: this.userProgressionRow.game_count,
+            last_crate_awarded_win_count: _chainState.userProgressionRow.win_count,
+            last_crate_awarded_game_count: _chainState.userProgressionRow.game_count,
           }),
           );
         }
@@ -751,9 +754,9 @@ class CosmeticChestsModule {
         throw e;
       })).bind(this_obj)
       .then(function () {
-        for (var chestData of Array.from(this.awardedChestData)) {
+        for (var chestData of Array.from(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
-          if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((this.userProgressionRow.last_crate_awarded_at == null))) {
+          if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
             Jobs.create('update-user-achievements', {
               name: 'Update User Cosmetic Chest Achievements',
               title: util.format('User %s :: Update Cosmetic Chest Achievements', userId),
@@ -764,7 +767,7 @@ class CosmeticChestsModule {
           }
         }
 
-        return this.rewardData;
+        return _chainState.rewardData;
       }).finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'cosmetic_chests'));
 
     return txPromise;
@@ -783,6 +786,7 @@ class CosmeticChestsModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateUserChestRewardWithBossGameOutcome(userId, isWinner, gameId, gameType, isUnscored, isDraw, gameSessionData, systemTime, probabilityOverride) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not updateUserChestRewardWithBossGameOutcome(): invalid user ID - ${userId}`));
@@ -818,9 +822,9 @@ class CosmeticChestsModule {
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .bind(this_obj)
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
-        const bossEventsRef = this.fbRootRef.child('boss-events');
+        const bossEventsRef = _chainState.fbRootRef.child('boss-events');
         return FirebasePromises.once(bossEventsRef, 'value');
       })
       .then(function (bossEventsSnapshot) {
@@ -832,7 +836,7 @@ class CosmeticChestsModule {
         //   event_start
         //   event_end
         //   valid_end (event_end + 30 minute buffer)
-        this.matchingEventData = null;
+        _chainState.matchingEventData = null;
         for (var eventId in bossEventsData) {
           var eventData = bossEventsData[eventId];
           if (eventData.boss_id !== bossId) {
@@ -846,22 +850,22 @@ class CosmeticChestsModule {
           }
 
           // Reaching here means we have a matching event
-          this.matchingEventData = eventData;
-          this.matchingEventId = eventData.event_id;
+          _chainState.matchingEventData = eventData;
+          _chainState.matchingEventId = eventData.event_id;
           break;
         }
 
-        if ((this.matchingEventData == null)) {
+        if ((_chainState.matchingEventData == null)) {
           Logger.module('CosmeticChestsModule').debug(`updateUserChestRewardWithBossGameOutcome() -> no matching boss event id for user ${userId} in game ${gameId}.`.red);
           return Promise.reject(new Error(`Can not updateUserChestRewardWithBossGameOutcome(): No matching boss event - ${gameId}`));
         }
       })
       .then(function () {
         return Promise.all([
-          tx('user_cosmetic_chests').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', this.matchingEventId)
+          tx('user_cosmetic_chests').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', _chainState.matchingEventId)
             .first()
             .forUpdate(),
-          tx('user_cosmetic_chests_opened').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', this.matchingEventId)
+          tx('user_cosmetic_chests_opened').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', _chainState.matchingEventId)
             .first()
             .forUpdate(),
         ]);
@@ -872,21 +876,21 @@ class CosmeticChestsModule {
           return Promise.resolve([]);
         }
 
-        return CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, bossId, this.matchingEventData.event_id, 1, 'boss battle', gameId, MOMENT_NOW_UTC);
+        return CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, bossId, _chainState.matchingEventData.event_id, 1, 'boss battle', gameId, MOMENT_NOW_UTC);
       })
       .then(function (awardedChestData) {
-        this.awardedChestData = awardedChestData;
+        _chainState.awardedChestData = awardedChestData;
 
         const allPromises = [];
-        if (this.awardedChestData.length > 0) {
+        if (_chainState.awardedChestData.length > 0) {
         // reward row
           let rewardData;
-          this.rewardData = (rewardData = {
+          _chainState.rewardData = (rewardData = {
             id: generatePushId(),
             user_id: userId,
             reward_category: 'loot crate',
-            reward_type: this.awardedChestData[0].chest_type,
-            cosmetic_chests: [this.awardedChestData[0].chest_type],
+            reward_type: _chainState.awardedChestData[0].chest_type,
+            cosmetic_chests: [_chainState.awardedChestData[0].chest_type],
             game_id: gameId,
             created_at: MOMENT_NOW_UTC.toDate(),
             is_unread: true,
@@ -902,9 +906,9 @@ class CosmeticChestsModule {
         throw e;
       })).bind(this_obj)
       .then(function () {
-        for (var chestData of Array.from(this.awardedChestData)) {
+        for (var chestData of Array.from(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
-          if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((this.userProgressionRow.last_crate_awarded_at == null))) {
+          if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
             Jobs.create('update-user-achievements', {
               name: 'Update User Cosmetic Chest Achievements',
               title: util.format('User %s :: Update Cosmetic Chest Achievements', userId),
@@ -915,7 +919,7 @@ class CosmeticChestsModule {
           }
         }
 
-        return this.rewardData;
+        return _chainState.rewardData;
       }).finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'cosmetic_chests'));
 
     return txPromise;

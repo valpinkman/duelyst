@@ -477,6 +477,7 @@ class MigrationsModule {
    * @return  {Promise}          Promise that resolves on completion
    */
   static userUnlockableOrbsRefund(userId, systemTime) {
+    const _chainState = {};
     let txPromise;
     const unlockableOrbGoldRefundAmount = 300;
 
@@ -491,15 +492,15 @@ class MigrationsModule {
     return txPromise = knex.transaction((tx) => tx('user_spirit_orbs').select('id', 'user_id', 'card_set').whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity]).andWhere('user_id', userId)
       .bind({})
       .then(function (userUnlockableSpiritOrbRows) {
-        this.userUnlockableSpiritOrbRows = userUnlockableSpiritOrbRows;
-        return Promise.map(this.userUnlockableSpiritOrbRows, (unlockableOrbRow) => Promise.all([
+        _chainState.userUnlockableSpiritOrbRows = userUnlockableSpiritOrbRows;
+        return Promise.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => Promise.all([
           tx('user_spirit_orbs').where('id', unlockableOrbRow.id).delete(),
           InventoryModule.giveUserGold(txPromise, tx, userId, unlockableOrbGoldRefundAmount, 'unlockable orb refund', unlockableOrbRow.id),
         ]));
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        return Promise.map(this.userUnlockableSpiritOrbRows, (unlockableOrbRow) => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('spirit-orbs').child(unlockableOrbRow.id)));
+        return Promise.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('spirit-orbs').child(unlockableOrbRow.id)));
         return FirebasePromises.remove(fbRootRef.child('user-gauntlet-run').child(userId).child('current'));
       })).then(() => Logger.module('MigrationsModule').timeEnd(`userUnlockableOrbsRefund() -> ${userId} done`.green));
   }

@@ -330,6 +330,7 @@ class AchievementsModule {
 
   //  resolves to an array of ids for newly completed achievements
   static _applyAchievementProgressMapToUser(userId, progressMap, gameId = null) {
+    const _chainState = {};
     Logger.module('AchievementsModule').debug(`_applyAchievementProgressMapToUser() -> Updating achievement progress for ${userId.blue}`.green);
     const enabledAchievements = SDK.AchievementsFactory.getEnabledAchievementsMap();
 
@@ -342,9 +343,9 @@ class AchievementsModule {
         const achievementIds = _.keys(progressMap);
         return knex('user_achievements').whereIn('achievement_id', achievementIds).andWhere('user_id', userId).transacting(tx);
       }).then(function (achievementRows) {
-        this.updatedAchievements = [];
-        this.rewards = [];
-        this.completedAchievementIds = [];
+        _chainState.updatedAchievements = [];
+        _chainState.rewards = [];
+        _chainState.completedAchievementIds = [];
 
         // method that will be used to process the achievements map serially with 1 concurrency so that there's no chance of card log getting overwritten
         const processAchievementSerialy = (achievementId) => {
@@ -382,7 +383,7 @@ class AchievementsModule {
               rewardValue,
               type;
             row.completed_at = MOMENT_NOW_UTC.toDate();
-            this.completedAchievementIds.push(achievementId);
+            _chainState.completedAchievementIds.push(achievementId);
 
             // looks like a completed achievement...
             const rewardObject = {
@@ -545,7 +546,7 @@ class AchievementsModule {
                     rewardObject.spirit += cosmeticReward.spirit;
                   }
 
-                  this.rewards.push(rewardObject);
+                  _chainState.rewards.push(rewardObject);
                   return tx('user_rewards').insert(rewardObject);
                 }),
                 );
@@ -560,7 +561,7 @@ class AchievementsModule {
               }),
               );
             } else {
-              this.rewards.push(rewardObject);
+              _chainState.rewards.push(rewardObject);
               allPromises.push(tx('user_rewards').insert(rewardObject));
             }
           }
@@ -569,7 +570,7 @@ class AchievementsModule {
           if (needsInsert) {
           // insert the achievement into the database?
             allPromises.push(knex('user_achievements').insert(row).transacting(tx));
-            this.updatedAchievements.push(row);
+            _chainState.updatedAchievements.push(row);
           } else {
             row.updated_at = MOMENT_NOW_UTC.toDate();
             // update the achievement in the database
@@ -583,7 +584,7 @@ class AchievementsModule {
               reward_ids: row.reward_ids,
             }).transacting(tx),
             );
-            this.updatedAchievements.push(row);
+            _chainState.updatedAchievements.push(row);
           }
 
           return Promise.all(allPromises);
@@ -610,7 +611,7 @@ class AchievementsModule {
         //   delete reward.user_id
         //   allPromises.push FirebasePromises.set(fbRootRef.child("user-rewards").child(userId).child(reward_id),Helpers.restifyData(reward))
 
-        for (var row of Array.from(this.updatedAchievements)) {
+        for (var row of Array.from(_chainState.updatedAchievements)) {
           var sdkAchievement = SDK.AchievementsFactory.achievementForIdentifier(row.achievement_id);
 
           if (sdkAchievement.tracksProgress) {
@@ -640,6 +641,7 @@ class AchievementsModule {
   }
 
   static giveMythronCard(txPromise, tx, userId, achievementId) {
+    const _chainState = {};
     return tx('user_card_collection').first('cards').where('user_id', userId)
       .bind({})
       .then(function (card_collection_data) {
@@ -667,14 +669,14 @@ class AchievementsModule {
           randomIndex = _.random(0, mythronCards.length - 1);
           rewardedCardId = mythronCards[randomIndex].getId();
         }
-        this.rewardedCardId = rewardedCardId;
+        _chainState.rewardedCardId = rewardedCardId;
         return rewardedCardId;
       })
       .then((rewardedCardId) => Promise.all([
         InventoryModule.giveUserCards(txPromise, tx, userId, [rewardedCardId], 'achievement', achievementId),
       ]))
       .then(function () {
-        return Promise.resolve(this.rewardedCardId);
+        return Promise.resolve(_chainState.rewardedCardId);
       });
   }
 }

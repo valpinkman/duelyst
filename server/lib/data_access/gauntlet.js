@@ -57,6 +57,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will post ARENA TICKET ID on completion.
    */
   static buyArenaTicketWithGold(userId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`buyArenaTicketWithGold() -> invalid user ID - ${userId}.`.red);
@@ -77,7 +78,7 @@ class GauntletModule {
         // if the user has enough gold
           if (userRow.wallet_gold >= GauntletModule.GAUNTLET_TICKET_GOLD_PRICE) {
           // calculate final gold
-            const final_wallet_gold = (this.final_wallet_gold = userRow.wallet_gold - GauntletModule.GAUNTLET_TICKET_GOLD_PRICE);
+            const final_wallet_gold = (_chainState.final_wallet_gold = userRow.wallet_gold - GauntletModule.GAUNTLET_TICKET_GOLD_PRICE);
 
             // setup what to update the user params with
             const userUpdateParams = {
@@ -93,7 +94,7 @@ class GauntletModule {
         })
         .then(() => InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'soft'))
         .then(function (ticketId) {
-          this.ticketId = ticketId;
+          _chainState.ticketId = ticketId;
           const userCurrencyLogItem = {
             id: generatePushId(),
             user_id: userId,
@@ -108,7 +109,7 @@ class GauntletModule {
         .then(function (fbRootRef) {
           const updateWalletData = (walletData) => {
             if (walletData == null) { walletData = {}; }
-            walletData.gold_amount = this.final_wallet_gold;
+            walletData.gold_amount = _chainState.final_wallet_gold;
             walletData.updated_at = NOW_UTC_MOMENT.valueOf();
             return walletData;
           };
@@ -121,9 +122,9 @@ class GauntletModule {
     }).bind(this_obj)
 
       .then(function () {
-        Logger.module('GauntletModule').debug(`buyArenaTicketWithGold() -> User ${userId.blue}`.green + ` purchased ticket ${this.ticketId}.`.green);
+        Logger.module('GauntletModule').debug(`buyArenaTicketWithGold() -> User ${userId.blue}`.green + ` purchased ticket ${_chainState.ticketId}.`.green);
 
-        return Promise.resolve(this.ticketId);
+        return Promise.resolve(_chainState.ticketId);
       });
 
     // return the transaction promise
@@ -197,6 +198,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static startRun(userId, ticketId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`startRun() -> ERROR: invalid user ID: ${userId}`.red);
@@ -244,7 +246,7 @@ class GauntletModule {
             //            SDK.Factions.Faction6
             //          ],3)
 
-            this.runData = {
+            _chainState.runData = {
               user_id: userId,
               ticket_id: ticketId,
               //            faction_choices: factionChoices
@@ -274,33 +276,33 @@ class GauntletModule {
             return Promise.reject(new Errors.NotFoundError('Could not start run: gauntlet ticket not found.'));
           }
         }).then(function () {
-          return GauntletModule._generateGeneralChoices(txPromise, tx, userId, this.runData.faction_id);
+          return GauntletModule._generateGeneralChoices(txPromise, tx, userId, _chainState.runData.faction_id);
         })
         .then(function (generalChoiceIds) {
-          this.runData.general_choices = generalChoiceIds;
+          _chainState.runData.general_choices = generalChoiceIds;
 
-          return knex('user_gauntlet_run').insert(this.runData).transacting(tx);
+          return knex('user_gauntlet_run').insert(_chainState.runData).transacting(tx);
         })
         .then(() => DuelystFirebase.connect().getRootRef())
 
         .then(function (fbRootRef) {
-          if (this.runData.started_at) { this.runData.started_at = moment.utc(this.runData.started_at).valueOf(); }
-          if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
-          if (this.runData.ended_at) { this.runData.ended_at = moment.utc(this.runData.ended_at).valueOf(); }
-          if (this.runData.created_at) { this.runData.created_at = moment.utc(this.runData.created_at).valueOf(); }
-          if (this.runData.completed_at) { this.runData.completed_at = moment.utc(this.runData.completed_at).valueOf(); }
+          if (_chainState.runData.started_at) { _chainState.runData.started_at = moment.utc(_chainState.runData.started_at).valueOf(); }
+          if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
+          if (_chainState.runData.ended_at) { _chainState.runData.ended_at = moment.utc(_chainState.runData.ended_at).valueOf(); }
+          if (_chainState.runData.created_at) { _chainState.runData.created_at = moment.utc(_chainState.runData.created_at).valueOf(); }
+          if (_chainState.runData.completed_at) { _chainState.runData.completed_at = moment.utc(_chainState.runData.completed_at).valueOf(); }
 
           FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('gauntlet-tickets').child(ticketId));
-          return FirebasePromises.set(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), this.runData);
+          return FirebasePromises.set(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), _chainState.runData);
         })
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('GauntletModule').debug(`startRun() -> User ${userId.blue}`.green + ` started run ${this.runData.ticket_id}.`.green);
+        Logger.module('GauntletModule').debug(`startRun() -> User ${userId.blue}`.green + ` started run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -313,6 +315,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static resignRun(userId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`resignRun() -> ERROR: invalid user ID: ${userId}`.red);
@@ -333,13 +336,13 @@ class GauntletModule {
               return Promise.reject(new Errors.InvalidRequestError('Can not resign a finished gauntlet run.'));
             }
 
-            this.runData = existingRun;
-            this.runData.ended_at = NOW_UTC_MOMENT.toDate();
-            this.runData.is_resigned = true;
+            _chainState.runData = existingRun;
+            _chainState.runData.ended_at = NOW_UTC_MOMENT.toDate();
+            _chainState.runData.is_resigned = true;
 
             return knex('user_gauntlet_run').where('user_id', userId).update({
-              ended_at: this.runData.ended_at,
-              is_resigned: this.runData.is_resigned,
+              ended_at: _chainState.runData.ended_at,
+              is_resigned: _chainState.runData.is_resigned,
             }).transacting(tx);
           } else {
             return Promise.reject(new Errors.NotFoundError('No active gautnlet run found.'));
@@ -350,18 +353,18 @@ class GauntletModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
-        if (this.runData.started_at) { this.runData.started_at = moment.utc(this.runData.started_at).valueOf(); }
-        if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
-        if (this.runData.ended_at) { this.runData.ended_at = moment.utc(this.runData.ended_at).valueOf(); }
-        if (this.runData.created_at) { this.runData.created_at = moment.utc(this.runData.created_at).valueOf(); }
-        if (this.runData.completed_at) { this.runData.completed_at = moment.utc(this.runData.completed_at).valueOf(); }
+        if (_chainState.runData.started_at) { _chainState.runData.started_at = moment.utc(_chainState.runData.started_at).valueOf(); }
+        if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
+        if (_chainState.runData.ended_at) { _chainState.runData.ended_at = moment.utc(_chainState.runData.ended_at).valueOf(); }
+        if (_chainState.runData.created_at) { _chainState.runData.created_at = moment.utc(_chainState.runData.created_at).valueOf(); }
+        if (_chainState.runData.completed_at) { _chainState.runData.completed_at = moment.utc(_chainState.runData.completed_at).valueOf(); }
 
-        return FirebasePromises.set(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), this.runData);
+        return FirebasePromises.set(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), _chainState.runData);
       })
       .then(function () {
-        Logger.module('GauntletModule').debug(`resignRun() -> User ${userId.blue}`.green + ` resigned run ${this.runData.ticket_id}.`.green);
+        Logger.module('GauntletModule').debug(`resignRun() -> User ${userId.blue}`.green + ` resigned run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
   }
 
@@ -375,6 +378,7 @@ class GauntletModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateArenaRunWithGameOutcome(userId, isWinner, gameId, isDraw) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`updateArenaRunWithGameOutcome() -> ERROR: invalid user ID: ${userId}`.red);
@@ -412,45 +416,45 @@ class GauntletModule {
             existingRun.started_at = NOW_UTC_MOMENT.toDate();
           }
 
-          this.runData = existingRun;
-          this.runData.updated_at = NOW_UTC_MOMENT.toDate();
-          if (this.runData.games == null) { this.runData.games = []; }
+          _chainState.runData = existingRun;
+          _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
+          if (_chainState.runData.games == null) { _chainState.runData.games = []; }
 
           if (isDraw) {
-            this.runData.draw_count += 1;
+            _chainState.runData.draw_count += 1;
           } else if (isWinner) {
-            this.runData.win_count += 1;
+            _chainState.runData.win_count += 1;
           } else {
-            this.runData.loss_count += 1;
+            _chainState.runData.loss_count += 1;
           }
 
-          this.runData.games.push(gameId);
+          _chainState.runData.games.push(gameId);
 
           // end arena run at 3 losses
-          if (this.runData.loss_count === 3) {
-            this.runData.ended_at = NOW_UTC_MOMENT.toDate();
+          if (_chainState.runData.loss_count === 3) {
+            _chainState.runData.ended_at = NOW_UTC_MOMENT.toDate();
           }
 
           // or end arena run at 9 wins
-          if (this.runData.win_count === GauntletModule.GAUNTLET_MAX_WINS) {
-            this.runData.ended_at = NOW_UTC_MOMENT.toDate();
+          if (_chainState.runData.win_count === GauntletModule.GAUNTLET_MAX_WINS) {
+            _chainState.runData.ended_at = NOW_UTC_MOMENT.toDate();
           }
 
           // if this is the user's top ever run, update the user record
-          if (this.runData.win_count > userRow.top_gauntlet_win_count) {
+          if (_chainState.runData.win_count > userRow.top_gauntlet_win_count) {
             allPromises.push(knex('users').where('id', userId).update({
-              top_gauntlet_win_count: this.runData.win_count,
+              top_gauntlet_win_count: _chainState.runData.win_count,
             }).transacting(tx),
             );
           }
 
           allPromises.push(knex('user_gauntlet_run').where('user_id', userId).update({
-            loss_count: this.runData.loss_count,
-            win_count: this.runData.win_count,
-            draw_count: this.runData.draw_count,
-            games: this.runData.games,
-            updated_at: this.runData.updated_at,
-            ended_at: this.runData.ended_at,
+            loss_count: _chainState.runData.loss_count,
+            win_count: _chainState.runData.win_count,
+            draw_count: _chainState.runData.draw_count,
+            games: _chainState.runData.games,
+            updated_at: _chainState.runData.updated_at,
+            ended_at: _chainState.runData.ended_at,
           }).transacting(tx),
           );
 
@@ -461,20 +465,20 @@ class GauntletModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
         const allPromises = [];
 
-        if (this.runData.started_at) { this.runData.started_at = moment.utc(this.runData.started_at).valueOf(); }
-        if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
-        if (this.runData.ended_at) { this.runData.ended_at = moment.utc(this.runData.ended_at).valueOf(); }
-        if (this.runData.created_at) { this.runData.created_at = moment.utc(this.runData.created_at).valueOf(); }
+        if (_chainState.runData.started_at) { _chainState.runData.started_at = moment.utc(_chainState.runData.started_at).valueOf(); }
+        if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
+        if (_chainState.runData.ended_at) { _chainState.runData.ended_at = moment.utc(_chainState.runData.ended_at).valueOf(); }
+        if (_chainState.runData.created_at) { _chainState.runData.created_at = moment.utc(_chainState.runData.created_at).valueOf(); }
 
         return allPromises.push(FirebasePromises.update(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), {
-          loss_count: this.runData.loss_count,
-          win_count: this.runData.win_count,
-          draw_count: this.runData.draw_count,
-          ended_at: this.runData.ended_at,
+          loss_count: _chainState.runData.loss_count,
+          win_count: _chainState.runData.win_count,
+          draw_count: _chainState.runData.draw_count,
+          ended_at: _chainState.runData.ended_at,
         }),
         );
       })
@@ -484,7 +488,7 @@ class GauntletModule {
         Logger.module('GauntletModule').error(`updateArenaRunWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
       })).bind(this_obj)
-      .then(function () { return Promise.resolve(this.runData); })
+      .then(function () { return Promise.resolve(_chainState.runData); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'gauntlet'));
   }
 
@@ -495,6 +499,7 @@ class GauntletModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static claimRewards(userId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`claimRewards() -> ERROR: invalid user ID: ${userId}`.red);
@@ -522,32 +527,32 @@ class GauntletModule {
             return Promise.reject(new Errors.ArenaRewardsAlreadyClaimedError('Rewards already claimed for this gauntlet run.'));
           }
 
-          this.runData = existingRun;
-          this.runData.rewards_claimed_at = NOW_UTC_MOMENT.toDate();
+          _chainState.runData = existingRun;
+          _chainState.runData.rewards_claimed_at = NOW_UTC_MOMENT.toDate();
 
           // rewards
-          this.runData.rewards = [];
-          this.runData.reward_ids = [];
+          _chainState.runData.rewards = [];
+          _chainState.runData.reward_ids = [];
           const rewards = [];
           const rewardsData = [];
-          this.rewardsRows = [];
+          _chainState.rewardsRows = [];
           const rewardCardIds = [];
           const rewardMap = GauntletModule._getRewardMap();
 
           // At 1 win, get a random spirit orb and a  basic box
-          if (this.runData.win_count >= 1) {
+          if (_chainState.runData.win_count >= 1) {
             rewardsData.push({ spirit_orbs: GauntletModule._GAUNTLET_SPIRIT_ORB_REWARD_SETS[Math.floor(Math.random() * GauntletModule._GAUNTLET_SPIRIT_ORB_REWARD_SETS.length)] });
-            rewards.push(_.sample(rewardMap.basic_box_wins[this.runData.win_count], 1)[0]);
+            rewards.push(_.sample(rewardMap.basic_box_wins[_chainState.runData.win_count], 1)[0]);
           }
 
           // At 2 wins, get a gold box
-          if (this.runData.win_count >= 2) {
-            rewards.push(_.sample(rewardMap.gold_box_wins[this.runData.win_count], 1)[0]);
+          if (_chainState.runData.win_count >= 2) {
+            rewards.push(_.sample(rewardMap.gold_box_wins[_chainState.runData.win_count], 1)[0]);
           }
 
           // At 3 wins, get a good box
-          if (this.runData.win_count >= 3) {
-            rewards.push(_.sample(rewardMap.good_box_wins[this.runData.win_count], 1)[0]);
+          if (_chainState.runData.win_count >= 3) {
+            rewards.push(_.sample(rewardMap.good_box_wins[_chainState.runData.win_count], 1)[0]);
           }
 
           // Free gauntlet ticket after 6 wins (disabled; gauntlet is already free)
@@ -555,13 +560,13 @@ class GauntletModule {
           //  rewardsData.push({arena_tickets:1})
 
           // At 10 wins, get a great box
-          if (this.runData.win_count >= 10) {
-            rewards.push(_.sample(rewardMap.great_box_wins[this.runData.win_count], 1)[0]);
+          if (_chainState.runData.win_count >= 10) {
+            rewards.push(_.sample(rewardMap.great_box_wins[_chainState.runData.win_count], 1)[0]);
           }
 
           // At 12 wins, get an awesome box and a gift crate
-          if (this.runData.win_count >= 12) {
-            rewards.push(_.sample(rewardMap.awesome_box_wins[this.runData.win_count], 1)[0]);
+          if (_chainState.runData.win_count >= 12) {
+            rewards.push(_.sample(rewardMap.awesome_box_wins[_chainState.runData.win_count], 1)[0]);
             const keyRandom = Math.random();
             if (keyRandom < 0.85) {
               rewardsData.push({ cosmetic_keys: [SDK.CosmeticsChestTypeLookup.Common] });
@@ -660,7 +665,7 @@ class GauntletModule {
           }
 
           // for use later to set firebase data
-          this.runData.rewards = rewardsData;
+          _chainState.runData.rewards = rewardsData;
 
           const allPromises = [];
           for (reward of Array.from(rewardsData)) {
@@ -673,30 +678,30 @@ class GauntletModule {
               id: generatePushId(),
               user_id: userId,
               reward_category: 'gauntlet',
-              source_id: this.runData.ticket_id,
+              source_id: _chainState.runData.ticket_id,
               created_at: NOW_UTC_MOMENT.toDate(),
               is_unread: true,
             };
 
             if (reward.gold) {
               rewardInsertData.gold = reward.gold;
-              allPromises.push(InventoryModule.giveUserGold(txPromise, tx, userId, reward.gold, 'gauntlet', this.runData.ticket_id));
+              allPromises.push(InventoryModule.giveUserGold(txPromise, tx, userId, reward.gold, 'gauntlet', _chainState.runData.ticket_id));
             }
 
             if (reward.spirit) {
               rewardInsertData.spirit = reward.spirit;
-              allPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, reward.spirit, 'gauntlet', this.runData.ticket_id));
+              allPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, reward.spirit, 'gauntlet', _chainState.runData.ticket_id));
             }
 
             if (reward.arena_tickets) {
               rewardInsertData.gauntlet_tickets = reward.arena_tickets;
-              allPromises.push(InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'gauntlet', this.runData.ticket_id));
+              allPromises.push(InventoryModule.addArenaTicketToUser(txPromise, tx, userId, 'gauntlet', _chainState.runData.ticket_id));
             }
 
             if (reward.cosmetic_keys) {
               rewardInsertData.cosmetic_keys = reward.cosmetic_keys;
               for (var key of Array.from(reward.cosmetic_keys)) {
-                allPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, key, 1, 'gauntlet', this.runData.ticket_id, NOW_UTC_MOMENT));
+                allPromises.push(CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, key, 1, 'gauntlet', _chainState.runData.ticket_id, NOW_UTC_MOMENT));
               }
             }
 
@@ -704,10 +709,10 @@ class GauntletModule {
               rewardInsertData.spirit_orbs = reward.spirit_orbs;
               if (_.isArray(reward.spirit_orbs)) {
                 for (var orbCardSet of Array.from(reward.spirit_orbs)) {
-                  allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbCardSet, 'gauntlet', this.runData.ticket_id));
+                  allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, orbCardSet, 'gauntlet', _chainState.runData.ticket_id));
                 }
               } else if (_.isNumber(reward.spirit_orbs)) {
-                allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, reward.spirit_orbs, 'gauntlet', this.runData.ticket_id));
+                allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, reward.spirit_orbs, 'gauntlet', _chainState.runData.ticket_id));
               } else {
                 return Promise.reject(new Error(`invalid spirit orb reward data (${reward.spirit_orbs}) for user ID: ${userId}`));
               }
@@ -717,8 +722,8 @@ class GauntletModule {
               knex('user_rewards').insert(rewardInsertData).transacting(tx),
             );
 
-            this.rewardsRows.push(rewardInsertData);
-            this.runData.reward_ids.push(rewardInsertData.id);
+            _chainState.rewardsRows.push(rewardInsertData);
+            _chainState.runData.reward_ids.push(rewardInsertData.id);
           }
 
           // add all cards
@@ -727,25 +732,25 @@ class GauntletModule {
               id: generatePushId(),
               user_id: userId,
               reward_category: 'gauntlet',
-              source_id: this.runData.ticket_id,
+              source_id: _chainState.runData.ticket_id,
               created_at: NOW_UTC_MOMENT.toDate(),
               cards: rewardCardIds,
               is_unread: true,
             };
-            allPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, rewardCardIds, 'gauntlet', this.runData.ticket_id));
+            allPromises.push(InventoryModule.giveUserCards(txPromise, tx, userId, rewardCardIds, 'gauntlet', _chainState.runData.ticket_id));
             allPromises.push(
               knex('user_rewards').insert(rewardInsertData).transacting(tx),
             );
 
-            this.rewardsRows.push(rewardInsertData);
-            this.runData.reward_ids.push(rewardInsertData.id);
+            _chainState.rewardsRows.push(rewardInsertData);
+            _chainState.runData.reward_ids.push(rewardInsertData.id);
           }
 
           // update gauntlet run with reward ids
           allPromises.push(
             knex('user_gauntlet_run').where('user_id', userId).update({
-              reward_ids: this.runData.reward_ids,
-              rewards_claimed_at: this.runData.rewards_claimed_at,
+              reward_ids: _chainState.runData.reward_ids,
+              rewards_claimed_at: _chainState.runData.rewards_claimed_at,
             }).transacting(tx),
           );
 
@@ -758,17 +763,17 @@ class GauntletModule {
       .then(function (fbRootRef) {
         const allPromises = [];
 
-        if (this.runData.rewards_claimed_at) { this.runData.rewards_claimed_at = moment.utc(this.runData.rewards_claimed_at).valueOf(); }
-        if (this.runData.started_at) { this.runData.started_at = moment.utc(this.runData.started_at).valueOf(); }
-        if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
-        if (this.runData.ended_at) { this.runData.ended_at = moment.utc(this.runData.ended_at).valueOf(); }
-        if (this.runData.created_at) { this.runData.created_at = moment.utc(this.runData.created_at).valueOf(); }
-        if (this.runData.completed_at) { this.runData.completed_at = moment.utc(this.runData.completed_at).valueOf(); }
+        if (_chainState.runData.rewards_claimed_at) { _chainState.runData.rewards_claimed_at = moment.utc(_chainState.runData.rewards_claimed_at).valueOf(); }
+        if (_chainState.runData.started_at) { _chainState.runData.started_at = moment.utc(_chainState.runData.started_at).valueOf(); }
+        if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
+        if (_chainState.runData.ended_at) { _chainState.runData.ended_at = moment.utc(_chainState.runData.ended_at).valueOf(); }
+        if (_chainState.runData.created_at) { _chainState.runData.created_at = moment.utc(_chainState.runData.created_at).valueOf(); }
+        if (_chainState.runData.completed_at) { _chainState.runData.completed_at = moment.utc(_chainState.runData.completed_at).valueOf(); }
 
         allPromises.push(FirebasePromises.update(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), {
-          rewards_claimed_at: this.runData.rewards_claimed_at,
-          rewards: this.runData.rewards,
-          reward_ids: this.runData.reward_ids,
+          rewards_claimed_at: _chainState.runData.rewards_claimed_at,
+          rewards: _chainState.runData.rewards,
+          reward_ids: _chainState.runData.reward_ids,
         }),
         );
 
@@ -785,7 +790,7 @@ class GauntletModule {
       .then(tx.commit)
       .catch(tx.rollback)).bind(this_obj)
       .then(function () {
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -956,6 +961,7 @@ class GauntletModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static chooseCard(userId, cardId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('GauntletModule').debug(`chooseCard() -> ERROR: invalid user ID: ${userId}`.red);
@@ -999,25 +1005,25 @@ class GauntletModule {
               throw new Errors.InvalidRequestError('No existing choices to be made');
             }
 
-            this.runData = existingRun;
-            this.runData.updated_at = NOW_UTC_MOMENT.toDate();
+            _chainState.runData = existingRun;
+            _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
 
-            if (this.runData.deck == null) { this.runData.deck = []; }
-            this.runData.deck.push(cardId);
+            if (_chainState.runData.deck == null) { _chainState.runData.deck = []; }
+            _chainState.runData.deck.push(cardId);
             // The order users should hit the following conditions:
             // User will first be choosing cards, then user will have finished card choice and general choices will be generated,
             // - then deck will be considered complete
-            if (this.runData.general_choices != null) {
+            if (_chainState.runData.general_choices != null) {
             // Player has just chosen their general
-              this.runData.general_choices = null;
-              this.runData.general_id = cardId;
-              this.runData.faction_id = SDK.FactionFactory.factionForGeneralId(cardId).id;
+              _chainState.runData.general_choices = null;
+              _chainState.runData.general_id = cardId;
+              _chainState.runData.faction_id = SDK.FactionFactory.factionForGeneralId(cardId).id;
 
               // Begin choosing cards
-              cardChoicesPromise = GauntletModule._generateCardChoices(txPromise, tx, userId, this.runData.faction_id, this.runData.deck.length, null)
-                .bind(this)
+              cardChoicesPromise = GauntletModule._generateCardChoices(txPromise, tx, userId, _chainState.runData.faction_id, _chainState.runData.deck.length, null)
+                .bind(_chainState)
                 .then(function (cardChoices) {
-                  return this.runData.card_choices = cardChoices;
+                  return _chainState.runData.card_choices = cardChoices;
                 });
               //          else if (@.runData.deck.length == CONFIG.MAX_DECK_SIZE_GAUNTLET - 1)
               //            # User has just selected their final non-general card, transition to selecting general
@@ -1026,37 +1032,37 @@ class GauntletModule {
               //            .bind(@)
               //            .then (generalCardChoices) ->
               //              @.runData.general_choices = generalCardChoices
-            } else if (this.runData.deck.length === CONFIG.MAX_DECK_SIZE_GAUNTLET) {
+            } else if (_chainState.runData.deck.length === CONFIG.MAX_DECK_SIZE_GAUNTLET) {
             // User has just selected their final card,
-              this.runData.card_choices = null;
-              this.runData.is_complete = true;
-              this.runData.completed_at = NOW_UTC_MOMENT.toDate();
-              if (this.runData.win_count == null) { this.runData.win_count = 0; }
-              if (this.runData.loss_count == null) { this.runData.loss_count = 0; }
-              if (this.runData.games == null) { this.runData.games = []; }
+              _chainState.runData.card_choices = null;
+              _chainState.runData.is_complete = true;
+              _chainState.runData.completed_at = NOW_UTC_MOMENT.toDate();
+              if (_chainState.runData.win_count == null) { _chainState.runData.win_count = 0; }
+              if (_chainState.runData.loss_count == null) { _chainState.runData.loss_count = 0; }
+              if (_chainState.runData.games == null) { _chainState.runData.games = []; }
 
               cardChoicesPromise = Promise.resolve();
             } else {
             // User has selected a non final card, continue with selecting card choices
-              cardChoicesPromise = GauntletModule._generateCardChoices(txPromise, tx, userId, this.runData.faction_id, this.runData.deck.length, this.runData.deck[this.runData.deck.length - 1])
-                .bind(this)
+              cardChoicesPromise = GauntletModule._generateCardChoices(txPromise, tx, userId, _chainState.runData.faction_id, _chainState.runData.deck.length, _chainState.runData.deck[_chainState.runData.deck.length - 1])
+                .bind(_chainState)
                 .then(function (cardChoices) {
-                  return this.runData.card_choices = cardChoices;
+                  return _chainState.runData.card_choices = cardChoices;
                 });
             }
 
             return cardChoicesPromise
-              .bind(this)
+              .bind(_chainState)
               .then(function () {
                 return knex('user_gauntlet_run').where('user_id', userId).update({
-                  faction_id: this.runData.faction_id,
-                  deck: this.runData.deck,
-                  card_choices: this.runData.card_choices,
-                  general_choices: this.runData.general_choices,
-                  general_id: this.runData.general_id,
-                  is_complete: this.runData.is_complete,
-                  completed_at: this.runData.completed_at,
-                  games: this.runData.GameSession,
+                  faction_id: _chainState.runData.faction_id,
+                  deck: _chainState.runData.deck,
+                  card_choices: _chainState.runData.card_choices,
+                  general_choices: _chainState.runData.general_choices,
+                  general_id: _chainState.runData.general_id,
+                  is_complete: _chainState.runData.is_complete,
+                  completed_at: _chainState.runData.completed_at,
+                  games: _chainState.runData.GameSession,
                 }).transacting(tx);
               });
           } else {
@@ -1065,27 +1071,27 @@ class GauntletModule {
         })
         .then(() => DuelystFirebase.connect().getRootRef())
         .then(function (fbRootRef) {
-          if (this.runData.started_at) { this.runData.started_at = moment.utc(this.runData.started_at).valueOf(); }
-          if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
-          if (this.runData.ended_at) { this.runData.ended_at = moment.utc(this.runData.ended_at).valueOf(); }
-          if (this.runData.created_at) { this.runData.created_at = moment.utc(this.runData.created_at).valueOf(); }
-          if (this.runData.completed_at) { this.runData.completed_at = moment.utc(this.runData.completed_at).valueOf(); }
+          if (_chainState.runData.started_at) { _chainState.runData.started_at = moment.utc(_chainState.runData.started_at).valueOf(); }
+          if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
+          if (_chainState.runData.ended_at) { _chainState.runData.ended_at = moment.utc(_chainState.runData.ended_at).valueOf(); }
+          if (_chainState.runData.created_at) { _chainState.runData.created_at = moment.utc(_chainState.runData.created_at).valueOf(); }
+          if (_chainState.runData.completed_at) { _chainState.runData.completed_at = moment.utc(_chainState.runData.completed_at).valueOf(); }
 
           const fbGauntletUpdateData = {
-            faction_id: this.runData.faction_id,
-            deck: this.runData.deck,
-            card_choices: this.runData.card_choices,
-            is_complete: this.runData.is_complete,
+            faction_id: _chainState.runData.faction_id,
+            deck: _chainState.runData.deck,
+            card_choices: _chainState.runData.card_choices,
+            is_complete: _chainState.runData.is_complete,
           };
 
-          fbGauntletUpdateData.general_choices = this.runData.general_choices || null;
+          fbGauntletUpdateData.general_choices = _chainState.runData.general_choices || null;
 
-          if (this.runData.general_id != null) {
-            fbGauntletUpdateData.general_id = this.runData.general_id;
+          if (_chainState.runData.general_id != null) {
+            fbGauntletUpdateData.general_id = _chainState.runData.general_id;
           }
 
-          if (this.runData.faction_id != null) {
-            fbGauntletUpdateData.faction_id = this.runData.faction_id;
+          if (_chainState.runData.faction_id != null) {
+            fbGauntletUpdateData.faction_id = _chainState.runData.faction_id;
           }
 
           return FirebasePromises.update(fbRootRef.child('user-gauntlet-run').child(userId).child('current'), fbGauntletUpdateData);
@@ -1096,9 +1102,9 @@ class GauntletModule {
     }).bind(this_obj)
 
       .then(function () {
-        Logger.module('GauntletModule').debug(`chooseCard() -> User ${userId.blue}`.green + ` chose card ${cardId} at deck slot ${this.runData.deck.length} for run ${this.runData.ticket_id}.`.green);
+        Logger.module('GauntletModule').debug(`chooseCard() -> User ${userId.blue}`.green + ` chose card ${cardId} at deck slot ${_chainState.runData.deck.length} for run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;

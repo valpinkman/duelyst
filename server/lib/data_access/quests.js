@@ -158,6 +158,7 @@ class QuestsModule {
    * @return  {Promise}        Promise that will post QUEST DATA on completion.
    */
   static generateDailyQuests(userId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not find if user needs daily quests: invalid user ID - ${userId}`));
@@ -184,9 +185,9 @@ class QuestsModule {
       ])
         .bind(this_obj)
         .spread(function (userRow, questRows) {
-          this.updatedQuests = [];
-          this.userRow = userRow;
-          this.removedQuests = [];
+          _chainState.updatedQuests = [];
+          _chainState.userRow = userRow;
+          _chainState.removedQuests = [];
 
           const removalQueries = [];
           const allQueries = [];
@@ -209,7 +210,7 @@ class QuestsModule {
               removalQueries.push(tx('user_quests').where({ user_id: row.user_id, quest_slot_index: row.quest_slot_index }).delete());
               row.previous_quest_slot_index = row.quest_slot_index;
               row.quest_slot_index = -1;
-              this.removedQuests.push(row);
+              _chainState.removedQuests.push(row);
               // remove catch up quests that ended up in wrong slot.
             } else if (_.contains(sdkQuest.types, QuestType.CatchUp) && (row.quest_slot_index !== QuestsModule.CATCH_UP_QUEST_SLOT)) {
               removalQueries.push(tx('user_quests').where({ user_id: row.user_id, quest_slot_index: row.quest_slot_index }).delete());
@@ -242,7 +243,7 @@ class QuestsModule {
                   if ((completedQuestRow == null)) {
                     Logger.module('QuestsModule').debug(`generateDailyQuests() -> Generating ${seasonalQuest.name} seasonal quest for ${userId.blue}.`);
                     // update return data
-                    this.updatedQuests.push(sQuest);
+                    _chainState.updatedQuests.push(sQuest);
                     questRows.push(sQuest);
                     // save quest
                     return tx.insert(sQuest).into('user_quests');
@@ -273,7 +274,7 @@ class QuestsModule {
                   if ((completedQuestRow == null)) {
                     Logger.module('QuestsModule').debug(`generateDailyQuests() -> Generating ${newPromotionalQuest.name} promotional quest for ${userId.blue}.`);
                     // update return data
-                    this.updatedQuests.push(pQuest);
+                    _chainState.updatedQuests.push(pQuest);
                     questRows.push(pQuest);
                     // save quest
                     return tx.insert(pQuest).into('user_quests');
@@ -334,7 +335,7 @@ class QuestsModule {
               // add to the list of generated quests so we don't create duplicates
               quest_ids_generated.push(sdkQuest.id);
 
-              this.updatedQuests.push(quest);
+              _chainState.updatedQuests.push(quest);
 
               allQueries.push(
                 knex.insert(quest).into('user_quests').transacting(tx),
@@ -346,7 +347,7 @@ class QuestsModule {
           }
 
           // save out final quest rows for method response
-          this.questRows = questRows;
+          _chainState.questRows = questRows;
 
           // Logger.module("QuestsModule").debug("generateDailyQuests() -> Saving to DB. Executing #{allQueries.length} queries. user #{userId.blue}.")
           return Promise.all(removalQueries).then(() => Promise.all(allQueries));
@@ -354,24 +355,24 @@ class QuestsModule {
           const start_of_today_utc = MOMENT_NOW_UTC.clone().startOf('day').toDate();
           let dirty = false;
           // if we generated new quests
-          if (this.updatedQuests.length > 0) {
+          if (_chainState.updatedQuests.length > 0) {
           // mark that we've updated quests on the user
-            this.userRow.daily_quests_updated_at = MOMENT_NOW_UTC.toDate();
-            this.userRow.daily_quests_generated_at = start_of_today_utc;
+            _chainState.userRow.daily_quests_updated_at = MOMENT_NOW_UTC.toDate();
+            _chainState.userRow.daily_quests_generated_at = start_of_today_utc;
             dirty = true;
           }
           // if it's a new day
-          if (start_of_today_utc.valueOf() !== (this.userRow.daily_quests_generated_at != null ? this.userRow.daily_quests_generated_at.valueOf() : undefined)) {
+          if (start_of_today_utc.valueOf() !== (_chainState.userRow.daily_quests_generated_at != null ? _chainState.userRow.daily_quests_generated_at.valueOf() : undefined)) {
           // always mark the last time that question generation ran regardless if an update occured
-            this.userRow.daily_quests_generated_at = start_of_today_utc;
+            _chainState.userRow.daily_quests_generated_at = start_of_today_utc;
             dirty = true;
           }
           // update user record if needed
           if (dirty) {
             Logger.module('QuestsModule').debug(`generateDailyQuests() -> Updating user record. user ${userId.blue}.`);
             return tx('users').where('id', userId).update({
-              daily_quests_generated_at: this.userRow.daily_quests_generated_at,
-              daily_quests_updated_at: this.userRow.daily_quests_updated_at,
+              daily_quests_generated_at: _chainState.userRow.daily_quests_generated_at,
+              daily_quests_updated_at: _chainState.userRow.daily_quests_updated_at,
             });
           }
         })
@@ -380,15 +381,15 @@ class QuestsModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
         const allPromises = [];
 
-        for (var q of Array.from(this.removedQuests)) {
+        for (var q of Array.from(_chainState.removedQuests)) {
           var slotIndex = q.previous_quest_slot_index;
 
           allPromises.push(
-            FirebasePromises.remove(this.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
+            FirebasePromises.remove(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
               .child('quests')
               .child(slotIndex)),
           );
@@ -399,7 +400,7 @@ class QuestsModule {
       .then(function () {
         const allPromises = [];
 
-        for (var q of Array.from(this.updatedQuests)) {
+        for (var q of Array.from(_chainState.updatedQuests)) {
           var data = _.clone(q);
           var slotIndex = data.quest_slot_index;
           delete data.quest_slot_index;
@@ -410,13 +411,13 @@ class QuestsModule {
           if (data.updated_at) { data.updated_at = moment.utc(data.updated_at).valueOf(); }
 
           allPromises.push(
-            FirebasePromises.set(this.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
+            FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
               .child('quests')
               .child(slotIndex), data),
-            FirebasePromises.set(this.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
-              .child('updated_at'), moment().utc(this.userRow.daily_quests_updated_at).valueOf()),
-            FirebasePromises.set(this.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
-              .child('generated_at'), moment().utc(this.userRow.daily_quests_generated_at).valueOf()),
+            FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
+              .child('updated_at'), moment().utc(_chainState.userRow.daily_quests_updated_at).valueOf()),
+            FirebasePromises.set(_chainState.fbRootRef.child('user-quests').child(userId).child('daily').child('current')
+              .child('generated_at'), moment().utc(_chainState.userRow.daily_quests_generated_at).valueOf()),
           );
         }
 
@@ -429,13 +430,13 @@ class QuestsModule {
 
         const quests = {};
 
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
         const returnData = {
-          generated_at: this.userRow.daily_quests_generated_at,
-          updated_at: this.userRow.daily_quests_updated_at,
+          generated_at: _chainState.userRow.daily_quests_generated_at,
+          updated_at: _chainState.userRow.daily_quests_updated_at,
           quests,
         };
 
@@ -492,6 +493,7 @@ class QuestsModule {
    * @return  {Promise}        Promise that will post QUEST DATA on completion.
    */
   static generateBeginnerQuests(userId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not find if user needs daily quests: invalid user ID - ${userId}`));
@@ -528,9 +530,9 @@ class QuestsModule {
             .bind(this_obj)
             .spread(function (userRow, questRows, questCompleteRows) {
               let sdkQuest;
-              this.updatedQuests = [];
-              this.userRow = userRow;
-              this.questRows = questRows;
+              _chainState.updatedQuests = [];
+              _chainState.userRow = userRow;
+              _chainState.questRows = questRows;
 
               const allQueries = [];
 
@@ -561,7 +563,7 @@ class QuestsModule {
                   quest.user_id = userId;
                   quest.quest_slot_index = i;
 
-                  this.updatedQuests.push(quest);
+                  _chainState.updatedQuests.push(quest);
 
                   allQueries.push(
                     tx.insert(quest).into('user_quests'),
@@ -581,7 +583,7 @@ class QuestsModule {
           .then(function (fbRootRef) {
             const allPromises = [];
 
-            for (var q of Array.from(this.updatedQuests)) {
+            for (var q of Array.from(_chainState.updatedQuests)) {
               var data = _.clone(q);
               var slotIndex = data.quest_slot_index;
               delete data.quest_slot_index;
@@ -599,7 +601,7 @@ class QuestsModule {
                   .child('quests')
                   .child(slotIndex), data),
                 FirebasePromises.set(fbRootRef.child('user-quests').child(userId).child('daily').child('current')
-                  .child('updated_at'), moment().utc(this.userRow.daily_quests_updated_at).valueOf()),
+                  .child('updated_at'), moment().utc(_chainState.userRow.daily_quests_updated_at).valueOf()),
               );
             }
 
@@ -613,12 +615,12 @@ class QuestsModule {
 
         const quests = [];
 
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
         const returnData = {
-          updated_at: this.userRow.daily_quests_updated_at,
+          updated_at: _chainState.userRow.daily_quests_updated_at,
           quests,
         };
 
@@ -682,6 +684,7 @@ class QuestsModule {
    * @return  {Promise}              Promise that will post the mulliganed quest data.
    */
   static mulliganDailyQuest(userId, questIndex, systemTime, replaceWithQuestId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not mulligan daily quests: invalid user ID - ${userId}`));
@@ -698,7 +701,7 @@ class QuestsModule {
         .forUpdate()
         .bind(this_obj)
         .then(function (questRows) {
-          this.questRows = questRows;
+          _chainState.questRows = questRows;
 
           if ((questRows != null ? questRows.length : undefined) > 0) {
             const quest_ids_generated = [];
@@ -746,7 +749,7 @@ class QuestsModule {
               questData.mulliganed_at = start_of_today_utc;
               questData.progressed_by_game_ids = [];
 
-              this.questData = questData;
+              _chainState.questData = questData;
 
               questRows[questToMulliganArrayIndex] = questData;
 
@@ -764,7 +767,7 @@ class QuestsModule {
 
         DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
       // update user firebase data
-        const data = _.clone(this.questData);
+        const data = _.clone(_chainState.questData);
         const slotIndex = data.quest_slot_index;
         delete data.quest_slot_index;
         delete data.user_id;
@@ -780,7 +783,7 @@ class QuestsModule {
       .then(function () {
         const toReturn = [];
 
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           toReturn[quest.quest_slot_index] = quest;
         }
 
@@ -800,6 +803,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithGame(userId, gameId, gameSessionData, systemTime) {
+    const _chainState = {};
     // userId or gameId must be defined
     if (!userId || !gameId) {
       return Promise.reject(new Error(`Can not update quest progress : invalid user ID - ${userId} - or game ID - ${gameId}`));
@@ -822,8 +826,8 @@ class QuestsModule {
       ])).spread(function (userRow, questRows) {
       // Logger.module("QuestsModule").debug "updateQuestProgressWithGame() -> ACQUIRED LOCK ON #{userId}".yellow
 
-        this.userRow = userRow;
-        this.questRows = questRows;
+        _chainState.userRow = userRow;
+        _chainState.questRows = questRows;
 
         if ((questRows != null ? questRows.length : undefined) > 0) {
           let quest;
@@ -869,7 +873,7 @@ class QuestsModule {
           return Promise.resolve();
         }
       })
-      .then(function (rewards) { return this.rewards = _.flatten(_.compact(rewards)); })
+      .then(function (rewards) { return _chainState.rewards = _.flatten(_.compact(rewards)); })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
       .timeout(10000)
       .catch(Promise.TimeoutError, function (e) {
@@ -879,13 +883,13 @@ class QuestsModule {
       .then(function () {
         const quests = [];
 
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
         const toReturn = {
           quests,
-          rewards: this.rewards,
+          rewards: _chainState.rewards,
         };
 
         Logger.module('QuestsModule').timeEnd(`updateQuestProgressWithGame() -> for game ${gameId} by user ${userId.blue}.`.green);
@@ -907,6 +911,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithCompletedChallenge(txPromise, tx, userId, challengeId, systemTime) {
+    const _chainState = {};
     // userId or challengeId must be defined
     if (!userId || !challengeId) {
       return Promise.reject(new Error(`Can not update quest progress : invalid user ID - ${userId} - or challenge ID - ${challengeId}`));
@@ -924,8 +929,8 @@ class QuestsModule {
     ])
       .bind({})
       .spread(function (userRow, questRows) {
-        this.userRow = userRow;
-        this.questRows = questRows;
+        _chainState.userRow = userRow;
+        _chainState.questRows = questRows;
 
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
@@ -956,17 +961,17 @@ class QuestsModule {
         // no quests, no need to update anything
           return Promise.resolve();
         }
-      }).then(function (rewards) { return this.rewards = _.flatten(_.compact(rewards)); })
+      }).then(function (rewards) { return _chainState.rewards = _.flatten(_.compact(rewards)); })
       .then(function () {
         const quests = [];
 
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
         const toReturn = {
           quests,
-          rewards: this.rewards,
+          rewards: _chainState.rewards,
         };
 
         Logger.module('QuestsModule').timeEnd(`updateQuestProgressWithCompletedChallenge() -> for challenge ${challengeId} by user ${userId.blue}.`.green);
@@ -986,6 +991,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithCompletedQuest(txPromise, tx, userId, gameId, questId, questRows, systemTime) {
+    const _chainState = {};
     // userId or questId must be defined
     if (!userId || !questId) {
       return Promise.reject(new Error(`Can not update quest progress : invalid user ID - ${userId} - or quest ID - ${questId}`));
@@ -1000,7 +1006,7 @@ class QuestsModule {
     return Promise.resolve()
       .bind({})
       .then(function () {
-        this.questRows = questRows;
+        _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
 
@@ -1035,17 +1041,17 @@ class QuestsModule {
         // no quests, no need to update anything
           return Promise.resolve();
         }
-      }).then(function (rewards) { return this.rewards = _.flatten(_.compact(rewards)); })
+      }).then(function (rewards) { return _chainState.rewards = _.flatten(_.compact(rewards)); })
       .then(function () {
         const quests = {};
 
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
         const toReturn = {
           quests,
-          rewards: this.rewards,
+          rewards: _chainState.rewards,
         };
 
         Logger.module('QuestsModule').timeEnd(`updateQuestProgressWithCompletedQuest() -> for user ${userId.blue}.`.green);
@@ -1065,6 +1071,7 @@ class QuestsModule {
    * @return  {Promise}            Promise that will post { quests:[] rewards:[] } on completion.
    */
   static updateQuestProgressWithProgressedFactionData(txPromise, tx, userId, progressedFactionData, systemTime) {
+    const _chainState = {};
     // userId or challengeId must be defined
     if (!userId) {
       return Promise.reject(new Error(`Can not update quest progress for faction data : invalid user ID - ${userId}`));
@@ -1092,8 +1099,8 @@ class QuestsModule {
     ])
       .bind({})
       .spread(function (userRow, questRows) {
-        this.userRow = userRow;
-        this.questRows = questRows;
+        _chainState.userRow = userRow;
+        _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {
           const allQueries = [];
           for (var quest of Array.from(questRows)) {
@@ -1121,16 +1128,16 @@ class QuestsModule {
         // no quests, no need to update anything
           return Promise.resolve();
         }
-      }).then(function (rewards) { return this.rewards = _.flatten(_.compact(rewards)); })
+      }).then(function (rewards) { return _chainState.rewards = _.flatten(_.compact(rewards)); })
       .then(function () {
         const quests = [];
-        for (var quest of Array.from(this.questRows)) {
+        for (var quest of Array.from(_chainState.questRows)) {
           quests[quest.quest_slot_index] = quest;
         }
 
         const toReturn = {
           quests,
-          rewards: this.rewards,
+          rewards: _chainState.rewards,
         };
 
         Logger.module('QuestsModule').timeEnd(`updateQuestProgressWithProgressedFactionData() -> for faction id ${factionId} by user ${userId.blue}.`.green);
@@ -1150,6 +1157,7 @@ class QuestsModule {
    * @return  {Promise}              Promise.
    */
   static _setQuestProgress(txPromise, tx, quest, progressAmount, gameId, systemTime) {
+    const _chainState = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     const questModel = QuestFactory.questForIdentifier(quest.quest_type_id);
@@ -1273,7 +1281,7 @@ class QuestsModule {
 
     return Promise.all(allQueries)
       .bind({})
-      .then(function () { return this.rewards = rewards; })
+      .then(function () { return _chainState.rewards = rewards; })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
         const allPromises = [];
@@ -1307,7 +1315,7 @@ class QuestsModule {
 
         return Promise.all(allPromises);
       })
-      .then(function () { return this.rewards; });
+      .then(function () { return _chainState.rewards; });
   }
 
   /**
@@ -1321,6 +1329,7 @@ class QuestsModule {
    * @return  {Promise}              Promise.
    */
   static _giveUserCatchUpQuestCharge(txPromise, tx, userId, numCharges, systemTime) {
+    const _chainState = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     Logger.module('QuestsModule').debug(`_giveUserCatchUpQuestCharge() -> User ${userId.blue} receiving ${numCharges} quest catch up charges.`.cyan);
@@ -1331,38 +1340,38 @@ class QuestsModule {
       .where({ user_id: userId })
       .bind(this_obj)
       .then(function (userQuestRows) {
-        this.userQuestRows = userQuestRows;
+        _chainState.userQuestRows = userQuestRows;
         // Find the row for the catchup quest if it exists
-        this.userCatchUpQuestRow = _.find(userQuestRows, function (userQuestRow) {
+        _chainState.userCatchUpQuestRow = _.find(userQuestRows, function (userQuestRow) {
           const sdkQuest = QuestFactory.questForIdentifier(userQuestRow.quest_type_id);
           return (sdkQuest != null) && sdkQuest.isCatchUp;
         });
 
         const sdkQuest = QuestFactory.questForIdentifier();
 
-        this.needsInsert = false; // whether catch up quest row requires insert or update
-        if ((this.userCatchUpQuestRow == null)) {
-          this.needsInsert = true;
-          this.userCatchUpQuestRow = QuestsModule._questDataForQuest(QuestFactory.questForIdentifier(QuestCatchUp.Identifier), MOMENT_NOW_UTC);
+        _chainState.needsInsert = false; // whether catch up quest row requires insert or update
+        if ((_chainState.userCatchUpQuestRow == null)) {
+          _chainState.needsInsert = true;
+          _chainState.userCatchUpQuestRow = QuestsModule._questDataForQuest(QuestFactory.questForIdentifier(QuestCatchUp.Identifier), MOMENT_NOW_UTC);
 
-          this.userCatchUpQuestRow.gold = 0;
-          this.userCatchUpQuestRow.user_id = userId;
-          this.userCatchUpQuestRow.quest_slot_index = QuestsModule.CATCH_UP_QUEST_SLOT;
+          _chainState.userCatchUpQuestRow.gold = 0;
+          _chainState.userCatchUpQuestRow.user_id = userId;
+          _chainState.userCatchUpQuestRow.quest_slot_index = QuestsModule.CATCH_UP_QUEST_SLOT;
         }
 
         // update gold in the catch up quest's row
-        this.needsUpdate = false;
-        if (this.userCatchUpQuestRow.gold <= QuestsModule.CATCH_UP_MAX_GOLD_VALUE) {
-          this.needsUpdate = true;
-          this.userCatchUpQuestRow.gold = Math.min(this.userCatchUpQuestRow.gold + (numCharges * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE), QuestsModule.CATCH_UP_MAX_GOLD_VALUE);
+        _chainState.needsUpdate = false;
+        if (_chainState.userCatchUpQuestRow.gold <= QuestsModule.CATCH_UP_MAX_GOLD_VALUE) {
+          _chainState.needsUpdate = true;
+          _chainState.userCatchUpQuestRow.gold = Math.min(_chainState.userCatchUpQuestRow.gold + (numCharges * QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE), QuestsModule.CATCH_UP_MAX_GOLD_VALUE);
         }
 
         // Write to firebase after transaction is done, if needed
-        if (this.needsUpdate || this.needsInsert) {
+        if (_chainState.needsUpdate || _chainState.needsInsert) {
           txPromise.then(() => DuelystFirebase.connect().getRootRef()).then((fbRootRef) => {
             const allPromises = [];
 
-            const fbUserCatchUpQuestData = _.clone(this.userCatchUpQuestRow);
+            const fbUserCatchUpQuestData = _.clone(_chainState.userCatchUpQuestRow);
             const slotIndex = fbUserCatchUpQuestData.quest_slot_index;
             delete fbUserCatchUpQuestData.quest_slot_index;
             delete fbUserCatchUpQuestData.user_id;
@@ -1383,18 +1392,18 @@ class QuestsModule {
           });
         }
 
-        if (this.needsInsert) {
+        if (_chainState.needsInsert) {
           Logger.module('QuestsModule').debug(`_giveUserCatchUpQuestCharge() -> Inserting new catch up quest for user ${userId.blue}.`.cyan);
-          return knex.insert(this.userCatchUpQuestRow).into('user_quests').transacting(tx);
-        } else if (this.needsUpdate) {
+          return knex.insert(_chainState.userCatchUpQuestRow).into('user_quests').transacting(tx);
+        } else if (_chainState.needsUpdate) {
           Logger.module('QuestsModule').debug(`_giveUserCatchUpQuestCharge() -> Updating current catch up quest for user ${userId.blue}.`.cyan);
-          return knex('user_quests').where({ user_id: userId, quest_slot_index: QuestsModule.CATCH_UP_QUEST_SLOT }).update(this.userCatchUpQuestRow).transacting(tx);
+          return knex('user_quests').where({ user_id: userId, quest_slot_index: QuestsModule.CATCH_UP_QUEST_SLOT }).update(_chainState.userCatchUpQuestRow).transacting(tx);
         } else {
           return Promise.resolve();
         }
       })
       .then(function () {
-        return this.userCatchUpQuestRow;
+        return _chainState.userCatchUpQuestRow;
       });
   }
 }

@@ -504,6 +504,7 @@ class InventoryModule {
    * @return  {Promise}  Promise that will resolve to either {cosmetic_id:XXX} if they received cosmetic or {cosmetic_id:XXX,spirit:XXX} if they received spirit for a duplicate.
    */
   static giveUserCosmeticId(trxPromise, trx, userId, cosmeticId, transactionType, transactionId, manualSpiritOverrideAmount, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`giveUserCosmeticId() -> invalid user ID - ${userId}.`.red);
@@ -565,7 +566,7 @@ class InventoryModule {
           }
 
           Logger.module('InventoryModule').debug(`giveUserCosmeticId() -> duplicate cosmetic id - ${cosmeticId} giving user - ${userId} spirit ${spiritValue}.`);
-          this.resValue = {
+          _chainState.resValue = {
             spirit: spiritValue,
             cosmetic_id: cosmeticId,
           };
@@ -585,21 +586,21 @@ class InventoryModule {
             transaction_id: transactionId,
             created_at: NOW_UTC_MOMENT.toDate(),
           };
-          this.resValue = { cosmetic_id: cosmeticId };
+          _chainState.resValue = { cosmetic_id: cosmeticId };
           return trx('user_cosmetic_inventory').insert(cosmeticRowInsert);
         }
       })
       .then(function () {
       // Only need to update Firebase if we are giving a cosmetic, otherwise spirit gained is updated in giveUserSpirit
-        if ((this.resValue.cosmetic_id != null) && (this.resValue.spirit == null)) {
+        if ((_chainState.resValue.cosmetic_id != null) && (_chainState.resValue.spirit == null)) {
           return DuelystFirebase.connect().getRootRef()
-            .bind(this)
+            .bind(_chainState)
             .then(function (fbRootRef) {
               const fbCosmeticData = {
-                cosmetic_id: this.resValue.cosmetic_id,
+                cosmetic_id: _chainState.resValue.cosmetic_id,
                 created_at: NOW_UTC_MOMENT.valueOf(),
               };
-              return FirebasePromises.set(fbRootRef.child('user-inventory').child(userId).child('cosmetic-inventory').child(this.resValue.cosmetic_id), fbCosmeticData);
+              return FirebasePromises.set(fbRootRef.child('user-inventory').child(userId).child('cosmetic-inventory').child(_chainState.resValue.cosmetic_id), fbCosmeticData);
             });
         } else {
           return Promise.resolve();
@@ -607,7 +608,7 @@ class InventoryModule {
       })
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`giveUserCosmeticId() -> User ${userId.blue}`.green + ` received ${cosmeticId} cosmetic id.`.green);
-        return Promise.resolve(this.resValue);
+        return Promise.resolve(_chainState.resValue);
       });
   }
 
@@ -975,6 +976,7 @@ class InventoryModule {
    * @return  {Promise}        Promise that will post BOOSTER PACK ID on completion.
    */
   static buyBoosterPacksWithGold(userId, qty, cardSetId, sku) {
+    const _chainState = {};
     let total_gold_cost;
     if (!userId) {
       Logger.module('InventoryModule').debug(`buyBoosterPacksWithGold() -> invalid user ID - ${userId}.`.red);
@@ -1028,7 +1030,7 @@ class InventoryModule {
           // if the user has enough gold
           if (userRow.wallet_gold >= total_gold_cost) {
           // calculate final gold
-            final_wallet_gold = (this.final_wallet_gold = userRow.wallet_gold - total_gold_cost);
+            final_wallet_gold = (_chainState.final_wallet_gold = userRow.wallet_gold - total_gold_cost);
 
             // setup what to update the user params with
             const userUpdateParams = {
@@ -1051,12 +1053,12 @@ class InventoryModule {
           return Promise.all(all);
         })
         .then(function (boosterIds) {
-          this.boosterIds = boosterIds;
+          _chainState.boosterIds = boosterIds;
           return Promise.map(boosterIds, (boosterId) => {
             const userCurrencyLogItem = {
               id: generatePushId(),
               user_id: userId,
-              gold: -this.cardSetData.orbGoldCost,
+              gold: -_chainState.cardSetData.orbGoldCost,
               memo: `spirit orb ${boosterId}`,
               created_at: NOW_UTC_MOMENT.toDate(),
             };
@@ -1073,7 +1075,7 @@ class InventoryModule {
           }
 
           return FirebasePromises.update(fbRootRef.child('user-inventory').child(userId).child('wallet'), {
-            gold_amount: this.final_wallet_gold,
+            gold_amount: _chainState.final_wallet_gold,
             updated_at: NOW_UTC_MOMENT.valueOf(),
           });
         })
@@ -1084,7 +1086,7 @@ class InventoryModule {
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`buyBoosterPacksWithGold() -> bought by user ${userId.blue}.`.green);
 
-        return Promise.resolve(this.boosterIds);
+        return Promise.resolve(_chainState.boosterIds);
       });
 
     // return the transaction promise
@@ -1104,6 +1106,7 @@ class InventoryModule {
    * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
    */
   static addBoosterPackToUser(trxPromise, trx, userId, cardSetId, transactionType, transactionId = null, additionalBoosterAttrs = null, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`addBoosterPackToUser() -> invalid user ID - ${userId}.`.red);
@@ -1155,14 +1158,14 @@ class InventoryModule {
         let orbCountTrackingPromise = Promise.resolve();
 
         if ((cardSetData.numOrbsToCompleteSet != null) > 0) {
-          this.orbCountKey = 'total_orb_count_set_' + cardSetId;
-          orbCountTrackingPromise = trx.raw('UPDATE users SET ?? = COALESCE(??,0) + 1 WHERE id = ? RETURNING ??', [this.orbCountKey, this.orbCountKey, userId, this.orbCountKey])
-            .bind(this)
+          _chainState.orbCountKey = 'total_orb_count_set_' + cardSetId;
+          orbCountTrackingPromise = trx.raw('UPDATE users SET ?? = COALESCE(??,0) + 1 WHERE id = ? RETURNING ??', [_chainState.orbCountKey, _chainState.orbCountKey, userId, _chainState.orbCountKey])
+            .bind(_chainState)
             .then(function (response) {
-              if ((response != null) && (response.rows != null) && (response.rows[0] != null) && (response.rows[0][this.orbCountKey] != null)) {
-                const orbCountAfter = response.rows[0][this.orbCountKey];
+              if ((response != null) && (response.rows != null) && (response.rows[0] != null) && (response.rows[0][_chainState.orbCountKey] != null)) {
+                const orbCountAfter = response.rows[0][_chainState.orbCountKey];
                 if (orbCountAfter <= cardSetData.numOrbsToCompleteSet) {
-                  this.setTotalOrbs = orbCountAfter;
+                  _chainState.setTotalOrbs = orbCountAfter;
                   return Promise.resolve();
                 } else {
                   return Promise.reject(new Errors.MaxOrbsForSetReachedError('Can not add booster pack : user already owns max orb count of this type'));
@@ -1177,11 +1180,11 @@ class InventoryModule {
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
         const allFbPromises = [];
 
         // Add unopened spirit orb to user's firebase
-        const boosters = this.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs');
+        const boosters = _chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orbs');
         const booster_data = {
           created_at: NOW_UTC_MOMENT.valueOf(),
           transaction_type: transactionType,
@@ -1190,9 +1193,9 @@ class InventoryModule {
         allFbPromises.push(FirebasePromises.set(boosters.child(boosterId), booster_data));
 
         // If we are tracking orbs to set completion, write this data to fb
-        if (this.setTotalOrbs != null) {
-          const newTotalOrbsForSet = this.setTotalOrbs;
-          allFbPromises.push(FirebasePromises.set(this.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(cardSetId), newTotalOrbsForSet));
+        if (_chainState.setTotalOrbs != null) {
+          const newTotalOrbsForSet = _chainState.setTotalOrbs;
+          allFbPromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-inventory').child(userId).child('spirit-orb-total').child(cardSetId), newTotalOrbsForSet));
         }
 
         return Promise.all(allFbPromises);
@@ -1211,6 +1214,7 @@ class InventoryModule {
    * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
    */
   static buyRemainingSpiritOrbsWithSpirit(userId, cardSetId, systemTime) {
+    const _chainState = {};
     let txPromise;
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -1243,8 +1247,8 @@ class InventoryModule {
     return txPromise = knex.transaction((tx) => tx('users').first(this_obj.orbCountKey, 'wallet_spirit').where('id', userId)
       .bind(this_obj)
       .then(function (userRow) {
-        this.setTotalOrbs = userRow[this.orbCountKey] || 0; // Number of orbs user already has for this set
-        this.orbsRemaingToCompleteSet = sdkCardSetData.numOrbsToCompleteSet - this.setTotalOrbs;
+        _chainState.setTotalOrbs = userRow[_chainState.orbCountKey] || 0; // Number of orbs user already has for this set
+        _chainState.orbsRemaingToCompleteSet = sdkCardSetData.numOrbsToCompleteSet - _chainState.setTotalOrbs;
 
         if (userRow.wallet_spirit < sdkCardSetData.fullSetSpiritCost) {
           Logger.module('InventoryModule').debug(`buyRemainingSpiritOrbsWithSpirit() -> insufficient spirit for spirit purchase - ${cardSetId}.`.red);
@@ -1263,7 +1267,7 @@ class InventoryModule {
         Logger.module('InventoryModule').debug(`buyRemainingSpiritOrbsWithSpirit() -> user ${userId.blue} `.green + ` purchased remained of set ${cardSetId} with spirit`.green);
 
         // Resolves to the number of orbs gained
-        return Promise.resolve(this.orbsRemaingToCompleteSet);
+        return Promise.resolve(_chainState.orbsRemaingToCompleteSet);
       });
   }
 
@@ -1279,6 +1283,7 @@ class InventoryModule {
   * @return  {Promise}    Promise that will post BOOSTER PACK DATA on completion.
   */
   static addRemainingOrbsForCardSetToUser(txPromise, tx, userId, cardSetId, refundWithSpirit, transactionType, transactionId = null, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> invalid user ID - ${userId}.`.red);
@@ -1318,26 +1323,26 @@ class InventoryModule {
     return tx('users').first(this_obj.orbCountKey).where('id', userId)
       .bind(this_obj)
       .then(function (userRow) {
-        this.setTotalOrbs = userRow[this.orbCountKey] || 0; // Number of orbs user already has for this set
+        _chainState.setTotalOrbs = userRow[_chainState.orbCountKey] || 0; // Number of orbs user already has for this set
 
-        this.orbsToGive = cardSetData.numOrbsToCompleteSet - this.setTotalOrbs;
+        _chainState.orbsToGive = cardSetData.numOrbsToCompleteSet - _chainState.setTotalOrbs;
 
-        if (this.orbsToGive <= 0) {
+        if (_chainState.orbsToGive <= 0) {
           Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> user already owns max orb count of this type - ${cardSetId}.`.red);
           return Promise.reject(new Errors.MaxOrbsForSetReachedError('Can not add complete card set : user already owns max orb count of this type'));
         }
 
         const allPromises = [];
-        Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> adding ${this.orbsToGive} orbs to ${userId.blue}`);
-        for (let i = 1, end = this.orbsToGive, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
+        Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> adding ${_chainState.orbsToGive} orbs to ${userId.blue}`);
+        for (let i = 1, end = _chainState.orbsToGive, asc = end >= 1; asc ? i <= end : i >= end; asc ? i++ : i--) {
           allPromises.push(InventoryModule.addBoosterPackToUser(txPromise, tx, userId, cardSetId, transactionType, transactionId));
         }
 
-        if ((this.setTotalOrbs != null) && (this.setTotalOrbs > 0)) {
+        if ((_chainState.setTotalOrbs != null) && (_chainState.setTotalOrbs > 0)) {
           if (refundWithSpirit && (cardSetData.orbSpiritRefund != null)) {
-            allPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, (this.setTotalOrbs * cardSetData.orbGoldRefund), transactionType));
+            allPromises.push(InventoryModule.giveUserSpirit(txPromise, tx, userId, (_chainState.setTotalOrbs * cardSetData.orbGoldRefund), transactionType));
           } else if (cardSetData.orbGoldRefund != null) {
-            allPromises.push(InventoryModule.giveUserGold(txPromise, tx, userId, (this.setTotalOrbs * cardSetData.orbGoldRefund), transactionType, transactionId));
+            allPromises.push(InventoryModule.giveUserGold(txPromise, tx, userId, (_chainState.setTotalOrbs * cardSetData.orbGoldRefund), transactionType, transactionId));
           }
         }
 
@@ -1355,6 +1360,7 @@ class InventoryModule {
    * Tag: openBoosterPack openSpiritOrb
    */
   static unlockBoosterPack(userId, boosterPackId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     let txPromise;
     if (!userId) {
@@ -1381,19 +1387,19 @@ class InventoryModule {
 
           // if none set assume card set is Core
           if (boosterRow.card_set == null) { boosterRow.card_set = SDK.CardSet.Core; }
-          this.cardSetId = boosterRow.card_set;
+          _chainState.cardSetId = boosterRow.card_set;
 
           // don't allow opening of non-existant or disabled card sets
-          const cardSetData = SDK.CardSetFactory.cardSetForIdentifier(this.cardSetId);
+          const cardSetData = SDK.CardSetFactory.cardSetForIdentifier(_chainState.cardSetId);
           if ((cardSetData == null) || !cardSetData.enabled || cardSetData.isPreRelease) {
             throw new Errors.BadRequestError('You cannot open this type of Spirit Orb yet.');
           }
 
-          this.boosterRow = boosterRow;
+          _chainState.boosterRow = boosterRow;
 
           let needsPlayerInventory = false;
 
-          if ((this.cardSetId === SDK.CardSet.Bloodborn) || (this.cardSetId === SDK.CardSet.Unity)) {
+          if ((_chainState.cardSetId === SDK.CardSet.Bloodborn) || (_chainState.cardSetId === SDK.CardSet.Unity)) {
             needsPlayerInventory = true;
           }
 
@@ -1403,9 +1409,9 @@ class InventoryModule {
             return Promise.resolve(null);
           }
         }).then(function (userCardsCollection) {
-          this.userCardsData = {};
+          _chainState.userCardsData = {};
           if ((userCardsCollection != null) && ((userCardsCollection != null ? userCardsCollection.cards : undefined) != null)) {
-            this.userCardsData = userCardsCollection.cards;
+            _chainState.userCardsData = userCardsCollection.cards;
           }
 
           return new Promise((resolve, reject) => {
@@ -1450,30 +1456,30 @@ class InventoryModule {
                 throw new Error('unlockBoosterPack: Failed to find an unowned card');
               };
 
-              if (this.cardSetId === SDK.CardSet.Core) {
+              if (_chainState.cardSetId === SDK.CardSet.Core) {
               // fill slot 1 to 4
                 for (i = 1; i <= 4; i++) {
                   random = Math.random();
                   if (random < 0.73) {
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getIsLegacy(false)
                       .getCardIds(), new_cards, 0.04, 50));
                   } else if (random < 0.88) {
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getIsLegacy(false)
                       .getCardIds(), new_cards, 0.06, 50));
                   } else if (random < 0.98) {
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getIsLegacy(false)
                       .getCardIds(), new_cards, 0.07, 50));
                   } else {
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getIsLegacy(false)
@@ -1484,25 +1490,25 @@ class InventoryModule {
                 // fill slot 5
                 random = Math.random();
                 if (random < 0.70) {
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getIsLegacy(false)
                     .getCardIds(), new_cards, 0.06, 50));
                 } else if (random < 0.82) {
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getIsLegacy(false)
                     .getCardIds(), new_cards, 0.07, 50));
                 } else {
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getIsLegacy(false)
                     .getCardIds(), new_cards, 0.08, 50));
                 }
-              } else if (this.cardSetId === SDK.CardSet.Shimzar) {
+              } else if (_chainState.cardSetId === SDK.CardSet.Shimzar) {
                 const shimzarCommonPrismaticChance = 0.03;
                 const shimzarRarePrismaticChance = 0.04;
                 const shimzarEpicPrismaticChance = 0.06;
@@ -1512,25 +1518,25 @@ class InventoryModule {
                   random = Math.random();
                   if (random < 0.74) {
                   // 74% chance for common
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, shimzarCommonPrismaticChance, 50));
                   } else if (random < (0.74 + 0.16)) {
                   // 16% chance for rare
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, shimzarRarePrismaticChance, 50));
                   } else if (random < (0.74 + 0.16 + 0.09)) {
                   // 9% chance for epic
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, shimzarEpicPrismaticChance, 50));
                   } else {
                   // 1% chance for legendary
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, shimzarLegendaryPrismaticChance, 50));
@@ -1541,26 +1547,26 @@ class InventoryModule {
                 random = Math.random();
                 if (random < 0.75) {
                 // 75% chance for rare
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, shimzarRarePrismaticChance, 50));
                 } else if (random < (0.75 + 0.10)) {
                 // 10% chance for epic
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, shimzarEpicPrismaticChance, 50));
                 } else {
                 // 15% chance for legendary
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, shimzarLegendaryPrismaticChance, 50));
                 }
-              } else if ((this.cardSetId === SDK.CardSet.Bloodborn) || (this.cardSetId === SDK.CardSet.Unity)) {
+              } else if ((_chainState.cardSetId === SDK.CardSet.Bloodborn) || (_chainState.cardSetId === SDK.CardSet.Unity)) {
               // 3 Of an unowned common
-                const commonCardId = randomUnownedCardFromCollection(this.userCardsData, SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsUnlockable(true)
+                const commonCardId = randomUnownedCardFromCollection(_chainState.userCardsData, SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsUnlockable(true)
                   .getIsPrismatic(false)
                   .getCardIds());
                 new_cards.push(commonCardId);
@@ -1568,7 +1574,7 @@ class InventoryModule {
                 new_cards.push(commonCardId);
 
                 // 3 Of an unowned rare
-                const rareCardId = randomUnownedCardFromCollection(this.userCardsData, SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsUnlockable(true)
+                const rareCardId = randomUnownedCardFromCollection(_chainState.userCardsData, SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsUnlockable(true)
                   .getIsPrismatic(false)
                   .getCardIds());
                 new_cards.push(rareCardId);
@@ -1576,18 +1582,18 @@ class InventoryModule {
                 new_cards.push(rareCardId);
 
                 // 3 Of an unowned epic or legendary (distribution determined by collective pool of epics and legendaries unowned)
-                const epicBloodbornCardIds = SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsUnlockable(true)
+                const epicBloodbornCardIds = SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsUnlockable(true)
                   .getIsPrismatic(false)
                   .getCardIds();
-                const legendaryBloodbornCardIds = SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsUnlockable(true)
+                const legendaryBloodbornCardIds = SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsUnlockable(true)
                   .getIsPrismatic(false)
                   .getCardIds();
                 const epicAndLegBbCardIds = epicBloodbornCardIds.concat(legendaryBloodbornCardIds);
-                const epicOrLegCardId = randomUnownedCardFromCollection(this.userCardsData, epicAndLegBbCardIds);
+                const epicOrLegCardId = randomUnownedCardFromCollection(_chainState.userCardsData, epicAndLegBbCardIds);
                 new_cards.push(epicOrLegCardId);
                 new_cards.push(epicOrLegCardId);
                 new_cards.push(epicOrLegCardId);
-              } else if (this.cardSetId === SDK.CardSet.FirstWatch) {
+              } else if (_chainState.cardSetId === SDK.CardSet.FirstWatch) {
                 const firstwatchCommonPrismaticChance = 0.03;
                 const firstwatchRarePrismaticChance = 0.04;
                 const firstwatchEpicPrismaticChance = 0.06;
@@ -1597,25 +1603,25 @@ class InventoryModule {
                   random = Math.random();
                   if (random < 0.74) {
                   // 74% chance for common
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, firstwatchCommonPrismaticChance, 50));
                   } else if (random < (0.74 + 0.16)) {
                   // 16% chance for rare
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, firstwatchRarePrismaticChance, 50));
                   } else if (random < (0.74 + 0.16 + 0.09)) {
                   // 9% chance for epic
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, firstwatchEpicPrismaticChance, 50));
                   } else {
                   // 1% chance for legendary
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, firstwatchLegendaryPrismaticChance, 50));
@@ -1626,24 +1632,24 @@ class InventoryModule {
                 random = Math.random();
                 if (random < 0.75) {
                 // 75% chance for rare
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, firstwatchRarePrismaticChance, 50));
                 } else if (random < (0.75 + 0.10)) {
                 // 10% chance for epic
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, firstwatchEpicPrismaticChance, 50));
                 } else {
                 // 15% chance for legendary
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, firstwatchLegendaryPrismaticChance, 50));
                 }
-              } else if (this.cardSetId === SDK.CardSet.Wartech) {
+              } else if (_chainState.cardSetId === SDK.CardSet.Wartech) {
                 const wartechCommonPrismaticChance = 0.03;
                 const wartechRarePrismaticChance = 0.04;
                 const wartechEpicPrismaticChance = 0.06;
@@ -1653,25 +1659,25 @@ class InventoryModule {
                   random = Math.random();
                   if (random < 0.74) {
                   // 74% chance for common
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, wartechCommonPrismaticChance, 50));
                   } else if (random < (0.74 + 0.16)) {
                   // 16% chance for rare
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, wartechRarePrismaticChance, 50));
                   } else if (random < (0.74 + 0.16 + 0.09)) {
                   // 9% chance for epic
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, wartechEpicPrismaticChance, 50));
                   } else {
                   // 1% chance for legendary
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, wartechLegendaryPrismaticChance, 50));
@@ -1682,24 +1688,24 @@ class InventoryModule {
                 random = Math.random();
                 if (random < 0.75) {
                 // 75% chance for rare
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, wartechRarePrismaticChance, 50));
                 } else if (random < (0.75 + 0.10)) {
                 // 10% chance for epic
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, wartechEpicPrismaticChance, 50));
                 } else {
                 // 15% chance for legendary
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, wartechLegendaryPrismaticChance, 50));
                 }
-              } else if (this.cardSetId === SDK.CardSet.CombinedUnlockables) {
+              } else if (_chainState.cardSetId === SDK.CardSet.CombinedUnlockables) {
                 const combinedCommonPrismaticChance = 0.03;
                 const combinedRarePrismaticChance = 0.04;
                 const combinedEpicPrismaticChance = 0.06;
@@ -1709,25 +1715,25 @@ class InventoryModule {
                   random = Math.random();
                   if (random < 0.74) {
                   // 74% chance for common
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, combinedCommonPrismaticChance, 50));
                   } else if (random < (0.74 + 0.16)) {
                   // 16% chance for rare
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, combinedRarePrismaticChance, 50));
                   } else if (random < (0.74 + 0.16 + 0.09)) {
                   // 9% chance for epic
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, combinedEpicPrismaticChance, 50));
                   } else {
                   // 1% chance for legendary
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, combinedLegendaryPrismaticChance, 50));
@@ -1738,24 +1744,24 @@ class InventoryModule {
                 random = Math.random();
                 if (random < 0.75) {
                 // 75% chance for rare
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, combinedRarePrismaticChance, 50));
                 } else if (random < (0.75 + 0.10)) {
                 // 10% chance for epic
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, combinedEpicPrismaticChance, 50));
                 } else {
                 // 15% chance for legendary
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, combinedLegendaryPrismaticChance, 50));
                 }
-              } else if (this.cardSetId === SDK.CardSet.Coreshatter) {
+              } else if (_chainState.cardSetId === SDK.CardSet.Coreshatter) {
                 const fateCommonPrismaticChance = 0.03;
                 const fateRarePrismaticChance = 0.04;
                 const fateEpicPrismaticChance = 0.06;
@@ -1765,25 +1771,25 @@ class InventoryModule {
                   random = Math.random();
                   if (random < 0.74) {
                   // 74% chance for common
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Common).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, fateCommonPrismaticChance, 50));
                   } else if (random < (0.74 + 0.16)) {
                   // 16% chance for rare
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, fateRarePrismaticChance, 50));
                   } else if (random < (0.74 + 0.16 + 0.09)) {
                   // 9% chance for epic
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, fateEpicPrismaticChance, 50));
                   } else {
                   // 1% chance for legendary
-                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                    new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                       .getIsUnlockable(false)
                       .getIsPrismatic(false)
                       .getCardIds(), new_cards, fateLegendaryPrismaticChance, 50));
@@ -1794,19 +1800,19 @@ class InventoryModule {
                 random = Math.random();
                 if (random < 0.75) {
                 // 75% chance for rare
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Rare).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, fateRarePrismaticChance, 50));
                 } else if (random < (0.75 + 0.10)) {
                 // 10% chance for epic
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Epic).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, fateEpicPrismaticChance, 50));
                 } else {
                 // 15% chance for legendary
-                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(this.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
+                  new_cards.push(randomCardFromCollectionWithoutDupes(SDK.GameSession.getCardCaches().getCardSet(_chainState.cardSetId).getRarity(SDK.Rarity.Legendary).getIsCollectible(true)
                     .getIsUnlockable(false)
                     .getIsPrismatic(false)
                     .getCardIds(), new_cards, fateLegendaryPrismaticChance, 50));
@@ -1822,14 +1828,14 @@ class InventoryModule {
           });
         })
         .then(function (new_cards) {
-          this.new_cards = new_cards;
-          this.boosterRow.cards = new_cards;
-          this.boosterRow.opened_at = NOW_UTC_MOMENT.toDate();
-          delete this.boosterRow.is_unread;
+          _chainState.new_cards = new_cards;
+          _chainState.boosterRow.cards = new_cards;
+          _chainState.boosterRow.opened_at = NOW_UTC_MOMENT.toDate();
+          delete _chainState.boosterRow.is_unread;
 
           return Promise.all([
             knex('user_spirit_orbs').where('id', boosterPackId).delete().transacting(tx),
-            knex.insert(this.boosterRow).into('user_spirit_orbs_opened').transacting(tx),
+            knex.insert(_chainState.boosterRow).into('user_spirit_orbs_opened').transacting(tx),
             InventoryModule.giveUserCards(txPromise, tx, userId, new_cards, 'spirit orb', boosterPackId),
           ]);
         })
@@ -1843,7 +1849,7 @@ class InventoryModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('InventoryModule').debug(`unlockBoosterPack() -> user ${userId.blue} `.green + ` unlocked cards ${util.inspect(this.boosterRow.cards)} from booster ${this.boosterRow.id}`.green);
+        Logger.module('InventoryModule').debug(`unlockBoosterPack() -> user ${userId.blue} `.green + ` unlocked cards ${util.inspect(_chainState.boosterRow.cards)} from booster ${_chainState.boosterRow.id}`.green);
 
         Logger.module('InventoryModule').timeEnd(`unlockBoosterPack() -> user ${userId.blue} unlocked booster ${boosterPackId}.`.green);
         // Kick off job to update acheivements based on spirit orbs opened
@@ -1851,11 +1857,11 @@ class InventoryModule {
           name: 'Update User Spirit Orbs Achievements',
           title: util.format('User %s :: Update Spirit Orbs Achievements', userId),
           userId,
-          spiritOrbOpenedFromSet: this.boosterRow.card_set,
+          spiritOrbOpenedFromSet: _chainState.boosterRow.card_set,
         },
         ).removeOnComplete(true).save();
 
-        return Promise.resolve(this.boosterRow);
+        return Promise.resolve(_chainState.boosterRow);
       });
   }
 
@@ -1930,6 +1936,7 @@ class InventoryModule {
    */
   // TODO: better error types
   static giveUserCodexChapter(txPromise, tx, userId, chapterId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`giveUserCodexChapter() -> invalid user ID - ${userId}.`.red);
@@ -1967,16 +1974,16 @@ class InventoryModule {
       .forUpdate()
       .bind(this_obj)
       .then(function (codex_inventory_rows) {
-        this.codex_inventory_rows = codex_inventory_rows;
+        _chainState.codex_inventory_rows = codex_inventory_rows;
 
-        const existingCodexChapterRow = _.find(this.codex_inventory_rows, (codexInventoryRow) => codexInventoryRow.chapter_id === chapterId);
+        const existingCodexChapterRow = _.find(_chainState.codex_inventory_rows, (codexInventoryRow) => codexInventoryRow.chapter_id === chapterId);
 
         if (existingCodexChapterRow) {
-          this.userAlreadyOwnedChapter = true;
+          _chainState.userAlreadyOwnedChapter = true;
           Logger.module('InventoryModule').debug(`giveUserCodexChapter() -> attempting to give an already owned chapter ID - ${chapterId} to user ID - ${userId.blue}.`.yellow);
           return Promise.resolve();
         } else {
-          this.new_codex_inventory_row = {
+          _chainState.new_codex_inventory_row = {
             user_id: userId,
             chapter_id: chapterId,
             updated_at: NOW_UTC_MOMENT.toDate(),
@@ -1996,12 +2003,12 @@ class InventoryModule {
               FirebasePromises.set(fbRootRef.child('user-inventory').child(userId).child('codex').child(chapterId), fbCodexInventoryChapterData),
             ])));
 
-          return knex.insert(this.new_codex_inventory_row).into('user_codex_inventory').transacting(tx);
+          return knex.insert(_chainState.new_codex_inventory_row).into('user_codex_inventory').transacting(tx);
         }
       })
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`giveUserCodexChapter() -> added ${chapterId} to user ID ${userId.blue}.`.green);
-        if (this.userAlreadyOwnedChapter) {
+        if (_chainState.userAlreadyOwnedChapter) {
           return Promise.resolve(null);
         } else {
           return Promise.resolve(chapterId);
@@ -2018,6 +2025,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing spirit and bonuses
    */
   static disenchantCards(userId, cardIds, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`disenchantCards() -> invalid user ID - ${userId.blue}.`.red);
@@ -2042,7 +2050,7 @@ class InventoryModule {
     var txPromise = knex.transaction(function (tx) {
       InventoryModule._disenchantCards(txPromise, tx, userId, cardIds, NOW_UTC_MOMENT)
         .bind(this_obj)
-        .then(function (data) { return _.extend(this, data); })
+        .then(function (data) { return _.extend(_chainState, data); })
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
@@ -2060,11 +2068,11 @@ class InventoryModule {
 
         return {
           wallet: {
-            spirit_amount: this.final_wallet_spirit,
-            gold_amount: this.userRow.gold_amount,
+            spirit_amount: _chainState.final_wallet_spirit,
+            gold_amount: _chainState.userRow.gold_amount,
             updated_at: NOW_UTC_MOMENT.valueOf(),
           },
-          rewards: this.rewards,
+          rewards: _chainState.rewards,
         };
       });
 
@@ -2081,6 +2089,7 @@ class InventoryModule {
    * @return  {Promise}            Resulting data object containing spirit and bonuses
    */
   static _disenchantCards(trxPromise, trx, userId, cardIds, systemTime) {
+    const _chainState = {};
     // used to make sure all updates have the same "updated_at" date
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -2103,28 +2112,28 @@ class InventoryModule {
     return trx.first('wallet_spirit').from('users').where('id', userId).forUpdate()
       .bind({})
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
         return DuelystFirebase.connect().getRootRef();
       })
       .then(function (fbRootRef) {
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
         // TODO: this should probably be moved to a redis / mem CACHE... it's a frequently read and infrequently updated value
-        const disenchantPromosRef = this.fbRootRef.child('crafting').child('promos').child('disenchant');
-        this.disenchantPromos = [];
+        const disenchantPromosRef = _chainState.fbRootRef.child('crafting').child('promos').child('disenchant');
+        _chainState.disenchantPromos = [];
 
         return FirebasePromises.once(disenchantPromosRef, 'value');
       })
       .then(function (promosSnapshot) {
-        this.disenchantPromos = promosSnapshot.val();
-        return this.disenchantPromos;
+        _chainState.disenchantPromos = promosSnapshot.val();
+        return _chainState.disenchantPromos;
       })
       .then(() => trx.select().from('user_cards').whereIn('card_id', cardIds).andWhere('user_id', userId)
         .forUpdate())
       .then(function (cardCountRows) {
         Logger.module('InventoryModule').debug('_disenchantCards cardRows:', cardCountRows);
 
-        this.cardCountRows = cardCountRows;
+        _chainState.cardCountRows = cardCountRows;
 
         for (var disenchantedCardId in cardDataListReduced) {
           var disenchantedCardData = cardDataListReduced[disenchantedCardId];
@@ -2137,8 +2146,8 @@ class InventoryModule {
         return Promise.resolve();
       })
       .then(function () {
-        this.rewards = [];
-        this.total_spirit_gained = 0;
+        _chainState.rewards = [];
+        _chainState.total_spirit_gained = 0;
 
         for (var cardId of Array.from(cardIds)) {
         // STEP1 ... compute and roll/generate all the dis-enchanting rewards
@@ -2180,8 +2189,8 @@ class InventoryModule {
             //     throw new Errors.BadRequestError("You cannot disenchant UNLOCKABLE prismatic cards until the normal version is unlocked")
 
             var rarityData = SDK.RarityFactory.rarityForIdentifier(cardData.getRarityId());
-            if (this.disenchantPromos && this.disenchantPromos[baseCardId.toString()] && (!this.disenchantPromos[baseCardId.toString()].expires_at || (NOW_UTC_MOMENT.valueOf() < this.disenchantPromos[baseCardId.toString()].expires_at))) {
-              spirit_gained = this.disenchantPromos[baseCardId].spirit;
+            if (_chainState.disenchantPromos && _chainState.disenchantPromos[baseCardId.toString()] && (!_chainState.disenchantPromos[baseCardId.toString()].expires_at || (NOW_UTC_MOMENT.valueOf() < _chainState.disenchantPromos[baseCardId.toString()].expires_at))) {
+              spirit_gained = _chainState.disenchantPromos[baseCardId].spirit;
               if (spirit_gained === 'COST') {
                 if (isPrismatic) {
                   spirit_gained = rarityData.spiritCostPrismatic;
@@ -2202,20 +2211,20 @@ class InventoryModule {
             throw e;
           }
 
-          this.total_spirit_gained += spirit_gained;
+          _chainState.total_spirit_gained += spirit_gained;
 
-          this.rewards.push({
+          _chainState.rewards.push({
             card_id: cardId,
             spirit_gained,
           });
         }
 
-        return Promise.resolve(this.rewards);
+        return Promise.resolve(_chainState.rewards);
       })
       .then(function (rewards) {
-        this.final_wallet_spirit = this.userRow.wallet_spirit + this.total_spirit_gained;
+        _chainState.final_wallet_spirit = _chainState.userRow.wallet_spirit + _chainState.total_spirit_gained;
 
-        return InventoryModule.giveUserSpirit(trxPromise, trx, userId, this.total_spirit_gained, 'disenchant');
+        return InventoryModule.giveUserSpirit(trxPromise, trx, userId, _chainState.total_spirit_gained, 'disenchant');
       })
       .then(function () {
       // queries to promisify
@@ -2223,7 +2232,7 @@ class InventoryModule {
 
         for (var deCardId in cardDataListReduced) {
           var deCardData = cardDataListReduced[deCardId];
-          var countRow = _.find(this.cardCountRows, (row) => parseInt(row.card_id) === parseInt(deCardId));
+          var countRow = _.find(_chainState.cardCountRows, (row) => parseInt(row.card_id) === parseInt(deCardId));
 
           countRow.count -= deCardData.count;
 
@@ -2254,10 +2263,10 @@ class InventoryModule {
         // resolve when all queries done
         return Promise.all(allQueries);
       })
-      .then(function () { return InventoryModule._refreshUserCardCollection(trxPromise, trx, userId, this.cardCountRows); })
+      .then(function () { return InventoryModule._refreshUserCardCollection(trxPromise, trx, userId, _chainState.cardCountRows); })
       .then(function () {
       // return the data accumulated in this_obj
-        return this;
+        return _chainState;
       });
   }
 
@@ -2268,6 +2277,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing spirit and bonuses
    */
   static disenchantDuplicateCards(userId, systemTime) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> invalid user ID - ${userId.blue}.`.red);
@@ -2285,45 +2295,45 @@ class InventoryModule {
         .then((userRow) => knex('user_card_collection').where('user_id', userId).first().transacting(tx)
           .forUpdate())
         .then(function (collectionRow) {
-          this.cardIds = [];
+          _chainState.cardIds = [];
           const cardsCache = SDK.GameSession.getCardCaches().getIsCollectible(true).getIsUnlockable(false);
           for (var cardId in collectionRow.cards) {
             var cardData = collectionRow.cards[cardId];
             if (cardData.count > 3) {
               if (cardsCache.getCardById(parseInt(cardId)) != null) {
                 for (var i = 3, end = cardData.count, asc = end >= 3; asc ? i < end : i > end; asc ? i++ : i--) {
-                  this.cardIds.push(cardId);
+                  _chainState.cardIds.push(cardId);
                 }
               }
             }
           }
 
-          return Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> ${userId.blue} disenchanting ${util.inspect(this.cardIds)}.`);
+          return Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> ${userId.blue} disenchanting ${util.inspect(_chainState.cardIds)}.`);
         })
-        .then(function () { return InventoryModule._disenchantCards(txPromise, tx, userId, this.cardIds, NOW_UTC_MOMENT); })
-        .then(function (data) { return _.extend(this, data); })
+        .then(function () { return InventoryModule._disenchantCards(txPromise, tx, userId, _chainState.cardIds, NOW_UTC_MOMENT); })
+        .then(function (data) { return _.extend(_chainState, data); })
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> user ${userId.blue}`.green + ` disenchanted cards ${util.inspect(this.cardIds)}`.green);
+        Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> user ${userId.blue}`.green + ` disenchanted cards ${util.inspect(_chainState.cardIds)}`.green);
 
         Jobs.create('update-user-achievements', {
           name: 'Update User Disenchanting Achievements',
           title: util.format('User %s :: Update Disenchanting Achievements', userId),
           userId,
-          disenchantedCardIdList: this.cardIds,
+          disenchantedCardIdList: _chainState.cardIds,
         },
         ).removeOnComplete(true).save();
 
         return {
           wallet: {
-            spirit_amount: this.final_wallet_spirit,
-            gold_amount: this.userRow.wallet_gold,
+            spirit_amount: _chainState.final_wallet_spirit,
+            gold_amount: _chainState.userRow.wallet_gold,
             updated_at: NOW_UTC_MOMENT.valueOf(),
           },
-          rewards: this.rewards,
+          rewards: _chainState.rewards,
         };
       });
 
@@ -2338,6 +2348,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing crafted card and resulting inventory data
    */
   static craftCard(userId, cardId) {
+    const _chainState = {};
     // userId must be defined
     let spirit_cost;
     if (!userId) {
@@ -2400,7 +2411,7 @@ class InventoryModule {
       tx('users').first('wallet_spirit', 'wallet_gold').where('id', userId).forUpdate()
         .bind(this_obj)
         .then(function (userRow) {
-          this.userRow = userRow;
+          _chainState.userRow = userRow;
 
           // when crafting prismatic unlockable achievement cards
           // ensure the normal version of the card has been unlocked
@@ -2421,12 +2432,12 @@ class InventoryModule {
           }
         })
         .then(function () {
-          if (this.userRow.wallet_spirit < spirit_cost) {
-            Logger.module('InventoryModule').debug(`craftCard() -> ERROR: user ${userId.blue} `.red + ` has insufficient spirit (${this.userRow.wallet_spirit}) to craft card ${cardId}`.red);
+          if (_chainState.userRow.wallet_spirit < spirit_cost) {
+            Logger.module('InventoryModule').debug(`craftCard() -> ERROR: user ${userId.blue} `.red + ` has insufficient spirit (${_chainState.userRow.wallet_spirit}) to craft card ${cardId}`.red);
             return Promise.reject(new Errors.InsufficientFundsError(`Insufficient resources in wallet to craft ${cardId} - ${userId}`));
           }
 
-          this.userRow.wallet_spirit -= spirit_cost;
+          _chainState.userRow.wallet_spirit -= spirit_cost;
 
           const userCurrencyLogItem = {
             id: generatePushId(),
@@ -2437,7 +2448,7 @@ class InventoryModule {
           };
 
           const userUpdateParams = {
-            wallet_spirit: this.userRow.wallet_spirit,
+            wallet_spirit: _chainState.userRow.wallet_spirit,
             wallet_updated_at: NOW_UTC_MOMENT.toDate(),
           };
 
@@ -2448,14 +2459,14 @@ class InventoryModule {
           ]);
         })
         .spread(function (cardCollection) {
-          this.cardCollection = cardCollection;
+          _chainState.cardCollection = cardCollection;
           return DuelystFirebase.connect().getRootRef();
         })
         .then(function (fbRootRef) {
           const updateSpirit = (walletData) => {
             if (walletData == null) { walletData = {}; }
             walletData.updated_at = NOW_UTC_MOMENT.valueOf();
-            walletData.spirit_amount = this.userRow.wallet_spirit;
+            walletData.spirit_amount = _chainState.userRow.wallet_spirit;
             return walletData;
           };
 
@@ -2478,11 +2489,11 @@ class InventoryModule {
 
         return {
           wallet: {
-            spirit_amount: this.userRow.wallet_spirit,
-            gold_amount: this.userRow.wallet_gold,
+            spirit_amount: _chainState.userRow.wallet_spirit,
+            gold_amount: _chainState.userRow.wallet_gold,
             updated_at: NOW_UTC_MOMENT.valueOf(),
           },
-          card: this.cardCollection[cardId],
+          card: _chainState.cardCollection[cardId],
         };
       });
 
@@ -2497,6 +2508,7 @@ class InventoryModule {
    * @return  {Promise}        Resulting data object containing crafted card and resulting inventory data
    */
   static craftCosmetic(userId, cosmeticId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('InventoryModule').debug(`craftCosmetic() -> invalid user ID - ${userId}.`.red);
@@ -2545,7 +2557,7 @@ class InventoryModule {
     var txPromise = knex.transaction((tx) => tx.first('wallet_spirit').from('users').where('id', userId).forUpdate()
       .bind(this_obj)
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
         return tx('user_cosmetic_inventory').first().where('user_id', userId).andWhere('cosmetic_id', cosmeticId);
       })
       .then(function (cosmeticRow) {
@@ -2556,7 +2568,7 @@ class InventoryModule {
 
         const {
           userRow,
-        } = this;
+        } = _chainState;
 
         if (userRow.wallet_spirit < spiritCost) {
           Logger.module('InventoryModule').debug(`craftCosmetic() -> ERROR: user ${userId.blue} `.red + ` has insufficient spirit (${userRow.wallet_spirit}) to craft cosmetic ${cosmeticId}`.red);
@@ -2589,7 +2601,7 @@ class InventoryModule {
         const updateSpirit = (walletData) => {
           if (walletData == null) { walletData = {}; }
           walletData.updated_at = NOW_UTC_MOMENT.valueOf();
-          walletData.spirit_amount = this.userRow.wallet_spirit;
+          walletData.spirit_amount = _chainState.userRow.wallet_spirit;
           return walletData;
         };
 
@@ -2603,7 +2615,7 @@ class InventoryModule {
 
         return {
           wallet: {
-            spirit_amount: this.userRow.wallet_spirit,
+            spirit_amount: _chainState.userRow.wallet_spirit,
             updated_at: NOW_UTC_MOMENT.valueOf(),
             cosmetic_id: cosmeticId,
           },
@@ -2626,6 +2638,7 @@ class InventoryModule {
    * @return  {Promise}            Promise that will resolve with the user's card collection cache after the card has been credited
    */
   static giveUserCards(trxPromise, trx, userId, cardIds, sourceType, sourceId, memo) {
+    const _chainState = {};
     // Logger.module("InventoryModule").time "giveUserCards() -> User #{userId.blue}".green + " received #{util.inspect(cardIds)} cards.".green
 
     // cardIds is not optional
@@ -2685,7 +2698,7 @@ class InventoryModule {
     ])
       .bind({})
       .spread(function (cardCountRows) {
-        this.cardCountRows = cardCountRows;
+        _chainState.cardCountRows = cardCountRows;
 
         const allPromises = [];
 
@@ -2715,7 +2728,7 @@ class InventoryModule {
 
         return Promise.all(allPromises);
       }).then(function () {
-        return InventoryModule._refreshUserCardCollection(trxPromise, trx, userId, this.cardCountRows);
+        return InventoryModule._refreshUserCardCollection(trxPromise, trx, userId, _chainState.cardCountRows);
       })
       .then(function (cardCollectionRow) {
       // Kick off job to update acheivements
@@ -2746,6 +2759,7 @@ class InventoryModule {
    */
   // TODO: Remove this and replace uses with giveUserCosmeticId
   static addEmoteToUser(trxPromise, trx, userId, transactionType, emoteId, factionId) {
+    const _chainState = {};
     // all parameters must be defined
     if ((userId == null) || (transactionType == null) || (emoteId == null) || (factionId == null)) {
       Logger.module('UsersModule').debug(`addEmoteToUser() -> invalid request - ${userId}, ${transactionType}, ${emoteId}, ${factionId}.`.red);
@@ -2763,17 +2777,17 @@ class InventoryModule {
       .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
-        this.inventory = fbRootRef.child('user-inventory').child(userId);
+        _chainState.inventory = fbRootRef.child('user-inventory').child(userId);
 
-        const emotes = this.inventory.child('emotes');
-        this.emotes_data = { created_at: moment().utc().valueOf(), transaction_type: transactionType };
+        const emotes = _chainState.inventory.child('emotes');
+        _chainState.emotes_data = { created_at: moment().utc().valueOf(), transaction_type: transactionType };
         const emote_entry = emotes.child(emoteId);
 
-        return FirebasePromises.set(emote_entry, this.emotes_data);
+        return FirebasePromises.set(emote_entry, _chainState.emotes_data);
       })
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`addEmoteToUser() -> user ${userId.blue} `.green + ` received emote ${emoteId}`.green);
-        return this.emotes_data;
+        return _chainState.emotes_data;
       });
   }
 
@@ -2788,6 +2802,7 @@ class InventoryModule {
    * @return  {Promise}            Promise that will resolve with the user's card collection cache
    */
   static _refreshUserCardCollection(trxPromise, trx, userId, cardCountRows, updateFirebase) {
+    const _chainState = {};
     if (updateFirebase == null) { updateFirebase = true; }
     const this_obj = {};
 
@@ -2821,7 +2836,7 @@ class InventoryModule {
           };
         }
 
-        this.updatedCardsData = {};
+        _chainState.updatedCardsData = {};
 
         for (var cardRow of Array.from(cardCountRows)) {
           if (cardRow.count > 0) {
@@ -2829,14 +2844,14 @@ class InventoryModule {
             collectionRow.cards[cardRow.card_id].count = cardRow.count;
             collectionRow.cards[cardRow.card_id].is_unread = cardRow.is_unread;
             collectionRow.cards[cardRow.card_id].is_new = cardRow.is_new;
-            this.updatedCardsData[cardRow.card_id] = collectionRow.cards[cardRow.card_id];
+            _chainState.updatedCardsData[cardRow.card_id] = collectionRow.cards[cardRow.card_id];
           } else {
             delete collectionRow.cards[cardRow.card_id];
-            this.updatedCardsData[cardRow.card_id] = null;
+            _chainState.updatedCardsData[cardRow.card_id] = null;
           }
         }
 
-        this.collectionRow = collectionRow;
+        _chainState.collectionRow = collectionRow;
 
         if (needsInsert) {
           return knex.insert(collectionRow).into('user_card_collection').transacting(trx);
@@ -2851,13 +2866,13 @@ class InventoryModule {
       .then(function (fbRootRef) {
         if (updateFirebase) {
           const card_collection = fbRootRef.child('user-inventory').child(userId).child('card-collection');
-          return FirebasePromises.update(card_collection, this.updatedCardsData);
+          return FirebasePromises.update(card_collection, _chainState.updatedCardsData);
         } else {
           return true;
         }
       })
       .then(function () {
-        return (this.collectionRow != null ? this.collectionRow.cards : undefined);
+        return (_chainState.collectionRow != null ? _chainState.collectionRow.cards : undefined);
       });
   }
 
@@ -2974,6 +2989,7 @@ class InventoryModule {
    * @return  {Promise}            Promise.
    */
   static softWipeUserCardInventory(userId, systemTime) {
+    const _chainState = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     if (!NOW_UTC_MOMENT.isBefore(InventoryModule.SOFTWIPE_AVAILABLE_UNTIL)) {
@@ -2987,7 +3003,7 @@ class InventoryModule {
       tx('users').first('id', 'wallet_spirit', 'soft_wipe_count').where('id', userId).forUpdate()
         .bind({})
         .then(function (userRow) {
-          this.userRow = userRow;
+          _chainState.userRow = userRow;
           if (userRow.soft_wipe_count >= InventoryModule.MAX_SOFTWIPE_COUNT) {
             Logger.module('InventoryModule').error(`softWipeUserCardInventory() -> max number of soft wipes already reached. u: ${userId.blue}`.red);
             throw new Errors.BadRequestError('Already at MAX number of soft wipes allowed.');
@@ -3046,7 +3062,7 @@ class InventoryModule {
 
           Logger.module('InventoryModule').debug(`softWipeUserCardInventory() -> card counts for ${userId.blue}`, cardCounts);
 
-          this.cardCountRows = cardCounts;
+          _chainState.cardCountRows = cardCounts;
           allPromises.push(tx('user_cards').delete().where('user_id', userId));
 
           for (cardCountRow of Array.from(cardCounts)) {
@@ -3058,7 +3074,7 @@ class InventoryModule {
           return Promise.all(allPromises);
         })
         .then(function () {
-          return InventoryModule._refreshUserCardCollection(txPromise, tx, userId, this.cardCountRows, true);
+          return InventoryModule._refreshUserCardCollection(txPromise, tx, userId, _chainState.cardCountRows, true);
         })
         .then(() => tx('user_spirit_orbs_opened').update({
           wiped_at: NOW_UTC_MOMENT.toDate(),
@@ -3072,9 +3088,9 @@ class InventoryModule {
           return Promise.all(allPromises);
         })
         .then(function () {
-          if (this.userRow.wallet_spirit > 0) {
-            Logger.module('InventoryModule').debug(`softWipeUserCardInventory() -> removing ${-this.userRow.wallet_spirit} spirit for ${userId.blue}`);
-            return InventoryModule.debitSpiritFromUser(txPromise, tx, userId, -this.userRow.wallet_spirit, 'soft wipe');
+          if (_chainState.userRow.wallet_spirit > 0) {
+            Logger.module('InventoryModule').debug(`softWipeUserCardInventory() -> removing ${-_chainState.userRow.wallet_spirit} spirit for ${userId.blue}`);
+            return InventoryModule.debitSpiritFromUser(txPromise, tx, userId, -_chainState.userRow.wallet_spirit, 'soft wipe');
           }
         })
         .then(() => tx('users').where('id', userId).update({
@@ -3098,6 +3114,7 @@ class InventoryModule {
    * @param  {String}    userId      User ID.
    */
   static claimFreeCardOfTheDay(userId, systemTime) {
+    const _chainState = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
     const this_obj = {};
 
@@ -3129,10 +3146,10 @@ class InventoryModule {
           throw new Errors.BadRequestError('You\'ve already claimed a free card of the day today.');
         }
 
-        this.cardId = cardId;
+        _chainState.cardId = cardId;
 
         return Promise.all([
-          InventoryModule.giveUserCards(txPromise, tx, userId, [this.cardId], 'FCOTD', null, startOfToday.format('YYYY-MM-DD')),
+          InventoryModule.giveUserCards(txPromise, tx, userId, [_chainState.cardId], 'FCOTD', null, startOfToday.format('YYYY-MM-DD')),
           tx('users').where('id', userId).update({
             free_card_of_the_day_claimed_count: userRow.free_card_of_the_day_claimed_count + 1,
             free_card_of_the_day_claimed_at: NOW_UTC_MOMENT.toDate(),
@@ -3142,7 +3159,7 @@ class InventoryModule {
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((fbRootRef) => FirebasePromises.set(fbRootRef.child('users').child(userId).child('free_card_of_the_day_claimed_at'), NOW_UTC_MOMENT.valueOf()))
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
-      .then(function () { return this.cardId; })).then(function () {
+      .then(function () { return _chainState.cardId; })).then(function () {
       Logger.module('InventoryModule').timeEnd(`claimFreeCardOfTheDay() -> ${userId.blue} claiming ${cardId}`);
       return cardId;
     });

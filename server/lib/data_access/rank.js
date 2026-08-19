@@ -93,6 +93,7 @@ class RankModule {
    * @return  {Promise}        Promise that will return the rank data on completion.
    */
   static cycleUserSeasonRanking(userId, force, systemTime) {
+    const _chainState = {};
     if (force == null) { force = false; }
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     const MOMENT_UTC_START_OF_MONTH = MOMENT_UTC_NOW.clone().startOf('month');
@@ -107,53 +108,53 @@ class RankModule {
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first().forUpdate())
       .bind(this_obj)
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
-        if ((this.userRow != null ? this.userRow.rank_starting_at : undefined) != null) {
-          this.startOfCycledSeasonMoment = moment.utc(this.userRow.rank_starting_at);
+        if ((_chainState.userRow != null ? _chainState.userRow.rank_starting_at : undefined) != null) {
+          _chainState.startOfCycledSeasonMoment = moment.utc(_chainState.userRow.rank_starting_at);
         }
 
         // if player is rank 0 update their ladder position data first
-        if (((this.userRow != null ? this.userRow.rank : undefined) === 0) && ((this.userRow != null ? this.userRow.rank_starting_at : undefined) != null)) {
-          return RankModule.updateAndGetUserLadderPosition(txPromise, tx, userId, this.startOfCycledSeasonMoment, MOMENT_UTC_NOW);
+        if (((_chainState.userRow != null ? _chainState.userRow.rank : undefined) === 0) && ((_chainState.userRow != null ? _chainState.userRow.rank_starting_at : undefined) != null)) {
+          return RankModule.updateAndGetUserLadderPosition(txPromise, tx, userId, _chainState.startOfCycledSeasonMoment, MOMENT_UTC_NOW);
         } else {
           return Promise.resolve();
         }
       }).then(function () {
       // Get players rank ratings data
-        return tx('user_rank_ratings').where('user_id', userId).andWhere('season_starting_at', this.userRow != null ? this.userRow.rank_starting_at : undefined).first()
+        return tx('user_rank_ratings').where('user_id', userId).andWhere('season_starting_at', _chainState.userRow != null ? _chainState.userRow.rank_starting_at : undefined).first()
           .forUpdate();
       })
       .then(function (userRatingRow) {
-        this.userRatingRow = userRatingRow;
+        _chainState.userRatingRow = userRatingRow;
 
-        this.oldRank = null;
-        this.newRank = null;
-        this.topRank = null;
-        this.rankToReturn = null;
+        _chainState.oldRank = null;
+        _chainState.newRank = null;
+        _chainState.topRank = null;
+        _chainState.rankToReturn = null;
 
         // if we are not forcing an update and the season has not expired based on the current moment in time
         // then we want to return the current rank and do nothing
-        if (!RankModule._isSeasonTimestampExpired(this.userRow != null ? this.userRow.rank_starting_at : undefined, MOMENT_UTC_NOW) && !force) {
-          Logger.module('RankModule').debug(`cycleUserSeasonRanking() -> no need to cycle rank for ${moment.utc(this.userRow.rank_starting_at).format('MMMM YYYY')} season. user id: ${userId.blue}`);
-          this.rankToReturn = {
-            rank: this.userRow.rank,
-            stars: this.userRow.rank_stars,
-            stars_required: this.userRow.rank_stars_required,
-            win_streak: this.userRow.rank_win_streak,
-            delta: this.userRow.rank_delta,
-            top_rank: this.userRow.rank_top_rank,
+        if (!RankModule._isSeasonTimestampExpired(_chainState.userRow != null ? _chainState.userRow.rank_starting_at : undefined, MOMENT_UTC_NOW) && !force) {
+          Logger.module('RankModule').debug(`cycleUserSeasonRanking() -> no need to cycle rank for ${moment.utc(_chainState.userRow.rank_starting_at).format('MMMM YYYY')} season. user id: ${userId.blue}`);
+          _chainState.rankToReturn = {
+            rank: _chainState.userRow.rank,
+            stars: _chainState.userRow.rank_stars,
+            stars_required: _chainState.userRow.rank_stars_required,
+            win_streak: _chainState.userRow.rank_win_streak,
+            delta: _chainState.userRow.rank_delta,
+            top_rank: _chainState.userRow.rank_top_rank,
 
-            starting_at: this.userRow.rank_starting_at,
-            created_at: this.userRow.rank_created_at,
-            updated_at: this.userRow.rank_updated_at,
-            is_unread: this.userRow.rank_is_unread,
+            starting_at: _chainState.userRow.rank_starting_at,
+            created_at: _chainState.userRow.rank_created_at,
+            updated_at: _chainState.userRow.rank_updated_at,
+            is_unread: _chainState.userRow.rank_is_unread,
           };
 
-          if (this.userRatingRow != null) {
-            this.rankToReturn.rating = this.userRatingRow.rating;
-            this.rankToReturn.top_rating = this.userRatingRow.top_rating;
-            this.rankToReturn.ladder_position = this.userRow.rank_ladder_position;
+          if (_chainState.userRatingRow != null) {
+            _chainState.rankToReturn.rating = _chainState.userRatingRow.rating;
+            _chainState.rankToReturn.top_rating = _chainState.userRatingRow.top_rating;
+            _chainState.rankToReturn.ladder_position = _chainState.userRow.rank_ladder_position;
           }
 
           return Promise.resolve();
@@ -164,42 +165,42 @@ class RankModule {
           const allQueries = [];
 
           // if we have a season rank and we're not forcing a reset, save the existing rank to history
-          if ((this.userRow.rank_starting_at != null) && !force) {
-            Logger.module('RankModule').debug(`cycleUserSeasonRanking() -> saving rank for ${moment.utc(this.userRow.rank_starting_at).format('MMMM YYYY')} season to history. user id: ${userId.blue}`);
+          if ((_chainState.userRow.rank_starting_at != null) && !force) {
+            Logger.module('RankModule').debug(`cycleUserSeasonRanking() -> saving rank for ${moment.utc(_chainState.userRow.rank_starting_at).format('MMMM YYYY')} season to history. user id: ${userId.blue}`);
 
-            this.oldRank = {
+            _chainState.oldRank = {
               user_id: userId,
-              created_at: this.userRow.rank_created_at,
-              updated_at: this.userRow.rank_updated_at,
-              starting_at: this.userRow.rank_starting_at,
-              rank: this.userRow.rank,
-              stars: this.userRow.rank_stars,
-              stars_required: this.userRow.rank_stars_required,
-              win_streak: this.userRow.rank_win_streak,
-              top_rank: this.userRow.rank_top_rank,
+              created_at: _chainState.userRow.rank_created_at,
+              updated_at: _chainState.userRow.rank_updated_at,
+              starting_at: _chainState.userRow.rank_starting_at,
+              rank: _chainState.userRow.rank,
+              stars: _chainState.userRow.rank_stars,
+              stars_required: _chainState.userRow.rank_stars_required,
+              win_streak: _chainState.userRow.rank_win_streak,
+              top_rank: _chainState.userRow.rank_top_rank,
               is_unread: true,
             };
 
-            if (this.userRatingRow != null) {
-              this.oldRank.rating = this.userRatingRow.rating;
-              this.oldRank.top_rating = this.userRatingRow.top_rating;
-              this.oldRank.ladder_position = this.userRatingRow.ladder_position;
-              this.oldRank.top_ladder_position = this.userRatingRow.top_ladder_position;
-              this.oldRank.ladder_rating = this.userRatingRow.ladder_rating;
-              this.oldRank.srank_game_count = this.userRatingRow.srank_game_count;
-              this.oldRank.srank_win_count = this.userRatingRow.srank_win_count;
+            if (_chainState.userRatingRow != null) {
+              _chainState.oldRank.rating = _chainState.userRatingRow.rating;
+              _chainState.oldRank.top_rating = _chainState.userRatingRow.top_rating;
+              _chainState.oldRank.ladder_position = _chainState.userRatingRow.ladder_position;
+              _chainState.oldRank.top_ladder_position = _chainState.userRatingRow.top_ladder_position;
+              _chainState.oldRank.ladder_rating = _chainState.userRatingRow.ladder_rating;
+              _chainState.oldRank.srank_game_count = _chainState.userRatingRow.srank_game_count;
+              _chainState.oldRank.srank_win_count = _chainState.userRatingRow.srank_win_count;
             }
 
             allQueries.push(
-              knex.insert(this.oldRank).into('user_rank_history').transacting(tx),
+              knex.insert(_chainState.oldRank).into('user_rank_history').transacting(tx),
             );
           }
 
           Logger.module('RankModule').debug(`cycleUserSeasonRanking() -> generating rank for ${MOMENT_UTC_START_OF_MONTH.format('MMMM YYYY')} season. user id: ${userId.blue}`);
 
           // account for the bonus chevrons given as season rewards
-          if ((this.oldRank != null ? this.oldRank.top_rank : undefined) != null) {
-            newRankData = RankFactory.rankForNewSeason(this.oldRank != null ? this.oldRank.top_rank : undefined);
+          if ((_chainState.oldRank != null ? _chainState.oldRank.top_rank : undefined) != null) {
+            newRankData = RankFactory.rankForNewSeason(_chainState.oldRank != null ? _chainState.oldRank.top_rank : undefined);
           } else {
             newRankData = {
               rank: 30,
@@ -207,7 +208,7 @@ class RankModule {
             };
           }
 
-          this.rankToReturn = (this.newRank = {
+          _chainState.rankToReturn = (_chainState.newRank = {
             rank: newRankData.rank,
             stars: newRankData.stars,
             stars_required: RankFactory.starsNeededToAdvanceRank(newRankData.rank),
@@ -221,30 +222,30 @@ class RankModule {
           });
 
           const updatedExistingRankAttributes = {
-            rank: this.newRank.rank,
-            rank_starting_at: this.newRank.starting_at,
-            rank_created_at: this.newRank.created_at,
-            rank_updated_at: this.newRank.updated_at,
-            rank_stars: this.newRank.stars,
-            rank_stars_required: this.newRank.rank.stars_required,
+            rank: _chainState.newRank.rank,
+            rank_starting_at: _chainState.newRank.starting_at,
+            rank_created_at: _chainState.newRank.created_at,
+            rank_updated_at: _chainState.newRank.updated_at,
+            rank_stars: _chainState.newRank.stars,
+            rank_stars_required: _chainState.newRank.rank.stars_required,
             rank_delta: null,
             rank_win_streak: 0,
-            rank_top_rank: this.newRank.rank,
+            rank_top_rank: _chainState.newRank.rank,
             rank_is_unread: true,
           };
 
           // if we don't have a top rank or for some reason the top rank is better in the new season, set the new top rank
           // NOTE: specifically checking if the top rank improved is a bit redundant since the `updateUserRankingWithGame` method should take care of it after each game. However QA tools, scripts, etc might not account for it correctly so we do it here anyway.
-          if (!this.userRow.top_rank_starting_at || (this.userRow.top_rank > this.newRank.rank)) {
+          if (!_chainState.userRow.top_rank_starting_at || (_chainState.userRow.top_rank > _chainState.newRank.rank)) {
             Logger.module('RankModule').debug(`cycleUserSeasonRanking() -> using the ${MOMENT_UTC_START_OF_MONTH.format('MMMM YYYY')} season rank as top rank. user id: ${userId.blue}`);
-            this.topRank = this.newRank;
+            _chainState.topRank = _chainState.newRank;
 
-            updatedExistingRankAttributes.top_rank = this.newRank.rank;
-            updatedExistingRankAttributes.top_rank_starting_at = this.newRank.starting_at;
-            updatedExistingRankAttributes.top_rank_updated_at = this.newRank.updated_at;
+            updatedExistingRankAttributes.top_rank = _chainState.newRank.rank;
+            updatedExistingRankAttributes.top_rank_starting_at = _chainState.newRank.starting_at;
+            updatedExistingRankAttributes.top_rank_updated_at = _chainState.newRank.updated_at;
 
-            if ((this.userRatingRow != null ? this.userRatingRow.ladder_position : undefined) != null) {
-              updatedExistingRankAttributes.top_rank_ladder_position = this.userRatingRow.ladder_position;
+            if ((_chainState.userRatingRow != null ? _chainState.userRatingRow.ladder_position : undefined) != null) {
+              updatedExistingRankAttributes.top_rank_ladder_position = _chainState.userRatingRow.ladder_position;
             }
           }
 
@@ -270,29 +271,29 @@ class RankModule {
         const allPromises = [];
 
         // save to rank history
-        if (this.oldRank) {
-          this.oldRank.created_at = moment.utc(this.oldRank.created_at).valueOf();
-          this.oldRank.updated_at = moment.utc(this.oldRank.updated_at).valueOf();
-          this.oldRank.starting_at = moment.utc(this.oldRank.starting_at).valueOf();
-          delete this.oldRank.user_id;
+        if (_chainState.oldRank) {
+          _chainState.oldRank.created_at = moment.utc(_chainState.oldRank.created_at).valueOf();
+          _chainState.oldRank.updated_at = moment.utc(_chainState.oldRank.updated_at).valueOf();
+          _chainState.oldRank.starting_at = moment.utc(_chainState.oldRank.starting_at).valueOf();
+          delete _chainState.oldRank.user_id;
           // save old rank to history
-          allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('history').child(this.oldRank.starting_at), this.oldRank));
+          allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('history').child(_chainState.oldRank.starting_at), _chainState.oldRank));
         }
 
-        if (this.newRank) {
-          this.newRank.created_at = moment.utc(this.newRank.created_at).valueOf();
-          this.newRank.updated_at = moment.utc(this.newRank.updated_at).valueOf();
-          this.newRank.starting_at = moment.utc(this.newRank.starting_at).valueOf();
+        if (_chainState.newRank) {
+          _chainState.newRank.created_at = moment.utc(_chainState.newRank.created_at).valueOf();
+          _chainState.newRank.updated_at = moment.utc(_chainState.newRank.updated_at).valueOf();
+          _chainState.newRank.starting_at = moment.utc(_chainState.newRank.starting_at).valueOf();
           // save new rank
-          allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('current'), this.newRank));
+          allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('current'), _chainState.newRank));
         }
 
-        if (this.topRank) {
-          this.topRank.created_at = moment.utc(this.topRank.created_at).valueOf();
-          this.topRank.updated_at = moment.utc(this.topRank.updated_at).valueOf();
-          this.topRank.starting_at = moment.utc(this.topRank.starting_at).valueOf();
+        if (_chainState.topRank) {
+          _chainState.topRank.created_at = moment.utc(_chainState.topRank.created_at).valueOf();
+          _chainState.topRank.updated_at = moment.utc(_chainState.topRank.updated_at).valueOf();
+          _chainState.topRank.starting_at = moment.utc(_chainState.topRank.starting_at).valueOf();
           // save top rank
-          allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('top'), this.topRank));
+          allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('top'), _chainState.topRank));
         }
 
         // Remove ladder position from presence
@@ -300,7 +301,7 @@ class RankModule {
 
         return Promise.resolve(allPromises);
       }).then(function () {
-        return Promise.resolve(this.rankToReturn);
+        return Promise.resolve(_chainState.rankToReturn);
       });
   }
 
@@ -315,6 +316,7 @@ class RankModule {
    * @return  {Promise}        Promise that will post a RANK DATA.
    */
   static updateUserRankingWithGameOutcome(userId, isWinner, gameId, isDraw, systemTime) {
+    const _chainState = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
 
     // userId must be defined
@@ -331,7 +333,7 @@ class RankModule {
       .then(function (userRow) {
       // Logger.module("RankModule").debug "updateUserRankingWithGameOutcome() -> ACQUIRED LOCK ON #{userId}".yellow
 
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         let rankData = {
           rank: userRow.rank,
@@ -349,13 +351,13 @@ class RankModule {
         // for bot users, always count games as DRAWs for purposes of rank calculation
         if (userRow.is_bot) {
           Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> No need for BOT ranking user ${userId}`);
-          rankData = (this.rankData = RankFactory.updateRankDataWithGameOutcome(rankData, false, true));
+          rankData = (_chainState.rankData = RankFactory.updateRankDataWithGameOutcome(rankData, false, true));
           // otherwise normal processing
         } else {
-          rankData = (this.rankData = RankFactory.updateRankDataWithGameOutcome(rankData, isWinner, isDraw));
+          rankData = (_chainState.rankData = RankFactory.updateRankDataWithGameOutcome(rankData, isWinner, isDraw));
         }
 
-        this.topRankUpdated = false;
+        _chainState.topRankUpdated = false;
 
         const allQueries = [];
 
@@ -370,7 +372,7 @@ class RankModule {
         };
 
         if (rankData.rank < userRow.top_rank) {
-          this.topRankUpdated = true;
+          _chainState.topRankUpdated = true;
           updateParams.top_rank = rankData.rank;
           updateParams.top_rank_starting_at = userRow.rank_starting_at;
           updateParams.top_rank_updated_at = MOMENT_UTC_NOW.toDate();
@@ -425,28 +427,28 @@ class RankModule {
       }).then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
         Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> saving firebase data. game_id:${gameId}`);
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
         const allPromises = [];
 
-        const data = this.rankData;
+        const data = _chainState.rankData;
 
         // transform dates to int timestamps for firebase
         if (data.created_at) { data.created_at = moment.utc(data.created_at).valueOf(); }
         if (data.starting_at) { data.starting_at = moment.utc(data.starting_at).valueOf(); }
         if (data.updated_at) { data.updated_at = moment.utc(data.updated_at).valueOf(); }
 
-        if (this.topRankUpdated) {
+        if (_chainState.topRankUpdated) {
           allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('top'), data));
         }
 
         allPromises.push(FirebasePromises.set(fbRootRef.child('user-ranking').child(userId).child('current'), data));
 
         // update game record
-        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_before'), this.userRow.rank));
-        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_stars_before'), this.userRow.rank_stars));
-        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_delta'), this.rankData.delta.rank));
-        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_stars_delta'), this.rankData.delta.stars));
-        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_win_streak'), this.rankData.win_streak));
+        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_before'), _chainState.userRow.rank));
+        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_stars_before'), _chainState.userRow.rank_stars));
+        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_delta'), _chainState.rankData.delta.rank));
+        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_stars_delta'), _chainState.rankData.delta.stars));
+        allPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rank_win_streak'), _chainState.rankData.win_streak));
 
         return Promise.all(allPromises);
       })
@@ -463,21 +465,21 @@ class RankModule {
         .then((fbRootRef) => FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('job_status')
           .child('rank'), true)))).bind(this_obj)
       .then(function () {
-        clearTimeout(this.timeout);
+        clearTimeout(_chainState.timeout);
         Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> All DONE. user_id: ${userId} game_id:${gameId}`);
 
         // If user earned higher rank, update rank achievements
-        if (this.rankData.delta.rank < 0) {
+        if (_chainState.rankData.delta.rank < 0) {
           Jobs.create('update-user-achievements', {
             name: 'Update User Rank Achievements',
             title: util.format('User %s :: Update Rank Achievements', userId),
             userId,
-            achievedRank: this.rankData.rank,
+            achievedRank: _chainState.rankData.rank,
           },
           ).removeOnComplete(true).ttl(15000).save();
         }
 
-        return Promise.resolve(this.rankData);
+        return Promise.resolve(_chainState.rankData);
       }).finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'quests'));
   }
 
@@ -495,6 +497,7 @@ class RankModule {
    * @return  {Promise}        Promise that will post a RANK DATA.
    */
   static updateUsersRatingsWithGameOutcome(player1Id, player2Id, player1IsWinner, gameId, isDraw, player1IsRanked, player2IsRanked, systemTime) {
+    const _chainState = {};
     Logger.module('RankModule').debug(`updateUsersRatingsWithGameOutcome() -> updating for users[${player1Id},${player2Id}] game_id:${gameId}`);
 
     const MOMENT_UTC_NOW = systemTime || moment().utc();
@@ -527,19 +530,19 @@ class RankModule {
         player2UserRow,
         tx('user_rank_ratings').first().where({ user_id: player2Id, season_starting_at: seasonStartingAt }).forUpdate(),
       ])).spread(function (player1UserRow, player1RatingRow, player2UserRow, player2RatingRow) {
-        this.player1UserRow = player1UserRow;
-        this.player1RatingRow = player1RatingRow;
-        this.player2UserRow = player2UserRow;
-        this.player2RatingRow = player2RatingRow;
+        _chainState.player1UserRow = player1UserRow;
+        _chainState.player1RatingRow = player1RatingRow;
+        _chainState.player2UserRow = player2UserRow;
+        _chainState.player2RatingRow = player2RatingRow;
 
-        this.player1IsSRank = ((this.player1UserRow != null ? this.player1UserRow.rank : undefined) === 0) && player1IsRanked;
-        this.player2IsSRank = ((this.player2UserRow != null ? this.player2UserRow.rank : undefined) === 0) && player2IsRanked;
+        _chainState.player1IsSRank = ((_chainState.player1UserRow != null ? _chainState.player1UserRow.rank : undefined) === 0) && player1IsRanked;
+        _chainState.player2IsSRank = ((_chainState.player2UserRow != null ? _chainState.player2UserRow.rank : undefined) === 0) && player2IsRanked;
 
-        this.player1IsDiamondOrBetter = ((this.player1UserRow != null ? this.player1UserRow.rank : undefined) != null) && (this.player1UserRow.rank <= 5) && player1IsRanked;
-        this.player2IsDiamondOrBetter = ((this.player2UserRow != null ? this.player2UserRow.rank : undefined) != null) && (this.player2UserRow.rank <= 5) && player1IsRanked;
+        _chainState.player1IsDiamondOrBetter = ((_chainState.player1UserRow != null ? _chainState.player1UserRow.rank : undefined) != null) && (_chainState.player1UserRow.rank <= 5) && player1IsRanked;
+        _chainState.player2IsDiamondOrBetter = ((_chainState.player2UserRow != null ? _chainState.player2UserRow.rank : undefined) != null) && (_chainState.player2UserRow.rank <= 5) && player1IsRanked;
 
-        this.trackRatingForPlayer1 = ((this.player1UserRow != null ? this.player1UserRow.rank : undefined) <= 5) && player1IsRanked;
-        this.trackRatingForPlayer2 = ((this.player2UserRow != null ? this.player2UserRow.rank : undefined) <= 5) && player2IsRanked;
+        _chainState.trackRatingForPlayer1 = ((_chainState.player1UserRow != null ? _chainState.player1UserRow.rank : undefined) <= 5) && player1IsRanked;
+        _chainState.trackRatingForPlayer2 = ((_chainState.player2UserRow != null ? _chainState.player2UserRow.rank : undefined) <= 5) && player2IsRanked;
 
         const allPromises = [];
 
@@ -564,24 +567,24 @@ class RankModule {
         let player2DefaultRating = 1500;
 
         // If an s-rank player wins against a non s-rank player, count the non s-rank player as rating 900 to dampen how much the win counts
-        if (player1IsWinner && !this.player1IsDiamondOrBetter) {
+        if (player1IsWinner && !_chainState.player1IsDiamondOrBetter) {
           player2DefaultRating = 900;
         }
-        if (player2IsWinner && !this.player2IsDiamondOrBetter) {
+        if (player2IsWinner && !_chainState.player2IsDiamondOrBetter) {
           player1DefaultRating = 900;
         }
 
         // Set up default rating data
         const player1RatingData = {
-          rating: (this.player1RatingRow != null ? this.player1RatingRow.rating : undefined) || player1DefaultRating,
-          rating_deviation: (this.player1RatingRow != null ? this.player1RatingRow.rating_deviation : undefined) || 200,
-          volatility: (this.player1RatingRow != null ? this.player1RatingRow.volatility : undefined) || 0.06,
+          rating: (_chainState.player1RatingRow != null ? _chainState.player1RatingRow.rating : undefined) || player1DefaultRating,
+          rating_deviation: (_chainState.player1RatingRow != null ? _chainState.player1RatingRow.rating_deviation : undefined) || 200,
+          volatility: (_chainState.player1RatingRow != null ? _chainState.player1RatingRow.volatility : undefined) || 0.06,
         };
 
         const player2RatingData = {
-          rating: (this.player2RatingRow != null ? this.player2RatingRow.rating : undefined) || player2DefaultRating,
-          rating_deviation: (this.player2RatingRow != null ? this.player2RatingRow.rating_deviation : undefined) || 200,
-          volatility: (this.player2RatingRow != null ? this.player2RatingRow.volatility : undefined) || 0.06,
+          rating: (_chainState.player2RatingRow != null ? _chainState.player2RatingRow.rating : undefined) || player2DefaultRating,
+          rating_deviation: (_chainState.player2RatingRow != null ? _chainState.player2RatingRow.rating_deviation : undefined) || 200,
+          volatility: (_chainState.player2RatingRow != null ? _chainState.player2RatingRow.volatility : undefined) || 0.06,
         };
 
         const player1 = ranking.makePlayer(player1RatingData.rating, player1RatingData.rating_deviation, player1RatingData.volatility);
@@ -633,7 +636,7 @@ class RankModule {
           if (userRatingRow != null) {
           // Rating row exists, update the current data
             const topRating = Math.max(newRating, userRatingRow.top_rating || 0);
-            allPromises.push(tx('user_rank_ratings').where({ user_id: userId, season_starting_at: this.seasonStartingAt }).update({
+            allPromises.push(tx('user_rank_ratings').where({ user_id: userId, season_starting_at: _chainState.seasonStartingAt }).update({
               ladder_rating: ladderRating,
               rating: newRating,
               rating_deviation: glickoPlayerData.getRd(),
@@ -651,7 +654,7 @@ class RankModule {
               ladder_rating: ladderRating,
               rating: newRating,
               rating_deviation: glickoPlayerData.getRd(),
-              season_starting_at: this.seasonStartingAt,
+              season_starting_at: _chainState.seasonStartingAt,
               srank_game_count: gameCount,
               srank_win_count: winCount,
               top_rating: newRating,
@@ -687,15 +690,15 @@ class RankModule {
         };
 
         // No rating is tracked if either player is not diamond or better
-        if (this.player1IsDiamondOrBetter && this.player2IsDiamondOrBetter) {
-          if (this.trackRatingForPlayer1) {
-            this.player1NewRatingData = {};
-            updateOrInsertUserRating(this.player1Id, this.player1UserRow, this.player1RatingRow, player1, gameId, player1IsWinner, this.player1NewRatingData);
+        if (_chainState.player1IsDiamondOrBetter && _chainState.player2IsDiamondOrBetter) {
+          if (_chainState.trackRatingForPlayer1) {
+            _chainState.player1NewRatingData = {};
+            updateOrInsertUserRating(_chainState.player1Id, _chainState.player1UserRow, _chainState.player1RatingRow, player1, gameId, player1IsWinner, _chainState.player1NewRatingData);
           }
 
-          if (this.trackRatingForPlayer2) {
-            this.player2NewRatingData = {};
-            updateOrInsertUserRating(this.player2Id, this.player2UserRow, this.player2RatingRow, player2, gameId, player2IsWinner, this.player2NewRatingData);
+          if (_chainState.trackRatingForPlayer2) {
+            _chainState.player2NewRatingData = {};
+            updateOrInsertUserRating(_chainState.player2Id, _chainState.player2UserRow, _chainState.player2RatingRow, player2, gameId, player2IsWinner, _chainState.player2NewRatingData);
           }
         }
 
@@ -704,12 +707,12 @@ class RankModule {
       .then(function () {
       // Update rating in redis
         const redisPromises = [];
-        if ((this.player1NewRatingData != null) && (this.player1NewRatingData.new_ladder_rating != null) && this.player1IsSRank) {
-          redisPromises.push(SRankManager.updateUserLadderRating(this.player1Id, this.startOfSeasonMoment, this.player1NewRatingData.new_ladder_rating));
+        if ((_chainState.player1NewRatingData != null) && (_chainState.player1NewRatingData.new_ladder_rating != null) && _chainState.player1IsSRank) {
+          redisPromises.push(SRankManager.updateUserLadderRating(_chainState.player1Id, _chainState.startOfSeasonMoment, _chainState.player1NewRatingData.new_ladder_rating));
         }
 
-        if ((this.player2NewRatingData != null) && (this.player2NewRatingData.new_ladder_rating != null) && this.player2IsSRank) {
-          redisPromises.push(SRankManager.updateUserLadderRating(this.player2Id, this.startOfSeasonMoment, this.player2NewRatingData.new_ladder_rating));
+        if ((_chainState.player2NewRatingData != null) && (_chainState.player2NewRatingData.new_ladder_rating != null) && _chainState.player2IsSRank) {
+          redisPromises.push(SRankManager.updateUserLadderRating(_chainState.player2Id, _chainState.startOfSeasonMoment, _chainState.player2NewRatingData.new_ladder_rating));
         }
 
         return Promise.all(redisPromises);
@@ -718,14 +721,14 @@ class RankModule {
       // Computer players current position in the ladder
         const ladderRankingPromises = [];
 
-        if (this.player1IsSRank) {
-          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, this.player1Id, this.startOfSeasonMoment, false, MOMENT_UTC_NOW));
+        if (_chainState.player1IsSRank) {
+          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, _chainState.player1Id, _chainState.startOfSeasonMoment, false, MOMENT_UTC_NOW));
         } else {
           ladderRankingPromises.push(Promise.resolve(null));
         }
 
-        if (this.player2IsSRank) {
-          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, this.player2Id, this.startOfSeasonMoment, false, MOMENT_UTC_NOW));
+        if (_chainState.player2IsSRank) {
+          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, _chainState.player2Id, _chainState.startOfSeasonMoment, false, MOMENT_UTC_NOW));
         } else {
           ladderRankingPromises.push(Promise.resolve(null));
         }
@@ -733,8 +736,8 @@ class RankModule {
         return Promise.all(ladderRankingPromises)
           .bind(this_obj)
           .spread(function (player1LadderPositionAfter, player2LadderPositionAfter) {
-            this.player1LadderPositionAfter = player1LadderPositionAfter;
-            return this.player2LadderPositionAfter = player2LadderPositionAfter;
+            _chainState.player1LadderPositionAfter = player1LadderPositionAfter;
+            return _chainState.player2LadderPositionAfter = player2LadderPositionAfter;
           });
       })
       .timeout(10000)
@@ -745,36 +748,36 @@ class RankModule {
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
       // Perform firebase updates now that transaction is completed
-        this.fbRootRef = fbRootRef;
+        _chainState.fbRootRef = fbRootRef;
 
         const fbUpdatePromises = [];
 
         // if players had a ladder position before add it to game over data
-        if ((this.player1RatingRow != null ? this.player1RatingRow.ladder_position : undefined) != null) {
-          fbUpdatePromises.push(FirebasePromises.set(this.fbRootRef.child('user-games').child(this.player1Id).child(this.gameId).child('ladder_position_before'), this.player1RatingRow.ladder_position));
+        if ((_chainState.player1RatingRow != null ? _chainState.player1RatingRow.ladder_position : undefined) != null) {
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player1Id).child(_chainState.gameId).child('ladder_position_before'), _chainState.player1RatingRow.ladder_position));
         }
-        if ((this.player2RatingRow != null ? this.player2RatingRow.ladder_position : undefined) != null) {
-          fbUpdatePromises.push(FirebasePromises.set(this.fbRootRef.child('user-games').child(this.player2Id).child(this.gameId).child('ladder_position_before'), this.player2RatingRow.ladder_position));
+        if ((_chainState.player2RatingRow != null ? _chainState.player2RatingRow.ladder_position : undefined) != null) {
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player2Id).child(_chainState.gameId).child('ladder_position_before'), _chainState.player2RatingRow.ladder_position));
         }
 
         // If players have a new ladder position after match add it to game over data
-        if (this.player1LadderPositionAfter) {
-          fbUpdatePromises.push(FirebasePromises.set(this.fbRootRef.child('user-games').child(this.player1Id).child(this.gameId).child('ladder_position_after'), this.player1LadderPositionAfter));
+        if (_chainState.player1LadderPositionAfter) {
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player1Id).child(_chainState.gameId).child('ladder_position_after'), _chainState.player1LadderPositionAfter));
         }
-        if (this.player2LadderPositionAfter) {
-          fbUpdatePromises.push(FirebasePromises.set(this.fbRootRef.child('user-games').child(this.player2Id).child(this.gameId).child('ladder_position_after'), this.player2LadderPositionAfter));
+        if (_chainState.player2LadderPositionAfter) {
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player2Id).child(_chainState.gameId).child('ladder_position_after'), _chainState.player2LadderPositionAfter));
         }
 
         return Promise.all(fbUpdatePromises);
       })
       .then(function () {
-        clearTimeout(this.timeout);
+        clearTimeout(_chainState.timeout);
         return Promise.resolve();
       })
       .finally(function () {
         return Promise.all([
-          GamesModule.markClientGameJobStatusAsComplete(this.player1Id, this.gameId, 'ladder'),
-          GamesModule.markClientGameJobStatusAsComplete(this.player2Id, this.gameId, 'ladder'),
+          GamesModule.markClientGameJobStatusAsComplete(_chainState.player1Id, _chainState.gameId, 'ladder'),
+          GamesModule.markClientGameJobStatusAsComplete(_chainState.player2Id, _chainState.gameId, 'ladder'),
         ]);
       });
 
@@ -821,6 +824,7 @@ class RankModule {
    * @return  {Promise}        Promise that will return the users updated ladder position
    */
   static updateAndGetUserLadderPosition(txPromise, tx, playerId, startOfSeasonMoment, systemTime) {
+    const _chainState = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
@@ -832,7 +836,7 @@ class RankModule {
     return this.getUserLadderPosition(tx, playerId, startOfSeasonMoment, true, MOMENT_UTC_NOW)
       .bind(this_obj)
       .then(function (ladderPosition) {
-        this.newLadderPosition = ladderPosition;
+        _chainState.newLadderPosition = ladderPosition;
         if ((ladderPosition == null)) {
         // No ladder position, clear any current data for this season
           txPromise.then(() => DuelystFirebase.connect().getRootRef()
@@ -851,7 +855,7 @@ class RankModule {
               const allPromises = [];
 
               const fbUserRatingData = {
-                ladder_position: this.newLadderPosition,
+                ladder_position: _chainState.newLadderPosition,
                 updated_at: MOMENT_UTC_NOW.valueOf(),
               };
 
@@ -863,25 +867,25 @@ class RankModule {
                 ])));
 
               // Update the current user rating row for this season with ladder position
-              const topLadderPosition = Math.min(this.newLadderPosition, (userRatingRowData != null ? userRatingRowData.top_ladder_position : undefined) || this.newLadderPosition);
+              const topLadderPosition = Math.min(_chainState.newLadderPosition, (userRatingRowData != null ? userRatingRowData.top_ladder_position : undefined) || _chainState.newLadderPosition);
               const userRatingRowLadderPositionData = {
-                ladder_position: this.newLadderPosition,
+                ladder_position: _chainState.newLadderPosition,
                 top_ladder_position: topLadderPosition,
                 updated_at: MOMENT_UTC_NOW.toDate(),
               };
-              allPromises.push(tx('user_rank_ratings').where('user_id', playerId).andWhere('season_starting_at', this.seasonStartingAt).update(userRatingRowLadderPositionData));
+              allPromises.push(tx('user_rank_ratings').where('user_id', playerId).andWhere('season_starting_at', _chainState.seasonStartingAt).update(userRatingRowLadderPositionData));
 
               // Check if we need to update top ranks based on ladder position
-              if ((userRowData.top_rank_ladder_position == null) || (this.newLadderPosition < userRowData.top_rank_ladder_position)) {
+              if ((userRowData.top_rank_ladder_position == null) || (_chainState.newLadderPosition < userRowData.top_rank_ladder_position)) {
                 const userRowLadderPositionData = {};
-                userRowLadderPositionData.top_rank_starting_at = this.seasonStartingAt;
+                userRowLadderPositionData.top_rank_starting_at = _chainState.seasonStartingAt;
                 userRowLadderPositionData.top_rank_updated_at = MOMENT_UTC_NOW.toDate();
-                userRowLadderPositionData.top_rank_ladder_position = this.newLadderPosition;
+                userRowLadderPositionData.top_rank_ladder_position = _chainState.newLadderPosition;
 
                 const fbUserTopRankData = {
-                  ladder_position: this.newLadderPosition,
-                  top_ladder_position: this.newLadderPosition,
-                  starting_at: moment.utc(this.seasonStartingAt).valueOf(),
+                  ladder_position: _chainState.newLadderPosition,
+                  top_ladder_position: _chainState.newLadderPosition,
+                  starting_at: moment.utc(_chainState.seasonStartingAt).valueOf(),
                   updated_at: MOMENT_UTC_NOW.valueOf(),
                   is_unread: true,
                 };
@@ -897,7 +901,7 @@ class RankModule {
         }
       }).bind(this_obj)
       .then(function () {
-        return this.newLadderPosition;
+        return _chainState.newLadderPosition;
       });
   }
 
@@ -913,6 +917,7 @@ class RankModule {
    * @return  {Promise}        Promise that will return the users cached ladder position or null if none exists
    */
   static getUserLadderPosition(tx, playerId, startOfSeasonMoment, recalculateIfOldSeason, systemTime) {
+    const _chainState = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
@@ -922,13 +927,13 @@ class RankModule {
     return this.getUserRatingData(tx, playerId, MOMENT_UTC_NOW)
       .bind(({}))
       .then(function (userRatingRow) {
-        this.userRatingRow = userRatingRow;
-        if ((this.userRatingRow != null ? this.userRatingRow.rating : undefined) != null) {
+        _chainState.userRatingRow = userRatingRow;
+        if ((_chainState.userRatingRow != null ? _chainState.userRatingRow.rating : undefined) != null) {
           if (SRankManager.getSeasonIsStillActiveInRedis(startOfSeasonMoment, systemTime)) {
             return SRankManager.getUserLadderPosition(playerId, startOfSeasonMoment);
           } else {
             if (recalculateIfOldSeason) {
-              return tx('user_rank_ratings').count().where('season_starting_at', seasonStartingAt).andWhere('ladder_rating', '>', this.userRatingRow.ladder_rating)
+              return tx('user_rank_ratings').count().where('season_starting_at', seasonStartingAt).andWhere('ladder_rating', '>', _chainState.userRatingRow.ladder_rating)
                 .then(function (countData) {
                   if (countData != null) {
                     return Promise.resolve(parseInt(countData[0].count) + 1);
@@ -938,7 +943,7 @@ class RankModule {
                 });
             } else {
             // Use cached value
-              return Promise.resolve(this.userRatingRow.ladder_position);
+              return Promise.resolve(_chainState.userRatingRow.ladder_position);
             }
           }
         } else {
@@ -947,8 +952,8 @@ class RankModule {
         }
       }).then(function (ladderPosition) {
         if (ladderPosition != null) {
-          this.ladderPosition = parseInt(ladderPosition);
-          return this.ladderPosition;
+          _chainState.ladderPosition = parseInt(ladderPosition);
+          return _chainState.ladderPosition;
         } else {
           return null;
         }
@@ -1016,6 +1021,7 @@ class RankModule {
    * @return  {Promise}            Promise that will return rewards array on completion.
    */
   static claimRewardsForSeasonRank(userId, dateWithinSeason, systemTime) {
+    const _chainState = {};
     if (!userId) {
       return Promise.reject(new Error(`Can not claim season rank rewards: invalid user ID - ${userId}`));
     }
@@ -1114,7 +1120,7 @@ class RankModule {
           }).transacting(tx),
           );
 
-          this.rewards = rewards;
+          _chainState.rewards = rewards;
 
           return Promise.all(allPromises);
         })
@@ -1122,7 +1128,7 @@ class RankModule {
         .then(function (fbRootRef) {
           const rankHistoryFbPromise = FirebasePromises.update(fbRootRef.child('user-ranking').child(userId).child('history').child(startOfSeasonMoment.valueOf()), {
             rewards_claimed_at: MOMENT_UTC_NOW.valueOf(),
-            reward_ids: _.map(this.rewards, (r) => r.id),
+            reward_ids: _.map(_chainState.rewards, (r) => r.id),
           });
           return rankHistoryFbPromise;
         })
@@ -1131,7 +1137,7 @@ class RankModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        return this.rewards;
+        return _chainState.rewards;
       });
 
     return txPromise;

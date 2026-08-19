@@ -91,6 +91,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will post RIFT TICKET ID on completion.
    */
   static buyRiftTicketWithGold(userId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`buyRiftTicketWithGold() -> invalid user ID - ${userId}.`.red);
@@ -110,7 +111,7 @@ class RiftModule {
         // if the user has enough gold
           if (userRow.wallet_gold >= CONFIG.RIFT_TICKET_GOLD_PRICE) {
           // calculate final gold
-            const final_wallet_gold = (this.final_wallet_gold = userRow.wallet_gold - CONFIG.RIFT_TICKET_GOLD_PRICE);
+            const final_wallet_gold = (_chainState.final_wallet_gold = userRow.wallet_gold - CONFIG.RIFT_TICKET_GOLD_PRICE);
 
             // setup what to update the user params with
             const userUpdateParams = {
@@ -126,7 +127,7 @@ class RiftModule {
         })
         .then(() => RiftModule.addRiftTicketToUser(txPromise, tx, userId, 'soft'))
         .then(function (ticketId) {
-          this.ticketId = ticketId;
+          _chainState.ticketId = ticketId;
           const userCurrencyLogItem = {
             id: generatePushId(),
             user_id: userId,
@@ -141,7 +142,7 @@ class RiftModule {
         .then(function (fbRootRef) {
           const updateWalletData = (walletData) => {
             if (walletData == null) { walletData = {}; }
-            walletData.gold_amount = this.final_wallet_gold;
+            walletData.gold_amount = _chainState.final_wallet_gold;
             walletData.updated_at = NOW_UTC_MOMENT.valueOf();
             return walletData;
           };
@@ -154,9 +155,9 @@ class RiftModule {
     }).bind(this_obj)
 
       .then(function () {
-        Logger.module('RiftModule').log(`buyRiftTicketWithGold() -> User ${userId.blue}`.green + ` purchased ticket ${this.ticketId}.`.green);
+        Logger.module('RiftModule').log(`buyRiftTicketWithGold() -> User ${userId.blue}`.green + ` purchased ticket ${_chainState.ticketId}.`.green);
 
-        return Promise.resolve(this.ticketId);
+        return Promise.resolve(_chainState.ticketId);
       });
 
     // return the transaction promise
@@ -170,6 +171,7 @@ class RiftModule {
    * @return  {Promise}    Promise that will post TICKET ID on completion.
    */
   static claimFirstFreeRiftTicket(userId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`claimFirstFreeRiftTicket() -> invalid user ID - ${userId}.`.red);
@@ -210,16 +212,16 @@ class RiftModule {
           // If user passes the above tests they can have a free rift ticket
           return RiftModule.addRiftTicketToUser(txPromise, tx, userId, 'free');
         }).then(function (ticketId) {
-          this.ticketId = ticketId;
+          _chainState.ticketId = ticketId;
           return SyncModule._bumpUserTransactionCounter(tx, userId);
         })
         .then(tx.commit)
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('RiftModule').debug(`claimFirstFreeRiftTicket() -> User ${userId.blue}`.green + ` claimed free first rift ticket ${this.ticketId}.`.green);
+        Logger.module('RiftModule').debug(`claimFirstFreeRiftTicket() -> User ${userId.blue}`.green + ` claimed free first rift ticket ${_chainState.ticketId}.`.green);
 
-        return Promise.resolve(this.ticketId);
+        return Promise.resolve(_chainState.ticketId);
       });
 
     return txPromise;
@@ -297,6 +299,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the rift data on completion.
    */
   static startRun(userId, ticketId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`startRun() -> ERROR: invalid user ID: ${userId}`.red);
@@ -323,32 +326,32 @@ class RiftModule {
       ])
         .bind(this_obj)
         .spread(function (userRow, ticketRow, existingRun, storedUpgradeRows) {
-          this.ticketRow = ticketRow;
-          this.isFirstRun = false;
+          _chainState.ticketRow = ticketRow;
+          _chainState.isFirstRun = false;
           if ((existingRun == null)) {
-            this.isFirstRun = true;
+            _chainState.isFirstRun = true;
           }
 
-          this.storedUpgradeRows = storedUpgradeRows;
+          _chainState.storedUpgradeRows = storedUpgradeRows;
 
           if (ticketRow && ((ticketRow != null ? ticketRow.user_id : undefined) === userId)) {
-            this.ticketRow.used_at = NOW_UTC_MOMENT.toDate();
+            _chainState.ticketRow.used_at = NOW_UTC_MOMENT.toDate();
 
-            this.runData = {
+            _chainState.runData = {
               user_id: userId,
               ticket_id: ticketId,
               created_at: NOW_UTC_MOMENT.toDate(),
               deck: [],
             };
 
-            if (this.isFirstRun) {
-              this.runData.upgrades_available_count = RiftModule.RIFT_FIRST_RUN_FREE_UPGRADES;
+            if (_chainState.isFirstRun) {
+              _chainState.runData.upgrades_available_count = RiftModule.RIFT_FIRST_RUN_FREE_UPGRADES;
             }
 
             // TODO: must make sure fb and db are updated with user total stored upgrades to 0
 
-            if (this.storedUpgradeRows != null) {
-              this.runData.stored_upgrades = _.map(this.storedUpgradeRows, (row) => row.id);
+            if (_chainState.storedUpgradeRows != null) {
+              _chainState.runData.stored_upgrades = _.map(_chainState.storedUpgradeRows, (row) => row.id);
             }
 
             return RiftModule._generateGeneralChoices(txPromise, tx, userId);
@@ -356,12 +359,12 @@ class RiftModule {
             return Promise.reject(new Errors.NotFoundError('Could not start run: rift ticket not found.'));
           }
         }).then(function (generalCardChoices) {
-          this.runData.general_choices = generalCardChoices;
-          delete this.ticketRow.is_unread;
+          _chainState.runData.general_choices = generalCardChoices;
+          delete _chainState.ticketRow.is_unread;
           return Promise.all([
             tx('user_rift_tickets').delete().where('id', ticketId),
-            tx('user_rift_tickets_used').insert(this.ticketRow),
-            tx('user_rift_runs').insert(this.runData),
+            tx('user_rift_tickets_used').insert(_chainState.ticketRow),
+            tx('user_rift_runs').insert(_chainState.runData),
             tx('users').where('id', userId).update({
               rift_stored_upgrade_count: 0,
             }),
@@ -369,7 +372,7 @@ class RiftModule {
         })
         .then(function () {
           const storedUpgradeUpdatePromises = [];
-          for (var row of Array.from(this.storedUpgradeRows)) {
+          for (var row of Array.from(_chainState.storedUpgradeRows)) {
             storedUpgradeUpdatePromises.push(tx('user_rift_run_stored_upgrades').where('id', row.id).update({
               assigned_ticket_id: ticketId,
             }),
@@ -379,11 +382,11 @@ class RiftModule {
         })
         .then(() => DuelystFirebase.connect().getRootRef())
         .then(function (fbRootRef) {
-          this.runData = DataAccessHelpers.restifyData(this.runData);
+          _chainState.runData = DataAccessHelpers.restifyData(_chainState.runData);
 
           const allfbPromises = [];
           allfbPromises.push(FirebasePromises.remove(fbRootRef.child('user-inventory').child(userId).child('rift-tickets').child(ticketId)));
-          allfbPromises.push(FirebasePromises.set(fbRootRef.child('user-rift-runs').child(userId).child(ticketId), this.runData));
+          allfbPromises.push(FirebasePromises.set(fbRootRef.child('user-rift-runs').child(userId).child(ticketId), _chainState.runData));
           allfbPromises.push(FirebasePromises.set(fbRootRef.child('users').child(userId).child('rift_stored_upgrade_count'), 0));
 
           return Promise.all(allfbPromises);
@@ -393,9 +396,9 @@ class RiftModule {
         .catch(tx.rollback);
     }).bind(this_obj)
       .then(function () {
-        Logger.module('RiftModule').log(`startRun() -> User ${userId.blue}`.green + ` started run ${this.runData.ticket_id}.`.green);
+        Logger.module('RiftModule').log(`startRun() -> User ${userId.blue}`.green + ` started run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -409,6 +412,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static chooseGeneral(userId, ticketId, generalId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`chooseGeneral() -> ERROR: invalid user ID: ${userId}`.red);
@@ -439,19 +443,19 @@ class RiftModule {
               throw new Errors.InvalidRequestError('Rift run general selection already exists');
             }
 
-            this.runData = existingRun;
-            this.runData.updated_at = NOW_UTC_MOMENT.toDate();
-            this.runData.general_id = generalId;
-            this.runData.faction_id = SDK.CardFactory.cardForIdentifier(generalId, SDK.GameSession.current()).getFactionId();
-            this.runData.deck = _.map(SDK.FactionFactory.starterDeckForFactionLevel(this.runData.faction_id, 12), (c) => c.id);
-            this.runData.deck.shift();
-            this.runData.deck.unshift(generalId);
+            _chainState.runData = existingRun;
+            _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
+            _chainState.runData.general_id = generalId;
+            _chainState.runData.faction_id = SDK.CardFactory.cardForIdentifier(generalId, SDK.GameSession.current()).getFactionId();
+            _chainState.runData.deck = _.map(SDK.FactionFactory.starterDeckForFactionLevel(_chainState.runData.faction_id, 12), (c) => c.id);
+            _chainState.runData.deck.shift();
+            _chainState.runData.deck.unshift(generalId);
 
             return tx('user_rift_runs').where('user_id', userId).andWhere('ticket_id', ticketId).update({
-              updated_at: this.runData.updated_at,
-              general_id: this.runData.general_id,
-              faction_id: this.runData.faction_id,
-              deck: this.runData.deck,
+              updated_at: _chainState.runData.updated_at,
+              general_id: _chainState.runData.general_id,
+              faction_id: _chainState.runData.faction_id,
+              deck: _chainState.runData.deck,
             });
           } else {
             return Promise.reject(new Errors.NotFoundError('Rift run not found.'));
@@ -460,12 +464,12 @@ class RiftModule {
         .then(() => DuelystFirebase.connect().getRootRef())
 
         .then(function (fbRootRef) {
-          if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
+          if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
 
           const fbRiftUpdateData = {
-            general_id: this.runData.general_id,
-            faction_id: this.runData.faction_id,
-            deck: this.runData.deck,
+            general_id: _chainState.runData.general_id,
+            faction_id: _chainState.runData.faction_id,
+            deck: _chainState.runData.deck,
           };
 
           return FirebasePromises.update(fbRootRef.child('user-rift-runs').child(userId).child(ticketId), fbRiftUpdateData);
@@ -476,9 +480,9 @@ class RiftModule {
     }).bind(this_obj)
 
       .then(function () {
-        Logger.module('RiftModule').log(`chooseGeneral() -> User ${userId.blue}`.green + ` chose general ${generalId} for run ${this.runData.ticket_id}.`.green);
+        Logger.module('RiftModule').log(`chooseGeneral() -> User ${userId.blue}`.green + ` chose general ${generalId} for run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -495,6 +499,7 @@ class RiftModule {
    * @return  {Promise}          Promise that will notify when complete.
    */
   static updateRiftRunWithGameOutcome(userId, ticketId, isWinner, gameId, isDraw, damageDealt, gameSessionData) {
+    const _chainState = {};
     if ((gameSessionData != null) && (gameSessionData.aiPlayerId != null) && (gameSessionData.aiPlayerId === userId)) {
       // This was a bot, return gracefully
       return Promise.resolve();
@@ -539,13 +544,13 @@ class RiftModule {
       ])).spread(function (userRow, existingRun) {
         if (existingRun != null) {
           const allPromises = [];
-          this.runData = existingRun;
+          _chainState.runData = existingRun;
 
           if (!existingRun.started_at) {
             existingRun.started_at = NOW_UTC_MOMENT.toDate();
           }
 
-          if (this.runData.rift_level == null) { this.runData.rift_level = 1; }
+          if (_chainState.runData.rift_level == null) { _chainState.runData.rift_level = 1; }
 
           damageDealt = damageDealt || 0;
           let riftPointsEarned = Math.min(damageDealt, 25) || 0;
@@ -559,19 +564,19 @@ class RiftModule {
             upgradesEarned = riftLevelAfter - riftLevelBefore;
           }
 
-          this.riftPointsEarned = riftPointsEarned;
+          _chainState.riftPointsEarned = riftPointsEarned;
 
-          this.runData.updated_at = NOW_UTC_MOMENT.toDate();
-          if (this.runData.games == null) { this.runData.games = []; }
-          if (this.runData.rift_points == null) { this.runData.rift_points = 0; }
-          this.runData.rift_points += this.riftPointsEarned;
-          if (this.runData.upgrades_available_count == null) { this.runData.upgrades_available_count = 0; }
-          this.runData.upgrades_available_count += upgradesEarned;
-          if (this.runData.rift_level == null) { this.runData.rift_level = 1; }
-          this.runData.rift_level += upgradesEarned;
+          _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
+          if (_chainState.runData.games == null) { _chainState.runData.games = []; }
+          if (_chainState.runData.rift_points == null) { _chainState.runData.rift_points = 0; }
+          _chainState.runData.rift_points += _chainState.riftPointsEarned;
+          if (_chainState.runData.upgrades_available_count == null) { _chainState.runData.upgrades_available_count = 0; }
+          _chainState.runData.upgrades_available_count += upgradesEarned;
+          if (_chainState.runData.rift_level == null) { _chainState.runData.rift_level = 1; }
+          _chainState.runData.rift_level += upgradesEarned;
 
           // Rift rating
-          let riftRatingBefore = this.runData.rift_rating;
+          let riftRatingBefore = _chainState.runData.rift_rating;
           if ((riftRatingBefore == null)) {
             riftRatingBefore = RiftModule.RIFT_DEFAULT_RATING;
           }
@@ -593,43 +598,43 @@ class RiftModule {
             }
           }
 
-          this.riftRatingDelta = riftRatingDelta;
+          _chainState.riftRatingDelta = riftRatingDelta;
           const riftRatingAfter = riftRatingBefore + riftRatingDelta;
 
-          this.runData.rift_rating = riftRatingAfter;
+          _chainState.runData.rift_rating = riftRatingAfter;
 
           if (isDraw) {
-            this.runData.draw_count += 1;
+            _chainState.runData.draw_count += 1;
           } else if (isWinner) {
-            this.runData.win_count += 1;
+            _chainState.runData.win_count += 1;
           } else {
-            this.runData.loss_count += 1;
+            _chainState.runData.loss_count += 1;
           }
 
-          this.runData.games.push(gameId);
+          _chainState.runData.games.push(gameId);
 
-          Logger.module('RiftModule').debug(`updateRiftRunWithGameOutcome() -> rift level: ${this.runData.rift_level} points: ${this.runData.rift_points} points earned: ${this.riftPointsEarned}`);
+          Logger.module('RiftModule').debug(`updateRiftRunWithGameOutcome() -> rift level: ${_chainState.runData.rift_level} points: ${_chainState.runData.rift_points} points earned: ${_chainState.riftPointsEarned}`);
 
           allPromises.push(tx('user_rift_runs').where('user_id', userId).andWhere('ticket_id', ticketId).update({
-            loss_count: this.runData.loss_count,
-            win_count: this.runData.win_count,
-            draw_count: this.runData.draw_count,
-            games: this.runData.games,
-            updated_at: this.runData.updated_at,
-            rift_points: this.runData.rift_points,
-            upgrades_available_count: this.runData.upgrades_available_count,
-            started_at: this.runData.started_at,
-            rift_level: this.runData.rift_level,
-            rift_rating: this.runData.rift_rating,
+            loss_count: _chainState.runData.loss_count,
+            win_count: _chainState.runData.win_count,
+            draw_count: _chainState.runData.draw_count,
+            games: _chainState.runData.games,
+            updated_at: _chainState.runData.updated_at,
+            rift_points: _chainState.runData.rift_points,
+            upgrades_available_count: _chainState.runData.upgrades_available_count,
+            started_at: _chainState.runData.started_at,
+            rift_level: _chainState.runData.rift_level,
+            rift_rating: _chainState.runData.rift_rating,
           }),
           );
 
           allPromises.push(tx('user_games').where('user_id', userId).andWhere('game_id', gameId).update({
-            rift_ticket_id: this.runData.ticket_id,
-            rift_points: this.runData.rift_points,
-            rift_points_earned: this.riftPointsEarned,
-            rift_rating_after: this.runData.rift_rating,
-            rift_rating_earned: this.riftRatingDelta,
+            rift_ticket_id: _chainState.runData.ticket_id,
+            rift_points: _chainState.runData.rift_points,
+            rift_points_earned: _chainState.riftPointsEarned,
+            rift_rating_after: _chainState.runData.rift_rating,
+            rift_rating_earned: _chainState.riftRatingDelta,
           }),
           );
 
@@ -640,7 +645,7 @@ class RiftModule {
       })
       .then(function () {
       // Update redis
-        return RiftManager.updateUserRunRiftRating(userId, ticketId, this.runData.rift_rating, NOW_UTC_MOMENT);
+        return RiftManager.updateUserRunRiftRating(userId, ticketId, _chainState.runData.rift_rating, NOW_UTC_MOMENT);
       })
       .then(() => DuelystFirebase.connect().getRootRef())
       .bind(this_obj)
@@ -648,21 +653,21 @@ class RiftModule {
         const allFbPromises = [];
 
         allFbPromises.push(FirebasePromises.update(fbRootRef.child('user-rift-runs').child(userId).child(ticketId), {
-          loss_count: this.runData.loss_count,
-          win_count: this.runData.win_count,
-          draw_count: this.runData.draw_count,
-          rift_points: this.runData.rift_points,
-          upgrades_available_count: this.runData.upgrades_available_count,
-          rift_level: this.runData.rift_level,
-          rift_rating: this.runData.rift_rating,
+          loss_count: _chainState.runData.loss_count,
+          win_count: _chainState.runData.win_count,
+          draw_count: _chainState.runData.draw_count,
+          rift_points: _chainState.runData.rift_points,
+          upgrades_available_count: _chainState.runData.upgrades_available_count,
+          rift_level: _chainState.runData.rift_level,
+          rift_rating: _chainState.runData.rift_rating,
         }),
         );
 
         // update game record
-        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_points'), this.runData.rift_points));
-        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_points_earned'), this.riftPointsEarned));
-        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_rating_after'), this.runData.rift_rating));
-        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_rating_earned'), this.riftRatingDelta));
+        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_points'), _chainState.runData.rift_points));
+        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_points_earned'), _chainState.riftPointsEarned));
+        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_rating_after'), _chainState.runData.rift_rating));
+        allFbPromises.push(FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('rift_rating_earned'), _chainState.riftRatingDelta));
 
         return Promise.all(allFbPromises);
       })
@@ -672,7 +677,7 @@ class RiftModule {
         Logger.module('RiftModule').error(`updateArenaRunWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
       })).bind(this_obj)
-      .then(function () { return Promise.resolve(this.runData); })
+      .then(function () { return Promise.resolve(_chainState.runData); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'rift'));
   }
 
@@ -783,6 +788,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static chooseCardToUpgrade(userId, ticketId, cardId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`chooseCardToUpgrade() -> ERROR: invalid user ID: ${userId}`.red);
@@ -816,45 +822,45 @@ class RiftModule {
               return Promise.reject(new Errors.BadRequestError('Rift run not can not be upgraded.'));
             }
 
-            this.runData = existingRun;
-            this.runData.updated_at = NOW_UTC_MOMENT.toDate();
-            this.runData.card_id_to_upgrade = cardId;
+            _chainState.runData = existingRun;
+            _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
+            _chainState.runData.card_id_to_upgrade = cardId;
 
             let cardChoicesPromise = null;
             if (hasStoredUpgrades) {
-              this.storedUpgradeUsedId = this.runData.stored_upgrades.pop();
-              this.runData.disable_storing_upgrade = true;
-              cardChoicesPromise = tx('user_rift_run_stored_upgrades').first().where('user_id', userId).andWhere('id', this.storedUpgradeUsedId)
+              _chainState.storedUpgradeUsedId = _chainState.runData.stored_upgrades.pop();
+              _chainState.runData.disable_storing_upgrade = true;
+              cardChoicesPromise = tx('user_rift_run_stored_upgrades').first().where('user_id', userId).andWhere('id', _chainState.storedUpgradeUsedId)
                 .bind(this_obj)
                 .then(function (storedUpgradeRow) {
                   if ((storedUpgradeRow == null) || (storedUpgradeRow.card_choices == null)) {
-                    return Promise.reject(new Errors.BadRequestError(`Rift run stored upgrade ${this.storedUpgradeUsedId} does not exist or belong to user ${userId}.`));
+                    return Promise.reject(new Errors.BadRequestError(`Rift run stored upgrade ${_chainState.storedUpgradeUsedId} does not exist or belong to user ${userId}.`));
                   }
                   return Promise.resolve(storedUpgradeRow.card_choices);
                 });
             } else {
             // User has selected a non final card, continue with selecting card choices
-              this.runData.upgrades_available_count -= 1;
-              cardChoicesPromise = RiftModule._generateCardUpgradeChoices(txPromise, tx, userId, ticketId, this.runData.faction_id, cardId);
+              _chainState.runData.upgrades_available_count -= 1;
+              cardChoicesPromise = RiftModule._generateCardUpgradeChoices(txPromise, tx, userId, ticketId, _chainState.runData.faction_id, cardId);
             }
 
             return cardChoicesPromise
-              .bind(this)
+              .bind(_chainState)
               .then(function (cardChoices) {
-                this.runData.card_choices = cardChoices;
+                _chainState.runData.card_choices = cardChoices;
                 const allCardChoicePromises = [];
                 allCardChoicePromises.push(tx('user_rift_runs').where('user_id', userId).andWhere('ticket_id', ticketId).update({
-                  card_id_to_upgrade: this.runData.card_id_to_upgrade,
-                  updated_at: this.runData.updated_at,
-                  upgrades_available_count: this.runData.upgrades_available_count,
-                  card_choices: this.runData.card_choices,
-                  stored_upgrades: this.runData.stored_upgrades,
-                  disable_storing_upgrade: this.runData.disable_storing_upgrade,
+                  card_id_to_upgrade: _chainState.runData.card_id_to_upgrade,
+                  updated_at: _chainState.runData.updated_at,
+                  upgrades_available_count: _chainState.runData.upgrades_available_count,
+                  card_choices: _chainState.runData.card_choices,
+                  stored_upgrades: _chainState.runData.stored_upgrades,
+                  disable_storing_upgrade: _chainState.runData.disable_storing_upgrade,
                 }),
                 );
 
-                if (this.storedUpgradeUsedId != null) {
-                  allCardChoicePromises.push(tx('user_rift_run_stored_upgrades').where('id', this.storedUpgradeUsedId).delete());
+                if (_chainState.storedUpgradeUsedId != null) {
+                  allCardChoicePromises.push(tx('user_rift_run_stored_upgrades').where('id', _chainState.storedUpgradeUsedId).delete());
                 }
 
                 return Promise.all(allCardChoicePromises);
@@ -866,13 +872,13 @@ class RiftModule {
         .then(() => DuelystFirebase.connect().getRootRef())
 
         .then(function (fbRootRef) {
-          if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
+          if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
 
           const fbRiftUpdateData = {
-            card_choices: this.runData.card_choices,
-            card_id_to_upgrade: this.runData.card_id_to_upgrade,
-            upgrades_available_count: this.runData.upgrades_available_count,
-            stored_upgrades: this.runData.stored_upgrades,
+            card_choices: _chainState.runData.card_choices,
+            card_id_to_upgrade: _chainState.runData.card_id_to_upgrade,
+            upgrades_available_count: _chainState.runData.upgrades_available_count,
+            stored_upgrades: _chainState.runData.stored_upgrades,
           };
 
           return FirebasePromises.update(fbRootRef.child('user-rift-runs').child(userId).child(ticketId), fbRiftUpdateData);
@@ -883,9 +889,9 @@ class RiftModule {
     }).bind(this_obj)
 
       .then(function () {
-        Logger.module('RiftModule').log(`chooseCardToUpgrade() -> User ${userId.blue}`.green + ` chose card ${cardId} for upgrade in run ${this.runData.ticket_id}.`.green);
+        Logger.module('RiftModule').log(`chooseCardToUpgrade() -> User ${userId.blue}`.green + ` chose card ${cardId} for upgrade in run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -933,6 +939,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static upgradeCard(userId, ticketId, cardId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`upgradeCard() -> ERROR: invalid user ID: ${userId}`.red);
@@ -969,22 +976,22 @@ class RiftModule {
 
             const indexOfCardToUpgrade = existingRun.deck.indexOf(existingRun.card_id_to_upgrade);
 
-            this.runData = existingRun;
-            this.runData.updated_at = NOW_UTC_MOMENT.toDate();
-            this.runData.card_id_to_upgrade = null;
-            this.runData.card_choices = null;
-            this.runData.disable_storing_upgrade = null;
-            this.runData.deck.splice(indexOfCardToUpgrade, 1);
-            this.runData.deck.push(cardId);
-            this.runData.current_upgrade_reroll_count = 0;
+            _chainState.runData = existingRun;
+            _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
+            _chainState.runData.card_id_to_upgrade = null;
+            _chainState.runData.card_choices = null;
+            _chainState.runData.disable_storing_upgrade = null;
+            _chainState.runData.deck.splice(indexOfCardToUpgrade, 1);
+            _chainState.runData.deck.push(cardId);
+            _chainState.runData.current_upgrade_reroll_count = 0;
 
             return tx('user_rift_runs').where('user_id', userId).andWhere('ticket_id', ticketId).update({
-              deck: this.runData.deck,
-              card_id_to_upgrade: this.runData.card_id_to_upgrade,
-              card_choices: this.runData.card_choices,
-              disable_storing_upgrade: this.runData.disable_storing_upgrade,
-              updated_at: this.runData.updated_at,
-              current_upgrade_reroll_count: this.runData.current_upgrade_reroll_count,
+              deck: _chainState.runData.deck,
+              card_id_to_upgrade: _chainState.runData.card_id_to_upgrade,
+              card_choices: _chainState.runData.card_choices,
+              disable_storing_upgrade: _chainState.runData.disable_storing_upgrade,
+              updated_at: _chainState.runData.updated_at,
+              current_upgrade_reroll_count: _chainState.runData.current_upgrade_reroll_count,
             });
           } else {
             return Promise.reject(new Errors.NotFoundError('Rift run not found.'));
@@ -993,13 +1000,13 @@ class RiftModule {
         .then(() => DuelystFirebase.connect().getRootRef())
 
         .then(function (fbRootRef) {
-          if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
+          if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
 
           const fbRiftUpdateData = {
-            deck: this.runData.deck,
+            deck: _chainState.runData.deck,
             card_id_to_upgrade: null,
             card_choices: null,
-            current_upgrade_reroll_count: this.runData.current_upgrade_reroll_count,
+            current_upgrade_reroll_count: _chainState.runData.current_upgrade_reroll_count,
           };
 
           return FirebasePromises.update(fbRootRef.child('user-rift-runs').child(userId).child(ticketId), fbRiftUpdateData);
@@ -1010,9 +1017,9 @@ class RiftModule {
     }).bind(this_obj)
 
       .then(function () {
-        Logger.module('RiftModule').log(`upgradeCard() -> User ${userId.blue}`.green + ` chose card ${cardId} as upgrade for run ${this.runData.ticket_id}.`.green);
+        Logger.module('RiftModule').log(`upgradeCard() -> User ${userId.blue}`.green + ` chose card ${cardId} as upgrade for run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -1161,6 +1168,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will resolve to the new (or same if not changed) rift run row data
    */
   static sanitizeRunCardChoicesIfNeeded(riftRunRow, systemTime) {
+    const _chainState = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     //    testRunsLastUpdateBeforeMoment = moment.utc("2017-04-29 12:00")
@@ -1193,18 +1201,18 @@ class RiftModule {
     var txPromise = knex.transaction((tx) => tx('users').first('id').where('id', this_obj.userId).forUpdate()
       .bind(this_obj)
       .then(function () {
-        return RiftModule._generateCardUpgradeChoices(txPromise, tx, this.userId, this.ticketId, this.factionId, this.cardIdToUpgrade, this.riftLevel);
+        return RiftModule._generateCardUpgradeChoices(txPromise, tx, _chainState.userId, _chainState.ticketId, _chainState.factionId, _chainState.cardIdToUpgrade, _chainState.riftLevel);
       })
       .then(function (cardChoices) {
-        this.riftRunData.card_choices = cardChoices;
-        this.riftRunData.updated_at = NOW_UTC_MOMENT.toDate();
-        return tx('user_rift_runs').where('ticket_id', this.ticketId).andWhere('user_id', this.userId).update({
-          card_choices: this.riftRunData.card_choices,
-          updated_at: this.riftRunData.updated_at,
+        _chainState.riftRunData.card_choices = cardChoices;
+        _chainState.riftRunData.updated_at = NOW_UTC_MOMENT.toDate();
+        return tx('user_rift_runs').where('ticket_id', _chainState.ticketId).andWhere('user_id', _chainState.userId).update({
+          card_choices: _chainState.riftRunData.card_choices,
+          updated_at: _chainState.riftRunData.updated_at,
         });
       })
       .then(function () {
-        return Promise.resolve(this.riftRunData);
+        return Promise.resolve(_chainState.riftRunData);
       }));
     return txPromise;
   }
@@ -1217,6 +1225,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static storeCurrentUpgrade(userId, riftTicketId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`storeCurrentUpgrade() -> ERROR: invalid user ID: ${userId}`.red);
@@ -1247,10 +1256,10 @@ class RiftModule {
           throw new Errors.MaxRiftUpgradesReachedError(`User ${userId} already has max rift upgrades stored`);
         }
 
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         // TODO: check this works as intended
-        if (this.userRow.rift_stored_upgrade_count == null) { this.userRow.rift_stored_upgrade_count = 0; }
+        if (_chainState.userRow.rift_stored_upgrade_count == null) { _chainState.userRow.rift_stored_upgrade_count = 0; }
 
         if (existingRun != null) {
           const allPromises = [];
@@ -1263,22 +1272,22 @@ class RiftModule {
             throw new Errors.BadRequestError(`User ${userId} can not store current upgrade for rift run ${riftRicketId}`);
           }
 
-          this.storedCardChoices = existingRun.card_choices;
+          _chainState.storedCardChoices = existingRun.card_choices;
 
-          this.runData = existingRun;
-          this.runData.card_id_to_upgrade = null;
-          this.runData.card_choices = null;
-          this.runData.updated_at = NOW_UTC_MOMENT.toDate();
+          _chainState.runData = existingRun;
+          _chainState.runData.card_id_to_upgrade = null;
+          _chainState.runData.card_choices = null;
+          _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
 
           allPromises.push(tx('user_rift_runs').where('user_id', userId).andWhere('ticket_id', riftTicketId).update({
-            card_id_to_upgrade: this.runData.card_id_to_upgrade,
-            card_choices: this.runData.card_choices,
-            updated_at: this.runData.updated_at,
+            card_id_to_upgrade: _chainState.runData.card_id_to_upgrade,
+            card_choices: _chainState.runData.card_choices,
+            updated_at: _chainState.runData.updated_at,
           }),
           );
 
           allPromises.push(tx('users').where('id', userId).update({
-            rift_stored_upgrade_count: this.userRow.rift_stored_upgrade_count + 1,
+            rift_stored_upgrade_count: _chainState.userRow.rift_stored_upgrade_count + 1,
           }),
           );
 
@@ -1288,7 +1297,7 @@ class RiftModule {
             source_ticket_id: riftTicketId,
             created_at: NOW_UTC_MOMENT.toDate(),
             updated_at: NOW_UTC_MOMENT.toDate(),
-            card_choices: this.storedCardChoices,
+            card_choices: _chainState.storedCardChoices,
           }),
           );
 
@@ -1301,16 +1310,16 @@ class RiftModule {
       .then(function (fbRootRef) {
         const allFbPromises = [];
 
-        if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
+        if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
 
         const fbRiftUpdateData = {
-          deck: this.runData.deck,
+          deck: _chainState.runData.deck,
           card_id_to_upgrade: null,
           card_choices: null,
         };
 
         const fbUserUpdateData = {
-          rift_stored_upgrade_count: this.userRow.rift_stored_upgrade_count + 1,
+          rift_stored_upgrade_count: _chainState.userRow.rift_stored_upgrade_count + 1,
         };
 
         allFbPromises.push(FirebasePromises.update(fbRootRef.child('user-rift-runs').child(userId).child(riftTicketId), fbRiftUpdateData));
@@ -1323,9 +1332,9 @@ class RiftModule {
       .catch(tx.rollback)).bind(this_obj)
 
       .then(function () {
-        Logger.module('RiftModule').log(`storeCurrentUpgrade() -> User ${userId.blue}`.green + ` store upgrade for run ${this.runData.ticket_id}.`.green);
+        Logger.module('RiftModule').log(`storeCurrentUpgrade() -> User ${userId.blue}`.green + ` store upgrade for run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;
@@ -1339,6 +1348,7 @@ class RiftModule {
    * @return  {Promise}        Promise that will return the arena data on completion.
    */
   static rerollCurrentUpgrade(userId, riftTicketId) {
+    const _chainState = {};
     // userId must be defined
     if (!userId) {
       Logger.module('RiftModule').log(`rerollCurrentUpgrade() -> ERROR: invalid user ID: ${userId}`.red);
@@ -1365,23 +1375,23 @@ class RiftModule {
           throw new Errors.BadRequestError(`User id not found: ${userId}`);
         }
 
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         if (existingRun != null) {
-          this.runData = existingRun;
+          _chainState.runData = existingRun;
 
           // Defaults
-          this.currentRerollCount = this.runData.current_upgrade_reroll_count || 0;
-          this.totalRerollCount = this.runData.total_reroll_count || 0;
-          this.userSpirit = this.userRow.wallet_spirit || 0;
+          _chainState.currentRerollCount = _chainState.runData.current_upgrade_reroll_count || 0;
+          _chainState.totalRerollCount = _chainState.runData.total_reroll_count || 0;
+          _chainState.userSpirit = _chainState.userRow.wallet_spirit || 0;
 
           // Updated run data
-          this.runData.total_reroll_count = this.totalRerollCount + 1;
-          this.runData.current_upgrade_reroll_count = this.currentRerollCount + 1;
-          this.runData.updated_at = NOW_UTC_MOMENT.toDate();
+          _chainState.runData.total_reroll_count = _chainState.totalRerollCount + 1;
+          _chainState.runData.current_upgrade_reroll_count = _chainState.currentRerollCount + 1;
+          _chainState.runData.updated_at = NOW_UTC_MOMENT.toDate();
 
-          this.rerollSpiritCost = RiftHelper.spiritCostForNextReroll(this.currentRerollCount, this.totalRerollCount);
-          if (this.userSpirit < this.rerollSpiritCost) {
+          _chainState.rerollSpiritCost = RiftHelper.spiritCostForNextReroll(_chainState.currentRerollCount, _chainState.totalRerollCount);
+          if (_chainState.userSpirit < _chainState.rerollSpiritCost) {
             Logger.module('RiftModule').log(`rerollCurrentUpgrade() -> Cannot reroll current upgrade because user ${userId.blue} has insufficient funds`.red);
             return Promise.reject(new Errors.InsufficientFundsError(`Insufficient funds in wallet to reroll current rift upgrade ${userId}`));
           }
@@ -1397,19 +1407,19 @@ class RiftModule {
       }).then(function (cardChoices) {
         const allPromises = [];
 
-        this.newCardChoices = cardChoices;
+        _chainState.newCardChoices = cardChoices;
 
-        this.runData.card_choices = this.newCardChoices;
+        _chainState.runData.card_choices = _chainState.newCardChoices;
 
         allPromises.push(tx('user_rift_runs').where('user_id', userId).andWhere('ticket_id', riftTicketId).update({
-          card_choices: this.runData.card_choices,
-          total_reroll_count: this.runData.total_reroll_count,
-          current_upgrade_reroll_count: this.runData.current_upgrade_reroll_count,
-          updated_at: this.runData.updated_at,
+          card_choices: _chainState.runData.card_choices,
+          total_reroll_count: _chainState.runData.total_reroll_count,
+          current_upgrade_reroll_count: _chainState.runData.current_upgrade_reroll_count,
+          updated_at: _chainState.runData.updated_at,
         }),
         );
 
-        allPromises.push(InventoryModule.debitSpiritFromUser(txPromise, tx, userId, -1 * this.rerollSpiritCost, 'rift reroll', `${riftTicketId}:${this.totalRerollCount}`));
+        allPromises.push(InventoryModule.debitSpiritFromUser(txPromise, tx, userId, -1 * _chainState.rerollSpiritCost, 'rift reroll', `${riftTicketId}:${_chainState.totalRerollCount}`));
 
         return Promise.all(allPromises);
       })
@@ -1418,12 +1428,12 @@ class RiftModule {
       .then(function (fbRootRef) {
         const allFbPromises = [];
 
-        if (this.runData.updated_at) { this.runData.updated_at = moment.utc(this.runData.updated_at).valueOf(); }
+        if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
 
         const fbRiftUpdateData = {
-          card_choices: this.runData.card_choices,
-          total_reroll_count: this.runData.total_reroll_count,
-          current_upgrade_reroll_count: this.runData.current_upgrade_reroll_count,
+          card_choices: _chainState.runData.card_choices,
+          total_reroll_count: _chainState.runData.total_reroll_count,
+          current_upgrade_reroll_count: _chainState.runData.current_upgrade_reroll_count,
         };
 
         allFbPromises.push(FirebasePromises.update(fbRootRef.child('user-rift-runs').child(userId).child(riftTicketId), fbRiftUpdateData));
@@ -1435,9 +1445,9 @@ class RiftModule {
       .catch(tx.rollback)).bind(this_obj)
 
       .then(function () {
-        Logger.module('RiftModule').debug(`rerollCurrentUpgrade() -> User ${userId.blue}`.green + ` rerolled upgrade for run ${this.runData.ticket_id}.`.green);
+        Logger.module('RiftModule').debug(`rerollCurrentUpgrade() -> User ${userId.blue}`.green + ` rerolled upgrade for run ${_chainState.runData.ticket_id}.`.green);
 
-        return Promise.resolve(this.runData);
+        return Promise.resolve(_chainState.runData);
       });
 
     return txPromise;

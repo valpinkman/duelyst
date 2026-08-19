@@ -201,6 +201,7 @@ class ShopModule {
    * @return  {Promise}              Promise that will resolve when done.
    */
   static purchaseProductWithPremiumCurrency(userId, sku, shopSaleId) {
+    const _chainState = {};
     Logger.module('ShopModule').debug(`purchaseProductWithPremiumCurrency() -> user ${userId} buying ${sku}`);
 
     // userId must be defined
@@ -234,7 +235,7 @@ class ShopModule {
     var txPromise = knex.transaction((tx) => tx('users').where('id', userId).first('ltv', 'username', 'has_purchased_starter_bundle')
       .bind(this_obj)
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         if ((sku === 'STARTERBUNDLE_201604') && userRow.has_purchased_starter_bundle) {
           throw new Errors.AlreadyExistsError('Player already purchased the starter bundle.');
@@ -267,7 +268,7 @@ class ShopModule {
           return tx('shop_sales').first().where('sku', sku).andWhere('sale_starts_at', '<', NOW_UTC_MOMENT.toDate())
             .andWhere('sale_ends_at', '>', bufferedTimeToExpireSales.toDate())
             .andWhere('disabled', '=', false)
-            .bind(this)
+            .bind(_chainState)
             .then(function (shopSaleRow) {
               if (shopSaleRow != null) {
                 throw new Error(`Attempting to purchase an item ${sku} that is on sale ${shopSaleRow.sale_id} without sale price.`);
@@ -278,7 +279,7 @@ class ShopModule {
         } else {
         // Check if there is a matching active sale if provided with a sale id
           return tx('shop_sales').first().where('sale_id', shopSaleId)
-            .bind(this)
+            .bind(_chainState)
             .then(function (shopSaleRow) {
               if ((shopSaleRow == null)) {
                 throw new Errors.ShopSaleDoesNotExistError(`There is no matching sale with id (${shopSaleId}) for product sku ${sku}.`);
@@ -292,7 +293,7 @@ class ShopModule {
                 throw new Errors.ShopSaleDoesNotExistError(`No matching sale with id (${shopSaleId}) for product sku ${sku}.`);
               } else {
                 // Matching sale success
-                this.premCurrencyPrice = shopSaleRow.sale_price;
+                _chainState.premCurrencyPrice = shopSaleRow.sale_price;
                 return Promise.resolve();
               }
             });
@@ -300,19 +301,19 @@ class ShopModule {
       })
       .then(function () {
       // txPromise,trx,userId,amount,memo
-        return InventoryModule.debitPremiumFromUser(txPromise, tx, userId, this.premCurrencyPrice);
+        return InventoryModule.debitPremiumFromUser(txPromise, tx, userId, _chainState.premCurrencyPrice);
       })
       .then(function () {
       // txPromise, tx, userId, userRow, sku, price, shopSaleId, systemTime
-        return ShopModule._addPremiumChargeToUser(txPromise, tx, userId, this.userRow, sku, this.premCurrencyPrice, shopSaleId, NOW_UTC_MOMENT);
+        return ShopModule._addPremiumChargeToUser(txPromise, tx, userId, _chainState.userRow, sku, _chainState.premCurrencyPrice, shopSaleId, NOW_UTC_MOMENT);
       })
       .then(() => ShopModule._awardProductDataContents(txPromise, tx, userId, generatePushId(), productData, NOW_UTC_MOMENT))
       .then(function (value) {
-        return this.to_return = value;
+        return _chainState.to_return = value;
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))).bind(this_obj)
       .then(function () {
-        return this.to_return;
+        return _chainState.to_return;
       });
 
     return txPromise
@@ -429,6 +430,7 @@ class ShopModule {
   }
 
   static creditUserPremiumCurrency(txPromise, tx, userId, amount) {
+    const _chainState = {};
     // userId must be defined
     if ((userId == null)) {
       return Promise.reject(new Error(`giveUserPremiumCurrency: invalid user ID - ${userId}`));
@@ -444,7 +446,7 @@ class ShopModule {
     const trxPromise = knex.transaction((tx) => tx('users').where('id', userId).first('id').forUpdate()
       .bind(this_obj)
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         return tx('user_premium_currency').where('user_id', userId).first('amount');
       })
@@ -456,15 +458,15 @@ class ShopModule {
           needsInsert = true;
           userPremCurrencyRow = { user_id: userId };
         }
-        this.userPremCurrencyRow = userPremCurrencyRow;
-        if (this.userPremCurrencyRow.amount == null) { this.userPremCurrencyRow.amount = 0; }
-        this.userPremCurrencyRow.amount += amount;
+        _chainState.userPremCurrencyRow = userPremCurrencyRow;
+        if (_chainState.userPremCurrencyRow.amount == null) { _chainState.userPremCurrencyRow.amount = 0; }
+        _chainState.userPremCurrencyRow.amount += amount;
 
         if (needsInsert) {
-          allPromises.push(tx('user_premium_currency').where('user_id', userId).first('amount').insert(this.userPremCurrencyRow));
+          allPromises.push(tx('user_premium_currency').where('user_id', userId).first('amount').insert(_chainState.userPremCurrencyRow));
         } else {
           allPromises.push(tx('user_premium_currency').where('user_id', userId).first('amount').update({
-            amount: this.userPremCurrencyRow.amount,
+            amount: _chainState.userPremCurrencyRow.amount,
           }),
           );
         }
@@ -472,7 +474,7 @@ class ShopModule {
         return Promise.all(allPromises);
       })).bind(this_obj)
       .then(function () {
-        return this.userPremCurrencyRow;
+        return _chainState.userPremCurrencyRow;
       });
 
     return trxPromise;
@@ -480,6 +482,7 @@ class ShopModule {
 
   // Amount is negative value
   static debitUserPremiumCurrency(txPromise, tx, userId, amount) {
+    const _chainState = {};
     // userId must be defined
     if ((userId == null)) {
       return Promise.reject(new Error(`debitUserPremiumCurrency: invalid user ID - ${userId}`));
@@ -495,7 +498,7 @@ class ShopModule {
     const trxPromise = knex.transaction((tx) => tx('users').where('id', userId).first('id').forUpdate()
       .bind(this_obj)
       .then(function (userRow) {
-        this.userRow = userRow;
+        _chainState.userRow = userRow;
 
         return tx('user_premium_currency').where('user_id', userId).first('amount');
       })
@@ -506,17 +509,17 @@ class ShopModule {
           throw new Errors.InsufficientFundsError('Insufficient currency to debit');
         }
 
-        this.userPremCurrencyRow = userPremCurrencyRow;
-        if (this.userPremCurrencyRow.amount == null) { this.userPremCurrencyRow.amount = 0; }
+        _chainState.userPremCurrencyRow = userPremCurrencyRow;
+        if (_chainState.userPremCurrencyRow.amount == null) { _chainState.userPremCurrencyRow.amount = 0; }
 
-        if (this.userPremCurrencyRow.amount < amount) {
+        if (_chainState.userPremCurrencyRow.amount < amount) {
           throw new Errors.InsufficientFundsError('Insufficient currency to debit');
         }
 
-        this.userPremCurrencyRow.amount += amount;
+        _chainState.userPremCurrencyRow.amount += amount;
 
         allPromises.push(tx('user_premium_currency').where('user_id', userId).first('amount').update({
-          amount: this.userPremCurrencyRow.amount,
+          amount: _chainState.userPremCurrencyRow.amount,
         }),
         );
 
@@ -524,7 +527,7 @@ class ShopModule {
         return Promise.all(allPromises);
       })).bind(this_obj)
       .then(function () {
-        return this.purchaseId;
+        return _chainState.purchaseId;
       });
     return trxPromise;
   }
