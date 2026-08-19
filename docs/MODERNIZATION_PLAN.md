@@ -414,6 +414,33 @@ server and worker. What remains is *typing* (5T.4), not converting.
 
 ### Phase 6b — post-conversion correctness (found by playing the game)
 
+- [x] **The quest system was entirely dead, and it was OUR regression — not upstream.**
+  `QuestParticipationWithFaction`'s constructor resolved its faction from
+  `QuestParticipationWithFaction.prototype.factionId`, which is always `null`.
+  `factionForIdentifier(null)` returns `console.error(...)` — i.e. **undefined** — so
+  `faction.short_name` threw a `TypeError`. Building those quests is the **first** thing
+  `QuestFactory._generateQuestCache` does, in an unguarded loop, so the throw took the whole
+  cache with it: **no participation quests, no win quests, no daily quests, for every player.**
+
+  The plan previously described this as a "faithfully preserved latent bug" from the
+  CoffeeScript that merely produced a wrong quest *name*. **Both halves of that were wrong.**
+  The original was `constructor:(id,typesIn,reward,@factionId)->`, where `@factionId` in the
+  parameter list assigns `this.factionId` at the top of the constructor; CoffeeScript 1.x
+  compiled `super` to a plain `__super__.constructor.call(this)`, so `this` was usable before
+  it and the read saw the real faction id. ES6 forbids `this` before `super()`, and the
+  hand-conversion reached for the prototype default instead. Upstream shipped with working
+  quests.
+
+  Fixed by using the constructor argument, which is what the CoffeeScript did. Evidence:
+  `_questCache` goes from **0 quests (threw) to 49**; the `factionForIdentifier - Unknown
+  faction identifier: null` line the e2e suite had allowlisted **is gone, and the allowlist
+  entry with it**; and `test/integration/data_access/challenges.js` goes from 2 failures with
+  `ERROR PROCESSING QUEST DATA` to **9/9 passing**.
+
+  There was **no quest coverage in the suite at all**, which is why 1,316 passing tests never
+  saw it. `test/unit/sdk/progression/quest_factory.js` now covers it — verified to fail 5/5
+  with the bug reintroduced.
+
 - [x] 6b.1 **Promise-chain state**: CoffeeScript thin-arrow `.then` callbacks compiled to
   sloppy-mode functions where `this` was the *global object* — the original code passed state
   between chain steps through accidental globals (shared across concurrent requests!).

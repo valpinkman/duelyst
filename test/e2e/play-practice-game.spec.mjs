@@ -15,14 +15,6 @@ import { test, expect } from '@playwright/test';
 const CONSOLE_NOISE = [
   // dev-only, and unrelated to whether the game works
   /Failed to load resource: the server responded with a status of 404/,
-  // KNOWN UPSTREAM BUG, present since the original CoffeeScript and preserved
-  // deliberately by the migration (see MODERNIZATION_PLAN.md 5.2c):
-  // questParticipationWithFaction's constructor reads the PROTOTYPE factionId
-  // (always null) before calling super, so the quest name is built from
-  // factionForIdentifier(null). Fixing it changes user-visible quest names, so
-  // it belongs in a correctness pass, not here. This test proves it fires at
-  // runtime for every new account.
-  /FactionFactory\.factionForIdentifier - Unknown faction identifier: null/,
 ];
 
 /** Collect page errors so a test can assert the client booted cleanly. */

@@ -1,10 +1,28 @@
 /*
  * Hand-converted (decaffeinate refused: `this` before `super` + a bound `=>`
- * class method). NOTE, faithfully preserved latent bug: the CoffeeScript
- * constructor read `@.factionId` BEFORE super, which can only see the
- * prototype default (null) - so the quest name was always built from
- * `factionForIdentifier(null)`, never the real faction. Kept identical
- * (prototype lookup) to avoid changing user-visible quest names.
+ * class method).
+ *
+ * A previous version of this file read the faction from
+ * `QuestParticipationWithFaction.prototype.factionId` and described that as a
+ * latent bug preserved from the CoffeeScript. It was not: the original was
+ *
+ *     constructor:(id,typesIn,reward,@factionId)->
+ *       faction = FactionFactory.factionForIdentifier(@.factionId)
+ *
+ * where `@factionId` in the PARAMETER LIST assigns `this.factionId` at the top
+ * of the constructor. CoffeeScript 1.x compiled `super` to a plain
+ * `__super__.constructor.call(this)`, so `this` was usable before it and the
+ * read saw the real faction id. ES6 classes forbid `this` before `super()`,
+ * and the conversion reached for the prototype default instead - which is
+ * always null.
+ *
+ * That was not a cosmetic difference. `factionForIdentifier(null)` returns
+ * `console.error(...)`, i.e. undefined, so `faction.short_name` threw a
+ * TypeError - and because `QuestFactory._generateQuestCache` builds these in
+ * an unguarded loop as its FIRST step, the throw killed the entire quest
+ * cache. No participation quests, no win quests, no daily quests.
+ *
+ * The parameter is used directly now, which is what the CoffeeScript did.
  */
 const Quest = require('./quest');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
@@ -17,7 +35,7 @@ class QuestParticipationWithFaction extends Quest {
   declare factionId: any;
 
   constructor(id, typesIn, reward, factionId) {
-    const faction = FactionFactory.factionForIdentifier(QuestParticipationWithFaction.prototype.factionId);
+    const faction = FactionFactory.factionForIdentifier(factionId);
     const name = i18next.t('quests.quest_faction_games_title', { faction_name: faction.short_name });
     super(id, name, typesIn, reward);
     // CoffeeScript `=>` method: bound to the instance
