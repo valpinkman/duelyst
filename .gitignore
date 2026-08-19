@@ -26,3 +26,8 @@ dump.rdb
 
 # OSX-specific artifacts
 .DS_Store
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/

@@ -30,6 +30,8 @@ pnpm build:vite                                # JS bundle only (~2.4s); build:c
 pnpm test:unit                                 # vitest, ~1300 tests, no external services
 pnpm test:integration:misc                     # the only integration suite that runs in CI (rest need Postgres/Redis/Firebase)
 pnpm typecheck                                 # tsc (loose config) - a METRIC during the migration, not a gate
+pnpm test:e2e                                  # Playwright: boots the client and plays a practice game
+                                               # (needs: real Firebase in .env, pnpm build, docker compose up)
 pnpm lint:js:all && pnpm lint:coffee:all       # eslint (airbnb-base) + coffeelint
 pnpm api | pnpm game | pnpm sp | pnpm worker   # start services (need Redis/Postgres/Firebase env, see docs/QUICKSTART.md)
 docker compose up                              # full local stack (rebuild images after source changes: they are NOT live-mounted)
@@ -126,6 +128,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — Playwright e2e added: boots the client and plays a practice game vs the AI,
+  asserting zero console errors. Caught the upstream questParticipationWithFaction bug.
 - 2026-08-19 — mocha retired; vitest is the only test runner (unit + integration configs).
 - 2026-08-19 — server + worker are TypeScript. The whole runtime is now TS; a practice game
   plays end-to-end against it. Remaining work is typing, not converting.

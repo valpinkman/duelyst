@@ -461,7 +461,23 @@ server and worker. What remains is *typing* (5T.4), not converting.
 
 ### Later / optional
 
-- [ ] E2E with Playwright (greenfield — DOM flows first, canvas via game-state hooks).
+- [x] **E2E with Playwright** — `test/e2e/play-practice-game.spec.mjs`, run with
+  `pnpm test:e2e` (`:headed` to watch). Two tests against a running local stack:
+  (1) the client boots to the login screen **with zero console errors**; (2) it registers a
+  fresh account, skips onboarding, starts a practice game, confirms the mulligan, ends a turn
+  and asserts the AI acted (step count advanced, play returned, game still active).
+  ~56s for both. This is the check that was missing all along: every runtime-only bug in this
+  migration — shaders silently dropped, the wrong API host baked in, a stale require extension
+  — showed up here in seconds while the build stayed green.
+  Selector lesson worth keeping: the client uppercases labels in CSS and prefixes some with an
+  icon glyph, so match by ROLE with a case-insensitive name (`button "Play"`, `" Confirm"`),
+  never by exact visible text.
+  **It immediately caught a real (pre-existing) bug:** every new account logs
+  `factionForIdentifier - Unknown faction identifier: null` — the
+  `questParticipationWithFaction` prototype-read bug preserved from upstream in 5.2c. It is
+  allowlisted with a pointer rather than hidden; fixing it changes user-visible quest names and
+  belongs in a correctness pass.
+  Not in CI yet: it needs a real Firebase project. Local-only for now.
 - [ ] Firebase RTDB: keep vs replace (shapes client/server boundary; decide before 7.2).
 
 ## Decisions log
