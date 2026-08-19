@@ -43,7 +43,14 @@ if (cluster.isMaster) {
 
   // setup middleware
   app.use(cors());
-  app.use(helmet.noCache());
+  // helmet.noCache() was removed in helmet 4; these are the headers it set
+  app.use((req, res, next) => {
+    res.setHeader('Surrogate-Control', 'no-store');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
   app.use(helmet.xssFilter());
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ extended: true }));

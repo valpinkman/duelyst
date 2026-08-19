@@ -44,13 +44,31 @@ if (config.isDevelopment()) {
   }
 }
 
+/*
+ * helmet.noCache() was removed in helmet 4, so the headers it used to set are
+ * written here directly. Same four headers, same values it emitted.
+ */
+const noCache = function (req, res, next) {
+  res.setHeader('Surrogate-Control', 'no-store');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+};
+
 module.exports = compose([
   getRealIp(),
   // Enable CORS
   cors(corsOptions),
   // Disable client cache headers
-  helmet.noCache(),
-  // Security headers
+  noCache,
+  /*
+   * NOTE: helmet 8's xssFilter sets `X-XSS-Protection: 0`, where helmet 0.8
+   * set `1; mode=block`. That inversion is deliberate on helmet's part: the
+   * browser XSS auditor this header enabled was removed from Chrome and Edge
+   * after it was shown to INTRODUCE vulnerabilities, so the modern advice is
+   * to switch it off explicitly rather than ask for it.
+   */
   helmet.xssFilter(),
   // Body parser and urlencoded
   parser,

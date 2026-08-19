@@ -605,9 +605,23 @@ server and worker. What remains is *typing* (5T.4), not converting.
   | `helmet` | 4 | 0.8.0 | 8.3.0 | security middleware, 8 majors behind |
   | `validator` | 3 | 3.43.0 | 13.15 | |
 
-  **26 of the 129 are dev-only** (`firebase-tools` + `supertest`) and never ship. The cheap
-  runtime wins — `hbs` (patch!), `socket.io` (minor), `validator`, `helmet` — are worth far more
-  per unit of risk than `redis`/`knex`/`bluebird`, and none of them are in the tier list.
+  **26 of the 129 are dev-only** (`firebase-tools` + `supertest`) and never ship.
+
+  - [x] **Acted on that batch: 129 → 106 advisories.** All four now contribute **0** paths.
+    - `hbs` 4.1.0 → 4.2.1 and `socket.io`/`socket.io-client` 4.6.1 → 4.8.3 — drop-in (−16 alone).
+    - `validator` 3.43 → 13.15. The hazard was `isLength`: the code calls it with a **positional**
+      minimum (`isLength(code, 4)`), while modern validator documents an options object. Had the
+      positional form been ignored, every length check would have started returning true for any
+      input **including the empty string**, silently disabling invite/referral/gift-code
+      validation, and nothing else in the suite would have noticed. v13 does still honour it —
+      verified against the old version first, and now pinned by
+      `test/unit/misc/validator_contract.js` so it is a decision rather than an assumption.
+    - `helmet` 0.8 → 8.3. `helmet.noCache()` was **removed in helmet 4**; its four headers are now
+      written explicitly and **verified byte-identical against the running API**
+      (`Surrogate-Control`, `Cache-Control`, `Pragma`, `Expires`). `helmet.xssFilter()` survives
+      but now emits `X-XSS-Protection: 0` where 0.8 emitted `1; mode=block` — deliberate on
+      helmet's part, since the browser XSS auditor was removed from Chrome/Edge after it was shown
+      to *introduce* vulnerabilities. Documented at the call site.
   - [ ] **Client `firebase` 2.0.3 → 12** is NOT a bump and is deliberately not listed here: it
     crosses three API generations (v3 namespaced, v9 modular), replaces `.auth(legacyToken)`
     with `signInWithCustomToken`, and invalidates the vendored `backfire` Backbone binding.
