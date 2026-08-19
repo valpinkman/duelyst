@@ -2,7 +2,7 @@ const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../'));
 require('coffeescript/register');
 const { expect } = require('chai');
-const loginHelpers = require('../../../server/lib/hash_helpers.coffee');
+const loginHelpers = require('../../../server/lib/hash_helpers');
 
 describe('login helpers', () => {
   const password = 'password';

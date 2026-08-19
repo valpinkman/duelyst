@@ -759,7 +759,13 @@
         "import/no-unresolved": "off",
         "no-path-concat": "warn",
         "no-underscore-dangle": "warn",
-        "function-paren-newline": "warn"
+        "function-paren-newline": "warn",
+        "no-undef": "warn",
+        "no-undef-init": "warn",
+        "no-restricted-globals": "warn",
+        "function-call-argument-newline": "warn",
+        "no-unreachable-loop": "warn",
+        "operator-assignment": "warn"
       }
     }
   ]

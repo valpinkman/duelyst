@@ -6,9 +6,9 @@ require('app-module-path').addPath(path.join(__dirname, '../'));
 require('coffeescript/register');
 
 const config = require('../config/config');
-const knex = require('../server/lib/data_access/knex.coffee');
-const InventoryModule = require('../server/lib/data_access/inventory.coffee');
-const UsersModule = require('../server/lib/data_access/users.coffee');
+const knex = require('../server/lib/data_access/knex');
+const InventoryModule = require('../server/lib/data_access/inventory');
+const UsersModule = require('../server/lib/data_access/users');
 
 if (process.argv.length !== 6) {
   console.log('Usage: node manage_user_wallet.js <username> <add|subtract> <amount> <currencyType>');

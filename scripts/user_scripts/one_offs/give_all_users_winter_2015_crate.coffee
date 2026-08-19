@@ -26,7 +26,7 @@ ProgressBar = require 'progress'
 firebaseToken = config.get("firebaseToken")
 DuelystFirebase = require("../../../server/lib/duelyst_firebase_module")
 fbUtil = require '../../../app/common/utils/utils_firebase.js'
-GiftCrateModule = require '../../../server/lib/data_access/gift_crate.coffee'
+GiftCrateModule = require '../../../server/lib/data_access/gift_crate'
 
 GiftCrateLookup = require '../../../app/sdk/giftCrates/giftCrateLookup'
 # endregion Requires

@@ -6,13 +6,13 @@ require('coffeescript/register')
 var chai = require('chai');
 chai.config.includeStack = true;
 var expect = chai.expect;
-var DuelystFirebase = require('../../../server/lib/duelyst_firebase_module.coffee');
-var Errors = require('../../../server/lib/custom_errors.coffee');
-var UsersModule = require('../../../server/lib/data_access/users.coffee');
-var SyncModule = require('../../../server/lib/data_access/sync.coffee');
-var InventoryModule = require('../../../server/lib/data_access/inventory.coffee');
-var ShopModule = require('../../../server/lib/data_access/shop.coffee');
-var FirebasePromises = require('../../../server/lib/firebase_promises.coffee');
+var DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
+var Errors = require('../../../server/lib/custom_errors');
+var UsersModule = require('../../../server/lib/data_access/users');
+var SyncModule = require('../../../server/lib/data_access/sync');
+var InventoryModule = require('../../../server/lib/data_access/inventory');
+var ShopModule = require('../../../server/lib/data_access/shop');
+var FirebasePromises = require('../../../server/lib/firebase_promises');
 var generatePushId = require('../../../app/common/generate_push_id');
 var config = require('../../../config/config');
 var Promise = require('bluebird');
@@ -20,7 +20,7 @@ var Logger = require('../../../app/common/logger');
 var _ = require('underscore');
 var SDK = require('../../../app/sdk/index');
 var moment = require('moment');
-var knex = require('../../../server/lib/data_access/knex.coffee');
+var knex = require('../../../server/lib/data_access/knex');
 var ShopData = require('../../../app/data/shop.json')
 
 // disable the logger for cleaner test output

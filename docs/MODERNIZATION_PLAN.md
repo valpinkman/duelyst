@@ -249,6 +249,12 @@ mocha + vitest + both builds + wire-format tests.
     TS rename pass. Fixed stale `app/sdk/package.json` main field (`index.coffee` → `index.js`).
     api rebuilt+booted: 200 on `/` and `/healthcheck`, 401 on the jwt-guarded session route
     (auth middleware intact). — (this commit)
+  - [x] 6.2c `server/lib/` incl. all of `data_access` (~15k lines): 26 scripted +
+    `custom_errors` hand-generated (29 Error subclasses, all `this`-before-`super`; the
+    FirebaseTransactionDidNotCommitError message-loss oddity preserved). Lint surfaced 8
+    pre-existing latent bugs (out-of-scope identifiers in logging/rare paths, a missing
+    `Errors` require in games.js) — preserved, downgraded per convention, listed here for a
+    future correctness pass. api+worker rebuilt and boot-verified. — (this commit)
 - [ ] 6.3 Retire `coffeescript/register` from `bin/*` when no `.coffee` remains server-side.
 
 ### Phase 7 — Test & dependency endgame

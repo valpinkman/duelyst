@@ -1,7 +1,7 @@
 ###
 Job - Rotate Boss Battles
 ###
-DuelystFirebase = require '../../server/lib/duelyst_firebase_module.coffee'
+DuelystFirebase = require '../../server/lib/duelyst_firebase_module'
 Logger = require '../../app/common/logger'
 Cards = require '../../app/sdk/cards/cardsLookup'
 moment = require 'moment'

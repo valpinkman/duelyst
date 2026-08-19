@@ -3,7 +3,7 @@ Job - Update User Seen On
 ###
 config = require '../../config/config.js'
 Logger = require '../../app/common/logger'
-UsersModule = require '../../server/lib/data_access/users.coffee'
+UsersModule = require '../../server/lib/data_access/users'
 Promise = require 'bluebird'
 moment = require 'moment'
 

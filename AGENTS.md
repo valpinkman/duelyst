@@ -116,6 +116,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — server/lib decaffeinated (6.2c); custom_errors hand-generated; 8 latent bugs
+  catalogued in plan for a future correctness pass.
 - 2026-08-19 — server routes+middleware decaffeinated (6.2b); api boot-verified in container.
 - 2026-08-19 — server/redis decaffeinated (6.2a); let-exports ESM-fallback landmine defused;
   all service images rebuilt fresh and boot-verified.

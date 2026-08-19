@@ -2,11 +2,11 @@
 Job - Update User Ranking
 ###
 config = require '../../config/config.js'
-AchievementsModule = require '../../server/lib/data_access/achievements.coffee'
-DuelystFirebase = require '../../server/lib/duelyst_firebase_module.coffee'
+AchievementsModule = require '../../server/lib/data_access/achievements'
+DuelystFirebase = require '../../server/lib/duelyst_firebase_module'
 Logger = require '../../app/common/logger'
 {GameManager} = require '../../server/redis/'
-FirebasePromises = require '../../server/lib/firebase_promises.coffee'
+FirebasePromises = require '../../server/lib/firebase_promises'
 Promise = require 'bluebird'
 
 

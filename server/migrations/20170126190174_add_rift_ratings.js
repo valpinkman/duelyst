@@ -1,7 +1,7 @@
 exports.up = function (knex) {
   return Promise.all([
     knex.schema.table('user_rift_runs', (table) => {
-      table.integer('rift_rating'); // TODO: should this be keyed? // Allowing this to be nullable so default can be code configured in data_access/rift.coffee
+      table.integer('rift_rating'); // TODO: should this be keyed? // Allowing this to be nullable so default can be code configured in data_access/rift
     }),
     knex.schema.table('user_games', (table) => {
       table.integer('rift_rating_after');

@@ -27,7 +27,7 @@ Logger = require '../../app/common/logger'
 firebaseToken = config.get("firebaseToken")
 UsersModule = require("../../server/lib/users_module")
 DuelystFirebase = require("../../server/lib/duelyst_firebase_module")
-FirebasePromises = require("../../server/lib/firebase_promises.coffee")
+FirebasePromises = require("../../server/lib/firebase_promises")
 # endregion Requires
 
 # Resolves to a results object filled with data representing the results of the wipe

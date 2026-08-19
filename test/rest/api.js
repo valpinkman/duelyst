@@ -7,8 +7,8 @@ const _ = require('underscore');
 const request = require('supertest')(api);
 const fbUtil = require('../../app/common/utils/utils_firebase');
 const config = require('../../config/config');
-const DuelystFirebase = require('../../server/lib/duelyst_firebase_module.coffee');
-const UsersModule = require('../../server/lib/data_access/users.coffee');
+const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
+const UsersModule = require('../../server/lib/data_access/users');
 const SDK = require('../../app/sdk/index');
 
 // configure where to run the tests against

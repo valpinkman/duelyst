@@ -2,11 +2,11 @@ require('coffeescript/register');
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../'));
 const _ = require('underscore');
-const DuelystFirebase = require('../server/lib/duelyst_firebase_module.coffee');
-const FirebasePromises = require('../server/lib/firebase_promises.coffee');
-const UsersModule = require('../server/lib/data_access/users.coffee');
+const DuelystFirebase = require('../server/lib/duelyst_firebase_module');
+const FirebasePromises = require('../server/lib/firebase_promises');
+const UsersModule = require('../server/lib/data_access/users');
 const generatePushId = require('../app/common/generate_push_id');
-const knex = require('../server/lib/data_access/knex.coffee');
+const knex = require('../server/lib/data_access/knex');
 // var PortraitLookup = require('../app/sdk/portraits/portraitLookup.coffee')
 
 const usernames = [

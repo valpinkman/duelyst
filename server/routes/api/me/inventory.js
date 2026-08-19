@@ -15,7 +15,7 @@ const Errors = require('../../../lib/custom_errors');
 const colors = require('colors');
 const t = require('tcomb-validation');
 const validators = require('../../../validators');
-const hashHelpers = require('../../../lib/hash_helpers.coffee');
+const hashHelpers = require('../../../lib/hash_helpers');
 const validatorTypes = require('../../../validators/types');
 const zlib = require('zlib');
 const Promise = require('bluebird');
@@ -213,7 +213,7 @@ router.post('/codex/missing', function (req, res, next) {
 
 // "Soft Wipe" is a mechanism for replacing a user's inventory with unopened orbs.
 // This was a temporary system which ended on 2016-04-20.
-// See server/lib/data_access/inventory.coffee:softWipeUserCardInventory.
+// See server/lib/data_access/inventory:softWipeUserCardInventory.
 // Stub the handler so we can remove the AWS SDK dependency.
 router.post('/card_collection/soft_wipe', (req, res, next) => res.status(403).json({
   status: 'error',

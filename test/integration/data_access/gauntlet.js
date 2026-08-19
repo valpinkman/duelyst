@@ -7,17 +7,17 @@ const { expect } = chai;
 const Promise = require('bluebird');
 const _ = require('underscore');
 const moment = require('moment');
-const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module.coffee');
-const Errors = require('../../../server/lib/custom_errors.coffee');
-const UsersModule = require('../../../server/lib/data_access/users.coffee');
-const GauntletModule = require('../../../server/lib/data_access/gauntlet.coffee');
-const InventoryModule = require('../../../server/lib/data_access/inventory.coffee');
-const SyncModule = require('../../../server/lib/data_access/sync.coffee');
-const FirebasePromises = require('../../../server/lib/firebase_promises.coffee');
+const DuelystFirebase = require('../../../server/lib/duelyst_firebase_module');
+const Errors = require('../../../server/lib/custom_errors');
+const UsersModule = require('../../../server/lib/data_access/users');
+const GauntletModule = require('../../../server/lib/data_access/gauntlet');
+const InventoryModule = require('../../../server/lib/data_access/inventory');
+const SyncModule = require('../../../server/lib/data_access/sync');
+const FirebasePromises = require('../../../server/lib/firebase_promises');
 const config = require('../../../config/config');
 const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');
-const knex = require('../../../server/lib/data_access/knex.coffee');
+const knex = require('../../../server/lib/data_access/knex');
 const generatePushId = require('../../../app/common/generate_push_id');
 
 // disable the logger for cleaner test output

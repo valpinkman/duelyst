@@ -4,7 +4,7 @@ Colors     = require 'colors'
 Promise   = require 'bluebird'
 request   = require 'superagent'
 Consul     = require '../server/lib/consul'
-CustomError = require '../server/lib/custom_errors.coffee'
+CustomError = require '../server/lib/custom_errors'
 
 isMatchmakingActiveAsync = () ->
   if !config.get('consul.enabled')

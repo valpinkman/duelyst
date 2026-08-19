@@ -4,8 +4,8 @@ Job - Setup Match
 Promise = require 'bluebird'
 getGameServerAsync = require '../get_gameserver.coffee'
 createGameAsync = require '../creategame.coffee'
-DuelystFirebaseModule = require '../../server/lib/duelyst_firebase_module.coffee'
-FirebasePromises = require '../../server/lib/firebase_promises.coffee'
+DuelystFirebaseModule = require '../../server/lib/duelyst_firebase_module'
+FirebasePromises = require '../../server/lib/firebase_promises'
 Logger = require '../../app/common/logger'
 
 ###*
