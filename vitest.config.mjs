@@ -9,7 +9,7 @@ import { defineConfig } from 'vitest/config';
 // This changes when the client moves to Vite (Phase 4).
 export default defineConfig({
   test: {
-    include: ['test/unit/sdk/**/*.js'],
+    include: ['test/unit/**/*.js'],
     globals: true, // tests use bare mocha-style describe/it/before hooks
     environment: 'node',
     testTimeout: 10000, // mocha runs with -t 1000; a whole-file run is ~6s, 10s catches hangs

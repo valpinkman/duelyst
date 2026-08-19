@@ -8,10 +8,12 @@ step it describes, so it can never drift from the code.
 ## ▶ Resume here
 
 - **Branch:** `modernization` (stacked commits, one per step; not pushed anywhere yet)
-- **Current state:** Phase 0 complete; 1.1 + 1.2 done (vitest runs `test/unit/sdk` at 1285/1285
-  parity; dead test files/imports removed). Baseline green: `pnpm build` + `pnpm test:unit`
-  (1287 passing).
-- **Next step:** 1.3 — extend vitest to all of `test/unit`; add a vitest CI job.
+- **Current state:** Phase 1 steps 1.1–1.3 done: vitest runs all of `test/unit` at full parity
+  (1287/1287) beside mocha, locally and in CI. Baseline green.
+- **Next step:** 1.4 — verify the converted GitHub workflows actually pass (needs a push /
+  act run); 1.5 — rebuild Docker images under pnpm and smoke-test `docker compose up`.
+  Note: 1.4 needs the branch pushed to a fork/remote or `act` installed — if neither is
+  available autonomously, mark blocked and continue with Phase 2 (independent).
 - **Known dirty state:** none. Docker images and GitHub workflows were converted to pnpm
   mechanically but have not been exercised (1.4 / 1.5 below).
 
@@ -52,7 +54,9 @@ step it describes, so it can never drift from the code.
   devDependencies. The real `this.timeout`/`done` debt lives in `test/integration` + `test/rest`
   → handled in 7.1/7.2.
   *Accepted:* mocha 1287 + vitest 1285 green; gate green. — (this commit)
-- [ ] 1.3 Extend vitest to all of `test/unit`; add a `unit_tests_vitest` CI job next to the mocha one.
+- [x] 1.3 vitest covers all of `test/unit` (101 files); `unit_tests_vitest` CI job added beside
+  the mocha job in `unit_tests.yaml`.
+  *Accepted:* vitest 1287/1287 == mocha 1287/1287 on `test/unit`. — (this commit)
 - [ ] 1.4 Verify the converted GitHub workflows actually pass (push branch / act).
 - [ ] 1.5 Rebuild Docker images under pnpm; `docker compose up` smoke test.
 
