@@ -571,10 +571,43 @@ server and worker. What remains is *typing* (5T.4), not converting.
       was verified by actually turning it on: multi-arg and printf formatting both behave like
       console.*, and the API boots to "started on port 3000" with every line routed at the right
       level. — (this commit)
-    - [ ] `redis` 2.8 → v4+ (3 files; v4 is promise-native, which also removes bluebird usage)
-    - [ ] `knex` 0.19 → 3 (1 file, but 86 migrations and all of data_access sit behind it)
-    - [ ] `bluebird` 2.11 → native promises (**215 files** — the endgame, and entangled with the
-      `_chainState` rewrite; `.catch(SomeError, handler)` has no native equivalent)
+    - [ ] `redis` 2.8 → v4+ — **deprioritised, measured.** Buys **1** advisory path for a large
+      change: v4 needs an async `connect()` (the seam exports a client synchronously today),
+      ~30 call sites lose their bluebird `*Async` wrappers and gain camelCase command names, and
+      **`@counterplay/warlock` is handed our client** (`warlock(redis)`) and speaks redis-2
+      callbacks, so it and `node-redis-scripty` would need porting too. And redis@2 stays in the
+      tree regardless, because **kue pins `redis: ~2.6.0`** and gets its own copy.
+    - [ ] `knex` 0.19 → 3 — **gated on bluebird.** knex <1.0 returned *bluebird* promises;
+      **168 knex query sites across 24 files** chain bluebird-only methods (`.bind`, `.spread`,
+      `.error`) within 8 lines. knex 1.0+ returns native promises, so all of those break.
+    - [ ] `bluebird` 2.11 → native — **the real gate, not the endgame** (this reverses the
+      original ordering). ~660 bluebird-specific call sites in `server/` alone: `.bind` 234,
+      `.error` 153, `.spread` 76, typed `.catch(SomeError, fn)` 72, `.each` 72, `.nodeify` 21,
+      `.timeout` 20, `.finally` 13. Several have no native equivalent.
+      *(`bluebird` 2 → 3 is a cheap alternative — only `Promise.defer` (3), `.cancellable` (7)
+      and `.fork` (1) would need touching — but bluebird has **0 advisory paths**, so it buys
+      nothing but currency.)*
+
+  **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before
+  anyone counted where the advisories actually come from. Of the 129 remaining, the top sources
+  are **not** the tier-2 packages:
+
+  | source | paths | installed | latest | note |
+  |---|---|---|---|---|
+  | `firebase-tools` | 15 | 14.27 | 15.27 | **dev-only**; pinned to 14 because 15 needs JDK 21 |
+  | `hbs` | 12 | 4.1.0 | 4.2.1 | **patch bump** — server view engine |
+  | `supertest` | 11 | 0.14.0 | 7.2.2 | **dev-only**; only `test/rest` uses it, and that is broken |
+  | `socket.io` | 6 | 4.6.1 | 4.8.3 | minor bump |
+  | `request` | 5 | 2.88.2 | *final* | deprecated — must be **replaced** (native fetch) |
+  | `kue` | 5 | 0.11.6 | *final* | unmaintained — replacement project, pins redis@2 |
+  | `knex` | 5 | 0.19.5 | 3.3.0 | gated on bluebird |
+  | `jquery` | 4 | 2.1.4 | 4.0.0 | client |
+  | `helmet` | 4 | 0.8.0 | 8.3.0 | security middleware, 8 majors behind |
+  | `validator` | 3 | 3.43.0 | 13.15 | |
+
+  **26 of the 129 are dev-only** (`firebase-tools` + `supertest`) and never ship. The cheap
+  runtime wins — `hbs` (patch!), `socket.io` (minor), `validator`, `helmet` — are worth far more
+  per unit of risk than `redis`/`knex`/`bluebird`, and none of them are in the tier list.
   - [ ] **Client `firebase` 2.0.3 → 12** is NOT a bump and is deliberately not listed here: it
     crosses three API generations (v3 namespaced, v9 modular), replaces `.auth(legacyToken)`
     with `signInWithCustomToken`, and invalidates the vendored `backfire` Backbone binding.
