@@ -1,0 +1,6 @@
+{
+  "name": "@duelyst/common",
+  "version": "1.97.13",
+  "private": true,
+  "description": "Shared runtime utilities (CONFIG, Logger, EventBus, utils) used by the SDK, client and servers. Consumed via subpath imports; still CoffeeScript/JS in place."
+}

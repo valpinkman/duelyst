@@ -1,4 +1,7 @@
 packages:
   - 'packages/*'
+  # in-place workspace members (physical relocation deferred to the TS phase):
+  - 'app/sdk'
+  - 'app/common'
   # desktop/ (Electron shell) is intentionally not a workspace member yet:
   # it has its own lockfile and packaging flow. Fold it in once apps/ exists.

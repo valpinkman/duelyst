@@ -11,7 +11,7 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 3.2 — lift `app/sdk` + shared `app/common` core into `packages/sdk`.
+- **Next step:** Phase 4 — Vite for the client (4.1 first: config, coffee plugin, aliases, hbs, glsl, envify defines).
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -102,7 +102,7 @@ utils_ui relocated to `app/ui` where all its consumers live (2.3); chroma by pac
 barrel inside `app/sdk/` minus its client-directed export (2.5). Nothing moved that
 `generate_packages.js` parses; wire format untouched. Ready for Phase 3's package lift.
 
-### Phase 3 — `packages/sdk`
+### Phase 3 — `packages/sdk` ✅ (in place — physical move deferred to TS phase)
 
 - [x] 3.1 Wire-format guard rails in `test/unit/sdk/serialization/wire_format.js` (11 tests,
   both runners): (a) scripted-game serialize→deserialize→serialize round-trip must be
@@ -114,8 +114,24 @@ barrel inside `app/sdk/` minus its client-directed export (2.5). Nothing moved t
   (two different patterns — documented in the test). Discovered en route: byte-identical
   round-trips are NOT guaranteed (key order shifts), deep-equality is the invariant.
   — (this commit)
-- [ ] 3.2 Lift `app/sdk` + the shared core of `app/common` into `packages/sdk` (workspace package, still CoffeeScript, alias/shims so `require 'app/sdk/...'` keeps resolving everywhere).
-  *Accept:* baseline green; server boots (`pnpm api` starts against dev config).
+- [x] 3.2 `app/sdk` and `app/common` are now pnpm workspace members **in place**:
+  `@duelyst/sdk` and `@duelyst/common` (workspace globs + minimal manifests + root
+  `workspace:*` deps). Both import styles resolve to the same realpath, so
+  `require('@duelyst/sdk')` and `require('app/sdk')` are the SAME module instance (locked by
+  `test/unit/sdk/package_identity.js`) — critical while GameSession/CONFIG singletons exist.
+  Dockerfiles copy the member manifests before `pnpm install`. Deleted dead `gulp/shop.js`
+  (flagged by import/no-relative-packages; was never imported).
+  *Accepted:* gate green (mocha+vitest 1300, in-container 1300, build, lint); `pnpm api`
+  boots against dev config ("started on port 3000"; full HTTP serving verified in-container
+  in 1.5). — (this commit)
+
+**Phase 3 summary:** the SDK is a named, guarded package. Wire-format guard rails (round-trip,
+golden key-set fixture, factory dual-type dispatch) landed first; then `@duelyst/sdk` +
+`@duelyst/common` formalized as in-place workspace members. **Deliberate deviation from the
+original plan text:** no physical move to `packages/sdk` yet — a 1,400-file relocation before
+the TS conversion would force a ~7,000-site require rewrite (or symlinks) for no functional
+gain, against the no-big-bang rule. The physical move happens with Phase 5/6 when imports are
+rewritten anyway; the package boundary, names, and consumers are already in place.
 
 ### Phase 4 — Client build: gulp/browserify → Vite
 
@@ -165,4 +181,5 @@ Order (mechanical first, god-objects last). Each bullet is many small commits:
 | 2026-08-19 | vitest lands *beside* mocha (Phase 1) instead of a one-shot swap | 1287 passing tests are the safety net for the TS conversion; never lose them |
 | 2026-08-19 | Phantom deps added explicitly rather than enabling hoisting shims | keeps pnpm strictness as a lint for the monorepo split |
 | 2026-08-19 | Gate's coffee-lint criterion = CI scope (`pnpm lint:coffee app server worker`), not `lint:coffee:all` | `lint:coffee:all` was red before this work: 59 pre-existing errors, all in dead ops dirs (`cli/`, `scripts/*`) that CI deliberately excludes; several are indentation errors that can't be auto-fixed safely in untested CoffeeScript. Those dirs are deletion candidates, not fix targets. |
+| 2026-08-19 | 3.2: SDK/common become workspace packages in place; physical `packages/sdk` move deferred to the TS phase | moving 1,400 files pre-TS forces a ~7,000-site require rewrite or symlink fragility for zero functional gain; package names + boundary land now, relocation lands when imports are rewritten anyway |
 | 2026-08-19 | Vitest runs the CJS tests via native-require passthrough (no coffee plugin/aliases yet) | zero-risk parity with mocha's module loading; the Vite-pipeline transform belongs to Phase 4 where it's exercised by the client build. Cost: vitest wall-clock ~38s vs mocha 6s (each forked file re-imports the SDK); acceptable until the SDK is TS. |

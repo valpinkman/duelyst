@@ -580,7 +580,8 @@
     },
     {
       "files": [
-        "test/unit/sdk/serialization/**/*.js"
+        "test/unit/sdk/serialization/**/*.js",
+        "test/unit/sdk/package_identity.js"
       ],
       "rules": {
         "import/no-unresolved": "off",

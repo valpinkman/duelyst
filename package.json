@@ -9,6 +9,8 @@
     "@aws-sdk/client-s3": "^3.188.0",
     "@counterplay/chromajs": "workspace:*",
     "@counterplay/warlock": "workspace:*",
+    "@duelyst/common": "workspace:*",
+    "@duelyst/sdk": "workspace:*",
     "@firebase/app-types": "0.7.0",
     "@thream/socketio-jwt": "2.2.1",
     "app-module-path": "^1.0.6",

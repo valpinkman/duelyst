@@ -6,6 +6,9 @@ COPY .npmrc /duelyst/
 COPY pnpm-lock.yaml /duelyst/
 COPY pnpm-workspace.yaml /duelyst/
 COPY packages /duelyst/packages
+# workspace members live in-place under app/ - their manifests must exist at install time
+COPY app/sdk/package.json /duelyst/app/sdk/
+COPY app/common/package.json /duelyst/app/common/
 RUN npm install -g pnpm@10.12.1
 RUN pnpm install --frozen-lockfile && pnpm store prune
 
