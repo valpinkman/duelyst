@@ -185,8 +185,9 @@ mocha + vitest + both builds + wire-format tests.
     (batch script now verifies output exists), and `modifierInfiltrate`'s CS `for x of array`
     loop assigned properties to string keys — a sloppy-mode no-op that throws in strict ES6
     class methods; preserved as an explicit no-op with a comment. — (this commit)
-  - [ ] 5.2b `app/sdk/spells/*` (except `spell.coffee`), `playerModifiers/*`,
-    `gameSessionModifiers/*`.
+  - [x] 5.2b 304 files: `app/sdk/spells/*` (except `spell.coffee`), `playerModifiers/*`
+    (except `playerModifier.coffee`), `gameSessionModifiers/*` — fully scripted, zero
+    failures, zero manual fixes. — (this commit)
 - [ ] 5.3 `actions/` (65), `validators/`, `helpers/`.
 - [ ] 5.4 `entities/`, `cards/card.coffee`, factories (watch `@type` vs `type:` and prototype defaults — see audit §3.1 risks).
 - [ ] 5.5 `gameSession.coffee` last; then `application.coffee` / boot files.
