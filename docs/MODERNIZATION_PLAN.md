@@ -11,9 +11,8 @@ step it describes, so it can never drift from the code.
 - **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
   `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
   under pnpm (all 6 services boot, tests pass in-container).
-- **Next step:** 4.2 — wrap `generate_packages.js` as a pre-build step for the Vite pipeline
-  (currently `build:vite` relies on a prior gulp build for `app/data/packages.js`, locales,
-  resources, vendor.js, index.html, css).
+- **Next step:** 4.3 (runtime CDN base URL — release-only concern, may fold into 4.5) and
+  4.4 (dev-server alignment); 4.5 (delete gulp) requires the practice-game verification.
 - **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
   (1.4 runtime half).
 
@@ -148,7 +147,13 @@ rewritten anyway; the package boundary, names, and consumers are already in plac
   real browser (Playwright)**: the Vite bundle boots to the LOGIN screen with the identical
   console profile as the gulp bundle (only the expected dummy-Firebase warning). SCSS stays
   with gulp for now (4.4/4.5). — (this commit)
-- [ ] 4.2 `generate_packages.js` wrapped as a build plugin (or pre-build step) producing `app/data/packages.js`; asset copy & locale merge preserved; `app/resources` stays out of the module graph.
+- [x] 4.2 `pnpm build:client` (`scripts/build/build-client.mjs`) is a complete gulp-free
+  client build: vendor concat → index.html (Handlebars) → duelyst.css (dart-sass +
+  autoprefixer) → locale merge/copy → `generate_packages.js` → Vite bundle → non-cdn resource
+  copy (5,821 paths, mtime-skipped) + web assets. Order matters: generate_packages scans the
+  built CSS, so css precedes packages (as in gulp). `app/resources` never enters the module
+  graph. **Browser-verified from a clean `dist/`**: full login screen renders (screenshot
+  checked), console profile identical to gulp. Gulp path untouched. — (this commit)
 - [ ] 4.3 Runtime CDN base URL replaces the regex URL rewriting (`rsx:*_urls`, rework-url).
 - [ ] 4.4 Dev server + `server/routes/public.coffee` alignment (serve Vite output / proxy).
 - [ ] 4.5 Delete gulp pipeline + dead tasks (cdn, revision, git, docker, bump, shop) once Vite output is byte-for-byte-equivalent in behavior.
