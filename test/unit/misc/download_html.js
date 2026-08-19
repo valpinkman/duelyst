@@ -55,12 +55,12 @@ describe('downloadHtml', () => {
         res.end('boom');
       }
     });
-    await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+    await new Promise((resolve) => { server.listen(0, '127.0.0.1', resolve); });
     baseUrl = `http://127.0.0.1:${server.address().port}`;
   });
 
   afterAll(async () => {
-    if (server) await new Promise((resolve) => server.close(resolve));
+    if (server) await new Promise((resolve) => { server.close(resolve); });
     if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
