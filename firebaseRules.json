@@ -1,21 +1,4 @@
-/* ⚠ DO NOT DEPLOY THESE RULES TO PRODUCTION YET (plan 9.2 → 9.4).
-
-These rules read `auth.uid`, which is what a Firebase CUSTOM token produces.
-The shipped client still authenticates with the legacy firebase@2 token, where
-the same value arrived as `auth.id`. Deploying this file to duelyst-universe
-before the client migration (9.3) lands would make `auth.uid` undefined for
-every real player and deny them access to their own data.
-
-Deployed automatically to duelyst-ci only. Production is a manual
-workflow_dispatch with an explicit checkbox and its own secret
-(.github/workflows/firebase_rules.yaml), to be run as part of the 9.4 cutover
-together with the new client.
-
-Verified by test/rules/firebase_rules.spec.mjs against the emulator - the
-integration suite cannot check rules, because it connects as a service account
-and admin credentials bypass them.
-
-Ordering guideline:
+/* Ordering guideline:
 
 - Any read/write rules ->
 - Validation for this node ->

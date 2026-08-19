@@ -128,6 +128,14 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — **Phase 9 done: the client is off firebase@2.0.3 and on firebase@12.** Auth moved
+  from v2 legacy tokens to real custom tokens (`createCustomToken` server-side,
+  `signInWithCustomToken` client-side), and the RTDB rules moved from `auth.id` to `auth.uid`
+  (86 refs), deployed to production after a live backup. Practice game verified end-to-end
+  against `duelyst-universe`. Two Firebase projects now: `duelyst-universe` (play) and
+  `duelyst-ci` (CI). `FIREBASE_API_KEY` is a new required build var (public, not a secret).
+  Rules are tested against the emulator with `pnpm test:rules` — the integration suite CANNOT
+  check rules, because it connects as a service account and admin bypasses them.
 - 2026-08-19 — the firebase integration suite runs in CI against its own project
   (`duelyst-ci`, RTDB `duelyst-ci-default-rtdb`), so CI never writes to the database you play
   on; four repo secrets set from a service-account key, step gated so fork PRs skip it.

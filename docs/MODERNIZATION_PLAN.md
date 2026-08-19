@@ -691,8 +691,7 @@ custom token puts the subject on `auth.uid` and custom claims under `auth.token.
   `duelyst-universe` before 9.3 would make `auth.uid` undefined for every live player and deny
   them their own data. A warning to that effect is at the top of the file; the deploy happens in
   9.4, with the new client.
-- [~] 9.3 **Client to `firebase@12`.** Written and pushed to branch **`phase-9.3`** (`ef79b487`),
-  deliberately **NOT merged** — see the blocker below.
+- [x] 9.3 **Client runs on `firebase@12`.** Merged from `phase-9.3` (`3282d293`).
 
   It turned out far smaller than planned. `firebase@12`'s **`compat`** entry points expose the
   same ref API the v2 code already calls, so `app/firebase.ts` initialises compat and re-exposes
@@ -707,20 +706,38 @@ custom token puts the subject on `auth.uid` and custom claims under `auth.token.
   stored and replayed the way the legacy token could, so it validates with our server first (which
   re-issues a fresh `firebase_token`) and authenticates to Firebase with that.
 
-  🚧 **BLOCKER — owner action.** `signInWithCustomToken` requires **Firebase Authentication to be
-  provisioned on the project, and NEITHER project has it**:
-  `identitytoolkit admin/v2/projects/<id>/config` returns `CONFIGURATION_NOT_FOUND` for
-  **both `duelyst-ci` and `duelyst-universe`**. Obvious in hindsight — firebase 2.x legacy tokens
-  were validated by the RTDB itself and never involved Identity Toolkit, so the game has never had
-  Auth enabled. Enabling it via `identityPlatform:initializeAuth` fails with `BILLING_NOT_ENABLED`
-  (that API is the paid Identity Platform upgrade), so it must be done from the **Firebase console
-  → Authentication → Get started**, which is free on Spark.
-  Needed on `duelyst-ci` to finish 9.3, and on `duelyst-universe` before 9.4.
+  **Three v2-isms had to be bridged, all found by RUNNING the client**, not by reading:
+  1. `auth/invalid-api-key` — from v3 on `signInWithCustomToken` goes through Identity Toolkit,
+     which authenticates the REQUEST with the web API key. It fails before any network call, so
+     the only symptom was that no identitytoolkit request was ever made. `FIREBASE_API_KEY` is
+     now a config value threaded through both build define blocks. **Not a secret** — the web API
+     key ships in every Firebase web client and grants nothing on its own.
+  2. backfire's `_getKey` (`typeof snap.key === 'function'`) — `key` was a method in 2.x and is a
+     string property now, so it fell through to the removed `name()` and every synced model came
+     back with `id === undefined`.
+  3. `this.firebase.ref is not a function` — backfire keeps whatever ref it is handed and calls
+     `.ref()` on it in six places; a method in 2.x, a getter now. Refs handed out by
+     `app/firebase.ts` now carry a callable `ref` shadowing the getter.
 
-  *Found by running it, not reading it*: the client boots on firebase@12 with zero console errors
-  and registration succeeds; it is the subsequent Firebase sign-in that hangs.
-- [ ] 9.4 **Cutover + cleanup**: ship rules and client together, then stop minting the v2-shaped
-  token for Firebase and make 9.1's mint fatal.
+  Also `.name()` → `.key`, `.limit(1)` → `.limitToLast(1)`, `ref.parent()` → `ref.parent`,
+  `ref.unauth()` → `auth().signOut()`, `snapshot.ref()` → `snapshot.ref`. The minified vendored
+  backfire build was never edited. `firebase-v2` stays installed for the legacy `scripts/` ops
+  tools, which still speak the v2 API.
+
+- [x] 9.4 **Cutover done.** ✅ **The client runs on `firebase@12` against `duelyst-universe`.**
+  Owner enabled Firebase Auth on production; a `duelyst-client` web app was created for its API
+  key; the live ruleset was backed up (21,869 bytes, 86 `auth.id`) before deploying; `phase-9.3`
+  was merged; the `auth.uid` rules were released to `duelyst-universe`; and the client + stack
+  were rebuilt. **Verified by playing a practice game end-to-end against the real database.**
+  9.1's token minting is now **fatal** rather than logged-and-nulled — the client cannot read any
+  of its own data without it, so a swallowed failure would hand back a session that silently
+  cannot talk to Firebase. `FIREBASE_PRODUCTION_SERVICE_ACCOUNT` is set, so the manual
+  `workflow_dispatch` production rules deploy is now armed.
+
+  Rollback if ever needed: the pre-cutover ruleset is `e6a8ac0c^:firebaseRules.json`, and the
+  client is one `git revert` of the `phase-9.3` merge.
+
+**Phase 9 complete — the whole stack is off firebase@2.0.3.**
 
 *Sequencing note:* tier-2 deps (7.3) come after this, per owner.
 

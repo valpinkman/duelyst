@@ -77,19 +77,19 @@ const analyticsDataFromUserData = function (userRow) {
 };
 
 /*
- * Mint the Firebase custom token that will replace the legacy one (plan 9.1).
+ * Mint the Firebase custom token the client signs in with (plan 9.1 -> 9.4).
  *
- * Deliberately NON-FATAL: nothing consumes this yet - the client still
- * authenticates to Firebase with the legacy HS256 token - so a Firebase
- * hiccup here must not be able to break logging in. It is logged loudly and
- * the response simply carries a null, rather than failing the session.
- * This becomes required (and fatal) in 9.3, when the client starts using it.
+ * This was non-fatal while nothing consumed it. Since 9.3 the client
+ * authenticates to Firebase with this token and cannot read any of its own
+ * data without it, so swallowing a failure here would hand back a session
+ * that silently cannot talk to Firebase. Failing the login is the honest
+ * outcome, and the error is logged with the user id for diagnosis.
  */
 const mintFirebaseCustomToken = (id, username) => DuelystFirebase
   .createCustomToken(id, { username: username || null })
   .catch((e) => {
     Logger.module('SESSION').error(`failed to mint firebase custom token for ${id}: ${e.message}`);
-    return null;
+    throw e;
   });
 
 /*
