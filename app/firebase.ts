@@ -24,13 +24,24 @@ require('firebase/compat/auth');
 const databaseURL = process.env.FIREBASE_URL;
 
 /*
- * The RTDB is the only Firebase product this client uses, so databaseURL is
- * the entire config. apiKey et al. are only needed by products we do not touch
- * (Auth's email/password flows, Storage, Analytics); custom-token sign-in goes
- * through our own server.
+ * apiKey is required even though the only products used are the RTDB and
+ * custom-token sign-in: from firebase v3 on, `signInWithCustomToken` talks to
+ * Identity Toolkit, which authenticates the REQUEST with the web API key.
+ * Without it every sign-in fails with `auth/invalid-api-key` - and it fails
+ * before any network call, so nothing shows up in the network log.
+ *
+ * The v2 SDK never needed it: legacy tokens were validated by the RTDB itself
+ * and Identity Toolkit was not involved at all.
+ *
+ * It is NOT a secret. The web API key identifies the project, ships in every
+ * Firebase web client, and grants nothing on its own - access is controlled by
+ * the security rules.
  */
 if (!firebase.apps.length) {
-  firebase.initializeApp({ databaseURL });
+  firebase.initializeApp({
+    databaseURL,
+    apiKey: process.env.FIREBASE_API_KEY,
+  });
 }
 
 /**
@@ -43,8 +54,33 @@ if (!firebase.apps.length) {
  * keeps working at every existing call site. Called without `new` it behaves
  * identically, which some call sites rely on.
  */
+/*
+ * firebase 2.x refs had a `ref()` METHOD that returned the ref itself; from v3
+ * on `ref` is a getter property. backfire keeps whatever ref it is handed
+ * (`case "object": break`) and then calls `this.firebase.ref().child(...)` in
+ * six places, so a bare compat ref fails with "this.firebase.ref is not a
+ * function".
+ *
+ * Rather than edit the minified vendored build, every ref this module hands
+ * out gets a callable `ref` shadowing the prototype getter on that instance.
+ * Both spellings then work: `r.ref()` (backfire) and `toRef(r)` (our code).
+ * Only refs created HERE are patched - snapshots and refs returned by
+ * `.child()` keep the standard property, which is what the rest of the client
+ * reads.
+ */
+function withCallableRef(reference) {
+  if (typeof reference.ref !== 'function') {
+    Object.defineProperty(reference, 'ref', {
+      value: function () { return reference; },
+      configurable: true,
+      writable: true,
+    });
+  }
+  return reference;
+}
+
 function FirebaseRef(url) {
-  return firebase.database().refFromURL(url || databaseURL);
+  return withCallableRef(firebase.database().refFromURL(url || databaseURL));
 }
 
 // v2 exposed these as statics on the constructor; compat moved them onto the

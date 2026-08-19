@@ -20,6 +20,18 @@ if (Backbone.Firebase && Backbone.Firebase.prototype) {
   };
 }
 
+/*
+ * firebase 2.x exposed `.ref()` as a METHOD on snapshots and refs; from v3 on
+ * `.ref` is a plain property. Both shapes are accepted here so this file does
+ * not care which SDK is underneath. (backfire's own 12 `.ref()` calls are to
+ * ITS OWN Backbone.Firebase#ref method, not the SDK's, so they are unaffected.)
+ */
+function toRef(target) {
+  if (target == null) return target;
+  return typeof target.ref === 'function' ? target.ref() : (target.ref || target);
+}
+exports.toRef = toRef;
+
 Backbone.DuelystFirebase = {};
 
 Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
@@ -64,7 +76,7 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
       }
     });
     if (_.size(modelObj)) {
-      this.firebase.ref().update(modelObj, this._log);
+      toRef(this.firebase).update(modelObj, this._log);
     }
   },
 
