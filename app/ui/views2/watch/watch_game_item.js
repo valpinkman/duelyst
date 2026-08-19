@@ -10,7 +10,7 @@ var EVENTS = require('app/common/event_types');
 var PKGS = require('app/data/packages');
 var Animations = require('app/ui/views/animations');
 var GameDataManager = require('app/ui/managers/game_data_manager');
-var UtilsUI = require('app/common/utils/utils_ui');
+var UtilsUI = require('app/ui/utils_ui');
 var Storage = require('app/common/storage');
 var Template = require('./templates/watch_game_item.hbs');
 

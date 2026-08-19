@@ -12,7 +12,7 @@ var PackageManager = require('app/ui/managers/package_manager');
 var GameDataManager = require('app/ui/managers/game_data_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var ShopManager = require('app/ui/managers/shop_manager');
-var UtilsUI = require('app/common/utils/utils_ui');
+var UtilsUI = require('app/ui/utils_ui');
 
 var Template = require('./templates/shop_product_view.hbs');
 

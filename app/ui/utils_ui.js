@@ -6,13 +6,13 @@ const _ = require('underscore');
 const UtilsUI = {};
 module.exports = UtilsUI;
 
-const EventBus = require('../eventbus');
-const EVENTS = require('../event_types');
-const Logger = require('../logger.coffee');
-const CONFIG = require('../config');
-const SDK = require('../../sdk.coffee');
-const audio_engine = require('../../audio/audio_engine');
-const UtilsEngine = require('./utils_engine');
+const EventBus = require('app/common/eventbus');
+const EVENTS = require('app/common/event_types');
+const Logger = require('app/common/logger.coffee');
+const CONFIG = require('app/common/config');
+const SDK = require('app/sdk.coffee');
+const audio_engine = require('app/audio/audio_engine');
+const UtilsEngine = require('app/common/utils/utils_engine');
 
 /**
  * Overlays scrollbars on an element as needed.

@@ -1,7 +1,7 @@
 'use strict';
 
 var CONFIG = require('app/common/config');
-var UtilsUI = require('app/common/utils/utils_ui');
+var UtilsUI = require('app/ui/utils_ui');
 var Animations = require('app/ui/views/animations');
 var CardCompositeView = require('app/ui/views/composite/card');
 var CardTempl = require('app/ui/templates/composite/card.hbs');

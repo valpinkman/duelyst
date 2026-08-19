@@ -3,7 +3,7 @@
 var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
-var UtilsUI = require('app/common/utils/utils_ui');
+var UtilsUI = require('app/ui/utils_ui');
 var DeckCardCompositeView = require('./deck_card');
 var DeckCardsTmpl = require('./templates/deck_cards.hbs');
 
