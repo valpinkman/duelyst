@@ -32,30 +32,45 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const coffee = require('coffeescript');
 const Handlebars = require('handlebars');
 const glslify = require('glslify7');
-const config = require('./config/config');
-const { version } = require('./version.json');
 
-const env = config.get('env');
-
-// same variable set as gulp/bundler.js envify()
-const ENV_VARS = {
-  NODE_ENV: env,
-  VERSION: version,
-  API_URL: config.get('api'),
-  FIREBASE_URL: config.get('firebase.url'),
-  ALL_CARDS_AVAILABLE: config.get('allCardsAvailable'),
-  AI_TOOLS_ENABLED: config.get('aiToolsEnabled'),
-  RECORD_CLIENT_LOGS: config.get('recordClientLogs'),
-  INVITE_CODES_ACTIVE: config.get('inviteCodesActive'),
-  RECAPTCHA_ACTIVE: config.get('recaptcha.enabled'),
-  BUGSNAG_WEB: config.get('bugsnag.web_key'),
-  BUGSNAG_DESKTOP: config.get('bugsnag.desktop_key'),
-  TRACKING_PIXELS_ENABLED: false,
-  LANDING_PAGE_URL: '/',
-  REFERRER_PAGE_URLS: '',
-};
+// TRAP (learned the hard way): `vite build` sets NODE_ENV=production before
+// this file loads, which would make convict silently read production.json
+// (where api is ""). The build orchestrator (scripts/build/build-client.mjs)
+// therefore resolves the config under the REAL environment and hands the
+// values over via DUELYST_BUILD_CONFIG. Direct `pnpm build:vite` runs fall
+// back to convict forced to development unless DUELYST_ENV says otherwise.
+let ENV_VARS;
+let config;
+if (process.env.DUELYST_BUILD_CONFIG) {
+  ENV_VARS = JSON.parse(process.env.DUELYST_BUILD_CONFIG);
+  config = { get: (k) => ({ datGuiEditorEnabled: ENV_VARS.DAT_GUI_EDITOR_ENABLED }[k]) };
+} else {
+  process.env.NODE_ENV = process.env.DUELYST_ENV || 'development';
+  config = require('./config/config');
+  const { version } = require('./version.json');
+  // same variable set as gulp/bundler.js envify()
+  ENV_VARS = {
+    NODE_ENV: config.get('env'),
+    VERSION: version,
+    API_URL: config.get('api'),
+    FIREBASE_URL: config.get('firebase.url'),
+    ALL_CARDS_AVAILABLE: config.get('allCardsAvailable'),
+    AI_TOOLS_ENABLED: config.get('aiToolsEnabled'),
+    RECORD_CLIENT_LOGS: config.get('recordClientLogs'),
+    INVITE_CODES_ACTIVE: config.get('inviteCodesActive'),
+    RECAPTCHA_ACTIVE: config.get('recaptcha.enabled'),
+    BUGSNAG_WEB: config.get('bugsnag.web_key'),
+    BUGSNAG_DESKTOP: config.get('bugsnag.desktop_key'),
+    TRACKING_PIXELS_ENABLED: false,
+    LANDING_PAGE_URL: '/',
+    REFERRER_PAGE_URLS: '',
+    DAT_GUI_EDITOR_ENABLED: config.get('datGuiEditorEnabled'),
+  };
+}
 const define = Object.fromEntries(
-  Object.entries(ENV_VARS).map(([k, v]) => [`process.env.${k}`, JSON.stringify(v)]),
+  Object.entries(ENV_VARS)
+    .filter(([k]) => k !== 'DAT_GUI_EDITOR_ENABLED')
+    .map(([k, v]) => [`process.env.${k}`, JSON.stringify(v)]),
 );
 // anything else reading process.env at runtime gets an empty object
 define['process.env'] = '{}';
@@ -131,7 +146,7 @@ function umdThisShimPlugin() {
 const VIRTUAL_ENTRY = '\0duelyst-entry';
 function entryPlugin() {
   const entries = ["./app/index.js"];
-  if (config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.js');
+  if (ENV_VARS.DAT_GUI_EDITOR_ENABLED != null ? ENV_VARS.DAT_GUI_EDITOR_ENABLED : config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.js');
   return {
     name: 'duelyst:entry',
     resolveId(id) {

@@ -69,7 +69,31 @@ function step1Packages() {
 }
 
 function step2Bundle() {
-  execFileSync('node', ['node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.client.mjs'], { stdio: 'inherit' });
+  // resolve the envify variable set HERE, under the real NODE_ENV - vite
+  // build forces NODE_ENV=production before evaluating its config, which
+  // would flip convict onto production.json (api: "")
+  const { version } = require(path.join(rootDir, 'version.json'));
+  const buildConfig = {
+    NODE_ENV: env,
+    VERSION: version,
+    API_URL: config.get('api'),
+    FIREBASE_URL: config.get('firebase.url'),
+    ALL_CARDS_AVAILABLE: config.get('allCardsAvailable'),
+    AI_TOOLS_ENABLED: config.get('aiToolsEnabled'),
+    RECORD_CLIENT_LOGS: config.get('recordClientLogs'),
+    INVITE_CODES_ACTIVE: config.get('inviteCodesActive'),
+    RECAPTCHA_ACTIVE: config.get('recaptcha.enabled'),
+    BUGSNAG_WEB: config.get('bugsnag.web_key'),
+    BUGSNAG_DESKTOP: config.get('bugsnag.desktop_key'),
+    TRACKING_PIXELS_ENABLED: false,
+    LANDING_PAGE_URL: '/',
+    REFERRER_PAGE_URLS: '',
+    DAT_GUI_EDITOR_ENABLED: config.get('datGuiEditorEnabled'),
+  };
+  execFileSync('node', ['node_modules/vite/bin/vite.js', 'build', '--config', 'vite.config.client.mjs'], {
+    stdio: 'inherit',
+    env: { ...process.env, DUELYST_BUILD_CONFIG: JSON.stringify(buildConfig) },
+  });
   log('bundle', 'dist/src/duelyst.js built');
 }
 
