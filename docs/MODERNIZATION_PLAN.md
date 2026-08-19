@@ -354,8 +354,25 @@ mocha + vitest + both builds + wire-format tests.
   `pnpm typecheck` is deliberately **not** in the blocking gate until it reaches zero; it is
   the progress metric for incremental typing. Repo is now 22.7% TypeScript by bytes.
   — (this commit)
-- [ ] 5T.2c Rename the client layers (`app/ui`, `app/view`, `app/common`, boot files) and the
-  server/worker tree.
+- [x] 5T.2c **The whole client is TypeScript** — `app/ui`, `app/view`, `app/common`,
+  `app/audio`, `app/replay`, `app/localization`, `app/shaders`, `app/tools` and the boot files
+  (473 more files). The only `.js` left under `app/` is `app/data/*`: `resources.js` (1.5 MB
+  asset manifest), `fx.js`, `game_tips.js`, the generated `packages.js` and three one-off
+  migration utils — pure data and generated output, deliberately left alone.
+  `app/types/globals.d.ts` declares the vendor globals that come from `vendor.js` rather than
+  imports (`cc`, `Backbone`, `$`, `_`, …), the `window.*` singletons the boot file publishes,
+  and the `colors` package's String.prototype extensions.
+  Two more extension traps, both caught by verification rather than by the build:
+  (1) the Vite **glslify plugin filtered on `.js|.coffee`**, so after the rename no shader was
+  inlined — the build passed and the client threw 195 runtime errors in the browser
+  (`_initShaderUniforms`); (2) requires that carried an explicit `.js` extension broke when
+  their target became `.ts` — tsx's `.js→.ts` fallback does not apply to JS importers, so the
+  API server died on boot. 12 such requires de-extensioned; `config/config.js` and friends
+  keep theirs because they really are `.js`.
+  *Accepted:* mocha 1300 + vitest 1300 + build (manifest 2795) + lint green; all four images
+  rebuilt and booted; browser loads the main menu with **0 console errors** and shaders
+  rendering. — (this commit)
+- [ ] 5T.2d Rename `server/` + `worker/` (the last ~300 runtime `.js` files).
 - [ ] 5T.4 Incremental typing: drive `pnpm typecheck` to zero, then move directories from
   `tsconfig.json` into `tsconfig.strict.json`.
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook

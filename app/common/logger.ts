@@ -18,6 +18,8 @@ const moment = require('moment');
 //   )
 
 class Logger {
+  declare static isRecording: any;
+
   static _hue = 0;
   static _padLength = 10;
   static _modules = {};

@@ -31,6 +31,6 @@
       "test/*": ["./test/*"]
     }
   },
-  "include": ["app/**/*.ts", "server/**/*.ts", "worker/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
+  "include": ["app/types/*.d.ts", "app/**/*.ts", "server/**/*.ts", "worker/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist", "app/vendor", "app/resources", "app/original_resources", "packages/chroma-js", "desktop"]
 }

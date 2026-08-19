@@ -11,6 +11,12 @@ const Action = require('app/sdk/actions/action');
   Action used for modifiers.
 */
 class ModifierAction extends Action {
+  declare type: any;
+  declare _modifier: any;
+  declare modifierIndex: any;
+  declare _parentModifier: any;
+  declare parentModifierIndex: any;
+
   static type = 'ModifierAction';
 
   constructor(gameSession, modifier) {

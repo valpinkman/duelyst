@@ -122,6 +122,8 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — the entire client (app/) is TypeScript; only app/data data/generated files stay .js.
+  Browser-verified: main menu, shaders, 0 console errors.
 - 2026-08-19 — app/sdk is 100% TypeScript (1,375 files). Typecheck baseline 423 errors
   (metric, not a gate). Wire format + packages manifest verified unchanged.
 - 2026-08-19 — .ts runs everywhere (tsx hook in bin/mocha/vitest/generator); first 10 SDK

@@ -8,6 +8,8 @@ const ModifierAction = require('./modifierAction');
   Action used for modifier deactivation.
 */
 class ModifierDeactivatedAction extends ModifierAction {
+  declare type: any;
+
   static type = 'ModifierDeactivatedAction';
 }
 ModifierDeactivatedAction.prototype.type = 'ModifierDeactivatedAction';

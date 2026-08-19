@@ -20,6 +20,11 @@ The above are all optional
 */
 
 class Analytics {
+  declare static EventPriority: any;
+  declare static EventCategory: any;
+  declare static _groupPriority: any;
+  declare static _defaultPriority: any;
+
   static _getAnalyticsModules() {
     const analyticsModules = [];
 

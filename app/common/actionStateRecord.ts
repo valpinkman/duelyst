@@ -20,6 +20,21 @@ const _ = require('underscore');
  * actionStateRecord.setupToRecordStateOnEvent(EVENTS.action, { "remainingMana" : function () { return player.getRemainingMana(); } })
  */
 class ActionStateRecord {
+  declare _currentState: any;
+  declare _currentStateByType: any;
+  declare _actionIndicesRecorded: any;
+  declare _actionIndicesRecordedByEventType: any;
+  declare _lastActionIndicesRecordedCache: any;
+  declare _lastActionIndicesRecordedByEventTypeCache: any;
+  declare _propertyNamesToRecordByEventType: any;
+  declare _currentPropertyNamesToRecord: any;
+  declare _recordingMethodsByEventType: any;
+  declare _currentRecordingMethods: any;
+  declare _stateByActionIndex: any;
+  declare _stateByActionIndexAndEventType: any;
+  declare _eventBus: any;
+  declare _listeningToEvents: any;
+
   // region INITIALIZE
 
   constructor() {

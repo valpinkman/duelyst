@@ -109,7 +109,7 @@ function glslifyCallPlugin() {
     name: 'duelyst:glslify-calls',
     enforce: 'pre',
     transform(code, id) {
-      if (!/\.(js|coffee)$/.test(id) || !code.includes('glslify(')) return null;
+      if (!/\.(js|ts|coffee)$/.test(id) || !code.includes('glslify(')) return null;
       const out = code.replace(CALL_RE, (match, _q, rel) => {
         const file = path.resolve(path.dirname(id), rel);
         const source = glslify.file(file);
@@ -145,8 +145,8 @@ function umdThisShimPlugin() {
 // A virtual entry reproduces that multi-entry-single-bundle behavior.
 const VIRTUAL_ENTRY = '\0duelyst-entry';
 function entryPlugin() {
-  const entries = ["./app/index.js"];
-  if (ENV_VARS.DAT_GUI_EDITOR_ENABLED != null ? ENV_VARS.DAT_GUI_EDITOR_ENABLED : config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.js');
+  const entries = ["./app/index.ts"];
+  if (ENV_VARS.DAT_GUI_EDITOR_ENABLED != null ? ENV_VARS.DAT_GUI_EDITOR_ENABLED : config.get('datGuiEditorEnabled')) entries.push('./app/tools/editor.ts');
   return {
     name: 'duelyst:entry',
     resolveId(id) {

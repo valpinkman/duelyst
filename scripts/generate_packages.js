@@ -1258,7 +1258,7 @@
 
   // read all files and exit when complete
   Promise.all([
-    helpers.readFile(`${dir}/../app/application`, mapResourcesForFile),
+    helpers.readFile(resolveSourceFile(`${dir}/../app/application`), mapResourcesForFile),
     helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/audio`, mapResourcesForFile),
     helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/ui`, mapResourcesForFile, /\.scss/),
     helpers.readFile(`${dir}/../dist/src/duelyst.css`, mapResourcesForFile),
@@ -1270,7 +1270,7 @@
     return Promise.all([
       helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/cards/factionFactory`), parseFactionFactory),
       helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/codex/codex`), parseCodex),
-      helpers.readFile(`${dir}/../app/view/layers/game/BattleMap.js`, parseBattleMap),
+      helpers.readFile(resolveSourceFile(`${dir}/../app/view/layers/game/BattleMap`), parseBattleMap),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/modifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/playerModifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/challenges`, parseChallenge, /challengeCategory|challengeFactory/i),
