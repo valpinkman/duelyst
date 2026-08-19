@@ -116,6 +116,9 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — Phase 1 done: Docker stack verified under pnpm (all services boot, 1287 tests
+  pass in-container); workflows actionlint-clean (checkout@v3→v4); runtime CI check awaits
+  first push.
 - 2026-08-19 — vitest covers all of test/unit (1287/1287 parity, `unit_tests_vitest` CI job added).
 - 2026-08-19 — test/unit cleaned of dead weight (stale aggregators, unused sinon/power-assert);
   codemods live in `scripts/codemods/`.

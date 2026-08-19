@@ -8,14 +8,12 @@ step it describes, so it can never drift from the code.
 ## ▶ Resume here
 
 - **Branch:** `modernization` (stacked commits, one per step; not pushed anywhere yet)
-- **Current state:** Phase 1 steps 1.1–1.3 done: vitest runs all of `test/unit` at full parity
-  (1287/1287) beside mocha, locally and in CI. Baseline green.
-- **Next step:** 1.4 — verify the converted GitHub workflows actually pass (needs a push /
-  act run); 1.5 — rebuild Docker images under pnpm and smoke-test `docker compose up`.
-  Note: 1.4 needs the branch pushed to a fork/remote or `act` installed — if neither is
-  available autonomously, mark blocked and continue with Phase 2 (independent).
-- **Known dirty state:** none. Docker images and GitHub workflows were converted to pnpm
-  mechanically but have not been exercised (1.4 / 1.5 below).
+- **Current state:** Phase 1 complete (1.4's runtime half pending a push). vitest runs all of
+  `test/unit` at 1287/1287 parity beside mocha, locally and in CI config; Docker stack verified
+  under pnpm (all 6 services boot, tests pass in-container).
+- **Next step:** Phase 2 — decouple the SDK (2.1 networkManager first).
+- **Known dirty state:** none. Outstanding: run the GitHub workflows for real on first push
+  (1.4 runtime half).
 
 ## Rules
 
@@ -36,7 +34,7 @@ step it describes, so it can never drift from the code.
 - [x] 0.3 CI / Docker / docs converted to pnpm — `8802e091`
 - [x] 0.4 `AGENTS.md` + `CLAUDE.md` agent guide — `7d08d9f1`
 
-### Phase 1 — Test runner beachhead (vitest beside mocha)
+### Phase 1 — Test runner beachhead (vitest beside mocha) ✅ (1.4 runtime pending push)
 
 - [x] 1.1 vitest configured for `test/unit/sdk` (99 files) beside mocha — `vitest.config.mjs`,
   `pnpm test:vitest`, pool `forks` + `isolate` for the GameSession singleton. No CoffeeScript
@@ -57,8 +55,15 @@ step it describes, so it can never drift from the code.
 - [x] 1.3 vitest covers all of `test/unit` (101 files); `unit_tests_vitest` CI job added beside
   the mocha job in `unit_tests.yaml`.
   *Accepted:* vitest 1287/1287 == mocha 1287/1287 on `test/unit`. — (this commit)
-- [ ] 1.4 Verify the converted GitHub workflows actually pass (push branch / act).
-- [ ] 1.5 Rebuild Docker images under pnpm; `docker compose up` smoke test.
+- [x] 1.4 Workflow verification, static half: all workflows pass `actionlint`; fixed
+  `actions/checkout@v3` → `v4` (v3 no longer runs on current GitHub runners — pre-existing
+  breakage). **Runtime half deferred**: needs the branch pushed to GitHub (goal forbids
+  pushing); verify on first push. — (this commit)
+- [x] 1.5 Docker images rebuilt under pnpm and smoke-tested with compose: `test-unit` image runs
+  the full mocha suite in-container (1287 passing); db+redis up; `migrate` ran all 86
+  migrations; `api` boots and serves the client (HTTP 200 on `/` and `/healthcheck`, Redis
+  connected); `game` (8001), `sp` (8000) and `worker` boot (worker's rotate-bosses job fails
+  only on the dummy Firebase key — expected without real creds). — (this commit)
 
 ### Phase 2 — Decouple the SDK (small, independent commits)
 
