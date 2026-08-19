@@ -15,6 +15,26 @@ import { test, expect } from '@playwright/test';
 const CONSOLE_NOISE = [
   // dev-only, and unrelated to whether the game works
   /Failed to load resource: the server responded with a status of 404/,
+  /*
+   * `POST /session/username_available` answers "this username is taken" with
+   * **401**, and the client handles that as a normal answer:
+   *     // 401 result suggests username is bad or unavailable
+   *     if (res.status === 401) { return false; }
+   * The browser logs every 401 as a failed resource regardless, so a perfectly
+   * healthy registration can emit one depending on when the availability check
+   * lands relative to the account being created. That made this suite fail
+   * intermittently.
+   *
+   * Allowlisting the line does NOT blind us to a real auth failure: if
+   * authentication actually broke, the functional assertions below - reaching
+   * the welcome screen, starting a game, the AI taking its turn - would fail
+   * first and far more loudly. The console check is here for uncaught JS
+   * errors, not for HTTP statuses the client deliberately interprets.
+   *
+   * (401 for "already taken" is an upstream API wart; 409 Conflict is what it
+   * means. Changing it would be an API contract change, not a test fix.)
+   */
+  /Failed to load resource: the server responded with a status of 401/,
 ];
 
 /** Collect page errors so a test can assert the client booted cleanly. */
@@ -148,18 +168,33 @@ test.describe('the game runs', () => {
       gs.submitExplicitAction(gs.actionEndTurn());
     });
 
-    // the AI plays: steps accumulate and the turn comes back. This exercises
+    // The AI plays: steps accumulate and the turn comes back. This exercises
     // the SDK, the AI, the socket transport and the SP server together.
-    await page.waitForFunction(
+    //
+    // The snapshot is taken INSIDE the polled function, not by a second
+    // round-trip afterwards. Waiting for the condition and then re-reading the
+    // state are two separate trips into the page, and the game keeps moving
+    // between them - the AI can take another turn, flipping isMyTurn back to
+    // false and failing the assertion below on a run where nothing was
+    // actually wrong. That intermittent failure was observed twice.
+    const afterAIHandle = await page.waitForFunction(
       (steps) => {
         const gs = window.SDK.GameSession.getInstance();
-        return gs.getStepCount() > steps && gs.getCurrentPlayerId() === gs.getMyPlayerId();
+        if (!(gs.getStepCount() > steps && gs.getCurrentPlayerId() === gs.getMyPlayerId())) {
+          return null; // keep polling
+        }
+        return {
+          gameId: gs.gameId,
+          status: gs.getStatus(),
+          stepCount: gs.getStepCount(),
+          isMyTurn: true, // true by construction: the guard above just checked it
+          units: gs.getBoard().getUnits().map((u) => u.getName()),
+        };
       },
       beforeEndTurn.stepCount,
       { timeout: 120_000 },
     );
-
-    const afterAI = await gameState(page);
+    const afterAI = await afterAIHandle.jsonValue();
     // the AI acted (it may summon, move or attack - all produce steps) and
     // play came back to us; both generals are still on the board
     expect(afterAI.stepCount).toBeGreaterThan(beforeEndTurn.stepCount);
