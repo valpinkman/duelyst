@@ -7,7 +7,11 @@ step it describes, so it can never drift from the code.
 
 ## ▶ Resume here
 
-- **Branch:** `modernization` (44 commits, one per step; not pushed anywhere)
+- **Where it lives:** pushed to **`valpinkman/duelyst` (private)** as `main`; the local branch
+  `modernization` tracks `myrepo/main`. `origin` still points at upstream `open-duelyst/duelyst`
+  (read-only, for pulling upstream changes). GitHub skips `push` events for branch-creation
+  pushes this large, so CI only started on the first *incremental* push — all six workflows now
+  also accept `workflow_dispatch`.
 - **The four stack goals are done:**
   1. **pnpm monorepo** — workspace over `packages/*`, `app/sdk`, `app/common`, `desktop`.
   2. **TypeScript instead of CoffeeScript** — the *entire runtime* (client, SDK, server,

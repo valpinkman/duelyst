@@ -103,6 +103,9 @@ rationale are in `docs/MODERNIZATION_AUDIT.md` — read it before structural wor
 section, and update it (checkbox + commit hash + decisions) in the same commit as the step
 it describes.**
 
+Remotes: `myrepo` = `valpinkman/duelyst` (private, **our** repo; local `modernization`
+tracks its `main`). `origin` = upstream `open-duelyst/duelyst`, read-only — never push there.
+
 How we work on it:
 - All work happens on the **`modernization`** branch (or branches stacked on it), **one commit
   per step**, each step leaving `pnpm build` and `pnpm test:unit` green so any step can be
