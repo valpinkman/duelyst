@@ -691,10 +691,34 @@ custom token puts the subject on `auth.uid` and custom claims under `auth.token.
   `duelyst-universe` before 9.3 would make `auth.uid` undefined for every live player and deny
   them their own data. A warning to that effect is at the top of the file; the deploy happens in
   9.4, with the new client.
-- [ ] 9.3 **Client to `firebase@12` + replace `backfire`.** backfire has no source, so its ~53
-  call sites need a replacement binding written against the modular API (a thin
-  `Backbone.DuelystFirebase` shim keeps the 30 files unchanged — port the binding, not the callers).
-  Auth becomes `signInWithCustomToken(auth, firebase_token)`.
+- [~] 9.3 **Client to `firebase@12`.** Written and pushed to branch **`phase-9.3`** (`ef79b487`),
+  deliberately **NOT merged** — see the blocker below.
+
+  It turned out far smaller than planned. `firebase@12`'s **`compat`** entry points expose the
+  same ref API the v2 code already calls, so `app/firebase.ts` initialises compat and re-exposes
+  it as the v2-shaped global `Firebase` constructor — **~50 `new Firebase(url)` call sites work
+  untouched**, and `backfire` did not need replacing at all. Only genuinely renamed things changed:
+  `.name()` → `.key` (3), `.limit(1)` → `.limitToLast(1)` (1), `ref.parent()` → `ref.parent`,
+  `authWithCustomToken` → `signInWithCustomToken`, `ref.unauth()` → `auth().signOut()`.
+  backfire's one incompatibility (`_getKey` tests `typeof snap.key === 'function'`, which was true
+  in 2.x and is false now, falling through to the removed `name()`) is fixed by a one-line
+  prototype override in `duelyst_firebase.ts` — the minified vendored blob is untouched.
+  `isAuthenticated` is inverted on purpose: custom tokens are short-lived (~1h) and cannot be
+  stored and replayed the way the legacy token could, so it validates with our server first (which
+  re-issues a fresh `firebase_token`) and authenticates to Firebase with that.
+
+  🚧 **BLOCKER — owner action.** `signInWithCustomToken` requires **Firebase Authentication to be
+  provisioned on the project, and NEITHER project has it**:
+  `identitytoolkit admin/v2/projects/<id>/config` returns `CONFIGURATION_NOT_FOUND` for
+  **both `duelyst-ci` and `duelyst-universe`**. Obvious in hindsight — firebase 2.x legacy tokens
+  were validated by the RTDB itself and never involved Identity Toolkit, so the game has never had
+  Auth enabled. Enabling it via `identityPlatform:initializeAuth` fails with `BILLING_NOT_ENABLED`
+  (that API is the paid Identity Platform upgrade), so it must be done from the **Firebase console
+  → Authentication → Get started**, which is free on Spark.
+  Needed on `duelyst-ci` to finish 9.3, and on `duelyst-universe` before 9.4.
+
+  *Found by running it, not reading it*: the client boots on firebase@12 with zero console errors
+  and registration succeeds; it is the subsequent Firebase sign-in that hangs.
 - [ ] 9.4 **Cutover + cleanup**: ship rules and client together, then stop minting the v2-shaped
   token for Firebase and make 9.1's mint fatal.
 
