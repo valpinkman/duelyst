@@ -7,7 +7,6 @@ const express = require('express');
 
 const router = express.Router();
 
-const expressJwt = require('express-jwt');
 const util = require('util');
 const uuid = require('node-uuid');
 // AWS = require "aws-sdk"

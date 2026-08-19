@@ -128,6 +128,11 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-19 — dependency tier 1 done (advisories 212 → 148): moment 2.30, underscore 1.13,
+  handlebars off its 4.5.3 pin (prototype access restored explicitly in the Vite hbs plugin),
+  jsonwebtoken 5.4 → 9 + express-jwt 6 → 8 (`requestProperty: 'user'` keeps the 149
+  `req.user` reads; a `pnpm.overrides` entry drags `@thream/socketio-jwt`'s pinned 8.5.1 up
+  too, so the socket auth path is patched as well).
 - 2026-08-19 — CoffeeScript is gone from the repo entirely: dead ops deleted, useful tools
   converted, toolchain and lint_coffeescript workflow removed.
 - 2026-08-19 — Playwright e2e added: boots the client and plays a practice game vs the AI,

@@ -9,7 +9,6 @@ const _ = require('underscore');
 const express = require('express');
 
 const router = express.Router();
-const expressJwt = require('express-jwt');
 const util = require('util');
 const Logger = require('../../app/common/logger');
 const CONFIG = require('../../app/common/config');

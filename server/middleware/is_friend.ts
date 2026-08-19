@@ -5,7 +5,6 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const express = require('express');
-const expressJwt = require('express-jwt');
 
 const router = express.Router();
 const {

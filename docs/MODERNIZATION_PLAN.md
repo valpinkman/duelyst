@@ -468,7 +468,36 @@ server and worker. What remains is *typing* (5T.4), not converting.
   (should become a migration/seed script when reviving for CI); (2) `createNewUser` connects
   to Firebase Admin — needs REAL credentials, so full revival is blocked on the Firebase
   decision below (owner). CI stays on `misc` until then.
-- [ ] 7.3 Legacy dependency upgrades (bluebird→native promises, moment, underscore, kue, winston, express-jwt/jsonwebtoken, knex) — each its own step, after TS conversion of the code that uses them.
+- [~] 7.3 Legacy dependency upgrades — each its own step, after TS conversion of the code
+  that uses them.
+  - [x] **Tier 1 — drop-in / self-contained** (advisories 212 → 148):
+    - `moment` 2.8.3 → 2.30.1, `underscore` 1.6.0 → 1.13.8 — drop-in. — 9dd68be2
+    - `handlebars` off its `4.5.3` override → 4.7.9. The pin existed because 4.6 fixed
+      prototype pollution by refusing to resolve properties on an object's **prototype**,
+      which this client relies on everywhere. Old behaviour restored explicitly in the Vite
+      hbs plugin (`allowProtoPropertiesByDefault`/`allowProtoMethodsByDefault` on all 143
+      templates) so the library is patched while rendering is unchanged. Closing this
+      properly means passing plain objects to templates instead of model instances — a
+      rendering-layer change, not a dependency bump. — 9dd68be2
+    - `jsonwebtoken` 5.4.1 → 9.0.3 and `express-jwt` 6 → 8 (advisories 155 → 148; **all 13
+      jsonwebtoken advisories cleared**). express-jwt 7 renamed `req.user` → `req.auth`;
+      pinned back with `requestProperty: 'user'` rather than churn 149 route handlers. Only
+      `middleware/signed_in.ts` actually called it — four other files carried dead requires.
+      `jsonwebtoken` is also forced to ^9 through `pnpm.overrides` because
+      `@thream/socketio-jwt` hard-depends on 8.5.1, which would have left the **socket**
+      auth path on the vulnerable copy. New `test/unit/misc/auth_tokens.js` covers signing,
+      expiry, wrong-secret, the `req.user` pin, and algorithm confusion. — (this commit)
+  - [ ] **Tier 2 — needs seam-typing first**: `bluebird` → native promises, `redis` v4,
+    `knex` 3, `winston` 3, `kue`. Each changes an API surface that many call sites depend on.
+
+  **Latent bug found while doing this, deliberately NOT fixed here** (belongs with the other
+  preserved bugs in the correctness pass, 5.2c): `config/config.js` documents
+  `jwt.tokenExpiration` as *"Time (in minutes) before tokens expire"* with a default of
+  `60 * 24 * 14` ("14 days in minutes"), but it is passed straight to `jwt.sign`'s
+  `expiresIn`, which reads a **number as seconds**. Sessions therefore last ~5.6 hours, not
+  14 days. This predates the migration — jsonwebtoken 5.4.1 read numeric `expiresIn` as
+  seconds too, so the upgrade did not change it. Fixing it lengthens every session, which is
+  a product decision, not a dependency bump.
 - [x] 7.4 (workspace half) `desktop/` is a pnpm workspace member: own `yarn.lock` removed,
   `electron` allowlisted in `pnpm.onlyBuiltDependencies` (binary installs, v21.4.4), the
   build's `yarn install` shell-out now runs pnpm, docs updated. **Electron-2 unpinning left

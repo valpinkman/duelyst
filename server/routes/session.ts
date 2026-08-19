@@ -15,7 +15,6 @@ const _ = require('underscore');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
 const Promise = require('bluebird');
 const uuid = require('node-uuid');
 const moment = require('moment');

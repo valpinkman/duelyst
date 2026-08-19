@@ -339,7 +339,7 @@ var onGameSpectatorJoin = function (requestData) {
 
   // verify - synchronous
   try {
-    spectateToken = jwt.verify(requestData.spectateToken, config.get('firebase.legacyToken'));
+    spectateToken = jwt.verify(requestData.spectateToken, config.get('firebase.legacyToken'), { algorithms: ['HS256'] });
   } catch (error) {
     Logger.module('IO').error(`[G:${gameId}]`, `spectate_game -> ERROR decoding spectate token: ${(error != null ? error.message : undefined)}`.red);
   }
