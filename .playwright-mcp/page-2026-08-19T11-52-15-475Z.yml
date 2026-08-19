@@ -1,0 +1,8 @@
+- generic [active] [ref=e1]:
+  - textbox
+  - generic:
+    - generic:
+      - list:
+        - listitem:
+          - generic: Start
+      - generic [ref=e4] [cursor=pointer]: Open Editor

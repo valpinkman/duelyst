@@ -1,0 +1,80 @@
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const ModifierBackstabWatch = require('./modifierBackstabWatch');
+
+class ModifierBackstabWatchApplyPlayerModifiers extends ModifierBackstabWatch {
+  declare type: any;
+  declare modifiersContextObjects: any;
+  declare managedByCard: any;
+  declare applyToOwnPlayer: any;
+  declare applyToEnemyPlayer: any;
+
+  static type = 'ModifierBackstabWatchApplyPlayerModifiers';
+
+  static createContextObject(modifiersContextObjects, managedByCard, applyToOwnPlayer, applyToEnemyPlayer, options) {
+    if (managedByCard == null) { managedByCard = false; }
+    if (applyToOwnPlayer == null) { applyToOwnPlayer = false; }
+    if (applyToEnemyPlayer == null) { applyToEnemyPlayer = false; }
+    const contextObject = super.createContextObject(options);
+    contextObject.modifiersContextObjects = modifiersContextObjects;
+    contextObject.managedByCard = managedByCard;
+    contextObject.applyToOwnPlayer = applyToOwnPlayer;
+    contextObject.applyToEnemyPlayer = applyToEnemyPlayer;
+    return contextObject;
+  }
+
+  static createContextObjectToTargetOwnPlayer(modifiersContextObjects, managedByCard, options) {
+    return this.createContextObject(modifiersContextObjects, managedByCard, true, false, options);
+  }
+
+  static createContextObjectToTargetEnemyPlayer(modifiersContextObjects, managedByCard, options) {
+    return this.createContextObject(modifiersContextObjects, managedByCard, false, true, options);
+  }
+
+  onBackstabWatch() {
+    if (this.modifiersContextObjects != null) {
+      // applying to owner
+      let modifierContextObject;
+      if (this.applyToOwnPlayer) {
+        const general = this.getGameSession().getGeneralForPlayerId(this.getCard().getOwnerId());
+        for (modifierContextObject of Array.from<any>(this.modifiersContextObjects)) {
+          if (this.managedByCard) {
+            this.getGameSession().applyModifierContextObject(modifierContextObject, general, this);
+          } else {
+            this.getGameSession().applyModifierContextObject(modifierContextObject, general);
+          }
+        }
+      }
+
+      // applying to enemy
+      if (this.applyToEnemyPlayer) {
+        const opponentPlayerId = this.getGameSession().getOpponentPlayerIdOfPlayerId(this.getCard().getOwnerId());
+        const opponentGeneral = this.getGameSession().getGeneralForPlayerId(opponentPlayerId);
+        return (() => {
+          const result = [];
+          for (modifierContextObject of Array.from<any>(this.modifiersContextObjects)) {
+            if (this.managedByCard) {
+              result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, opponentGeneral, this));
+            } else {
+              result.push(this.getGameSession().applyModifierContextObject(modifierContextObject, opponentGeneral));
+            }
+          }
+          return result;
+        })();
+      }
+    }
+  }
+}
+ModifierBackstabWatchApplyPlayerModifiers.prototype.type = 'ModifierBackstabWatchApplyPlayerModifiers';
+ModifierBackstabWatchApplyPlayerModifiers.prototype.modifiersContextObjects = null;
+ModifierBackstabWatchApplyPlayerModifiers.prototype.managedByCard = false;
+ModifierBackstabWatchApplyPlayerModifiers.prototype.applyToOwnPlayer = false;
+ModifierBackstabWatchApplyPlayerModifiers.prototype.applyToEnemyPlayer = false;
+
+module.exports = ModifierBackstabWatchApplyPlayerModifiers;

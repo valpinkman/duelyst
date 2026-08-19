@@ -1,0 +1,59 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e5]:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "" [ref=e6]
+                  - generic: Frostfire Festival
+                  - text: 
+                  - button "" [ref=e8]
+                - button "Play" [ref=e10]
+                - button "Watch" [ref=e12]:
+                  - text: Watch
+                  - generic: 
+                - button "Collection 741 " [ref=e14]:
+                  - text: Collection
+                  - generic [ref=e16]:
+                    - generic [ref=e17]: "741"
+                    - generic [ref=e18]: 
+                - button "Mystery Crates" [ref=e19]
+                - button "Codex" [ref=e21]
+              - generic [ref=e23]:
+                - heading "Boss Battle Available" [level=2] [ref=e24]
+                - generic [ref=e26]: "Reward: 1 Spirit Orbs"
+                - generic [ref=e27]: "Available for: 22 Hours"
+                - button "Battle" [ref=e28]
+              - tooltip "Practice Game Here"
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - button "2500" [ref=e29]
+                  - button "0" [ref=e32]
+                  - button "Quests" [ref=e35]
+                  - button "Profile" [ref=e37]
+                  - button "Settings" [ref=e39]
+                  - button [ref=e41]:
+                    - text: Friends (
+                    - strong [ref=e43]: "0"
+                    - text: ) 
+                - button "0 Spirit Orbs" [ref=e44]
+              - tooltip "Open Spirit Orbs to unlock new cards for your Collection."
+              - tooltip "New Quests"
+      - generic: 
+    - textbox
+    - generic:
+      - generic:
+        - list:
+          - listitem:
+            - generic: Start
+        - generic [ref=e4] [cursor=pointer]: Open Editor
+  - generic [ref=e51]: .
+  - generic [ref=e52]: .
+  - generic [ref=e53]: .
+  - generic [ref=e54]: .
+  - generic [ref=e55]: .

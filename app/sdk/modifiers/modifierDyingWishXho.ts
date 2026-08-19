@@ -1,0 +1,38 @@
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
+ */
+const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
+const CardType = require('app/sdk/cards/cardType');
+const Factions = require('app/sdk/cards/factionsLookup');
+const ModifierManaCostChange = require('./modifierManaCostChange');
+const ModifierDyingWish = require('./modifierDyingWish');
+
+class ModifierDyingWishXho extends ModifierDyingWish {
+  declare type: any;
+  declare fxResource: any;
+
+  static type = 'ModifierDyingWishXho';
+  static modifierName = 'Dying Wish';
+  static description = 'Put a random Songhai spell into your action bar. It costs 1 less';
+
+  onDyingWish() {
+    if (this.getGameSession().getIsRunningAsAuthoritative()) {
+      const f2SpellCards = this.getGameSession().getCardCaches().getFaction(Factions.Faction2).getType(CardType.Spell)
+        .getIsHiddenInCollection(false)
+        .getIsPrismatic(false)
+        .getIsSkinned(false)
+        .getCards();
+      const spellCard = f2SpellCards[this.getGameSession().getRandomIntegerForExecution(f2SpellCards.length)];
+      const cardData = spellCard.createNewCardData();
+      cardData.additionalModifiersContextObjects = [ModifierManaCostChange.createContextObject(-1)];
+      const a = new PutCardInHandAction(this.getGameSession(), this.getCard().getOwnerId(), cardData);
+      return this.getGameSession().executeAction(a);
+    }
+  }
+}
+ModifierDyingWishXho.prototype.type = 'ModifierDyingWishXho';
+ModifierDyingWishXho.prototype.fxResource = ['FX.Modifiers.ModifierOpeningGambit'];
+
+module.exports = ModifierDyingWishXho;

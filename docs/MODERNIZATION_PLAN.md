@@ -334,8 +334,30 @@ mocha + vitest + both builds + wire-format tests.
   Hardened the build: `packages.js` is deleted before regeneration, so a crashed generator
   can no longer leave a truncated file that the manifest guard reports as a false regression
   (which is exactly what it did once here). — (this commit)
-- [ ] 5T.2b Rename the rest in batches, adding `declare` members for prototype props so TS
-  sees them without emitting instance fields.
+- [x] 5T.2b **`app/sdk` is 100% TypeScript** — all 1,375 files (0 `.js` left).
+  `scripts/codemods/rename-js-to-ts.mjs` inserts the type-only members TS needs before
+  renaming: `declare x: any` for every `Klass.prototype.x = …` and `declare static y: any`
+  for every `Klass.y = …`. **`declare` is essential**: TS and esbuild erase those members
+  entirely, whereas a real class field would become an own instance property and change the
+  serialized shape of every game object (wire-format tests stay green).
+  Three scale-only problems solved: (1) `moduleDetection: force` — without it TS treats CJS
+  files as scripts sharing one global scope, so `const CardType = require(…)` in one file
+  collided with `class CardType` in another; (2) `Array.from(<any>)` infers `unknown[]`,
+  which produced 810 of the 1,346 initial errors — annotated to `Array.from<any>(…)` rather
+  than removing the wrappers, because `Array.from` *snapshots* the collection and the engine
+  mutates entities mid-iteration; (3) `scripts/helpers.js#getIsFileReadable` is an extension
+  **whitelist**, not an existence check — it didn't know `.ts`, so the package generator's
+  recursive scans were about to skip the entire SDK. Caught before it shipped; the manifest
+  guard verifies 2,795 keys unchanged.
+  **Typecheck baseline: 423 errors** (from 1,346) — real findings now: missing optional-param
+  markers (`TS2554`), the `colors` package's String.prototype monkey-patch, `@constructor.type`.
+  `pnpm typecheck` is deliberately **not** in the blocking gate until it reaches zero; it is
+  the progress metric for incremental typing. Repo is now 22.7% TypeScript by bytes.
+  — (this commit)
+- [ ] 5T.2c Rename the client layers (`app/ui`, `app/view`, `app/common`, boot files) and the
+  server/worker tree.
+- [ ] 5T.4 Incremental typing: drive `pnpm typecheck` to zero, then move directories from
+  `tsconfig.json` into `tsconfig.strict.json`.
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
   compiles on every boot; fine for dev, wasteful for prod).
 

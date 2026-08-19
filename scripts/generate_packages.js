@@ -19,6 +19,7 @@
     }
   }
   const path = require('path');
+  const fs = require('fs');
   // lets require() resolve and compile .ts during the JS -> TypeScript migration
   require('tsx/cjs');
   require('app-module-path').addPath(path.join(__dirname, '..'));
@@ -1242,6 +1243,16 @@
     return Promise.resolve();
   };
 
+  // The tree is mid-migration (.coffee -> .js -> .ts), so source files this
+  // script reads by path must be resolved across the possible extensions.
+  const resolveSourceFile = function (base) {
+    // real existence check: getIsFileReadable() is an extension whitelist
+    for (const ext of ['.ts', '.js', '.coffee']) {
+      if (fs.existsSync(base + ext)) return base + ext;
+    }
+    return base;
+  };
+
   // begin generate packages
   console.log(' [GP] Packaging resources for STANDARD files...');
 
@@ -1257,8 +1268,8 @@
     console.log(' [GP] Resources packed for STANDARD files!');
     console.log(' [GP] Packaging resources for SPECIAL files...');
     return Promise.all([
-      helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/cards/factionFactory.js`) ? `${dir}/../app/sdk/cards/factionFactory.js` : `${dir}/../app/sdk/cards/factionFactory`, parseFactionFactory),
-      helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/codex/codex.js`) ? `${dir}/../app/sdk/codex/codex.js` : `${dir}/../app/sdk/codex/codex`, parseCodex),
+      helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/cards/factionFactory`), parseFactionFactory),
+      helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/codex/codex`), parseCodex),
       helpers.readFile(`${dir}/../app/view/layers/game/BattleMap.js`, parseBattleMap),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/modifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
       helpers.recursivelyReadDirectoryAndFiles(`${dir}/../app/sdk/playerModifiers`, parseModifier, /modifierFactory|modifierContextObject/i),
@@ -1280,7 +1291,7 @@
     // parse cosmetic factory after card factory
     // that way all card resources have been gathered
     // and card skin packages can be correctly generated
-      helpers.readFile(helpers.getIsFileReadable(`${dir}/../app/sdk/cosmetics/cosmeticsFactory.js`) ? `${dir}/../app/sdk/cosmetics/cosmeticsFactory.js` : `${dir}/../app/sdk/cosmetics/cosmeticsFactory`, parseCosmeticsFactory))
+      helpers.readFile(resolveSourceFile(`${dir}/../app/sdk/cosmetics/cosmeticsFactory`), parseCosmeticsFactory))
     .then(() => {
       console.log(' [GP] Resources packed for CARD FACTORY!');
       console.log(' [GP] Wrapping packages...');

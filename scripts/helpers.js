@@ -26,7 +26,7 @@
 
   helpers.getIsFileReadable = function (file) {
     const ext = helpers.getContentAfterLastDot(file).toLowerCase();
-    return ext === 'js' || ext === 'coffee' || ext === 'json' || ext === 'css' || ext === 'scss' || ext === 'hbs';
+    return ext === 'ts' || ext === 'js' || ext === 'coffee' || ext === 'json' || ext === 'css' || ext === 'scss' || ext === 'hbs';
   };
 
   /**
