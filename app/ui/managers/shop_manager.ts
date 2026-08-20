@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _ShopManager = {};
+var _ShopManager: Record<string, any> = {};
 _ShopManager.instance = null;
 _ShopManager.getInstance = function () {
   if (this.instance == null) {

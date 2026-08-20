@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _CosmeticChestManager = {};
+var _CosmeticChestManager: Record<string, any> = {};
 _CosmeticChestManager.instance = null;
 _CosmeticChestManager.getInstance = function () {
   if (this.instance == null) {

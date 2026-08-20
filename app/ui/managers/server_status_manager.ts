@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _ServerStatusManager = {};
+var _ServerStatusManager: Record<string, any> = {};
 _ServerStatusManager.instance = null;
 _ServerStatusManager.getInstance = function () {
   if (this.instance == null) {

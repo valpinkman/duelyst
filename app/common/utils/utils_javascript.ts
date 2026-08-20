@@ -1,7 +1,7 @@
 /** **************************************************************************
   UtilsJavascript - javascript utility methods
  *************************************************************************** */
-const UtilsJavascript = {};
+const UtilsJavascript: Record<string, any> = {};
 module.exports = UtilsJavascript;
 const _ = require('underscore');
 const i18next = require('i18next');

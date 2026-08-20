@@ -105,7 +105,7 @@ router.put('/rank/history/:season_key/top_rank', function (req, res, next) {
 
 // Updates the users current rank (and top rank if appropriate)
 router.put('/rank', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const MOMENT_UTC_NOW = moment().utc();
 
   const user_id = req.user.d.id;
@@ -259,7 +259,7 @@ router.get('/ladder_position', function (req, res, next) {
 
 // Marks the current season as last season (so that it is ready to be cycled) and deletes last season from history if needed
 router.delete('/rank/history/last', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const MOMENT_UTC_NOW = moment().utc();
 
   const previous_season_key = moment().utc().subtract(1, 'month').format('YYYY-MM');
@@ -417,7 +417,7 @@ router.post('/inventory/fill_collection', function (req, res, next) {
 });
 
 router.delete('/inventory/unused', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   let txPromise;
   const user_id = req.user.d.id;
 
@@ -446,7 +446,7 @@ router.delete('/inventory/unused', function (req, res, next) {
 });
 
 router.delete('/inventory/bloodborn', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   let txPromise;
   const user_id = req.user.d.id;
 
@@ -482,7 +482,7 @@ router.delete('/inventory/bloodborn', function (req, res, next) {
 });
 
 router.delete('/inventory/unity', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   let txPromise;
   const user_id = req.user.d.id;
 
@@ -518,7 +518,7 @@ router.delete('/inventory/unity', function (req, res, next) {
 });
 
 router.delete('/quests/current', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const user_id = req.user.d.id;
 
   const twoDaysAgoMoment = moment.utc().subtract(2, 'day');
@@ -544,7 +544,7 @@ router.delete('/quests/current', function (req, res, next) {
 });
 
 router.put('/quests/current', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const user_id = req.user.d.id;
   const {
     quest_ids,
@@ -606,7 +606,7 @@ router.put('/quests/current/progress', function (req, res, next) {
 });
 
 router.put('/quests/generated_at', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const user_id = req.user.d.id;
   const {
     days_back,
@@ -847,7 +847,7 @@ router.delete('/gauntlet/current', function (req, res, next) {
 });
 
 router.delete('/gauntlet/current/general', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const userId = req.user.d.id;
 
   // Get current gauntlet data
@@ -1111,7 +1111,7 @@ router.post('/daily_challenge/completed_at', function (req, res, next) {
 });
 
 router.post('/daily_challenge/passed_qa', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const dateKey = req.body.date_key;
 
   return DuelystFirebase.connect().getRootRef()
@@ -1218,7 +1218,7 @@ router.delete('/boss_event/rewards', function (req, res, next) {
 });
 
 router.put('/boss_event', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const adjustedMs = req.body.adjusted_ms;
   const bossId = parseInt(req.body.boss_id);
 

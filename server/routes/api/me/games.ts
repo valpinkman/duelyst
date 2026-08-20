@@ -101,7 +101,7 @@ router.get('/watchable/:division_name', function (req, res, next) {
 
   return WatchableGamesManager.loadGamesDataForDivision(division_name)
     .then(function (data) {
-      const _chainState = {};
+      const _chainState: Record<string, any> = {};
       if (data) {
         Logger.module('API').debug('loaded watchable games data from REDIS');
         return res.status(200).json(data);

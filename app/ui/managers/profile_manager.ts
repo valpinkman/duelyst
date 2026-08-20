@@ -1,4 +1,4 @@
-var _ProfileManager = {};
+var _ProfileManager: Record<string, any> = {};
 _ProfileManager.instance = null;
 _ProfileManager.getInstance = function (options) {
   if (this.instance == null) {

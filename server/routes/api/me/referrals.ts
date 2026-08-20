@@ -35,7 +35,7 @@ router.get('/summary', function (req, res, next) {
       referralRows = DataAccessHelpers.restifyData(referralRows) || [];
       unreadEventRows = DataAccessHelpers.restifyData(unreadEventRows) || [];
 
-      const stats = {};
+      const stats: Record<string, any> = {};
 
       for (row of Array.from<any>(referralRows)) {
         if (stats.signups == null) { stats.signups = 0; }
@@ -50,7 +50,7 @@ router.get('/summary', function (req, res, next) {
         }
       }
 
-      const unclaimedRewards = {};
+      const unclaimedRewards: Record<string, any> = {};
 
       for (row of Array.from<any>(unreadEventRows)) {
         switch (row.event_type) {

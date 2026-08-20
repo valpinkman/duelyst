@@ -357,7 +357,7 @@ var MyPlayerPopoverLayout = PlayerPopoverLayout.extend({
       if (InventoryManager.getInstance().getCanPurchaseCosmeticById(emoteId)) {
         // buy emote
         var productData = SDK.CosmeticsFactory.cosmeticProductDataForIdentifier(emoteId);
-        var saleData = {};
+        var saleData: Record<string, any> = {};
         if (emoteModel.get('sale_id')) {
           saleData.saleId = emoteModel.get('sale_id');
           saleData.salePrice = emoteModel.get('sale_price');

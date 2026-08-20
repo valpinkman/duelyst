@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _NewsManager = {};
+var _NewsManager: Record<string, any> = {};
 _NewsManager.instance = null;
 _NewsManager.getInstance = function () {
   if (this.instance == null) {

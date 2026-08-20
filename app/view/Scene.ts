@@ -9,7 +9,7 @@ const CCInjections = require('app/view/extensions/CCInjections');
 const NodeInjections = require('app/view/extensions/NodeInjections');
 const RenderingInjections = require('app/view/extensions/RenderingInjections');
 
-const Scene = {};
+const Scene: Record<string, any> = {};
 
 Scene._instance = null;
 Scene.getInstance = function () {

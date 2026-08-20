@@ -3,7 +3,7 @@
  *************************************************************************** */
 const _ = require('underscore');
 
-const UtilsUI = {};
+const UtilsUI: Record<string, any> = {};
 module.exports = UtilsUI;
 
 const EventBus = require('app/common/eventbus');

@@ -290,7 +290,7 @@ App.onLogin = function (data) {
   // region analytics data
   // Include users analytics data retrieved with session
   const identifyParams = {};
-  let utmParams = {};
+  let utmParams: Record<string, any> = {};
   let hadPreviousSession = false;
   if (data.analyticsData != null) {
     utmParams = _.extend(utmParams, data.analyticsData);

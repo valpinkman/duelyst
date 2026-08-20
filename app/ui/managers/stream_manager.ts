@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _StreamManager = {};
+var _StreamManager: Record<string, any> = {};
 _StreamManager.instance = null;
 _StreamManager.getInstance = function () {
   if (this.instance == null) {

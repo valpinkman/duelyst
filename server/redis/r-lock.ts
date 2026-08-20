@@ -28,7 +28,7 @@ return 0
 const makeKey = (key) => `${key}:lock`;
 
 module.exports = function (redis) {
-  const lock = {};
+  const lock: Record<string, any> = {};
 
   lock.makeKey = makeKey;
 

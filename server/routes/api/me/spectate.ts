@@ -51,7 +51,7 @@ const router = express.Router();
 //   .catch (error) -> next(error)
 
 router.get('/:player_id', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const result = t.validate(req.params.player_id, types.UserId);
   if (!result.isValid()) {
     return next();

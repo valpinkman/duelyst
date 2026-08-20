@@ -136,7 +136,7 @@ class UsersModule {
     if (inviteCode == null) { inviteCode = null; }
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     return knex('invite_codes').where('code', inviteCode).first()
       .then(function (inviteCodeRow) {
@@ -304,7 +304,7 @@ class UsersModule {
     const _chainState: Record<string, any> = {};
     if (forceItForNoGold == null) { forceItForNoGold = false; }
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     return UsersModule.userIdForUsername(newUsername)
       .then(function (existingUserId) {
@@ -1049,7 +1049,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then((userRow) => Promise.all([
@@ -1134,7 +1134,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id', 'is_bot').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
@@ -1485,7 +1485,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       const start_of_day_int = parseInt(moment(MOMENT_NOW_UTC).startOf('day').utc().format('YYYYMMDD'));
@@ -1961,7 +1961,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
     this_obj.rewards = [];
 
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
@@ -2105,7 +2105,7 @@ class UsersModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const MOMENT_SEASON_START_UTC = MOMENT_NOW_UTC.clone().startOf('month');
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
@@ -2385,7 +2385,7 @@ class UsersModule {
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('UsersModule').time(`completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`);
 
@@ -2624,7 +2624,7 @@ class UsersModule {
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('UsersModule').time(`markChallengeAsAttempted() -> user ${userId.blue} attempted challenge type ${challengeType}.`);
 
@@ -2776,7 +2776,7 @@ class UsersModule {
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('UsersModule').time(`setNewPlayerFeatureProgression() -> user ${userId.blue} marking module ${moduleName} as ${stage}.`);
 
@@ -2851,7 +2851,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('UsersModule').time(`setPortraitId() -> user ${userId.blue}.`);
 
@@ -2891,7 +2891,7 @@ class UsersModule {
     }
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('UsersModule').time(`setBattleMapId() -> user ${userId.blue}.`);
 
@@ -2929,7 +2929,7 @@ class UsersModule {
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     return Promise.resolve()
       .then(() => DuelystFirebase.connect().getRootRef())

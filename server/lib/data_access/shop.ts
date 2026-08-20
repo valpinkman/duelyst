@@ -135,7 +135,7 @@ class ShopModule {
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     if (sku === 'STARTERBUNDLE_201604') {
-      const updateParams = {};
+      const updateParams: Record<string, any> = {};
       updateParams.has_purchased_starter_bundle = true;
       allPromises.push(tx('users').where('id', userId).update(updateParams));
     }
@@ -210,7 +210,7 @@ class ShopModule {
     }
 
     const NOW_UTC_MOMENT = moment.utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const productData = ShopModule.productDataForSKU(sku);
 
@@ -431,7 +431,7 @@ class ShopModule {
       return Promise.reject(new Error(`giveUserPremiumCurrency: invalid amount - ${amount}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const trxPromise = knex.transaction((tx) => tx('users').where('id', userId).first('id').forUpdate()
       .then(function (userRow) {
@@ -482,7 +482,7 @@ class ShopModule {
       return Promise.reject(new Error(`debitUserPremiumCurrency: invalid amount - ${amount}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const trxPromise = knex.transaction((tx) => tx('users').where('id', userId).first('id').forUpdate()
       .then(function (userRow) {

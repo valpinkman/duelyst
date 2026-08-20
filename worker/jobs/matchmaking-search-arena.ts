@@ -135,7 +135,7 @@ var findLockablePlayer = function (players) {
  * @return   {Object} lock, see 'findLockablePlayer'
  */
 const findOpponent = (userId, lastOpponentId, rank, radius) => {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   return getRequeueParams()
     .then(function (params) {
       _chainState.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
@@ -224,7 +224,7 @@ module.exports = function (job, done) {
         // Logger.module("MATCHMAKING-ARENA-JOB").debug("[J:#{job.id}] ARENA - lock(#{userId}) acquired.")
           return findOpponent(userId, playerToken.lastOpponentId, rank, searchRadius)
             .then(function (opponent) {
-              const _chainState = {};
+              const _chainState: Record<string, any> = {};
               if (!opponent) {
                 // no opponents found, unlock and requeue
                 unlock();

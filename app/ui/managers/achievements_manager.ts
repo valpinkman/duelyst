@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _AchievementsManager = {};
+var _AchievementsManager: Record<string, any> = {};
 _AchievementsManager.instance = null;
 _AchievementsManager.getInstance = function () {
   if (this.instance == null) {

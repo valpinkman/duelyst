@@ -11,7 +11,7 @@
   UtilsGameSession - game session utility methods.
 */
 
-const UtilsGameSession = {};
+const UtilsGameSession: Record<string, any> = {};
 module.exports = UtilsGameSession;
 
 const CONFIG = require('app/common/config');

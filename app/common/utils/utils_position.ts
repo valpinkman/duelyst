@@ -3,7 +3,7 @@ UtilsPosition - position/vec2 utility methods.
 *************************************************************************** */
 const _ = require('underscore');
 
-const UtilsPosition = {};
+const UtilsPosition: Record<string, any> = {};
 module.exports = UtilsPosition;
 
 const CONFIG = require('../config');

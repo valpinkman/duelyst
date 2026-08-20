@@ -68,7 +68,7 @@ var PERF = {
    * @returns {Object}
    */
   get_stats_data_by_id(id, noise_threshold, below_threshold, above_threshold, fixed, unconverted) {
-    const stats_data = {};
+    const stats_data: Record<string, any> = {};
     const stats = PERF.get_stats_by_id(id);
     if (stats != null) {
       stats_data.entries = stats.get_num_records();

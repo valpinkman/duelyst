@@ -1152,8 +1152,8 @@ App.onLogin = function (data) {
 App.onLoginAnalyticsSetup = function (loginData) {
   // region analytics data
   // Include users analytics data retrieved with session
-  const identifyParams = {};
-  let utmParams = {};
+  const identifyParams: Record<string, any> = {};
+  let utmParams: Record<string, any> = {};
   let hadPreviousSession = false;
   if (loginData.analyticsData != null) {
     utmParams = _.extend(utmParams, loginData.analyticsData);
@@ -1935,7 +1935,7 @@ App._startBossBattleGame = function (myPlayerDeck, myPlayerFactionId, myPlayerGe
 //
 
 App._startGameForReplay = function (replayData) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   if (ChatManager.getInstance().getStatusIsInBattle()) {
     Logger.module('APPLICATION').log('App._startGameForReplay -> cannot start game when already in a game!');
     return;
@@ -2603,7 +2603,7 @@ App.onShowGameOver = function () {
  * @private
  */
 App._startLoadingGameOverData = function () {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   // for specated games, don't load any data
   if (SDK.GameSession.current().getIsSpectateMode()) {
     App._gameOverDataThenable = Promise.resolve([null, []]);

@@ -2,7 +2,7 @@
   UtilsEnv - environment utility methods
  - NOTE: these methods are configured at compile time by browserify
  *************************************************************************** */
-const UtilsEnv = {};
+const UtilsEnv: Record<string, any> = {};
 
 /**
  * Return whether the current environment is in staging (i.e. development but not local).

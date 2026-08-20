@@ -22,7 +22,7 @@ const { version } = JSON.parse(fs.readFileSync('./version.json'));
 const env = config.get('env');
 
 const createGame = function (gameType, player1Data, player2Data, gameServer, callback) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   let error,
     newGameSession;
   let player1DataForGame = player1Data;

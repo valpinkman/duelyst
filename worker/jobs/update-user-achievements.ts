@@ -21,7 +21,7 @@ const FirebasePromises = require('../../server/lib/firebase_promises');
  * @param  {Function} done   Callback when job is complete
  */
 module.exports = function (job, done) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const userId = job.data.userId || null;
 
   if (!userId) {

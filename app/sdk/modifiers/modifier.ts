@@ -183,7 +183,7 @@ class Modifier extends SDKObject {
   static createAttributeBuffsObject(attackBuff, maxHPBuff) {
     if (attackBuff == null) { attackBuff = 0; }
     if (maxHPBuff == null) { maxHPBuff = 0; }
-    const attributeBuffs = {};
+    const attributeBuffs: Record<string, any> = {};
     if (attackBuff) {
       attributeBuffs.atk = attackBuff;
     }
@@ -624,7 +624,7 @@ class Modifier extends SDKObject {
    * @returns {Object} contextObject
   */
   createNewContextObject() {
-    const contextObject = {};
+    const contextObject: Record<string, any> = {};
 
     // copy properties from existing context object
     if (this.contextObject != null) {

@@ -43,7 +43,7 @@ router.post('/core', function (req, res, next) {
 });
 
 router.post('/:module_name/stage', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   let module_name = t.validate(req.params.module_name, t.Str);
   if (!module_name.isValid()) {
     return next();

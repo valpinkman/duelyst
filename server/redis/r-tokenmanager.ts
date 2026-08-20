@@ -54,7 +54,7 @@ class RedisTokenManager {
    */
   create(opts) {
     if (opts == null) { opts = {}; }
-    const token = {};
+    const token: Record<string, any> = {};
     token.id = createTokenId();
     token.createdAt = Date.now();
     token.userId = opts.userId;

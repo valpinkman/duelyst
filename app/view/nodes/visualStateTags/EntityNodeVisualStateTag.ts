@@ -7,7 +7,7 @@ const UtilsJavascript = require('app/common/utils/utils_javascript');
 
 /* region Resource Names */
 
-const EntityNodeVisualResources = {};
+const EntityNodeVisualResources: Record<string, any> = {};
 
 EntityNodeVisualResources.glowResource = 'GlowResource';
 EntityNodeVisualResources.highlightResource = 'HighlightResource';
@@ -15,7 +15,7 @@ EntityNodeVisualResources.shaderResource = 'ShaderResource';
 
 /* endregion Resource Names */
 
-const EntityNodeVisualStateTag = {};
+const EntityNodeVisualStateTag: Record<string, any> = {};
 
 // TODO: consider adding typePriority for conflicting tags of equal priority when collapsing
 

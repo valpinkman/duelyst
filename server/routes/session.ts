@@ -45,7 +45,7 @@ const PromiseUtils = require('../../app/common/utils/utils_promise');
 Build analytics data from user data
 */
 const analyticsDataFromUserData = function (userRow) {
-  const analyticsData = {};
+  const analyticsData: Record<string, any> = {};
   if (userRow.campaign_source != null) {
     analyticsData.campaign_source = userRow.campaign_source;
   }
@@ -97,7 +97,7 @@ Log a user in (firing sync jobs) and generate a response (token)
 Possibly add param in return data to say username is null? OR just allow client to decode token
 */
 const logUserIn = (id) => {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   return UsersModule.userDataForId(id)
     .then(function (data) {
       if ((data == null)) {
@@ -162,7 +162,7 @@ POST handler for session login
 Log users in
 */
 router.post('/session/', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const result = t.validate(req.body, validators.loginInput);
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
@@ -249,7 +249,7 @@ POST handler for registration
 Register new users
 */
 router.post('/session/register', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const result = t.validate(req.body, validators.signupInput);
   if (!result.isValid()) {
     return res.status(400).json(result.errors);

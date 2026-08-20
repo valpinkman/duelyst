@@ -19,7 +19,7 @@ const CosmeticsFactory = require('./cosmetics/cosmeticsFactory');
 const ModifierStartsInHand = require('app/sdk/modifiers/modifierStartsInHand');
 const _ = require('underscore');
 
-const GameSetup = {};
+const GameSetup: Record<string, any> = {};
 
 // region SETUP NEW
 
@@ -331,7 +331,7 @@ GameSetup.addCardsToDeckFromData = function (gameSession, player, playerGameSetu
 
 GameSetup.createGameSetupData = function (gameSession, player1Data, player2Data) {
   let allowUntargetable;
-  const gameSetupData = {};
+  const gameSetupData: Record<string, any> = {};
 
   // snapshot all cards on board
   gameSetupData.boardCardsData = [];
@@ -352,7 +352,7 @@ GameSetup.createGameSetupData = function (gameSession, player1Data, player2Data)
 GameSetup.createGameSetupDataForPlayer = function (gameSession, player, playerData) {
   const playerDeck = player.getDeck();
   const playerGeneral = gameSession.getGeneralForPlayer(player);
-  const playerGameSetupData = {};
+  const playerGameSetupData: Record<string, any> = {};
 
   // player data
   playerGameSetupData.playerId = player.getPlayerId();

@@ -3,7 +3,7 @@
  *************************************************************************** */
 const _ = require('underscore');
 
-const UtilsResources = {};
+const UtilsResources: Record<string, any> = {};
 
 /**
  * Return extension from a resource path.

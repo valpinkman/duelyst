@@ -77,7 +77,7 @@ var ChangePortraitItemView = FormPromptDialogItemView.extend({
       var productData = SDK.CosmeticsFactory.cosmeticProductDataForIdentifier(cosmeticId);
 
       // Check for sales data
-      var saleData = {};
+      var saleData: Record<string, any> = {};
       var saleId = $(event.currentTarget).data('sale-id');
       var salePriceStr = $(event.currentTarget).data('sale-price');
 

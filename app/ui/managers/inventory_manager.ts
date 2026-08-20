@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _InventoryManager = {};
+var _InventoryManager: Record<string, any> = {};
 _InventoryManager.instance = null;
 _InventoryManager.getInstance = function () {
   if (this.instance == null) {

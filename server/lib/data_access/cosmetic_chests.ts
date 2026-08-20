@@ -94,7 +94,7 @@ class CosmeticChestsModule {
       return Promise.reject(new Error(`Can not give chest to user: invalid boss chest amount - ${chestAmount}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -279,7 +279,7 @@ class CosmeticChestsModule {
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('CosmeticChestsModule').time(`openChest() -> User ${userId.blue}`.green + ` opened chest ID ${chestId}.`.green);
 
@@ -686,7 +686,7 @@ class CosmeticChestsModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then(() => tx('user_progression').where('user_id', userId).first().forUpdate()).then(function (userProgressionRow) {
@@ -807,7 +807,7 @@ class CosmeticChestsModule {
     }
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {

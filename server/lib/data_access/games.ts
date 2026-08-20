@@ -170,7 +170,7 @@ class GamesModule {
     return tx('user_games').first('reward_ids').where({ user_id: userId, game_id: gameId }).forUpdate()
       .then(function (gameRow) {
         if (gameRow != null) {
-          const updateParams = {};
+          const updateParams: Record<string, any> = {};
           updateParams.reward_ids = gameRow.reward_ids || [];
           updateParams.reward_ids.push(rewardId);
           _.extend(updateParams, andUpdateAttributes);

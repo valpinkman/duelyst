@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _GamesManager = {};
+var _GamesManager: Record<string, any> = {};
 _GamesManager.instance = null;
 _GamesManager.getInstance = function () {
   if (this.instance == null) {
@@ -426,7 +426,7 @@ var GamesManager = Manager.extend({
       var inviteRef = new Firebase(process.env.FIREBASE_URL + '/matchmaking/' + process.env.NODE_ENV + '/invites/to/' + playerId + '/').push();
 
       // initialize the invite attributes
-      var inviteData = {};
+      var inviteData: Record<string, any> = {};
       inviteData.fromName = ProfileManager.getInstance().get('username');
       inviteData.fromId = ProfileManager.getInstance().get('id');
       inviteData.toName = playerName;
@@ -492,7 +492,7 @@ var GamesManager = Manager.extend({
     Logger.module('UI').log('GamesManager::findNewGame -> for faction id', factionId, 'with name', SDK.FactionFactory.factionForIdentifier(factionId).name, 'with deck', deck);
 
     // TODO : remove ranking model from AJAX request and retrieve server-side
-    var matchRequest = {};
+    var matchRequest: Record<string, any> = {};
     matchRequest.name = ProfileManager.getInstance().get('username');
     matchRequest.gameType = gameType;
     matchRequest.namespace = process.env.NODE_ENV;

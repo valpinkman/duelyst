@@ -3,7 +3,7 @@
 var UtilsJavascript = require('app/common/utils/utils_javascript');
 var PromiseUtils = require('app/common/utils/utils_promise');
 
-var _PackageManager = {};
+var _PackageManager: Record<string, any> = {};
 _PackageManager.instance = null;
 _PackageManager.getInstance = function () {
   if (this.instance == null) {
@@ -534,7 +534,7 @@ var PackageManager = Manager.extend({
               resourceNamesAndPathsMapped[resourceName] = true;
 
               // load or wait for previous load of all resource paths
-              var imgLoadOptions = {};
+              var imgLoadOptions: Record<string, any> = {};
               if (resourceData.is16Bit) {
                 // 16 bit images should load in 16-bit format
                 imgLoadOptions.pixelFormat = cc.Texture2D.PIXEL_FORMAT_RGB5A1;
@@ -628,7 +628,7 @@ var PackageManager = Manager.extend({
             onLoadComplete();
           } else {
             // setup load options
-            var loadOptions = {};
+            var loadOptions: Record<string, any> = {};
 
             // add load options progress callback
             loadOptions.trigger = function (resource, numLoading, numLoaded) {

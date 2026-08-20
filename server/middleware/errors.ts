@@ -51,7 +51,7 @@ module.exports.development = function (err, req, res, next) {
 
 // production sets a default error message and scrubs stacktrace
 module.exports.production = function (err, req, res, next) {
-  const error = {};
+  const error: Record<string, any> = {};
 
   // check for 400,401,404, otherwise we have 500 error
   // we scrub the error to a default msg

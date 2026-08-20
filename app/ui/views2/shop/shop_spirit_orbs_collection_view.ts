@@ -326,7 +326,7 @@ var ShopSpiritOrbsCollectionView = Backbone.Marionette.ItemView.extend({
       packProductData.icon_image_url = RSX.shop_1_orb.img;
     }
 
-    var saleData = {};
+    var saleData: Record<string, any> = {};
 
     var saleModel = ShopManager.getInstance().getActiveShopSaleModelForSku(productSku);
 

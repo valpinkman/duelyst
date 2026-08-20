@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _NewPlayerManager = {};
+var _NewPlayerManager: Record<string, any> = {};
 _NewPlayerManager.instance = null;
 _NewPlayerManager.getInstance = function () {
   if (this.instance == null) {
@@ -408,7 +408,7 @@ var NewPlayerManager = Manager.extend({
   },
 
   setModuleStage: function (moduleName, stage) {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     if (this.newPlayerModulesCollection == null) {
       return;
     }
@@ -567,7 +567,7 @@ var NewPlayerManager = Manager.extend({
   },
 
   _completeProgression: function () {
-    const _chainState = {};
+    const _chainState: Record<string, any> = {};
     _.each(this._moduleNames, function (moduleName) {
       _chainState.setModuleStage(moduleName, _chainState._moduleStages.read);
     }, this);

@@ -100,7 +100,7 @@ class RankModule {
       return Promise.reject(new Error(`Can not update user ranking: invalid user ID - ${userId}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').where('id', userId).first().forUpdate())
       .then(function (userRow) {
@@ -318,7 +318,7 @@ class RankModule {
       return Promise.reject(new Error(`Can not updateUserRankingWithGame(): invalid user ID - ${userId}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
     this_obj.timeout = setTimeout(() => Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> Potential timeout detected. game_id:${gameId}`),
       10000);
 
@@ -816,7 +816,7 @@ class RankModule {
     startOfSeasonMoment = moment.utc(startOfSeasonMoment || MOMENT_UTC_NOW).startOf('month');
     const seasonStartingAt = startOfSeasonMoment.toDate();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
     this_obj.seasonStartingAt = seasonStartingAt;
 
     // First retrieves the current ladder position to determine if updates are needed to top ladder position
@@ -862,7 +862,7 @@ class RankModule {
 
               // Check if we need to update top ranks based on ladder position
               if ((userRowData.top_rank_ladder_position == null) || (_chainState.newLadderPosition < userRowData.top_rank_ladder_position)) {
-                const userRowLadderPositionData = {};
+                const userRowLadderPositionData: Record<string, any> = {};
                 userRowLadderPositionData.top_rank_starting_at = _chainState.seasonStartingAt;
                 userRowLadderPositionData.top_rank_updated_at = MOMENT_UTC_NOW.toDate();
                 userRowLadderPositionData.top_rank_ladder_position = _chainState.newLadderPosition;
@@ -1014,7 +1014,7 @@ class RankModule {
       return Promise.reject(new Error(`Can not claim season rank rewards: invalid season - ${dateWithinSeason}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
     const MOMENT_UTC_NOW = systemTime || moment().utc();
     const startOfSeasonMoment = moment(dateWithinSeason).utc().startOf('month');
 
@@ -1136,7 +1136,7 @@ class RankModule {
       randomLegendaryCardId,
       randomRareCardId,
       rareCards;
-    const reward = {};
+    const reward: Record<string, any> = {};
     reward.card_ids = [];
 
     if (rank <= 20) { reward.gold = 90; }

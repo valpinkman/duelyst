@@ -34,7 +34,7 @@ const Errors = require('./custom_errors');
 const Consul = require('./consul');
 
 const createSinglePlayerGame = function (userId, name, gameType, deck, cardBackId, battleMapIndexesToSampleFrom, aiPlayerId, aiUsername, aiGeneralId, aiDeckId, aiDifficulty, aiNumRandomCards, ticketId, gameSetupOptions) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   if ((gameType == null)) { gameType = GameType.SinglePlayer; }
 
   let playerIsPlayer1 = true;

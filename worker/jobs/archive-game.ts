@@ -22,7 +22,7 @@ const Logger = require('../../app/common/logger');
  * @param  {Function} done   Callback when job is complete
  */
 module.exports = function (job, done) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const gameId = job.data.gameId || null;
   if (!gameId) {
     return done(new Error('Game ID is not defined.'));

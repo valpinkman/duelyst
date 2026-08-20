@@ -1,7 +1,7 @@
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const UsableDecksLookup = require('./usable_decks_lookup');
 
-const F6 = {};
+const F6: Record<string, any> = {};
 
 F6.deckByDifficulty = {
   0: [

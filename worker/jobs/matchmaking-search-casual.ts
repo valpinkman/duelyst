@@ -176,7 +176,7 @@ var findLockablePlayer = function (players) {
  * @return   {Object}   [opponent: (see 'findLockablePlayer'), searchedRanked: true/false]
  */
 const findOpponent = function (userId, lastOpponentId, rank, timeServed, deckValue, attempt, attemptInRanked, firstAttemptAt) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const searchedRanked = false;
 
   return getRequeueParams()
@@ -306,7 +306,7 @@ module.exports = function (job, done) {
           Logger.module('JOB').debug(`[J:${job.id}] lock(${userId}) acquired - matchmaking metric ${rank},${deckValue}.`);
           return findOpponent(userId, playerToken.lastOpponentId, rank, timeServed, deckValue, attempt, attemptInRanked, firstAttemptAt)
             .then(function (searchData) {
-              const _chainState = {};
+              const _chainState: Record<string, any> = {};
               const {
                 opponent,
               } = searchData;

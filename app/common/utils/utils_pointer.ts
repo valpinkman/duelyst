@@ -5,7 +5,7 @@ const _ = require('underscore');
  - x,y are in GL coordinates, i.e. from BOTTOM LEFT
  - top,left are in ui coordinates, i.e. from TOP LEFT
  *************************************************************************** */
-const UtilsPointer = {};
+const UtilsPointer: Record<string, any> = {};
 
 UtilsPointer.pointer = {
   x: 0,

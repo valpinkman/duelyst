@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why this is created this way
 
-const _audio_engine = {};
+const _audio_engine: Record<string, any> = {};
 let _audio_engine_instance = null;
 _audio_engine.instance = function () {
   if (_audio_engine_instance == null) {

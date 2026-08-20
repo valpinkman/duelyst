@@ -20,7 +20,7 @@ const types = require('../validators/types');
 Make sure users routes have a User ID parameter
 */
 module.exports = function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const result = t.validate(req.params.user_id, types.UserId);
   if (!result.isValid()) {
     return res.status(400).json(result.errors);

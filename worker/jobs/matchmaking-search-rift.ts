@@ -142,7 +142,7 @@ var findLockablePlayer = function (players) {
  * @return   {Object} lock, see 'findLockablePlayer'
  */
 const findOpponent = (userId, lastOpponentId, rank, radius) => {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   return getRequeueParams()
     .then(function (params) {
       _chainState.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
@@ -231,7 +231,7 @@ module.exports = function (job, done) {
         // Logger.module("MATCHMAKING-RIFT-JOB").log("[J:#{job.id}] RIFT - lock(#{userId}) acquired.")
           return findOpponent(userId, playerToken.lastOpponentId, rank, searchRadius)
             .then(function (opponent) {
-              const _chainState = {};
+              const _chainState: Record<string, any> = {};
               if (!opponent) {
                 // if we've waited 20 seconds, queue with a bot
                 if (moment.duration(moment.utc().valueOf() - firstAttemptAt.valueOf()).asSeconds() > 25) {

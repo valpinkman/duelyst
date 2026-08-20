@@ -38,7 +38,7 @@ router.get('/', function (req, res, next) {
 
   return knex('user_rift_runs').where('user_id', user_id).orderBy('rift_rating', 'desc').first()
     .then(function (highestRatingRiftRunRow) {
-      const responseData = {};
+      const responseData: Record<string, any> = {};
 
       if (highestRatingRiftRunRow != null) {
         highestRatingRiftRunRow = DataAccessHelpers.restifyData(highestRatingRiftRunRow);

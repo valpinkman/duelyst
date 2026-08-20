@@ -2,7 +2,7 @@
 
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _NavigationManager = {};
+var _NavigationManager: Record<string, any> = {};
 _NavigationManager.instance = null;
 _NavigationManager.getInstance = function () {
   if (this.instance == null) {

@@ -1,4 +1,4 @@
-var _TelemetryManager = {};
+var _TelemetryManager: Record<string, any> = {};
 _TelemetryManager.instance = null;
 _TelemetryManager.getInstance = function () {
   if (this.instance == null) {

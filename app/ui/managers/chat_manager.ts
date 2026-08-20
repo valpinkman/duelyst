@@ -2,7 +2,7 @@
 
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _ChatManager = {};
+var _ChatManager: Record<string, any> = {};
 _ChatManager.instance = null;
 _ChatManager.getInstance = function () {
   if (this.instance == null) {

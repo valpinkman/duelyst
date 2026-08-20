@@ -57,7 +57,7 @@ var EmoteItemView = Backbone.Marionette.ItemView.extend({
   },
 
   onSelect: function (e) {
-    var saleData = {};
+    var saleData: Record<string, any> = {};
     var saleId = $(e.currentTarget).data('sale-id');
     var salePriceStr = $(e.currentTarget).data('sale-price');
 

@@ -736,7 +736,7 @@ if (cluster.isMaster) {
         const afterGameOver = function () {
           Logger.module('AI').debug(`AI Simulator Server finished running game ${gameId}`);
           // push stats object to list
-          const gameStats = {};
+          const gameStats: Record<string, any> = {};
           gameStats.gameId = gameId;
           gameStats.duration = Date.now() - startTime;
           gameStats.winnerId = gameSession.getWinnerId();

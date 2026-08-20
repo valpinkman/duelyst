@@ -7,14 +7,14 @@ const UtilsJavascript = require('app/common/utils/utils_javascript');
 
 /* region Resource Names */
 
-const CardNodeVisualResources = {};
+const CardNodeVisualResources: Record<string, any> = {};
 
 CardNodeVisualResources.glowResource = 'GlowResource';
 // CardNodeVisualResources.highlightResource = "HighlightResource";
 
 /* endregion Resource Names */
 
-const CardNodeVisualStateTag = {};
+const CardNodeVisualStateTag: Record<string, any> = {};
 
 CardNodeVisualStateTag.showGlowForPlayerTagType = 'ShowGlowForPlayerTag';
 CardNodeVisualStateTag.createShowGlowForPlayerTag = function (showGlowForPlayer, priority) {

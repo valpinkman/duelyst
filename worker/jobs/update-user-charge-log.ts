@@ -32,7 +32,7 @@ module.exports = function (job, done) {
 
   Logger.module('JOB').debug(`[J:${job.id}] Update User ${userId} Charge Log`);
 
-  const this_obj = {};
+  const this_obj: Record<string, any> = {};
 
   this_obj.currencyAmount = fullfillmentData.currency_amount;
   this_obj.totalPlatinumAmount = fullfillmentData.total_platinum_amount;

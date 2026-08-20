@@ -23,7 +23,7 @@ const awsReplaysBucket = config.get('aws.replaysBucketName');
 const router = express.Router();
 
 router.get('/:replay_id', function (req, res, next) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const result = t.validate(req.params.replay_id, t.subtype(t.Str, (s) => s.length <= 36));
   if (!result.isValid()) {
     return next();

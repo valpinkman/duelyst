@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _TwitchManager = {};
+var _TwitchManager: Record<string, any> = {};
 _TwitchManager.instance = null;
 _TwitchManager.getInstance = function () {
   if (this.instance == null) {

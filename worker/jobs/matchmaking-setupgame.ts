@@ -19,7 +19,7 @@ const Logger = require('../../app/common/logger');
  * @param  {Function} done   Callback when job is complete
  */
 module.exports = function (job, done) {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   const token1 = job.data.token1 || null;
   const token2 = job.data.token2 || null;
   const {

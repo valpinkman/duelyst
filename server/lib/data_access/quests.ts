@@ -121,7 +121,7 @@ class QuestsModule {
    */
   static _questDataForQuest(quest, createdAt) {
     createdAt = createdAt || moment().utc();
-    const quest_data = {};
+    const quest_data: Record<string, any> = {};
     quest_data.is_unread = true;
     quest_data.begin_at = createdAt.clone().startOf('day').toDate();
     quest_data.created_at = createdAt.toDate();

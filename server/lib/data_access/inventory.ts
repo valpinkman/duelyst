@@ -1222,7 +1222,7 @@ class InventoryModule {
       return Promise.reject(new Errors.InvalidRequestError(`Can not add complete card set with spirit : invalid card set for spirit purchase - ${cardSetId}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     this_obj.orbCountKey = 'total_orb_count_set_' + cardSetId;
     return txPromise = knex.transaction((tx) => tx('users').first(this_obj.orbCountKey, 'wallet_spirit').where('id', userId)
@@ -1296,7 +1296,7 @@ class InventoryModule {
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
     const orbCountTrackingPromise = Promise.resolve();
 
     this_obj.orbCountKey = 'total_orb_count_set_' + cardSetId;
@@ -1347,7 +1347,7 @@ class InventoryModule {
       return Promise.reject(new Error(`Can not unlock booster pack: invalid user ID - ${userId}`));
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
@@ -1862,7 +1862,7 @@ class InventoryModule {
     }
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     return txPromise = knex.transaction(function (tx) {
       Promise.all([
@@ -1941,7 +1941,7 @@ class InventoryModule {
     }
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     Logger.module('InventoryModule').time(`giveUserCodexChapter() -> added ${chapterId} to user ID ${userId.blue}.`.green);
 
@@ -2020,7 +2020,7 @@ class InventoryModule {
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
     // the object to bind the promises to for data sharing
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       InventoryModule._disenchantCards(txPromise, tx, userId, cardIds, NOW_UTC_MOMENT)
@@ -2258,7 +2258,7 @@ class InventoryModule {
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       knex('users').where('id', userId).first('id').transacting(tx)
@@ -2375,7 +2375,7 @@ class InventoryModule {
       spirit_cost = rarityData.spiritCost;
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       tx('users').first('wallet_spirit', 'wallet_gold').where('id', userId).forUpdate()
@@ -2520,7 +2520,7 @@ class InventoryModule {
     const rarityData = SDK.RarityFactory.rarityForIdentifier(cosmeticData.rarityId);
     const spiritCost = rarityData.spiritCostCosmetic;
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction((tx) => tx.first('wallet_spirit').from('users').where('id', userId).forUpdate()
       .then(function (userRow) {
@@ -2768,7 +2768,7 @@ class InventoryModule {
   static _refreshUserCardCollection(trxPromise, trx, userId, cardCountRows, updateFirebase) {
     const _chainState: Record<string, any> = {};
     if (updateFirebase == null) { updateFirebase = true; }
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     // # when the transaction is done, update Firebase
     // trxPromise
@@ -3077,7 +3077,7 @@ class InventoryModule {
   static claimFreeCardOfTheDay(userId, systemTime) {
     const _chainState: Record<string, any> = {};
     const NOW_UTC_MOMENT = systemTime || moment.utc();
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const randomCardSet = _.sample([
       SDK.CardSet.Core,

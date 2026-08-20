@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _ProgressionManager = {};
+var _ProgressionManager: Record<string, any> = {};
 _ProgressionManager.instance = null;
 _ProgressionManager.getInstance = function () {
   if (this.instance == null) {

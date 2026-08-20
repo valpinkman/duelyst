@@ -59,7 +59,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
     var txPromise = knex.transaction(function (tx) {
       tx.first()
         .from('users')
@@ -138,7 +138,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       Promise.all([
@@ -271,7 +271,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       Promise.all([
@@ -383,7 +383,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const txPromise = knex.transaction(function (tx) {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
@@ -488,7 +488,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     return knex.transaction((tx) => PromiseUtils.withTimeout(Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
       .then((userRow) => Promise.all([
@@ -759,7 +759,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction(function (tx) {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
@@ -903,7 +903,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const txPromise = knex.transaction(function (tx) {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
@@ -1137,7 +1137,7 @@ class RiftModule {
       return Promise.resolve(riftRunRow);
     }
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     this_obj.riftRunData = riftRunRow;
     this_obj.userId = riftRunRow.user_id;
@@ -1187,7 +1187,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     const txPromise = knex.transaction((tx) => Promise.all([
       tx('users').first('rift_stored_upgrade_count').where('id', userId).forUpdate(),
@@ -1310,7 +1310,7 @@ class RiftModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
+    const this_obj: Record<string, any> = {};
 
     var txPromise = knex.transaction((tx) => Promise.all([
       tx('users').first('wallet_spirit').where('id', userId).forUpdate(),

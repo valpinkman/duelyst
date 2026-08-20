@@ -125,7 +125,7 @@ router.post('/matchmaking', function (req, res, next) {
   return isMatchmakingActiveAsync()
     .then(() => // check if the player is already waiting for a game, ie. they have a 'game' token
       Redis.TokenManager.get(userId)).then(function (token) {
-      const _chainState = {};
+      const _chainState: Record<string, any> = {};
       if (token != null) {
       // player is already waiting for a game
         return res.status(200).json({ tokenId: token.id });
@@ -550,7 +550,7 @@ var setupInvite = function (inviteId) {
 
   return Redis.InviteQueue.count(inviteId)
     .then(function (playerCount) {
-      const _chainState = {};
+      const _chainState: Record<string, any> = {};
       if (playerCount < 2) {
         return; // there's only 1 player
       }

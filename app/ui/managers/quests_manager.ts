@@ -1,6 +1,6 @@
 // See: https://coderwall.com/p/myzvmg for why managers are created this way
 
-var _QuestsManager = {};
+var _QuestsManager: Record<string, any> = {};
 _QuestsManager.instance = null;
 _QuestsManager.getInstance = function () {
   if (this.instance == null) {

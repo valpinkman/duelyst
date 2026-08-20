@@ -303,7 +303,7 @@ module.exports = function (job, done) {
     return done(new Error('Game type is not defined.'));
   }
 
-  const thisObj = {};
+  const thisObj: Record<string, any> = {};
 
   Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> STARTING... ${gameType} winner:${isWinner} unscored:${isUnscored} draw:${isDraw}`.cyan);
 

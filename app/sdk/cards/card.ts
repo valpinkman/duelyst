@@ -458,7 +458,7 @@ class Card extends SDKObject {
    * @returns {Object} cardData
   */
   createNewCardData() {
-    const cardData = {};
+    const cardData: Record<string, any> = {};
 
     // make sure that following properties don't get serialized
     Object.defineProperty(cardData, '_hasBeenApplied', {

@@ -122,7 +122,7 @@ class Session extends EventEmitter {
     if (silent == null) { silent = false; }
     debug(`login: ${username}`);
 
-    const body = {};
+    const body: Record<string, any> = {};
     body.password = password;
     body.username = username;
 

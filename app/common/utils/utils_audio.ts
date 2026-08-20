@@ -1,7 +1,7 @@
 /** **************************************************************************
   UtilsAudio - audio utility methods
  *************************************************************************** */
-const UtilsAudio = {};
+const UtilsAudio: Record<string, any> = {};
 module.exports = UtilsAudio;
 
 const _ = require('underscore');

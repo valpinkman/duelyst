@@ -3,7 +3,7 @@ UtilsEngine - engine utility methods (don't forget to rebuild before using).
 *************************************************************************** */
 const _ = require('underscore');
 
-const UtilsEngine = {};
+const UtilsEngine: Record<string, any> = {};
 module.exports = UtilsEngine;
 
 const CONFIG = require('../config');

@@ -26,7 +26,7 @@ var SpellSwordsBBS = (function () {
       super.onApplyOneEffectToBoard(board, x, y, sourceAction);
 
       if (this.getGameSession().getIsRunningAsAuthoritative()) {
-        const cardData = {};
+        const cardData: Record<string, any> = {};
         cardData.id = spellsToGet[this.getGameSession().getRandomIntegerForExecution(spellsToGet.length)].id;
         if (cardData.additionalModifiersContextObjects == null) { cardData.additionalModifiersContextObjects = []; }
         cardData.additionalModifiersContextObjects.push(ModifierCannotBeReplaced.createContextObject());

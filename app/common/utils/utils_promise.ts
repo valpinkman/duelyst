@@ -69,7 +69,7 @@ exports.delay = function (ms, value) {
  * is genuinely needed where resolution is triggered by an unrelated event.
  */
 exports.defer = function () {
-  const d = {};
+  const d: Record<string, any> = {};
   d.promise = new Promise((resolve, reject) => {
     d.resolve = resolve;
     d.reject = reject;

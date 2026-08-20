@@ -1,6 +1,6 @@
 // pragma PKGS: alwaysloaded
 
-var _NotificationsManager = {};
+var _NotificationsManager: Record<string, any> = {};
 _NotificationsManager.instance = null;
 _NotificationsManager.getInstance = function () {
   if (this.instance == null) {

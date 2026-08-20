@@ -158,7 +158,7 @@ var findLockablePlayer = function (players) {
  * @return   {Object}   lock         see 'findLockablePlayer'
  */
 const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAttemptAt) => {
-  const _chainState = {};
+  const _chainState: Record<string, any> = {};
   return getRequeueParams()
     .then(function (params) {
       _chainState.allowMatchWithLastOpponent = params.allowMatchWithLastOpponent;
@@ -284,7 +284,7 @@ module.exports = function (job, done) {
           Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] lock(${userId}) acquired - matchmaking metric ${rank},${deckValue}. Last opponent: ${playerToken.lastOpponentId}.`);
           return findOpponent(userId, playerToken.lastOpponentId, rank, deckValue, attempt, firstAttemptAt)
             .then(function (opponent) {
-              const _chainState = {};
+              const _chainState: Record<string, any> = {};
               if (!opponent) {
                 // no opponents found, unlock and requeue
                 unlock();

@@ -1,4 +1,4 @@
-var _GameDataManager = {};
+var _GameDataManager: Record<string, any> = {};
 _GameDataManager.instance = null;
 _GameDataManager.getInstance = function () {
   if (this.instance == null) {

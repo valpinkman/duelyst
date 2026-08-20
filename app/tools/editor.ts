@@ -45,7 +45,7 @@ whenLocalizationReady.then(() => {
     Simple Editor.
   */
 
-  const Editor = {};
+  const Editor: Record<string, any> = {};
 
   Editor.setup = function () {
     // change some gui defaults
@@ -1864,7 +1864,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
     };
 
     var walkData = function (data, parentPath, recursiveCountSelectableItems) {
-      const dataResolved = {};
+      const dataResolved: Record<string, any> = {};
 
       const countSelectableItems = Editor.getSelectableTopLevelItemMatched(parentPath, Editor.selectableKeyMatches);
       if (countSelectableItems) {

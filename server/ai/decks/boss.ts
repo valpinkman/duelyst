@@ -1,7 +1,7 @@
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const UsableDecksLookup = require('./usable_decks_lookup');
 
-const Boss = {};
+const Boss: Record<string, any> = {};
 
 // format for decks: {
 //   deckId: [
