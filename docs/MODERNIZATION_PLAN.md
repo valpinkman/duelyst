@@ -27,12 +27,10 @@ step it describes, so it can never drift from the code.
   Firebase RTDB (register → login → main menu → mulligan → play a minion → AI responds →
   concede), 0 console errors.
 - **Next, in order (the dependency chain is real, do not reorder):**
-  1. **`redis` 2 → `ioredis`** (target changed by measurement, see the tier-2 entry). The last
-     two bluebird requires live here. Note `kue` pins `redis: ~2.6.0` and keeps its own copy
-     regardless — it manages its own connections from config, so it is untouched by this.
-  2. **Drop `bluebird` entirely** (stage 7). After knex 3, **bluebird is a direct dependency
-     only** — nothing else in the tree pulls it in.
-  3. 5T.4 incremental typing: `pnpm typecheck` is down to **2,484** errors under the loose
+  1. ~~`redis` 2 → ioredis~~ **DONE**, and with it ~~drop bluebird~~ **DONE** — bluebird is gone
+     from the repo and the dependency tree. `kue` still carries its own pinned `redis@2.6.5`;
+     replacing kue is the remaining redis-adjacent item, tracked separately.
+  2. 5T.4 incremental typing: `pnpm typecheck` is down to **2,484** errors under the loose
      config (from 5,503; a metric, not a gate). Mostly mechanical. Move directories into
      `tsconfig.strict.json` as they go clean.
   4. 7.2 integration revival in CI for the `data_access` suites (~506 tests, stale
@@ -778,14 +776,55 @@ server and worker. What remains is *typing* (5T.4), not converting.
       sites read the value** — the one place that looked like a consumer, `r-playerqueue.ts:205`
       reading `ts.query()`, turns out to go through a plain `zrangebyscore`, not the multi.
 
-      **warlock is being replaced, not ported** (owner decision). `@counterplay/warlock@0.3.1` is a
+      **DONE.** ioredis 6.0.0 is in, `redis`/`bluebird`/`@counterplay/warlock` are out of
+      `package.json`, and `packages/warlock` is deleted. 39 `*Async` calls de-suffixed across 11
+      files (exactly the measured count), 2 Buffer reads on `getBuffer()`, 6 `multi()` batches
+      untouched, and `server/redis/r-lock.ts` (~40 lines + 10 unit tests) replaces warlock.
+
+      **`bluebird` is now GONE from the repo and from the dependency tree.**
+
+      Three things the measurement had not seen, all found by running the code rather than
+      grepping it:
+
+      - **`bin/api` did `global.Promise = require('bluebird')`** — replacing the global Promise
+        for the *entire api process*, so everything that looked native in the API had actually
+        been bluebird all along. The other three bins never did this. The api container failed
+        to boot once the dependency was removed. My scans had covered `app server worker test
+        scripts` and simply never looked at `bin/`.
+      - **`r-timeseries.countHits` used `.then(_).call('size')`** — bluebird's `.call()`, invoking
+        a method on the resolved value. It survived every earlier sweep because it sits
+        *mid-line*, and the chain pattern was anchored to the start of a line.
+      - `server/redis/test/lock.ts` promisified the unlock function, which is now already a
+        promise (and its own output had a copy-paste bug printing `result1` twice).
+
+      The orphan checker grew to cover all three gaps: `bin/`, `cli/` and `config/` are now
+      scanned, and `.call('x')`/`.get('x')` are matched **only when followed by a string literal**,
+      because `Function.prototype.call` and Backbone/config `.get` are everywhere and matching
+      them broadly is precisely the false-positive trap every earlier estimate in this file fell
+      into.
+
+      One cosmetic consequence, deliberately not "fixed": `server/game.ts` logs
+      `results[1]` of a `multi().exec()`, so that debug line now reads `,OK,,1` instead of `OK,1`
+      (ioredis returns `[[err, res], ...]`). It is a log string; the message was already wrong in
+      saying "Archived to S3" for something that writes to redis.
+
+      **Verified against real infrastructure**, not just unit tests: every command shape exercised
+      directly against the container's redis (get/set/exists, `getBuffer` with a real gzip
+      roundtrip, `multi/exec`, `zrange`), the lock (acquire, double-acquire refused, parity
+      unlock, `isLocked`), the token manager end-to-end (add → get with JSON deck → exists → lock
+      → remove), and the timeseries (`hit`/`query`/`countHits`). Plus: all 6 services boot,
+      register/login, 7 authenticated routes including `/matchmaking` and `/stats`, 1360 unit,
+      13 integration, and e2e green with `saveGameSession`/`saveGameMouseUIData` visible in the
+      logs going through the gzip+multi path.
+
+      **warlock was replaced, not ported** (owner decision). `@counterplay/warlock@0.3.1` is a
       vendored fork that pulls `node-redis-scripty@0.0.5`; both are unmaintained, and we use
       exactly three of its functions. The whole contract is `SET <key>:lock <id> PX <ttl> NX` to
       acquire, `EXISTS <key>:lock` to test, and a Lua parity-delete to release. Reimplementing it
       keeps the key format (`<key>:lock`) so nothing about the stored data changes, drops two
       dependencies, and makes the lock independent of which client library we are on.
 
-    - [~] `bluebird` 2.11 → **native, dropping it entirely** (owner decision). It is **the gate**
+    - [x] `bluebird` 2.11 → **native. DONE — the dependency is deleted.** It was **the gate**
       for knex, not the endgame after it.
 
       **Scope corrected by measurement: ~1,400 chain-position sites, not the ~660 first quoted**

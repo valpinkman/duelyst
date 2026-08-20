@@ -128,6 +128,16 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **bluebird is GONE** — from the repo and from the dependency tree. redis 2.8 →
+  **ioredis 6** (target changed by measurement: node-redis v4 needs an explicit `connect()`,
+  and `r-client.ts` exports a client 11 modules use synchronously; ioredis connects on
+  construction so no consumer moved). 39 `*Async` calls de-suffixed, 2 Buffer reads on
+  `getBuffer()` (replacing `detect_buffers`), and `server/redis/r-lock.ts` + 10 unit tests
+  replaces the vendored `@counterplay/warlock` (deleted, along with its `node-redis-scripty`).
+  Three bluebird uses no grep had found, all caught by running the code: `bin/api` did
+  `global.Promise = require('bluebird')` for the whole api process, `r-timeseries.countHits`
+  used mid-line `.call('size')`, and a test script promisified an already-promise. kue keeps
+  its own pinned redis@2.6.5 — it manages its own connections.
 - 2026-08-20 — **bluebird is down to 2 files.** Stage 7 landed in three steps: map/each/props
   helpers with contract tests (7a), all 100 bluebird statics converted (7b), promisify off
   bluebird for zlib/bcrypt/s3 (7c), and the require dropped from **213 of 215 files** (7d).

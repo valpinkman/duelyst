@@ -67,7 +67,7 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
   add(playerId, rank) {
     // Logger.module("REDIS-QUEUE").log("add(#{playerId}, #{rank})")
     if (rank == null) { rank = 30; }
-    return this.redis.zaddAsync(this.queue, rank, playerId);
+    return this.redis.zadd(this.queue, rank, playerId);
   }
 
   /**
@@ -84,7 +84,7 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
     } else {
       args.push(playerIds);
     }
-    return this.redis.zremAsync(args);
+    return this.redis.zrem(args);
   }
 
   /**
@@ -95,7 +95,7 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
    */
   isPlayerQueued(playerId) {
     // Logger.module("REDIS-QUEUE").log("isPlayerQueued(#{playerId})")
-    return this.redis.zscoreAsync(this.queue, playerId);
+    return this.redis.zscore(this.queue, playerId);
   }
 
   /**
@@ -104,7 +104,7 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
    */
   count() {
     // Logger.module("REDIS-QUEUE").log("count()")
-    return this.redis.zcardAsync(this.queue);
+    return this.redis.zcard(this.queue);
   }
 
   /**
@@ -128,7 +128,7 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
     const min = Math.max(score - searchRadius, 0); // minimum matchmaking metric is 0
     const max = Math.min(score + searchRadius, 300); // maximum matchmaking metric is 300
     // Logger.module("REDIS-QUEUE").log "searchQueue(#{score}) between [#{min},#{max}]"
-    return this.redis.zrangebyscoreAsync(this.queue, min, max);
+    return this.redis.zrangebyscore(this.queue, min, max);
   }
 
   /**
@@ -142,9 +142,9 @@ module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
     if (opts == null) { opts = {}; }
     const withScores = opts.withScores || false;
     if (withScores) {
-      return this.redis.zrangeAsync(this.queue, 0, -1, 'WITHSCORES');
+      return this.redis.zrange(this.queue, 0, -1, 'WITHSCORES');
     }
-    return this.redis.zrangeAsync(this.queue, 0, -1);
+    return this.redis.zrange(this.queue, 0, -1);
   }
 
   /**

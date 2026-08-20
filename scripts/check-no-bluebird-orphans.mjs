@@ -39,6 +39,19 @@ const CHAIN = /^[ \t]*\.(spread|tap|nodeify|asCallback|thenReturn|thenThrow|erro
  * whenRequiredResourcesReady(), which package_manager wraps centrally.
  */
 const INSPECT = /\.(isFulfilled|isPending|isRejected|isCancelled|value|reason)\s*\(\s*\)/;
+
+/*
+ * bluebird's `.call('method')` / `.get('prop')`, which invoke a method or read a
+ * property on the resolved value. These appear MID-LINE (`.then(_).call('size')`
+ * in r-timeseries), so the line-anchored CHAIN pattern above cannot see them.
+ *
+ * Matching is deliberately narrow -- `.call(` followed by a STRING LITERAL --
+ * because Function.prototype.call is everywhere in this codebase and takes a
+ * thisArg, virtually never a bare string. Widening this to all `.call(`/`.get(`
+ * would drown the check in false positives from Backbone's .get and config.get,
+ * which is the mistake every earlier scan in this migration made.
+ */
+const CALL_GET = /\)\s*\.(call|get)\s*\(\s*['"`]/;
 const INSPECT_OK = /inspectable|whenRequiredResourcesReady/;
 
 function strip(src) {
@@ -57,8 +70,16 @@ function strip(src) {
   return out;
 }
 
+/*
+ * bin/ and config/ are in this list because leaving them out is exactly how the
+ * last one got through: `bin/api` did `global.Promise = require('bluebird')`,
+ * replacing the global Promise for the whole api process, and a scan limited to
+ * app/server/worker/test/scripts could not see it. The api container then
+ * failed to boot with "Cannot find module 'bluebird'" once the dependency was
+ * removed. bin/* have no extension, hence the explicit paths.
+ */
 const files = cp.execSync(
-  "grep -rl 'Promise' app server worker test scripts --include='*.ts' --include='*.js' --include='*.mjs' 2>/dev/null || true",
+  "{ grep -rl 'Promise' app server worker test scripts config --include='*.ts' --include='*.js' --include='*.mjs'; grep -rl 'Promise' bin cli 2>/dev/null; } 2>/dev/null || true",
 ).toString().trim().split('\n').filter(Boolean)
   .filter((f) => !f.startsWith('scripts/codemods/') && !f.startsWith('scripts/check-'));
 
@@ -74,6 +95,8 @@ for (const f of files) {
   if (c) hits.push(`.${c[1]}()`);
   const ins = live.match(INSPECT);
   if (ins && !INSPECT_OK.test(live) && ins[1] !== 'value' && ins[1] !== 'reason') hits.push(`.${ins[1]}()`);
+  const cg = live.match(CALL_GET);
+  if (cg) hits.push(`.${cg[1]}('...')`);
   if (hits.length) orphans.push([f, hits]);
 }
 

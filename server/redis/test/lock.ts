@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const { promisify } = require('util');
 const _ = require('underscore');
 const r = require('../r-client');
 const tk = require('../r-tokenmanager')(r);
@@ -27,14 +26,15 @@ const checklocks = function () {
 const locks = Promise.all([lock1, lock2]).then(([unlockFn1, unlockFn2]) => {
   console.log(`lock1 acquired: ${_.isFunction(unlockFn1)}`);
   console.log(`lock2 acquired: ${_.isFunction(unlockFn2)}`);
-  unlock1 = promisify(unlockFn1);
-  return unlock2 = promisify(unlockFn2);
+  // the unlock functions are promise-returning now, not node callbacks
+  unlock1 = unlockFn1;
+  return unlock2 = unlockFn2;
 }).then(() => {
   console.log('locking done...');
   checklocks();
   return Promise.all([unlock1(), unlock2()]).then(([result1, result2]) => {
     console.log(`unlock1 success: ${Boolean(result1)}`);
-    return console.log(`unlock2 success: ${Boolean(result1)}`);
+    return console.log(`unlock2 success: ${Boolean(result2)}`);
   }).then(() => {
     console.log('unlocking done...');
     return checklocks();

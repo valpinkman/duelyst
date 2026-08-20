@@ -37,7 +37,7 @@ module.exports = (RedisInviteQueue = class RedisInviteQueue {
   add(playerId, inviteId) {
     // Logger.module("REDIS-INVITE").log("add(#{playerId}, #{inviteId})")
     const inviteKey = `${this.list}:${inviteId}`;
-    return this.redis.lpushAsync(inviteKey, playerId);
+    return this.redis.lpush(inviteKey, playerId);
   }
 
   /**
@@ -48,7 +48,7 @@ module.exports = (RedisInviteQueue = class RedisInviteQueue {
   clear(inviteId) {
     // Logger.module("REDIS-INVITE").log("clear(#{inviteId})")
     const inviteKey = `${this.list}:${inviteId}`;
-    return this.redis.delAsync(inviteKey);
+    return this.redis.del(inviteKey);
   }
 
   /**
@@ -58,7 +58,7 @@ module.exports = (RedisInviteQueue = class RedisInviteQueue {
   count(inviteId) {
     // Logger.module("REDIS-INVITE").log("count(#{inviteId})")
     const inviteKey = `${this.list}:${inviteId}`;
-    return this.redis.llenAsync(inviteKey);
+    return this.redis.llen(inviteKey);
   }
 
   /**
@@ -69,7 +69,7 @@ module.exports = (RedisInviteQueue = class RedisInviteQueue {
   grab(inviteId) {
     // Logger.module("REDIS-INVITE").log("grab(#{inviteId})")
     const inviteKey = `${this.list}:${inviteId}`;
-    return this.redis.lrangeAsync(inviteKey, 0, -1);
+    return this.redis.lrange(inviteKey, 0, -1);
   }
 });
 

@@ -76,7 +76,7 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
     const multi = this.redis.multi();
     multi.zremrangebyscore(this.ts, 0, old);
     multi.zadd(this.ts, score, value);
-    return multi.execAsync();
+    return multi.exec();
   }
 
   /**
@@ -105,7 +105,7 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
       // TODO : fix without scores option
       args = [this.ts, previous, now, 'WITHSCORES', 'LIMIT', 0, limit];
     }
-    return this.redis.zrangebyscoreAsync(args)
+    return this.redis.zrangebyscore(args)
       .then((scores) => {
       // TODO : this only works WITHSCORES = true
         const values = [];
@@ -128,6 +128,8 @@ module.exports = (RedisTimeSeries = class RedisTimeSeries {
    */
   countHits(range) {
     if (range == null) { range = 1; }
-    return this.query({ range }).then(_).call('size');
+    // was `.then(_).call('size')` -- bluebird's .call(), which invoked a method
+    // on the resolved value. Native promises have no such method.
+    return this.query({ range }).then((results) => _.size(results));
   }
 });

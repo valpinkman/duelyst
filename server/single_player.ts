@@ -119,9 +119,9 @@ var gameCount = 0;
 const MAX_TURN_TIME = (CONFIG.TURN_DURATION + CONFIG.TURN_DURATION_LATENCY_BUFFER) * 1000.0;
 const MAX_TURN_TIME_INACTIVE = (CONFIG.TURN_DURATION_INACTIVE + CONFIG.TURN_DURATION_LATENCY_BUFFER) * 1000.0;
 
-const savePlayerCount = (playerCount) => Redis.hsetAsync(`servers:${serverId}`, 'players', playerCount);
+const savePlayerCount = (playerCount) => Redis.hset(`servers:${serverId}`, 'players', playerCount);
 
-const saveGameCount = (gameCount) => Redis.hsetAsync(`servers:${serverId}`, 'games', gameCount);
+const saveGameCount = (gameCount) => Redis.hset(`servers:${serverId}`, 'games', gameCount);
 
 // health ping on socket namespace /health
 const healthPing = io

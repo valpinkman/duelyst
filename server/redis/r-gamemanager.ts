@@ -68,7 +68,7 @@ class RedisGameManager {
         const multi = this.redis.multi(); // start a multi command
         multi.set(gameKey, gzipGameData);
         multi.expire(gameKey, ttl); // mark to expire at ttl
-        return multi.execAsync();
+        return multi.exec();
       }), callback);
   }
 
@@ -81,8 +81,11 @@ class RedisGameManager {
   loadGameSession(gameId, callback) {
     Logger.module('REDIS').debug(`loadGameSession() -> loading GameSession ${gameId}`);
     const gameKey = keyPrefix() + gameId;
-    // Must pass a new Buffer(key) to get back a buffer object
-    return PromiseUtils.nodeify(this.redis.getAsync(new Buffer(gameKey))
+    // getBuffer() rather than get(): the value is gzipped game state and must
+    // come back as a Buffer. Under redis@2 this was expressed by passing a
+    // Buffer KEY, which the `detect_buffers: true` client option turned into a
+    // Buffer reply. ioredis has no such option and an explicit variant instead.
+    return PromiseUtils.nodeify(this.redis.getBuffer(gameKey)
       .then((buffer) => {
         if (buffer) {
           return gunzipAsync(buffer);
@@ -108,7 +111,7 @@ class RedisGameManager {
         const multi = this.redis.multi(); // start a multi command
         multi.set(key, gzipMouseData);
         multi.expire(key, ttl); // mark to expire at ttl
-        return multi.execAsync();
+        return multi.exec();
       }), callback);
   }
 
@@ -121,7 +124,7 @@ class RedisGameManager {
   loadGameMouseUIData(gameId, callback) {
     Logger.module('REDIS').debug(`loadGameMouseUIData() -> loading data for game ${gameId}`);
     const key = keyPrefixForMouseUIData() + gameId;
-    return PromiseUtils.nodeify(this.redis.getAsync(new Buffer(key))
+    return PromiseUtils.nodeify(this.redis.getBuffer(key)
       .then((buffer) => {
         if (buffer) {
           return gunzipAsync(buffer);

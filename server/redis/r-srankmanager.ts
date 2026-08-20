@@ -68,7 +68,7 @@ class RedisSRankManager {
     multi.zadd(redisSeasonKey, ladderRating, userId);
     multi.expireat(redisSeasonKey, expireAtTimeForSeasonStart(seasonStartMoment));
 
-    return multi.execAsync();
+    return multi.exec();
   }
 
   /**
@@ -82,7 +82,7 @@ class RedisSRankManager {
 
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
 
-    return this.redis.zrevrankAsync(redisSeasonKey, userId)
+    return this.redis.zrevrank(redisSeasonKey, userId)
       .then((ladderPosition) => {
         if (ladderPosition != null) {
           return Promise.resolve(parseInt(ladderPosition) + 1);
@@ -102,7 +102,7 @@ class RedisSRankManager {
 
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
 
-    return this.redis.zrevrangeAsync(redisSeasonKey, 0, numPlayers - 1);
+    return this.redis.zrevrange(redisSeasonKey, 0, numPlayers - 1);
   }
 
   /**
@@ -127,7 +127,7 @@ class RedisSRankManager {
 
     const redisSeasonKey = keyPrefix() + seasonKey(seasonStartMoment);
 
-    return this.redis.zremAsync(redisSeasonKey, userId);
+    return this.redis.zrem(redisSeasonKey, userId);
   }
 }
 

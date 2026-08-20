@@ -193,8 +193,8 @@ router.get('/health', function (req, res) {
 // /stats
 router.get('/stats', function (req, res) {
   const serverId = os.hostname();
-  const getPlayers = Redis.hgetAsync(`servers:${serverId}`, 'players');
-  const getGames = Redis.hgetAsync(`servers:${serverId}`, 'games');
+  const getPlayers = Redis.hget(`servers:${serverId}`, 'players');
+  const getGames = Redis.hget(`servers:${serverId}`, 'games');
 
   return Promise.all([getPlayers, getGames]).then(([players, games]) => res.json({ players, games, pool: poolStats(knex.client.pool) }));
 });

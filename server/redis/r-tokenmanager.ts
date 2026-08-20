@@ -5,11 +5,10 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
-const Promise = require('bluebird');
 const moment = require('moment');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
-const warlock = require('@counterplay/warlock');
+const makeLock = require('./r-lock');
 const Logger = require('../../app/common/logger');
 const config = require('../../config/config');
 const GameType = require('../../app/sdk/gameType');
@@ -40,12 +39,11 @@ const createTokenId = function () {
 class RedisTokenManager {
   /**
    * Constructor
-   * @param {Object} redis, a promisified redis connection
+   * @param {Object} redis, an ioredis client
    */
   constructor(redis) {
-    // TODO: add check to ensure Redis client is already promisified
     this.redis = redis;
-    this.locker = Promise.promisifyAll(warlock(redis));
+    this.locker = makeLock(redis);
   }
 
   /**
@@ -88,7 +86,7 @@ class RedisTokenManager {
     const tokenKey = keyPrefix() + playerId;
     if (token.deck != null) { token.deck = JSON.stringify(token.deck); }
     if (token.battleMapIndexes != null) { token.battleMapIndexes = JSON.stringify(token.battleMapIndexes); }
-    return this.redis.hmsetAsync(tokenKey, token);
+    return this.redis.hmset(tokenKey, token);
   }
 
   /**
@@ -107,7 +105,7 @@ class RedisTokenManager {
       const tokenKey = keyPrefix() + playerIds;
       args.push(tokenKey);
     }
-    return this.redis.delAsync(args);
+    return this.redis.del(args);
   }
 
   /**
@@ -118,7 +116,7 @@ class RedisTokenManager {
    */
   exists(playerId) {
     const tokenKey = keyPrefix() + playerId;
-    return this.redis.existsAsync(tokenKey);
+    return this.redis.exists(tokenKey);
   }
 
   /**
@@ -128,7 +126,7 @@ class RedisTokenManager {
    */
   get(playerId) {
     const tokenKey = keyPrefix() + playerId;
-    return this.redis.hgetallAsync(tokenKey) // return entire token object
+    return this.redis.hgetall(tokenKey) // return entire token object
       .then((token) => {
       // TODO: There might be other data that we want to convert to correct format here
         if (token != null) {
@@ -151,7 +149,7 @@ class RedisTokenManager {
    */
   getId(playerId) {
     const tokenKey = keyPrefix() + playerId;
-    return this.redis.hgetAsync(tokenKey, 'id'); // return token id only
+    return this.redis.hget(tokenKey, 'id'); // return token id only
   }
 
   /**
@@ -162,7 +160,7 @@ class RedisTokenManager {
    */
   getParameter(playerId, param) {
     const tokenKey = keyPrefix() + playerId;
-    return this.redis.hgetAsync(tokenKey, param); // return specified token param only
+    return this.redis.hget(tokenKey, param); // return specified token param only
   }
 
   /**
@@ -173,7 +171,7 @@ class RedisTokenManager {
    */
   lock(playerId, ttl) {
     if (ttl == null) { ttl = 5000; }
-    return this.locker.lockAsync(playerId, ttl);
+    return this.locker.lock(playerId, ttl);
   }
 
   /**
@@ -182,7 +180,7 @@ class RedisTokenManager {
    * @return {Promise} bool if lock is set
    */
   isLocked(playerId) {
-    return this.locker.isLockedAsync(playerId);
+    return this.locker.isLocked(playerId);
   }
 }
 

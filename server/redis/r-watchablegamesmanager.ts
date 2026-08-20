@@ -49,7 +49,7 @@ class RedisWatchableGamesManager {
     multi.set(key, dataJson);
     multi.expire(key, config.get('watchSectionCacheTTL')); // when to expire the cache
 
-    return PromiseUtils.nodeify(multi.execAsync(), callback);
+    return PromiseUtils.nodeify(multi.exec(), callback);
   }
 
   /**
@@ -64,7 +64,7 @@ class RedisWatchableGamesManager {
     const key = `${keyPrefix()}${divisionName}:${dateKey}`;
     Logger.module('REDIS').debug(`loadGamesDataForDivision() -> ${divisionName}`);
 
-    return PromiseUtils.nodeify(this.redis.getAsync(key)
+    return PromiseUtils.nodeify(this.redis.get(key)
       .then(JSON.parse), callback);
   }
 }

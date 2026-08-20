@@ -66,7 +66,7 @@ class RedisRiftManager {
     multi.zadd(redisKey, riftRating, userRunKey);
     multi.expireat(redisKey, expireAtTime(systemTime));
 
-    return multi.execAsync();
+    return multi.exec();
   }
 
   /**
@@ -81,7 +81,7 @@ class RedisRiftManager {
     const redisRiftKey = keyPrefix();
     const userRunKey = `${userId}:${ticketId}`;
 
-    return this.redis.zrevrankAsync(redisRiftKey, userRunKey)
+    return this.redis.zrevrank(redisRiftKey, userRunKey)
       .then((ladderPosition) => {
         if (ladderPosition != null) {
           return Promise.resolve(parseInt(ladderPosition) + 1);
@@ -100,7 +100,7 @@ class RedisRiftManager {
 
     const redisKey = keyPrefix();
 
-    return this.redis.zrevrangeAsync(redisKey, 0, numPlayers - 1);
+    return this.redis.zrevrange(redisKey, 0, numPlayers - 1);
   }
 
   /**
@@ -115,7 +115,7 @@ class RedisRiftManager {
 
     const redisKey = keyPrefix();
 
-    return this.redis.zremAsync(redisKey, userRunKey);
+    return this.redis.zrem(redisKey, userRunKey);
   }
 }
 
