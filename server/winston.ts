@@ -47,6 +47,10 @@ const setup = function (systemName) {
   console.debug = forward('debug');
   console.warn = forward('warn');
   console.error = forward('error');
+
+  // returned so callers (and the unit test) can attach transports; this path is
+  // opt-in and nothing in CI runs it, so it needs a way to be asserted on
+  return logger;
 };
 
 module.exports = {

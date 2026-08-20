@@ -760,9 +760,10 @@ server and worker. What remains is *typing* (5T.4), not converting.
     from `firebase-admin/database`) in the single seam `server/lib/duelyst_firebase_module.ts` —
     the only consumer in the repo. The CLASS API is unchanged, so all 352 `DuelystFirebase.connect()`
     call sites are untouched. Verified against the REAL RTDB, not just a build. — (this commit)
-  - [~] **Tier 2.** Measured breadth first — `winston` 1 file, `knex` 1, `redis` 3, `kue` 9,
-    **`bluebird` 215**. `kue` is already at its final release (0.11.6, unmaintained), so there is
-    no bump to make; replacing it is a project, not an upgrade.
+  - [x] **Tier 2 — COMPLETE.** Measured breadth first: `winston` 1 file, `knex` 1, `redis` 3,
+    `kue` 9, **`bluebird` 215**. Every one is now done — winston 3, knex 3, ioredis, BullMQ, and
+    bluebird deleted outright. The note that "`kue` … replacing it is a project, not an upgrade"
+    was right, and that project was done (see the kue entry below).
     - [x] **`winston` 2.1.1 → 3.19.0**, and **`winston-papertrail` deleted**. `createLogger`
       replaces `new winston.Logger`, and per-transport `colorize`/`prettyPrint` became composable
       formats. The console overrides now format through `util.format`, which is what console.*
@@ -775,12 +776,26 @@ server and worker. What remains is *typing* (5T.4), not converting.
       was verified by actually turning it on: multi-arg and printf formatting both behave like
       console.*, and the API boots to "started on port 3000" with every line routed at the right
       level. — (this commit)
-    - [ ] `redis` 2.8 → v4+ — **deprioritised, measured.** Buys **1** advisory path for a large
-      change: v4 needs an async `connect()` (the seam exports a client synchronously today),
-      ~30 call sites lose their bluebird `*Async` wrappers and gain camelCase command names, and
-      **`@counterplay/warlock` is handed our client** (`warlock(redis)`) and speaks redis-2
-      callbacks, so it and `node-redis-scripty` would need porting too. And redis@2 stays in the
-      tree regardless, because **kue pins `redis: ~2.6.0`** and gets its own copy.
+
+      **Re-verified and given tests (2026-08-20).** Being opt-in means *nothing* — not CI, not
+      e2e, not normal development — ever executes this path, which is how it would rot unnoticed.
+      Re-checked against the current tree (after bluebird, ioredis, BullMQ and the typing passes):
+      all levels route correctly and the API still boots fully with `WINSTON_ENABLE=true`.
+      `test/unit/misc/winston_console.js` (6 tests) now pins the behaviour, above all the arity
+      fix — winston 3 takes `(message, meta)` and would fold every argument after the first into
+      metadata, so `console.log('multi', 'arg', 42)` would silently lose two of them.
+
+      `setup()` now returns its logger, so the test can swap the Console transport for a Stream
+      it can read. Capturing `process.stdout.write` instead does not work: the test runner
+      intercepts stdout itself and the two fight over it.
+    - [x] `redis` 2.8 → **ioredis** — DONE, and the reasoning below is preserved because it is
+      what led to choosing ioredis over node-redis v4. The objections were all real: v4 needs an
+      async `connect()` where the seam exports a client synchronously, ~30 call sites lose their
+      `*Async` wrappers, and `@counterplay/warlock` is handed our client and speaks redis-2
+      callbacks. ioredis answered the first (it connects on construction), warlock was replaced
+      by a ~40-line `r-lock.ts`, and the last objection — "redis@2 stays in the tree regardless
+      because kue pins it" — stopped being true once kue was replaced by BullMQ. See the ioredis
+      and kue entries above for what actually landed.
     - [x] `knex` 0.19 → **3.3.0** — DONE. Break surface measured first, and it was small.
       The gate was that knex <1.0 returned *bluebird* promises, so query sites could chain
       `.bind`/`.spread`/`.error` directly. **The bluebird work removed all of those**, which is

@@ -128,6 +128,13 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **winston needed no work — it was already on 3.19.0 with 0 advisories** (the
+  tier-2 table listed it as a target; the completed entry below it says otherwise). What it did
+  need was coverage: the seam is opt-in, so nothing in CI or e2e ever runs it. Re-verified against
+  the current tree and added `test/unit/misc/winston_console.js` (6 tests) pinning the arity fix,
+  where winston 3's `(message, meta)` signature would otherwise silently swallow every argument
+  after the first. `setup()` now returns its logger so the test can attach a readable transport.
+  Also brought the stale tier-2 section up to date: redis/kue/bluebird are all resolved.
 - 2026-08-20 — **correctness pass: the catalogued-bugs list is closed.** Two entries were
   already stale (the 8 `server/lib` latent bugs were TS2304s cleared in the typing pass; the 6
   SDK requires were fixed when found). Removed the `GET /api/me/rank/` handler — it queried a
