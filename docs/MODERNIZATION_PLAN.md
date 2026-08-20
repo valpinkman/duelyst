@@ -665,9 +665,39 @@ server and worker. What remains is *typing* (5T.4), not converting.
       **`@counterplay/warlock` is handed our client** (`warlock(redis)`) and speaks redis-2
       callbacks, so it and `node-redis-scripty` would need porting too. And redis@2 stays in the
       tree regardless, because **kue pins `redis: ~2.6.0`** and gets its own copy.
-    - [ ] `knex` 0.19 → 3 — **gated on bluebird.** knex <1.0 returned *bluebird* promises;
-      **168 knex query sites across 24 files** chain bluebird-only methods (`.bind`, `.spread`,
-      `.error`) within 8 lines. knex 1.0+ returns native promises, so all of those break.
+    - [~] `knex` 0.19 → 3 — **now unblocked; break surface measured, and it is small.**
+      The gate was that knex <1.0 returned *bluebird* promises, so query sites could chain
+      `.bind`/`.spread`/`.error` directly. **The bluebird work removed all of those**, which is
+      what actually unblocks this.
+
+      | checked | result |
+      |---|---|
+      | migrations using the removed `Promise` 2nd arg | **0** — all 83 use `function (knex)` |
+      | `.returning()` (postgres shape changed) | **0 sites** |
+      | client name `postgres` / `postgresql` | still aliased in knex 3 ✅ |
+      | Node engine | knex 3 needs ≥16; we run 24 ✅ |
+      | bluebird methods on knex chains | **0** — the 9 `.error` / 13 `.bind` "hits" are
+        `Logger.error` and `Function.prototype.bind`, the same pollution as everywhere else |
+      | explicit `tx.commit`/`tx.rollback` (68/67) | **NOT a break** — see below |
+      | `.timeout` after a `.then()` | **18** — real work |
+      | `knex.client.pool` | **1 site, 5 calls** — real work |
+
+      **Correction to an earlier note in this file.** Stage 6 recorded that converting `.timeout`
+      broke transactions *"because knex 0.19 is itself bluebird-based"*. Reading both sources,
+      **knex 0.19 and knex 3 have byte-identical transaction auto-commit logic** — if the callback
+      returns a thenable, knex commits it. So the explicit `.then(tx.commit).catch(tx.rollback)` is
+      redundant in *both* versions and is not a knex 3 break. The `Transaction query already
+      complete` failure was caused by the `withTimeout` wrapper changing what the callback
+      returned; the precise mechanism was never isolated.
+
+      **The real relationship is that `.timeout` must be converted *with* knex, not before it**:
+      knex 0.19 hands back bluebird promises, which *have* `.timeout`; knex 3 hands back native
+      ones, which do not. Of the 20 sites, **18 sit after a `.then()`** (a promise — must convert)
+      and **2 chain directly off a query builder**, where knex 3 keeps its own `.timeout(ms)`.
+
+      Remaining work is therefore: 18 promise-`.timeout` conversions, the `/health` pool stats
+      (generic-pool `getPoolSize()`/`availableObjectsCount()` → tarn `numUsed()`/`numFree()`),
+      and the upgrade itself.
     - [~] `bluebird` 2.11 → **native, dropping it entirely** (owner decision). It is **the gate**
       for knex, not the endgame after it.
 
