@@ -159,8 +159,6 @@ class QuestsModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    const this_obj = {};
-
     var txPromise = knex.transaction(function (tx) {
       Promise.all([
         knex('users')
@@ -174,7 +172,6 @@ class QuestsModule {
           .select()
           .where({ user_id: userId }),
       ])
-        .bind(this_obj)
         .then(function ([userRow, questRows]) {
           _chainState.updatedQuests = [];
           _chainState.userRow = userRow;
@@ -370,7 +367,7 @@ class QuestsModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
 
@@ -456,10 +453,7 @@ class QuestsModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    const this_obj = {};
-
     return knex('user_new_player_progression').first('stage').where('module_name', 'core').andWhere('user_id', userId)
-      .bind(this_obj)
       .then(function (newPlayerCoreStateRow) {
       // current player stage
         const newPlayerStage = NewPlayerProgressionStageEnum[newPlayerCoreStateRow != null ? newPlayerCoreStateRow.stage : undefined] || NewPlayerProgressionStageEnum.Tutorial;
@@ -494,10 +488,7 @@ class QuestsModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    const this_obj = {};
-
     return knex('user_new_player_progression').first('stage').where('module_name', 'core').andWhere('user_id', userId)
-      .bind(this_obj)
       .then(function (newPlayerCoreStateRow) {
       // current player stage
         const newPlayerStage = NewPlayerProgressionStageEnum[newPlayerCoreStateRow.stage] || NewPlayerProgressionStageEnum.Tutorial;
@@ -518,7 +509,6 @@ class QuestsModule {
             tx('user_quests').select().where({ user_id: userId }).forUpdate(),
             tx('user_quests_complete').select('quest_type_id').where({ user_id: userId }),
           ])
-            .bind(this_obj)
             .then(function ([userRow, questRows, questCompleteRows]) {
               let sdkQuest;
               _chainState.updatedQuests = [];
@@ -569,7 +559,7 @@ class QuestsModule {
             }).then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
             .then(tx.commit)
             .catch(tx.rollback);
-        }).bind(this_obj)
+        })
           .then(() => DuelystFirebase.connect().getRootRef())
           .then(function (fbRootRef) {
             const allPromises = [];
@@ -684,12 +674,9 @@ class QuestsModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    const this_obj = {};
-
     return knex.transaction(function (tx) {
       knex('user_quests').select().where({ user_id: userId }).transacting(tx)
         .forUpdate()
-        .bind(this_obj)
         .then(function (questRows) {
           _chainState.questRows = questRows;
 
@@ -752,7 +739,7 @@ class QuestsModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(() => // Logger.module("QuestsModule").debug("mulliganDailyQuest() -> DONE. Saving FB.".green)
 
         DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
@@ -806,10 +793,7 @@ class QuestsModule {
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
-    const this_obj = {};
-
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where({ id: userId }).first('id').forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_quests').select().where({ user_id: userId }).forUpdate(),
@@ -869,7 +853,7 @@ class QuestsModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('QuestsModule').error(`updateQuestProgressWithGame() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () {
         const quests = [];
 
@@ -910,8 +894,6 @@ class QuestsModule {
     Logger.module('QuestsModule').time(`updateQuestProgressWithCompletedChallenge() -> for challenge ${challengeId} by user ${userId.blue}.`.green);
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-
-    const this_obj = {};
 
     return Promise.all([
       tx('users').where({ id: userId }).first('id').forUpdate(),
@@ -989,8 +971,6 @@ class QuestsModule {
     Logger.module('QuestsModule').time(`updateQuestProgressWithCompletedQuest() -> for user ${userId.blue}.`.green);
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-
-    const this_obj = {};
 
     return Promise.resolve()
       .then(function () {
@@ -1078,8 +1058,6 @@ class QuestsModule {
     Logger.module('QuestsModule').time(`updateQuestProgressWithProgressedFactionData() -> for faction id ${factionId} by user ${userId.blue}.`.green);
 
     const MOMENT_NOW_UTC = systemTime || moment().utc();
-
-    const this_obj = {};
 
     return Promise.all([
       tx('users').where({ id: userId }).first('id').forUpdate(),
@@ -1320,11 +1298,8 @@ class QuestsModule {
 
     Logger.module('QuestsModule').debug(`_giveUserCatchUpQuestCharge() -> User ${userId.blue} receiving ${numCharges} quest catch up charges.`.cyan);
 
-    const this_obj = {};
-
     return knex('user_quests').transacting(tx).forUpdate().select()
       .where({ user_id: userId })
-      .bind(this_obj)
       .then(function (userQuestRows) {
         _chainState.userQuestRows = userQuestRows;
         // Find the row for the catchup quest if it exists

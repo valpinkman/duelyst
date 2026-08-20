@@ -102,7 +102,6 @@ class RankModule {
     const this_obj = {};
 
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first().forUpdate())
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.userRow = userRow;
 
@@ -261,7 +260,6 @@ class RankModule {
       }));
 
     return txPromise
-      .bind(this_obj)
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
         const allPromises = [];
@@ -325,7 +323,6 @@ class RankModule {
       10000);
 
     return knex.transaction((tx) => Promise.resolve(tx('users').first().where('id', userId).forUpdate())
-      .bind(this_obj)
       .then(function (userRow) {
       // Logger.module("RankModule").debug "updateUserRankingWithGameOutcome() -> ACQUIRED LOCK ON #{userId}".yellow
 
@@ -459,7 +456,7 @@ class RankModule {
       })
       .finally(() => DuelystFirebase.connect().getRootRef()
         .then((fbRootRef) => FirebasePromises.set(fbRootRef.child('user-games').child(userId).child(gameId).child('job_status')
-          .child('rank'), true)))).bind(this_obj)
+          .child('rank'), true))))
       .then(function () {
         clearTimeout(_chainState.timeout);
         Logger.module('RankModule').debug(`updateUserRankingWithGameOutcome() -> All DONE. user_id: ${userId} game_id:${gameId}`);
@@ -519,7 +516,6 @@ class RankModule {
       tx('users').first('rank', 'top_rank_rating').where('id', player1Id).forUpdate(),
       tx('users').first('rank', 'top_rank_rating').where('id', player2Id).forUpdate(),
     ])
-      .bind(this_obj)
       .then(([player1UserRow, player2UserRow]) => Promise.all([
         player1UserRow,
         tx('user_rank_ratings').first().where({ user_id: player1Id, season_starting_at: seasonStartingAt }).forUpdate(),
@@ -730,7 +726,6 @@ class RankModule {
         }
 
         return Promise.all(ladderRankingPromises)
-          .bind(this_obj)
           .then(function ([player1LadderPositionAfter, player2LadderPositionAfter]) {
             _chainState.player1LadderPositionAfter = player1LadderPositionAfter;
             return _chainState.player2LadderPositionAfter = player2LadderPositionAfter;
@@ -740,7 +735,7 @@ class RankModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('RankModule').error(`updateUsersRatingsWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
       // Perform firebase updates now that transaction is completed
@@ -830,7 +825,6 @@ class RankModule {
 
     // First retrieves the current ladder position to determine if updates are needed to top ladder position
     return this.getUserLadderPosition(tx, playerId, startOfSeasonMoment, true, MOMENT_UTC_NOW)
-      .bind(this_obj)
       .then(function (ladderPosition) {
         _chainState.newLadderPosition = ladderPosition;
         if ((ladderPosition == null)) {
@@ -846,7 +840,6 @@ class RankModule {
             tx('user_rank_ratings').first('top_ladder_position').where({ user_id: playerId, season_starting_at: seasonStartingAt }).forUpdate(),
 
           ])
-            .bind(this_obj)
             .then(function ([userRowData, userRatingRowData]) {
               const allPromises = [];
 
@@ -895,7 +888,7 @@ class RankModule {
               return Promise.all(allPromises);
             });
         }
-      }).bind(this_obj)
+      })
       .then(function () {
         return _chainState.newLadderPosition;
       });
@@ -1033,7 +1026,6 @@ class RankModule {
     var txPromise = knex.transaction(function (tx) {
       knex('user_rank_history').where({ user_id: userId, starting_at: startOfSeasonMoment.toDate() }).first().forUpdate()
         .transacting(tx)
-        .bind(this_obj)
         .then(function (rankHistoryRow) {
           if ((rankHistoryRow == null)) {
             throw new Errors.NotFoundError('Could not find last month\'s rank');
@@ -1131,7 +1123,7 @@ class RankModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         return _chainState.rewards;
       });

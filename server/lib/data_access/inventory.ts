@@ -581,7 +581,6 @@ class InventoryModule {
       // Only need to update Firebase if we are giving a cosmetic, otherwise spirit gained is updated in giveUserSpirit
         if ((_chainState.resValue.cosmetic_id != null) && (_chainState.resValue.spirit == null)) {
           return DuelystFirebase.connect().getRootRef()
-            .bind(_chainState)
             .then(function (fbRootRef) {
               const fbCosmeticData = {
                 cosmetic_id: _chainState.resValue.cosmetic_id,
@@ -1005,7 +1004,6 @@ class InventoryModule {
         .where('id', userId)
         .transacting(tx)
         .forUpdate()
-        .bind(this_obj)
         .then(function (userRow) {
           if ((sku === 'STARTERBUNDLE_201604') && userRow.has_purchased_starter_bundle) {
             throw new Errors.AlreadyExistsError('Player already purchased the starter bundle.');
@@ -1066,7 +1064,7 @@ class InventoryModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`buyBoosterPacksWithGold() -> bought by user ${userId.blue}.`.green);
 
@@ -1144,7 +1142,6 @@ class InventoryModule {
         if ((cardSetData.numOrbsToCompleteSet != null) > 0) {
           _chainState.orbCountKey = 'total_orb_count_set_' + cardSetId;
           orbCountTrackingPromise = trx.raw('UPDATE users SET ?? = COALESCE(??,0) + 1 WHERE id = ? RETURNING ??', [_chainState.orbCountKey, _chainState.orbCountKey, userId, _chainState.orbCountKey])
-            .bind(_chainState)
             .then(function (response) {
               if ((response != null) && (response.rows != null) && (response.rows[0] != null) && (response.rows[0][_chainState.orbCountKey] != null)) {
                 const orbCountAfter = response.rows[0][_chainState.orbCountKey];
@@ -1229,7 +1226,6 @@ class InventoryModule {
 
     this_obj.orbCountKey = 'total_orb_count_set_' + cardSetId;
     return txPromise = knex.transaction((tx) => tx('users').first(this_obj.orbCountKey, 'wallet_spirit').where('id', userId)
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.setTotalOrbs = userRow[_chainState.orbCountKey] || 0; // Number of orbs user already has for this set
         _chainState.orbsRemaingToCompleteSet = sdkCardSetData.numOrbsToCompleteSet - _chainState.setTotalOrbs;
@@ -1246,7 +1242,7 @@ class InventoryModule {
           InventoryModule.addRemainingOrbsForCardSetToUser(txPromise, tx, userId, cardSetId, true, 'soft', transactionId, NOW_UTC_MOMENT),
         ]);
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))).bind(this_obj)
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)))
       .then(function () {
         Logger.module('InventoryModule').debug(`buyRemainingSpiritOrbsWithSpirit() -> user ${userId.blue} `.green + ` purchased remained of set ${cardSetId} with spirit`.green);
 
@@ -1305,7 +1301,6 @@ class InventoryModule {
 
     this_obj.orbCountKey = 'total_orb_count_set_' + cardSetId;
     return tx('users').first(this_obj.orbCountKey).where('id', userId)
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.setTotalOrbs = userRow[_chainState.orbCountKey] || 0; // Number of orbs user already has for this set
 
@@ -1363,7 +1358,6 @@ class InventoryModule {
         tx('users').first('id').where('id', userId).forUpdate(),
         tx('user_spirit_orbs').first().where('id', boosterPackId).forUpdate(),
       ])
-        .bind(this_obj)
         .then(function ([userRow, boosterRow]) {
           if ((boosterRow == null) || (boosterRow.user_id !== userId)) {
             return Promise.reject(new Errors.NotFoundError('The booster pack ID you provided does not exist or belong to you.'));
@@ -1831,7 +1825,7 @@ class InventoryModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('InventoryModule').debug(`unlockBoosterPack() -> user ${userId.blue} `.green + ` unlocked cards ${util.inspect(_chainState.boosterRow.cards)} from booster ${_chainState.boosterRow.id}`.green);
 
@@ -1877,7 +1871,6 @@ class InventoryModule {
         knex('user_codex_inventory').where('user_id', userId).select('chapter_id').transacting(tx)
           .forUpdate(),
       ])
-        .bind(this_obj)
         .then(function ([progressionRow, codexInventoryRows]) {
           let gameCount = 0;
           if ((progressionRow != null ? progressionRow.game_count : undefined) != null) {
@@ -1901,7 +1894,7 @@ class InventoryModule {
           Logger.module('InventoryModule').debug(`giveUserMissingCodexChapters() -> ROLLBACK ... ${(e != null ? e.message : undefined)}`);
           return tx.rollback();
         });
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`giveUserMissingCodexChapters() -> checking for missing codex chapters for user ID ${userId.blue}.`.green);
         return Promise.resolve(this_obj.awardedChapterIds);
@@ -1956,7 +1949,6 @@ class InventoryModule {
     // return the insert statement and attach it to the transaction
     return knex('user_codex_inventory').where('user_id', userId).select('chapter_id').transacting(tx)
       .forUpdate()
-      .bind(this_obj)
       .then(function (codex_inventory_rows) {
         _chainState.codex_inventory_rows = codex_inventory_rows;
 
@@ -2033,12 +2025,11 @@ class InventoryModule {
 
     var txPromise = knex.transaction(function (tx) {
       InventoryModule._disenchantCards(txPromise, tx, userId, cardIds, NOW_UTC_MOMENT)
-        .bind(this_obj)
         .then(function (data) { return _.extend(_chainState, data); })
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('InventoryModule').debug(`disenchantCards() -> user ${userId.blue}`.green + ` disenchanted cards ${util.inspect(cardIds)}`.green);
 
@@ -2274,7 +2265,6 @@ class InventoryModule {
     var txPromise = knex.transaction(function (tx) {
       knex('users').where('id', userId).first('id').transacting(tx)
         .forUpdate()
-        .bind(this_obj)
         .then((userRow) => knex('user_card_collection').where('user_id', userId).first().transacting(tx)
           .forUpdate())
         .then(function (collectionRow) {
@@ -2298,7 +2288,7 @@ class InventoryModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('InventoryModule').debug(`disenchantDuplicateCards() -> user ${userId.blue}`.green + ` disenchanted cards ${util.inspect(_chainState.cardIds)}`.green);
 
@@ -2392,7 +2382,6 @@ class InventoryModule {
 
     var txPromise = knex.transaction(function (tx) {
       tx('users').first('wallet_spirit', 'wallet_gold').where('id', userId).forUpdate()
-        .bind(this_obj)
         .then(function (userRow) {
           _chainState.userRow = userRow;
 
@@ -2458,7 +2447,7 @@ class InventoryModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`craftCard() -> user ${userId.blue} `.green + ` crafted card ${cardId}`.green);
 
@@ -2538,7 +2527,6 @@ class InventoryModule {
     const this_obj = {};
 
     var txPromise = knex.transaction((tx) => tx.first('wallet_spirit').from('users').where('id', userId).forUpdate()
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.userRow = userRow;
         return tx('user_cosmetic_inventory').first().where('user_id', userId).andWhere('cosmetic_id', cosmeticId);
@@ -2592,7 +2580,7 @@ class InventoryModule {
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
       .then(tx.commit)
-      .catch(tx.rollback)).bind(this_obj)
+      .catch(tx.rollback))
       .then(function () {
         Logger.module('InventoryModule').timeEnd(`craftCosmetic() -> user ${userId.blue} `.green + ` crafted cosmetic ${cosmeticId}`.green);
 
@@ -2801,7 +2789,6 @@ class InventoryModule {
 
     return knex.first().from('user_card_collection').where('user_id', userId).transacting(trx)
       .forUpdate()
-      .bind(this_obj)
       .then(function (collectionRow) {
       // Logger.module("InventoryModule").debug "_refreshUserCardCollection() -> collectionRow ",collectionRow
         // Logger.module("InventoryModule").debug "_refreshUserCardCollection() -> cardCountRows ",cardCountRows
@@ -3113,7 +3100,6 @@ class InventoryModule {
     Logger.module('InventoryModule').time(`claimFreeCardOfTheDay() -> ${userId.blue} claiming ${cardId}`);
 
     var txPromise = knex.transaction((tx) => tx('users').first('free_card_of_the_day_claimed_at', 'free_card_of_the_day_claimed_count').where('id', userId).forUpdate()
-      .bind(this_obj)
       .then(function (userRow) {
         const startOfToday = NOW_UTC_MOMENT.startOf('day');
         const lastClaimedDate = userRow.free_card_of_the_day_claimed_at || 0;

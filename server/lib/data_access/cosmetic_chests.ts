@@ -116,7 +116,6 @@ class CosmeticChestsModule {
     this_obj.chestDatas = [];
 
     return trx('user_cosmetic_chests').where('user_id', userId).andWhere('chest_type', chestType).count('chest_type as count')
-      .bind(this_obj)
       .then(function (response) {
         const chestCount = response[0].count;
         if (maxChestCount != null) {
@@ -149,7 +148,6 @@ class CosmeticChestsModule {
 
         // Attach to txPromise adding fb writes
         trxPromise
-          .bind(this_obj)
           .then(() => DuelystFirebase.connect().getRootRef()).then(function (rootRef) {
             _chainState.rootRef = rootRef;
             const allFbPromises = [];
@@ -286,7 +284,6 @@ class CosmeticChestsModule {
 
     var txPromise = knex.transaction(function (tx) {
       tx('users').where('id', userId).first('id').forUpdate()
-        .bind(this_obj)
         .then(() => Promise.all([
           tx.first().from('user_cosmetic_chests').where('chest_id', chestId).forUpdate(),
           tx.select('cosmetic_id').from('user_cosmetic_inventory').where('user_id', userId).forUpdate(),
@@ -465,11 +462,9 @@ class CosmeticChestsModule {
         .catch(tx.rollback);
     });
     return txPromise
-      .bind(this_obj)
       .then(function () {
       // Attach to txPromise adding fb writes
         txPromise
-          .bind(this_obj)
           .then(() => DuelystFirebase.connect().getRootRef()).then(function (rootRef) {
             return Promise.all([
               FirebasePromises.remove(rootRef.child('user-inventory').child(userId).child('cosmetic-chests').child(_chainState.chestRow.chest_id)),
@@ -693,7 +688,6 @@ class CosmeticChestsModule {
     const this_obj = {};
 
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
-      .bind(this_obj)
       .then(() => tx('user_progression').where('user_id', userId).first().forUpdate()).then(function (userProgressionRow) {
         _chainState.userProgressionRow = userProgressionRow;
         if (userProgressionRow.last_game_id !== gameId) {
@@ -749,7 +743,7 @@ class CosmeticChestsModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('CosmeticChestsModule').error(`updateUserChestRewardWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
@@ -817,7 +811,6 @@ class CosmeticChestsModule {
     const this_obj = {};
 
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
-      .bind(this_obj)
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
 
@@ -901,7 +894,7 @@ class CosmeticChestsModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('CosmeticChestsModule').error(`updateUserChestRewardWithBossGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others

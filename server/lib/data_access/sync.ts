@@ -710,10 +710,7 @@ class SyncModule {
     if (forceResync == null) { forceResync = false; }
     Logger.module('UsersModule').time(`_syncUserFromFirebaseToSQL() -> ${userId} done`.green);
 
-    const this_obj = {};
-
     return knex.first('id').from('users').where('id', userId)
-      .bind(this_obj)
       .then(function (userRow) {
         if (userRow) {
           if (!forceResync) {
@@ -875,8 +872,6 @@ class SyncModule {
           _chainState.userData = userData;
 
           return trx.insert(userData).into('users')
-
-            .bind(this_obj)
             .then(function () { // buddies
               const inserts = [];
 

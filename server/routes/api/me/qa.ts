@@ -420,10 +420,8 @@ router.delete('/inventory/unused', function (req, res, next) {
   const _chainState = {};
   let txPromise;
   const user_id = req.user.d.id;
-  const this_obj = {};
 
   return txPromise = knex.transaction((tx) => tx('user_card_collection').where('user_id', user_id).first()
-    .bind(this_obj)
     .then(function (cardCollectionRow) {
       _chainState.newCardCollection = {};
       _chainState.ownedUnusedCards = [];
@@ -451,10 +449,8 @@ router.delete('/inventory/bloodborn', function (req, res, next) {
   const _chainState = {};
   let txPromise;
   const user_id = req.user.d.id;
-  const this_obj = {};
 
   return txPromise = knex.transaction((tx) => tx('user_card_collection').where('user_id', user_id).first()
-    .bind(this_obj)
     .then(function (cardCollectionRow) {
       _chainState.newCardCollection = {};
       _chainState.ownedBloodbornCards = [];
@@ -489,10 +485,8 @@ router.delete('/inventory/unity', function (req, res, next) {
   const _chainState = {};
   let txPromise;
   const user_id = req.user.d.id;
-  const this_obj = {};
 
   return txPromise = knex.transaction((tx) => tx('user_card_collection').where('user_id', user_id).first()
-    .bind(this_obj)
     .then(function (cardCollectionRow) {
       _chainState.newCardCollection = {};
       _chainState.ownedUnityCards = [];

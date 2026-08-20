@@ -46,10 +46,9 @@ module.exports = function (job, done) {
   this_obj.fullfillmentPrice = Math.floor(100 * (this_obj.currencyAmount || 0));
 
   var txPromise = knex.transaction((tx) => tx('users').where('id', userId).first().forUpdate()
-    .bind(this_obj)
     .then(function (userRow) {
-      const sku = 'diamond_' + this.totalPlatinumAmount;
-      return ShopModule._addChargeToUser(txPromise, tx, userRow, userId, sku, this.fullfillmentPrice, 'usd', generatePushId(), fullfillmentData, 'unknown', moment.utc());
+      const sku = 'diamond_' + this_obj.totalPlatinumAmount;
+      return ShopModule._addChargeToUser(txPromise, tx, userRow, userId, sku, this_obj.fullfillmentPrice, 'usd', generatePushId(), fullfillmentData, 'unknown', moment.utc());
     }));
 
   return txPromise

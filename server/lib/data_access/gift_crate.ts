@@ -112,7 +112,6 @@ class GiftCrateModule {
     return txPromise = knex.transaction(function (tx) {
       knex.first().from('user_gift_crates').where({ user_id: userId, crate_id: crateId }).transacting(tx)
         .forUpdate()
-        .bind(this_obj)
         .then(function (giftCrateRow) {
           let cosmetic_id,
             dropSeed,
@@ -385,7 +384,7 @@ class GiftCrateModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('GiftCrateModule').debug(`unlockGiftCrate() -> user ${userId.blue} `.green + ` unlocked gift crate ${_chainState.crateId}`.green);
 

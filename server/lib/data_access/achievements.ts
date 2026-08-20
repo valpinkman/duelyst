@@ -335,10 +335,8 @@ class AchievementsModule {
     const enabledAchievements = SDK.AchievementsFactory.getEnabledAchievementsMap();
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
 
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
-      .bind(this_obj)
       .then(function () {
         const achievementIds = _.keys(progressMap);
         return knex('user_achievements').whereIn('achievement_id', achievementIds).andWhere('user_id', userId).transacting(tx);
@@ -598,7 +596,7 @@ class AchievementsModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('AchievementsModule').error(`_applyAchievementProgressMapToUser() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
     // because achievements can have rewards, to avoid a race condition we write to FB outside the transaction after all the data / rewards have been writtan and are ready to read via REST API
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {

@@ -49,14 +49,12 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
     var txPromise = knex.transaction(function (tx) {
       knex.first()
         .from('users')
         .where('id', userId)
         .transacting(tx)
         .forUpdate()
-        .bind(this_obj)
         .then(function (userRow) {
         // if the user has enough gold
           if (userRow.wallet_gold >= GauntletModule.GAUNTLET_TICKET_GOLD_PRICE) {
@@ -102,7 +100,7 @@ class GauntletModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
 
       .then(function () {
         Logger.module('GauntletModule').debug(`buyArenaTicketWithGold() -> User ${userId.blue}`.green + ` purchased ticket ${_chainState.ticketId}.`.green);
@@ -196,8 +194,6 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = systemTime || moment.utc();
 
-    const this_obj = {};
-
     var txPromise = knex.transaction(function (tx) {
       Promise.all([
         knex('user_gauntlet_run').first().where('user_id', userId).forUpdate()
@@ -205,7 +201,6 @@ class GauntletModule {
         knex('user_gauntlet_tickets').first().where('id', ticketId).forUpdate()
           .transacting(tx),
       ])
-        .bind(this_obj)
         .then(function ([existingRun, ticketRow]) {
           if (existingRun != null) {
             if (!existingRun.ended_at) {
@@ -281,7 +276,7 @@ class GauntletModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('GauntletModule').debug(`startRun() -> User ${userId.blue}`.green + ` started run ${_chainState.runData.ticket_id}.`.green);
 
@@ -307,12 +302,9 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
-
     return knex.transaction(function (tx) {
       knex('user_gauntlet_run').first().where('user_id', userId).forUpdate()
         .transacting(tx)
-        .bind(this_obj)
         .then(function (existingRun) {
           if (existingRun != null) {
             if (existingRun.ended_at) {
@@ -334,7 +326,7 @@ class GauntletModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(() => DuelystFirebase.connect().getRootRef()).then(function (fbRootRef) {
         if (_chainState.runData.started_at) { _chainState.runData.started_at = moment.utc(_chainState.runData.started_at).valueOf(); }
         if (_chainState.runData.updated_at) { _chainState.runData.updated_at = moment.utc(_chainState.runData.updated_at).valueOf(); }
@@ -376,10 +368,7 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
-
     return knex.transaction((tx) => Promise.resolve(tx('users').first('top_gauntlet_win_count').where('id', userId).forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_gauntlet_run').first().where('user_id', userId).forUpdate(),
@@ -470,7 +459,7 @@ class GauntletModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('GauntletModule').error(`updateArenaRunWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () { return Promise.resolve(_chainState.runData); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'gauntlet'));
   }
@@ -491,10 +480,7 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
-
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_gauntlet_run').first().where('user_id', userId).forUpdate(),
@@ -771,7 +757,7 @@ class GauntletModule {
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
       .then(tx.commit)
-      .catch(tx.rollback)).bind(this_obj)
+      .catch(tx.rollback))
       .then(function () {
         return Promise.resolve(_chainState.runData);
       });
@@ -959,12 +945,9 @@ class GauntletModule {
 
     const NOW_UTC_MOMENT = moment.utc();
 
-    const this_obj = {};
-
     var txPromise = knex.transaction(function (tx) {
       knex('user_gauntlet_run').first().where('user_id', userId).forUpdate()
         .transacting(tx)
-        .bind(this_obj)
         .then(function (existingRun) {
           if (existingRun != null) {
             let cardChoicesPromise;
@@ -1004,7 +987,6 @@ class GauntletModule {
 
               // Begin choosing cards
               cardChoicesPromise = GauntletModule._generateCardChoices(txPromise, tx, userId, _chainState.runData.faction_id, _chainState.runData.deck.length, null)
-                .bind(_chainState)
                 .then(function (cardChoices) {
                   return _chainState.runData.card_choices = cardChoices;
                 });
@@ -1028,14 +1010,12 @@ class GauntletModule {
             } else {
             // User has selected a non final card, continue with selecting card choices
               cardChoicesPromise = GauntletModule._generateCardChoices(txPromise, tx, userId, _chainState.runData.faction_id, _chainState.runData.deck.length, _chainState.runData.deck[_chainState.runData.deck.length - 1])
-                .bind(_chainState)
                 .then(function (cardChoices) {
                   return _chainState.runData.card_choices = cardChoices;
                 });
             }
 
             return cardChoicesPromise
-              .bind(_chainState)
               .then(function () {
                 return knex('user_gauntlet_run').where('user_id', userId).update({
                   faction_id: _chainState.runData.faction_id,
@@ -1082,7 +1062,7 @@ class GauntletModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
 
       .then(function () {
         Logger.module('GauntletModule').debug(`chooseCard() -> User ${userId.blue}`.green + ` chose card ${cardId} at deck slot ${_chainState.runData.deck.length} for run ${_chainState.runData.ticket_id}.`.green);

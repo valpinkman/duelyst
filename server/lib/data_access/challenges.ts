@@ -56,12 +56,10 @@ class ChallengesModule {
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
 
     Logger.module('ChallengesModule').time(`completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`);
 
     return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).first()
-      .bind(this_obj)
       .then(function (challengeRow) {
         if (challengeRow && challengeRow.completed_at) {
           Logger.module('ChallengesModule').debug(`completeChallengeWithType() -> user ${userId.blue} has already completed challenge type ${challengeType}.`);
@@ -71,7 +69,6 @@ class ChallengesModule {
           // lock user record while updating data
             knex('users').where({ id: userId }).first('id').forUpdate()
               .transacting(tx)
-              .bind(this_obj)
               .then(function () {
                 // give the user their rewards
                 let rewardData;
@@ -263,7 +260,7 @@ class ChallengesModule {
               .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
               .then(tx.commit)
               .catch(tx.rollback);
-          }).bind(this_obj);
+          });
 
           return txPromise;
         }
@@ -297,7 +294,6 @@ class ChallengesModule {
     // TODO: Error check, if the challenge type isn't recognized we shouldn't record it etc
 
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
 
     Logger.module('ChallengesModule').time(`markChallengeAsAttempted() -> user ${userId.blue} attempted challenge type ${challengeType}.`);
 
@@ -309,7 +305,6 @@ class ChallengesModule {
         knex('users').where({ id: userId }).first('id').forUpdate()
           .transacting(tx),
       ])
-        .bind(this_obj)
         .then(function ([challengeRow]) {
           _chainState.challengeRow = challengeRow;
 
@@ -343,7 +338,7 @@ class ChallengesModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         const responseData = { challenge: _chainState.challengeRow };
         return responseData;
@@ -366,14 +361,13 @@ class ChallengesModule {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
     const completionTimeUtc = completionTime || MOMENT_NOW_UTC;
-    const this_obj = {};
 
     // Verify a challenge in the future nor more than X days old is attempting to be completed
     if (Math.abs(completionTimeUtc.diff(MOMENT_NOW_UTC, 'days', true)) > ChallengesModule.DAILY_CHALLENGE_ALLOWABLE_CLOCK_SKEW_IN_DAYS) {
       return Promise.reject(new Errors.DailyChallengeTimeFrameError('Attempting to complete a daily challenge outside allowable time frame.'));
     }
 
-    return DuelystFirebase.connect().getRootRef().then((fbRootRef) => FirebasePromises.once(fbRootRef.child('daily-challenges').child(completionTimeUtc.format('YYYY-MM-DD')), 'value')).bind(this_obj)
+    return DuelystFirebase.connect().getRootRef().then((fbRootRef) => FirebasePromises.once(fbRootRef.child('daily-challenges').child(completionTimeUtc.format('YYYY-MM-DD')), 'value'))
       .then(function (snapshot) {
         Logger.module('ChallengesModule').debug(`markDailyChallengeAsCompleted() -> ${userId.blue} wants to complete challenge ${challengeId} for day ${completionTimeUtc.format('YYYY-MM-DD')}. Challenge Spec: `, snapshot.val());
 
@@ -393,7 +387,6 @@ class ChallengesModule {
             knex('users').where({ id: userId }).first('id').forUpdate()
               .transacting(tx),
           ])
-            .bind(this_obj)
             .then(function ([challengeRow]) {
               _chainState.challengeRow = challengeRow;
 
@@ -448,7 +441,7 @@ class ChallengesModule {
             .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
             .then(tx.commit)
             .catch(tx.rollback);
-        }).bind(this_obj)
+        })
           .then(function () {
             Logger.module('ChallengesModule').debug(`markDailyChallengeAsCompleted() -> user ${userId.blue} completed challenge ${challengeId} for day ${completionTimeUtc.format('YYYY-MM-DD')}.`);
 

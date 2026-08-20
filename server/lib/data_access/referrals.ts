@@ -37,7 +37,6 @@ class ReferralsModule {
   static markUserAsReferredByFriend(userId, referrerId) {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
 
     var trxPromise = knex.transaction(function (tx) {
       Promise.all([
@@ -45,7 +44,6 @@ class ReferralsModule {
         tx('users').where('id', referrerId).first('id', 'referred_by_user_id').forUpdate(),
         tx('user_progression').where('user_id', userId).first('game_count'),
       ])
-        .bind(this_obj)
         .then(function ([userRow, referrerRow, progressionRow]) {
           _chainState.userRow = userRow;
 
@@ -109,7 +107,7 @@ class ReferralsModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () { // backfill any events a user has achieved
         const allPromises = [];
 
@@ -152,14 +150,12 @@ class ReferralsModule {
   static processReferralEventForUser(userId, referrerId, eventType) {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
 
     return knex.transaction(function (tx) {
       Promise.all([
         tx('users').where('id', userId).first('referred_by_user_id').forUpdate(),
         tx('user_referrals').where('referred_user_id', userId).first().forUpdate(),
       ])
-        .bind(this_obj)
         .then(function ([userRow, referralRow]) {
           _chainState.userRow = userRow;
 
@@ -243,11 +239,9 @@ class ReferralsModule {
   static claimReferralRewards(userId) {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = moment().utc();
-    const this_obj = {};
 
     var trxPromise = knex.transaction(function (tx) {
       tx('users').where('id', userId).first('id', 'referral_rewards_claimed_at', 'referral_rewards_updated_at').forUpdate()
-        .bind(this_obj)
         .then(function (userRow) {
         // Logger.module("ReferralsModule").debug "claimReferralRewards() -> user #{userId}", userRow
 
@@ -329,7 +323,7 @@ class ReferralsModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('ReferralsModule').debug(`claimReferralRewards() -> user ${userId} rewards`, _chainState.rewards);
         return _chainState.rewards;

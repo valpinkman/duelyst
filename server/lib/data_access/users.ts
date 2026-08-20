@@ -139,7 +139,6 @@ class UsersModule {
     const this_obj = {};
 
     return knex('invite_codes').where('code', inviteCode).first()
-      .bind(this_obj)
       .then(function (inviteCodeRow) {
         if (config.get('inviteCodesActive') && !inviteCodeRow && (inviteCode !== 'kumite14') && (inviteCode !== 'keysign789')) {
           throw new Errors.InvalidInviteCodeError('Invite code not found');
@@ -213,7 +212,6 @@ class UsersModule {
             // update referal code table
             updateReferralCodePromise,
           ])
-            .bind(this_obj)
             .then(() => DuelystFirebase.connect().getRootRef())
             .then(function (rootRef) {
               // collect all the firebase update promises here
@@ -249,7 +247,7 @@ class UsersModule {
             })
             .then(tx.commit)
             .catch(tx.rollback);
-        }).bind(this_obj)
+        })
           .then(function () {
             if (config.get('inviteCodesActive')) {
               return knex('invite_codes').where('code', inviteCode).delete();
@@ -1056,7 +1054,6 @@ class UsersModule {
     const this_obj = {};
 
     const txPromise = knex.transaction((tx) => Promise.resolve(tx('users').where('id', userId).first('id').forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_faction_progression').where({ user_id: userId, faction_id: factionId }).first().forUpdate(),
@@ -1109,7 +1106,7 @@ class UsersModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`createFactionProgressionRecord() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj);
+      }));
 
     return txPromise;
   }
@@ -1143,7 +1140,6 @@ class UsersModule {
     const this_obj = {};
 
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').first('id', 'is_bot').where('id', userId).forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_faction_progression').where({ user_id: userId, faction_id: factionId }).first().forUpdate(),
@@ -1446,7 +1442,7 @@ class UsersModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateUserFactionProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () {
       // Update achievements if leveled up
         if (SDK.FactionProgression.hasLeveledUp(_chainState.factionProgressionRow.xp, _chainState.factionProgressionRow.xp_earned) || (_chainState.factionProgressionRow.game_count === 1)) {
@@ -1500,7 +1496,6 @@ class UsersModule {
       const start_of_day_int = parseInt(moment(MOMENT_NOW_UTC).startOf('day').utc().format('YYYYMMDD'));
 
       return Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
-        .bind(this_obj)
         .then((userRow) => Promise.all([
           userRow,
           tx('user_progression').where('user_id', userId).first().forUpdate(),
@@ -1922,7 +1917,7 @@ class UsersModule {
           Logger.module('UsersModule').error(`updateUserProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
           throw e;
         });
-    }).bind(this_obj)
+    })
       .then(function () { return Logger.module('UsersModule').debug(`updateUserProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} G:${_chainState.progressionRow.game_count} W:${_chainState.progressionRow.win_count} L:${_chainState.progressionRow.loss_count} U:${_chainState.progressionRow.unscored_count} progression recorded. Unscored: ${(isUnscored != null ? isUnscored.toString().cyan : undefined)}`.green); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'progression'));
 
@@ -1976,7 +1971,6 @@ class UsersModule {
     this_obj.rewards = [];
 
     var txPromise = knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.userRow = userRow;
         return DuelystFirebase.connect().getRootRef();
@@ -2089,7 +2083,7 @@ class UsersModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateUserBossProgressionWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(() => Logger.module('UsersModule').debug(`updateUserBossProgressionWithGameOutcome() -> user ${userId.blue}`.green + ` game ${gameId} boss id:${bossId}`.green))
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'progression'));
 
@@ -2121,7 +2115,6 @@ class UsersModule {
     const this_obj = {};
 
     return knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_game_counters').where({
@@ -2231,7 +2224,7 @@ class UsersModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('UsersModule').error(`updateGameCounters() -> ERROR, operation timeout for u:${userId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () {
         Logger.module('UsersModule').debug(`updateGameCounters() -> updated ${gameType} game counters for ${userId.blue}`);
         return {
@@ -2405,7 +2398,6 @@ class UsersModule {
     Logger.module('UsersModule').time(`completeChallengeWithType() -> user ${userId.blue} completed challenge type ${challengeType}.`);
 
     return knex('user_challenges').where({ user_id: userId, challenge_id: challengeType }).first()
-      .bind(this_obj)
       .then(function (challengeRow) {
         if (challengeRow && challengeRow.completed_at) {
           Logger.module('UsersModule').debug(`completeChallengeWithType() -> user ${userId.blue} has already completed challenge type ${challengeType}.`);
@@ -2415,7 +2407,6 @@ class UsersModule {
           // lock user record while updating data
             knex('users').where({ id: userId }).first('id').forUpdate()
               .transacting(tx)
-              .bind(this_obj)
               .then(function () {
                 // give the user their rewards
                 let rewardData;
@@ -2607,7 +2598,7 @@ class UsersModule {
               .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
               .then(tx.commit)
               .catch(tx.rollback);
-          }).bind(this_obj);
+          });
 
           return txPromise;
         }
@@ -2653,7 +2644,6 @@ class UsersModule {
         knex('users').where({ id: userId }).first('id').forUpdate()
           .transacting(tx),
       ])
-        .bind(this_obj)
         .then(function ([challengeRow]) {
           _chainState.challengeRow = challengeRow;
 
@@ -2687,7 +2677,7 @@ class UsersModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         const responseData = { challenge: _chainState.challengeRow };
         return responseData;
@@ -2717,7 +2707,6 @@ class UsersModule {
           knex('user_quests').where('user_id', userId).select(),
           knex('user_quests_complete').where('user_id', userId).select(),
         ])
-          .bind(_chainState)
           .then(function ([quests, questsComplete]) {
             let beginnerQuests = NewPlayerProgressionHelper.questsForStage(stage);
             // exclude non-required beginner quests for this tage
@@ -2805,7 +2794,6 @@ class UsersModule {
 
     const txPromise = knex.transaction(function (tx) {
       tx('user_new_player_progression').where({ user_id: userId, module_name: moduleName }).first().forUpdate()
-        .bind(this_obj)
         .then(function (progressionRow) {
         // core stage has some special rules
           if (moduleName === NewPlayerProgressionModuleLookup.Core) {
@@ -2846,7 +2834,7 @@ class UsersModule {
         })
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('UsersModule').timeEnd(`setNewPlayerFeatureProgression() -> user ${userId.blue} marking module ${moduleName} as ${stage}.`);
 
@@ -2877,7 +2865,6 @@ class UsersModule {
 
     return txPromise = knex.transaction(function (tx) {
       InventoryModule.isAllowedToUseCosmetic(txPromise, tx, userId, portraitId)
-        .bind(this_obj)
         .then(() => knex('users').where({ id: userId }).update({
           portrait_id: portraitId,
         })).then(function (updateCount) {
@@ -2890,7 +2877,7 @@ class UsersModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('UsersModule').timeEnd(`setPortraitId() -> user ${userId.blue}.`);
         return portraitId;
@@ -2920,7 +2907,6 @@ class UsersModule {
       const checkForInventoryPromise = battleMapId !== null ? InventoryModule.isAllowedToUseCosmetic(txPromise, tx, userId, battleMapId) : Promise.resolve(true);
 
       checkForInventoryPromise
-        .bind(this_obj)
         .then(() => tx('users').where({ id: userId }).update({
           battle_map_id: battleMapId,
         })).then(function (updateCount) {
@@ -2932,7 +2918,7 @@ class UsersModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('UsersModule').timeEnd(`setBattleMapId() -> user ${userId.blue}.`);
         return battleMapId;

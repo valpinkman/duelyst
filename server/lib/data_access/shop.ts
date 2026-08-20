@@ -229,7 +229,6 @@ class ShopModule {
     }
 
     var txPromise = knex.transaction((tx) => tx('users').where('id', userId).first('ltv', 'username', 'has_purchased_starter_bundle')
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.userRow = userRow;
 
@@ -264,7 +263,6 @@ class ShopModule {
           return tx('shop_sales').first().where('sku', sku).andWhere('sale_starts_at', '<', NOW_UTC_MOMENT.toDate())
             .andWhere('sale_ends_at', '>', bufferedTimeToExpireSales.toDate())
             .andWhere('disabled', '=', false)
-            .bind(_chainState)
             .then(function (shopSaleRow) {
               if (shopSaleRow != null) {
                 throw new Error(`Attempting to purchase an item ${sku} that is on sale ${shopSaleRow.sale_id} without sale price.`);
@@ -275,7 +273,6 @@ class ShopModule {
         } else {
         // Check if there is a matching active sale if provided with a sale id
           return tx('shop_sales').first().where('sale_id', shopSaleId)
-            .bind(_chainState)
             .then(function (shopSaleRow) {
               if ((shopSaleRow == null)) {
                 throw new Errors.ShopSaleDoesNotExistError(`There is no matching sale with id (${shopSaleId}) for product sku ${sku}.`);
@@ -307,7 +304,7 @@ class ShopModule {
       .then(function (value) {
         return _chainState.to_return = value;
       })
-      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))).bind(this_obj)
+      .then(() => SyncModule._bumpUserTransactionCounter(tx, userId)))
       .then(function () {
         return _chainState.to_return;
       });
@@ -440,7 +437,6 @@ class ShopModule {
     const this_obj = {};
 
     const trxPromise = knex.transaction((tx) => tx('users').where('id', userId).first('id').forUpdate()
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.userRow = userRow;
 
@@ -468,7 +464,7 @@ class ShopModule {
         }
 
         return Promise.all(allPromises);
-      })).bind(this_obj)
+      }))
       .then(function () {
         return _chainState.userPremCurrencyRow;
       });
@@ -492,7 +488,6 @@ class ShopModule {
     const this_obj = {};
 
     const trxPromise = knex.transaction((tx) => tx('users').where('id', userId).first('id').forUpdate()
-      .bind(this_obj)
       .then(function (userRow) {
         _chainState.userRow = userRow;
 
@@ -521,7 +516,7 @@ class ShopModule {
 
         // txPromise,tx,userRow,userId,sku,price,currencyCode,chargeId,chargeJson,paymentType,createdAt
         return Promise.all(allPromises);
-      })).bind(this_obj)
+      }))
       .then(function () {
         return _chainState.purchaseId;
       });

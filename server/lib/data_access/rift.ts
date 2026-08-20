@@ -64,7 +64,6 @@ class RiftModule {
         .from('users')
         .where('id', userId)
         .forUpdate()
-        .bind(this_obj)
         .then(function (userRow) {
         // if the user has enough gold
           if (userRow.wallet_gold >= CONFIG.RIFT_TICKET_GOLD_PRICE) {
@@ -110,7 +109,7 @@ class RiftModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
 
       .then(function () {
         Logger.module('RiftModule').log(`buyRiftTicketWithGold() -> User ${userId.blue}`.green + ` purchased ticket ${_chainState.ticketId}.`.green);
@@ -147,7 +146,6 @@ class RiftModule {
         tx('user_rift_tickets_used').first().where('user_id', userId).forUpdate(), // This is redundant with runs but used for future proofing
         tx('user_rift_runs').first().where('user_id', userId).forUpdate(),
       ])
-        .bind(this_obj)
         .then(function ([userRow, ticketRow, usedTicketRow, existingRun]) {
         // Can not already have a ticket
           if (ticketRow != null) {
@@ -175,7 +173,7 @@ class RiftModule {
         })
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('RiftModule').debug(`claimFirstFreeRiftTicket() -> User ${userId.blue}`.green + ` claimed free first rift ticket ${_chainState.ticketId}.`.green);
 
@@ -282,7 +280,6 @@ class RiftModule {
         tx('user_rift_run_stored_upgrades').select('id').where('user_id', userId).andWhere('assigned_ticket_id', null)
           .forUpdate(),
       ])
-        .bind(this_obj)
         .then(function ([userRow, ticketRow, existingRun, storedUpgradeRows]) {
           _chainState.ticketRow = ticketRow;
           _chainState.isFirstRun = false;
@@ -352,7 +349,7 @@ class RiftModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('RiftModule').log(`startRun() -> User ${userId.blue}`.green + ` started run ${_chainState.runData.ticket_id}.`.green);
 
@@ -390,7 +387,6 @@ class RiftModule {
     const txPromise = knex.transaction(function (tx) {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
         .forUpdate()
-        .bind(this_obj)
         .then(function (existingRun) {
           if (existingRun != null) {
             if ((existingRun.general_choices != null) && !_.contains(existingRun.general_choices, generalId)) {
@@ -435,7 +431,7 @@ class RiftModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
 
       .then(function () {
         Logger.module('RiftModule').log(`chooseGeneral() -> User ${userId.blue}`.green + ` chose general ${generalId} for run ${_chainState.runData.ticket_id}.`.green);
@@ -494,7 +490,6 @@ class RiftModule {
     const this_obj = {};
 
     return knex.transaction((tx) => Promise.resolve(tx('users').first('id').where('id', userId).forUpdate())
-      .bind(this_obj)
       .then((userRow) => Promise.all([
         userRow,
         tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
@@ -606,7 +601,6 @@ class RiftModule {
         return RiftManager.updateUserRunRiftRating(userId, ticketId, _chainState.runData.rift_rating, NOW_UTC_MOMENT);
       })
       .then(() => DuelystFirebase.connect().getRootRef())
-      .bind(this_obj)
       .then(function (fbRootRef) {
         const allFbPromises = [];
 
@@ -634,7 +628,7 @@ class RiftModule {
       .catch(Promise.TimeoutError, function (e) {
         Logger.module('RiftModule').error(`updateArenaRunWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
         throw e;
-      })).bind(this_obj)
+      }))
       .then(function () { return Promise.resolve(_chainState.runData); })
       .finally(() => GamesModule.markClientGameJobStatusAsComplete(userId, gameId, 'rift'));
   }
@@ -770,7 +764,6 @@ class RiftModule {
     var txPromise = knex.transaction(function (tx) {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
         .forUpdate()
-        .bind(this_obj)
         .then(function (existingRun) {
           if (existingRun != null) {
             const hasStoredUpgrades = (existingRun.stored_upgrades != null) && (existingRun.stored_upgrades.length > 0);
@@ -789,7 +782,6 @@ class RiftModule {
               _chainState.storedUpgradeUsedId = _chainState.runData.stored_upgrades.pop();
               _chainState.runData.disable_storing_upgrade = true;
               cardChoicesPromise = tx('user_rift_run_stored_upgrades').first().where('user_id', userId).andWhere('id', _chainState.storedUpgradeUsedId)
-                .bind(this_obj)
                 .then(function (storedUpgradeRow) {
                   if ((storedUpgradeRow == null) || (storedUpgradeRow.card_choices == null)) {
                     return Promise.reject(new Errors.BadRequestError(`Rift run stored upgrade ${_chainState.storedUpgradeUsedId} does not exist or belong to user ${userId}.`));
@@ -803,7 +795,6 @@ class RiftModule {
             }
 
             return cardChoicesPromise
-              .bind(_chainState)
               .then(function (cardChoices) {
                 _chainState.runData.card_choices = cardChoices;
                 const allCardChoicePromises = [];
@@ -844,7 +835,7 @@ class RiftModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
 
       .then(function () {
         Logger.module('RiftModule').log(`chooseCardToUpgrade() -> User ${userId.blue}`.green + ` chose card ${cardId} for upgrade in run ${_chainState.runData.ticket_id}.`.green);
@@ -917,7 +908,6 @@ class RiftModule {
     const txPromise = knex.transaction(function (tx) {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
         .forUpdate()
-        .bind(this_obj)
         .then(function (existingRun) {
           if (existingRun != null) {
             if (!existingRun.card_choices) {
@@ -972,7 +962,7 @@ class RiftModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
 
       .then(function () {
         Logger.module('RiftModule').log(`upgradeCard() -> User ${userId.blue}`.green + ` chose card ${cardId} as upgrade for run ${_chainState.runData.ticket_id}.`.green);
@@ -1157,7 +1147,6 @@ class RiftModule {
     this_obj.riftLevel = riftRunRow.rift_level;
 
     var txPromise = knex.transaction((tx) => tx('users').first('id').where('id', this_obj.userId).forUpdate()
-      .bind(this_obj)
       .then(function () {
         return RiftModule._generateCardUpgradeChoices(txPromise, tx, _chainState.userId, _chainState.ticketId, _chainState.factionId, _chainState.cardIdToUpgrade, _chainState.riftLevel);
       })
@@ -1204,7 +1193,7 @@ class RiftModule {
       tx('users').first('rift_stored_upgrade_count').where('id', userId).forUpdate(),
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', riftTicketId)
         .forUpdate(),
-    ]).bind(this_obj)
+    ])
       .then(function ([userRow, existingRun]) {
         if ((userRow == null)) {
           throw new Errors.BadRequestError(`User id not found: ${userId}`);
@@ -1287,7 +1276,7 @@ class RiftModule {
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
       .then(tx.commit)
-      .catch(tx.rollback)).bind(this_obj)
+      .catch(tx.rollback))
 
       .then(function () {
         Logger.module('RiftModule').log(`storeCurrentUpgrade() -> User ${userId.blue}`.green + ` store upgrade for run ${_chainState.runData.ticket_id}.`.green);
@@ -1327,7 +1316,7 @@ class RiftModule {
       tx('users').first('wallet_spirit').where('id', userId).forUpdate(),
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', riftTicketId)
         .forUpdate(),
-    ]).bind(this_obj)
+    ])
       .then(function ([userRow, existingRun]) {
         if ((userRow == null)) {
           throw new Errors.BadRequestError(`User id not found: ${userId}`);
@@ -1400,7 +1389,7 @@ class RiftModule {
       })
       .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
       .then(tx.commit)
-      .catch(tx.rollback)).bind(this_obj)
+      .catch(tx.rollback))
 
       .then(function () {
         Logger.module('RiftModule').debug(`rerollCurrentUpgrade() -> User ${userId.blue}`.green + ` rerolled upgrade for run ${_chainState.runData.ticket_id}.`.green);

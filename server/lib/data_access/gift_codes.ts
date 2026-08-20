@@ -40,15 +40,12 @@ class GiftCodesModule {
       return Promise.reject(new Error(`Can not claim gift code: invalid code - ${giftCode}`));
     }
 
-    const this_obj = {};
-
     return txPromise = knex.transaction(function (tx) {
       Promise.all([
         tx('users').first('id', 'created_at').where('id', userId).forUpdate(),
         tx('gift_codes').first().where('code', giftCode).forUpdate(),
         tx('user_progression').first('game_count').where('user_id', userId),
       ])
-        .bind(this_obj)
         .then(function ([userRow, giftCodeRow, progressionRow]) {
           _chainState.giftCodeRow = giftCodeRow;
           _chainState.userRow = userRow;
@@ -228,7 +225,7 @@ class GiftCodesModule {
         .then(() => SyncModule._bumpUserTransactionCounter(tx, userId))
         .then(tx.commit)
         .catch(tx.rollback);
-    }).bind(this_obj)
+    })
       .then(function () {
         Logger.module('GiftCodesModule').debug(`redeemGiftCode() -> user ${userId.blue} `.green + ` reedemed code ${giftCode}`.green);
         return Promise.resolve(_chainState.giftCodeRow);
