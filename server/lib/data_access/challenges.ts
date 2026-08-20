@@ -234,7 +234,7 @@ class ChallengesModule {
                   _chainState.rewards,
                 ]);
               })
-              .spread(function (rootRef, challengeRow, rewards) {
+              .then(function ([rootRef, challengeRow, rewards]) {
                 const allPromises = [];
 
                 if (challengeRow != null) {
@@ -310,7 +310,7 @@ class ChallengesModule {
           .transacting(tx),
       ])
         .bind(this_obj)
-        .spread(function (challengeRow) {
+        .then(function ([challengeRow]) {
           _chainState.challengeRow = challengeRow;
 
           if (_chainState.challengeRow != null) {
@@ -394,7 +394,7 @@ class ChallengesModule {
               .transacting(tx),
           ])
             .bind(this_obj)
-            .spread(function (challengeRow) {
+            .then(function ([challengeRow]) {
               _chainState.challengeRow = challengeRow;
 
               if (_chainState.challengeRow != null) {

@@ -89,7 +89,7 @@ describe('gift crates module', () => {
       knex('user_cards').select().where('user_id', userId),
       knex('user_cosmetic_chest_keys').select().where('user_id', userId),
     ]))
-      .spread((userRow, spiritOrbRows, cosmeticRows, gauntletTicketRows, cardRows, chestKeyRows) => {
+      .then(([userRow, spiritOrbRows, cosmeticRows, gauntletTicketRows, cardRows, chestKeyRows]) => {
         expect(userRow.wallet_gold).to.equal(GiftCrateFactory._giftCrateTemplateCache[UNIT_TEST_CRATE].rewards.gold);
         expect(userRow.wallet_spirit).to.equal(GiftCrateFactory._giftCrateTemplateCache[UNIT_TEST_CRATE].rewards.spirit);
         expect(spiritOrbRows.length).to.equal(1);
@@ -112,7 +112,7 @@ describe('gift crates module', () => {
           knex('user_cosmetic_chest_keys').select().where('user_id', userId),
         ]);
       })
-      .spread((userRow, spiritOrbRows, cosmeticRows, gauntletTicketRows, cardRows, chestKeyRows) => {
+      .then(([userRow, spiritOrbRows, cosmeticRows, gauntletTicketRows, cardRows, chestKeyRows]) => {
         expect(userRow.wallet_gold).to.equal(GiftCrateFactory._giftCrateTemplateCache[UNIT_TEST_CRATE].rewards.gold);
         expect(userRow.wallet_spirit).to.be.above(GiftCrateFactory._giftCrateTemplateCache[UNIT_TEST_CRATE].rewards.spirit);
         expect(spiritOrbRows.length).to.equal(1);

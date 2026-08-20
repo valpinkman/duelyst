@@ -107,7 +107,7 @@ describe('gauntlet module', () => {
         knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
       ]))
-      .spread((userRow, ticketRows, fbTickets) => {
+      .then(([userRow, ticketRows, fbTickets]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(ticketRows.length).to.equal(0);
         expect(fbTickets.numChildren()).to.equal(0);
@@ -123,7 +123,7 @@ describe('gauntlet module', () => {
         knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
       ]))
-      .spread((userRow, ticketRows, fbTickets) => {
+      .then(([userRow, ticketRows, fbTickets]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(ticketRows.length).to.equal(1);
         expect(fbTickets.numChildren()).to.equal(1);
@@ -155,7 +155,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRunRow, fbRun) => {
+      .then(([gauntletRunRow, fbRun]) => {
         expect(gauntletRunRow).to.not.exist;
         expect(fbRun.val()).to.not.exist;
       }));
@@ -172,7 +172,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRunRow, fbRun) => {
+      .then(([gauntletRunRow, fbRun]) => {
         expect(gauntletRunRow).to.not.exist;
         expect(fbRun.val()).to.not.exist;
       }));
@@ -192,7 +192,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((ticketRows, gauntletRunRow, fbRun) => {
+      .then(([ticketRows, gauntletRunRow, fbRun]) => {
         expect(ticketRows.length).to.equal(0);
         expect(gauntletRunRow).to.exist;
         expect(fbRun.val()).to.exist;
@@ -216,7 +216,7 @@ describe('gauntlet module', () => {
         knex.select().from('user_gauntlet_tickets').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
       ]))
-      .spread((userRow, ticketRows, fbTickets) => {
+      .then(([userRow, ticketRows, fbTickets]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(ticketRows.length).to.equal(1);
         expect(fbTickets.numChildren()).to.equal(1);
@@ -290,7 +290,7 @@ describe('gauntlet module', () => {
   //  //      knex.first().from("user_gauntlet_run").where({'user_id':userId}),
   //  //      FirebasePromises.once(rootRef.child("user-gauntlet-run").child(userId).child("current"),"value"),
   //  //    ])
-  //  //  }).spread(function(gauntletRow,fbRun){
+  //  //  }).then(function([gauntletRow,fbRun]){
   //  //    expect(gauntletRow.faction_id).to.equal(this.factionId);
   //  //    expect(gauntletRow.card_choices).to.exist;
   //  //    expect(gauntletRow.card_choices.length).to.equal(3);
@@ -356,7 +356,7 @@ describe('gauntlet module', () => {
   //        knex.first().from("user_gauntlet_run").where({'user_id':userId}),
   //        FirebasePromises.once(rootRef.child("user-gauntlet-run").child(userId).child("current"),"value"),
   //      ])
-  //    }).spread(function(gauntletRow,fbRun){
+  //    }).then(function([gauntletRow,fbRun]){
   //      expect(gauntletRow.deck.length).to.equal(1);
   //      expect(_.intersection(this.previous_card_choices,gauntletRow.card_choices)).to.not.equal(3);
   //      expect(fbRun.val().deck.length).to.equal(1);
@@ -419,7 +419,7 @@ describe('gauntlet module', () => {
   //        knex.first().from("user_gauntlet_run").where({'user_id':userId}),
   //        FirebasePromises.once(rootRef.child("user-gauntlet-run").child(userId).child("current"),"value"),
   //      ])
-  //    }).spread(function(gauntletRow,fbRun){
+  //    }).then(function([gauntletRow,fbRun]){
   //
   //      expect(gauntletRow.deck.length).to.equal(31);
   //      expect(gauntletRow.is_complete).to.equal(true);
@@ -576,7 +576,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRow, fbRun) => {
+      .then(([gauntletRow, fbRun]) => {
         expect(gauntletRow.is_resigned).to.equal(true);
         expect(gauntletRow.ended_at).to.exist;
 
@@ -596,7 +596,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRow, fbRun) => {
+      .then(([gauntletRow, fbRun]) => {
         expect(gauntletRow.is_resigned).to.equal(true);
         expect(gauntletRow.ended_at).to.exist;
         expect(gauntletRow.ended_at.valueOf()).to.equal(lastResignedAt.valueOf());
@@ -676,7 +676,7 @@ describe('gauntlet module', () => {
           FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
         ]))
-        .spread((gauntletRow, fbRun, firebaseGameJobStatusSnapshot) => {
+        .then(([gauntletRow, fbRun, firebaseGameJobStatusSnapshot]) => {
           expect(gauntletRow.win_count).to.equal(1);
           expect(gauntletRow.loss_count).to.equal(0);
 
@@ -696,7 +696,7 @@ describe('gauntlet module', () => {
       }).then((rootRef) => Promise.all([
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ])).spread((gauntletRow, fbRun) => {
+      ])).then(([gauntletRow, fbRun]) => {
         expect(gauntletRow.win_count).to.equal(1);
         expect(gauntletRow.loss_count).to.equal(1);
 
@@ -714,7 +714,7 @@ describe('gauntlet module', () => {
       }).then((rootRef) => Promise.all([
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ])).spread((gauntletRow, fbRun) => {
+      ])).then(([gauntletRow, fbRun]) => {
         expect(gauntletRow.win_count).to.equal(1);
         expect(gauntletRow.loss_count).to.equal(1);
         expect(gauntletRow.draw_count).to.equal(1);
@@ -727,7 +727,7 @@ describe('gauntlet module', () => {
     it('expect 3 losses to end the run', () => Promise.all([
       GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 3'),
       GauntletModule.updateArenaRunWithGameOutcome(userId, false, 'game 4'),
-    ]).spread((arenaDataNoFinal, arenaData) => {
+    ]).then(([arenaDataNoFinal, arenaData]) => {
       expect(arenaDataNoFinal.ended_at).to.not.exist;
 
       expect(arenaData).to.exist;
@@ -738,7 +738,7 @@ describe('gauntlet module', () => {
     }).then((rootRef) => Promise.all([
       knex.first().from('user_gauntlet_run').where({ user_id: userId }),
       FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-    ])).spread((gauntletRow, fbRun) => {
+    ])).then(([gauntletRow, fbRun]) => {
       expect(gauntletRow.loss_count).to.equal(3);
       expect(gauntletRow.ended_at).to.exist;
       expect(gauntletRow.rewards).to.not.exist;
@@ -758,7 +758,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         knex.select().from('user_rewards').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
-      ])).spread((gauntletRow, rewardRows, fbRun) => {
+      ])).then(([gauntletRow, rewardRows, fbRun]) => {
         const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
 
         expect(arenaRewards).to.exist;
@@ -789,7 +789,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         knex.select().from('user_rewards').where({ user_id: userId }),
       ]))
-      .spread(function (gauntletRow, rewardRows) {
+      .then(function ([gauntletRow, rewardRows]) {
         const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
 
         expect(arenaRewards).to.exist;
@@ -820,7 +820,7 @@ describe('gauntlet module', () => {
         knex.select().from('user_rewards').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRow, rewardRows, fbRun) => {
+      .then(([gauntletRow, rewardRows, fbRun]) => {
         const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
 
         expect(arenaRewards).to.exist;
@@ -862,7 +862,7 @@ describe('gauntlet module', () => {
         knex.select().from('user_rewards').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRow, rewardRows, fbRun) => {
+      .then(([gauntletRow, rewardRows, fbRun]) => {
         const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
 
         expect(arenaRewards).to.exist;
@@ -909,7 +909,7 @@ describe('gauntlet module', () => {
         knex.select().from('user_rewards').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRow, rewardRows, fbRun) => {
+      .then(([gauntletRow, rewardRows, fbRun]) => {
         const arenaRewards = _.filter(rewardRows, (row) => row.source_id === gauntletRow.ticket_id);
 
         expect(arenaRewards).to.exist;
@@ -948,7 +948,7 @@ describe('gauntlet module', () => {
         knex.first().from('user_gauntlet_run').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-gauntlet-run').child(userId).child('current'), 'value'),
       ]))
-      .spread((gauntletRow, fbRun) => {
+      .then(([gauntletRow, fbRun]) => {
         expect(gauntletRow.ended_at).to.exist;
         expect(fbRun.val().ended_at).to.exist;
       }));
@@ -981,7 +981,7 @@ describe('gauntlet module', () => {
       knex('user_card_collection').first().where('user_id', userId),
       knex('user_spirit_orbs').select().where('user_id', userId),
       knex('user_gauntlet_tickets').select().where('user_id', userId),
-    ]).spread(function (userRow, collectionRow, boosterRows, ticketRows) {
+    ]).then(function ([userRow, collectionRow, boosterRows, ticketRows]) {
       this.userRow = userRow;
       this.collectionRow = collectionRow;
       this.boosterRows = boosterRows;
@@ -1026,7 +1026,7 @@ describe('gauntlet module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('gauntlet-tickets'), 'value'),
         ]);
       })
-      .spread(function (rewardRows, userRow, collectionRow, boosterRows, ticketRows, walletSnapshot, collectionSnapshot, boosterPacksSnapshot, ticketsSnapshot) {
+      .then(function ([rewardRows, userRow, collectionRow, boosterRows, ticketRows, walletSnapshot, collectionSnapshot, boosterPacksSnapshot, ticketsSnapshot]) {
         const newCollectionData = collectionSnapshot.val();
         let totalGoldEarned = 0;
         let totalSpiritEarned = 0;

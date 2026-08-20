@@ -142,7 +142,7 @@ describe('inventory module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
         ]);
       })
-      .spread(function (userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot) {
+      .then(function ([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) {
         expect(userRow.wallet_gold).to.equal(0);
         expect(currencyLogRow).to.exist;
         expect(currencyLogRow.gold).to.equal(-100);
@@ -184,7 +184,7 @@ describe('inventory module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
         ]);
       })
-      .spread(function (userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot) {
+      .then(function ([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) {
         expect(userRow.wallet_gold).to.equal(0);
         expect(currencyLogRow).to.exist;
         expect(currencyLogRow.gold).to.equal(-100);
@@ -240,7 +240,7 @@ describe('inventory module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
         ]);
       })
-      .spread(function (userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot) {
+      .then(function ([userRow, spiritOrbRows, currencyLogRow, firebaseWalletSnapshot, firebaseBoostersSnapshot]) {
         expect(userRow.wallet_gold).to.equal(0);
         expect(currencyLogRow).to.exist;
         expect(currencyLogRow.gold).to.equal(-100);
@@ -355,7 +355,7 @@ describe('inventory module', () => {
       }).then(() => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
-      ])).spread((userRow, userOrbRows) => {
+      ])).then(([userRow, userOrbRows]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(userRow.total_orb_count_set_3).to.equal(13);
         expect(userOrbRows.length).to.equal(13);
@@ -376,7 +376,7 @@ describe('inventory module', () => {
         knex('users').where('id', userId).first(),
         knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
       ]))
-      .spread((userRow, userOrbRows) => {
+      .then(([userRow, userOrbRows]) => {
         expect(userRow.wallet_gold).to.equal(3 * 300);
         expect(userRow.total_orb_count_set_3).to.equal(13);
         expect(userOrbRows.length).to.equal(13);
@@ -418,7 +418,7 @@ describe('inventory module', () => {
           knex('user_spirit_orbs').where('user_id', userId).andWhere('card_set', SDK.CardSet.Bloodborn),
         ]);
       })
-      .spread((userRow, userOrbRows) => {
+      .then(([userRow, userOrbRows]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(userRow.total_orb_count_set_3).to.equal(13);
         expect(userOrbRows.length).to.equal(13);
@@ -483,7 +483,7 @@ describe('inventory module', () => {
             knex('users').first('wallet_spirit').where('id', userId),
           ]);
         })
-        .spread((spiritOrbs, userRow) => {
+        .then(([spiritOrbs, userRow]) => {
           expect(spiritOrbs).to.exist;
           expect(spiritOrbs.length).to.equal(13);
           for (let i = 0; i < spiritOrbs.length; i++) {
@@ -517,7 +517,7 @@ describe('inventory module', () => {
             knex('users').first('wallet_spirit', 'wallet_gold').where('id', userId),
           ]);
         })
-        .spread((spiritOrbs, userRow) => {
+        .then(([spiritOrbs, userRow]) => {
           expect(spiritOrbs).to.exist;
           expect(spiritOrbs.length).to.equal(13);
           for (let i = 0; i < spiritOrbs.length; i++) {
@@ -644,7 +644,7 @@ describe('inventory module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
         ]);
       })
-      .spread((spiritOrb, spiritOrbUsed, cardCountRows, cardLogRows, cardCollection, fbPack, fbPackUsed, fbCardCollection) => {
+      .then(([spiritOrb, spiritOrbUsed, cardCountRows, cardLogRows, cardCollection, fbPack, fbPackUsed, fbCardCollection]) => {
         expect(spiritOrb).to.not.exist;
 
         expect(spiritOrbUsed).to.exist;
@@ -712,7 +712,7 @@ describe('inventory module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
         ]);
       })
-      .spread((spiritOrb, spiritOrbUsed, cardCountRows, cardLogRows, cardCollection, fbPack, fbPackUsed, fbCardCollection) => {
+      .then(([spiritOrb, spiritOrbUsed, cardCountRows, cardLogRows, cardCollection, fbPack, fbPackUsed, fbCardCollection]) => {
         expect(spiritOrb).to.not.exist;
 
         expect(spiritOrbUsed).to.exist;
@@ -760,7 +760,7 @@ describe('inventory module', () => {
         knex.select().from('user_card_log').where({ user_id: userId }),
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-      ])).spread((cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+      ])).then(([cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
         _.each(cardCountRows, (row) => {
           expect(row.is_new).to.equal(true);
           expect(row.is_unread).to.equal(true);
@@ -776,7 +776,7 @@ describe('inventory module', () => {
         knex.first().from('user_spirit_orbs').where({ id: openedBoosterId }),
         knex.first().from('user_spirit_orbs_opened').where({ id: openedBoosterId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs').child(openedBoosterId), 'value'),
-      ])).spread((spiritOrb, spiritOrbUsed, fbPack) => {
+      ])).then(([spiritOrb, spiritOrbUsed, fbPack]) => {
         expect(spiritOrb).to.not.exist;
         expect(spiritOrbUsed).to.exist;
         expect(fbPack.val()).to.not.exist;
@@ -1007,7 +1007,7 @@ describe('inventory module', () => {
           knex.select().from('user_card_log').where({ user_id: userId, card_id: SDK.Cards.Faction1.Lightchaser }),
           knex.first().from('user_card_collection').where({ user_id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-        ])).spread((cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+        ])).then(([cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
           expect(cardCountRows).to.exist;
           expect(cardCountRows.length).to.equal(1);
           expect(cardCountRows[0].count).to.equal(1);
@@ -1056,7 +1056,7 @@ describe('inventory module', () => {
           knex.first().from('user_card_collection').where({ user_id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
         ]))
-        .spread((cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+        .then(([cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
           expect(cardCountRows).to.exist;
           expect(cardCountRows.length).to.equal(1);
           expect(cardCountRows[0].count).to.equal(1);
@@ -1143,7 +1143,7 @@ describe('inventory module', () => {
             knex.first().from('user_card_collection').where({ user_id: userId }),
             FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
           ]))
-          .spread((cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+          .then(([cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
             expect(cardCountRows).to.exist;
             expect(cardCountRows.length).to.equal(1);
             expect(cardCountRows[0].count).to.equal(1);
@@ -1265,7 +1265,7 @@ describe('inventory module', () => {
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
       ]))
-      .spread((userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection, fbWallet) => {
+      .then(([userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection, fbWallet]) => {
         // expect 10 spirit in wallet
         expect(userRow.wallet_spirit).to.equal(10);
         expect(fbWallet.val().spirit_amount).to.equal(10);
@@ -1311,7 +1311,7 @@ describe('inventory module', () => {
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
       ]))
-      .spread((userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+      .then(([userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
         // expect 480 spirit in wallet
         expect(userRow.wallet_spirit).to.equal(480);
 
@@ -1360,7 +1360,7 @@ describe('inventory module', () => {
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
       ]))
-      .spread((cardCountRow, cardCollection, fbCardCollection) => {
+      .then(([cardCountRow, cardCollection, fbCardCollection]) => {
         // expect no card counts
         expect(cardCountRow).to.exist;
         expect(cardCountRow.count).to.equal(1);
@@ -1378,7 +1378,7 @@ describe('inventory module', () => {
         knex.select().from('user_cards').where({ user_id: userId }),
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-      ])).spread((cardCountRows, cardCollection, fbCardCollection) => {
+      ])).then(([cardCountRows, cardCollection, fbCardCollection]) => {
         // expect no card counts
         expect(cardCountRows).to.exist;
 
@@ -1414,7 +1414,7 @@ describe('inventory module', () => {
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
       ]))
-      .spread((userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+      .then(([userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
         // expect 480 spirit in wallet
         expect(userRow.wallet_spirit).to.equal(10);
 
@@ -1443,7 +1443,7 @@ describe('inventory module', () => {
         InventoryModule.disenchantDuplicateCards(userId),
         InventoryModule.disenchantDuplicateCards(userId),
       ]))
-      .spread((result1, result2, result3) =>
+      .then(([result1, result2, result3]) =>
         // expect(result1).to.exist;
         // expect(result2.wallet.spirit_amount).to.equal(10);
         // expect(result3.rewards.length).to.equal(1);
@@ -1455,7 +1455,7 @@ describe('inventory module', () => {
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
       ]))
-      .spread((userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+      .then(([userRow, cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
         // expect 480 spirit in wallet
         expect(userRow.wallet_spirit).to.equal(10);
 
@@ -1692,7 +1692,7 @@ describe('inventory module', () => {
         knex.select().from('user_cards').where({ user_id: userId }),
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-      ])).spread((cardCountRows, cardCollection, fbCardCollection) => {
+      ])).then(([cardCountRows, cardCollection, fbCardCollection]) => {
         expect(cardCountRows.length).to.equal(5);
         expect(_.keys(fbCardCollection.val()).length).to.equal(5);
       });
@@ -1714,7 +1714,7 @@ describe('inventory module', () => {
         knex.select().from('user_cards').where({ user_id: userId }),
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-      ])).spread((cardCountRows, cardCollection, fbCardCollection) => {
+      ])).then(([cardCountRows, cardCollection, fbCardCollection]) => {
         expect(cardCountRows.length).to.equal(5);
         expect(_.keys(fbCardCollection.val()).length).to.equal(5);
         expect(fbCardCollection.val()[20157].count).to.equal(2);
@@ -1732,7 +1732,7 @@ describe('inventory module', () => {
         knex.select().from('user_cards').where({ user_id: userId }),
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-      ])).spread((cardCountRows, cardCollection, fbCardCollection) => {
+      ])).then(([cardCountRows, cardCollection, fbCardCollection]) => {
         expect(cardCountRows.length).to.equal(5);
         expect(_.reduce(cardCountRows, (memo, row) => memo + row.count, 0)).to.equal(10);
       });
@@ -1769,7 +1769,7 @@ describe('inventory module', () => {
           Promise.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
           knex('user_codex_inventory').where('user_id', userId).select('chapter_id'),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('codex'), 'value'),
-        ])).spread((codexChapterRows, fbCodexCollection) => {
+        ])).then(([codexChapterRows, fbCodexCollection]) => {
           expect(codexChapterRows.length).to.equal(1);
           expect(_.keys(fbCodexCollection.val()).length).to.equal(1);
         });
@@ -1795,7 +1795,7 @@ describe('inventory module', () => {
           Promise.delay(2000)).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
           knex('user_codex_inventory').where('user_id', userId).select('chapter_id'),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('codex'), 'value'),
-        ])).spread((codexChapterRows, fbCodexCollection) => {
+        ])).then(([codexChapterRows, fbCodexCollection]) => {
           expect(codexChapterRows.length).to.equal(1);
           expect(_.keys(fbCodexCollection.val()).length).to.equal(1);
         });
@@ -1842,7 +1842,7 @@ describe('inventory module', () => {
           knex('user_codex_inventory').where('user_id', userId).select('chapter_id'),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('codex'), 'value'),
         ]))
-        .spread((codexChapterRows, fbCodexCollection) => {
+        .then(([codexChapterRows, fbCodexCollection]) => {
           expect(codexChapterRows.length).to.equal(numCodexChapters);
           expect(_.keys(fbCodexCollection.val()).length).to.equal(numCodexChapters);
         })
@@ -1874,7 +1874,7 @@ describe('inventory module', () => {
         knex.select().from('user_cards').where({ user_id: userId, card_id: 20157 }),
         knex.first().from('user_card_collection').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
-      ])).spread((cardCountRows, cardCollection, fbCardCollection) => {
+      ])).then(([cardCountRows, cardCollection, fbCardCollection]) => {
         expect(cardCountRows[0].is_unread).to.equal(false);
         // NOTE: because the card collection and firebase data update is dererred to the next time inventory is updated, for now they should be TRUE and thus out of sync
         expect(cardCollection.cards[20157].is_unread).to.equal(true);
@@ -1885,7 +1885,7 @@ describe('inventory module', () => {
       .then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex.select().from('user_card_lore_inventory').where({ user_id: userId, card_id: 20157 }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-lore'), 'value'),
-      ])).spread((cardCountRows, fbCardCollection) => {
+      ])).then(([cardCountRows, fbCardCollection]) => {
         expect(cardCountRows[0].is_unread).to.equal(false);
         expect(fbCardCollection.val()[20157].is_unread).to.equal(false);
       }));
@@ -1901,7 +1901,7 @@ describe('inventory module', () => {
       }).then(() => DuelystFirebase.connect().getRootRef()).then((rootRef) => Promise.all([
         knex.first().from('users').where({ id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
-      ])).spread((userRow, walletRef) => {
+      ])).then(([userRow, walletRef]) => {
         expect(userRow.wallet_gold).to.equal(50);
         expect(walletRef.val().gold_amount).to.equal(50);
       });
@@ -1924,7 +1924,7 @@ describe('inventory module', () => {
           knex.first().from('users').where({ id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
         ]))
-        .spread((userRow, walletRef) => {
+        .then(([userRow, walletRef]) => {
           expect(userRow.wallet_gold).to.equal(50);
           expect(walletRef.val().gold_amount).to.equal(50);
         });
@@ -1965,7 +1965,7 @@ describe('inventory module', () => {
           knex.first().from('users').where({ id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
         ]))
-        .spread((userRow, walletRef) => {
+        .then(([userRow, walletRef]) => {
           expect(userRow.wallet_spirit).to.equal(spiritBefore + spiritToCredit - spiritToDebit);
           expect(walletRef.val().spirit_amount).to.equal(spiritBefore + spiritToCredit - spiritToDebit);// expected 85 to equal 95//95 is correct
         });
@@ -1997,7 +1997,7 @@ describe('inventory module', () => {
           knex.first().from('users').where({ id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
         ]))
-        .spread((userRow, walletRef) => {
+        .then(([userRow, walletRef]) => {
           expect(userRow.wallet_spirit).to.equal(spiritBefore);
           expect(walletRef.val().spirit_amount).to.equal(spiritBefore);
         });
@@ -2049,7 +2049,7 @@ describe('inventory module', () => {
       it('should wipe the collection entirely', () => Promise.all([
         knex('user_cards').where('user_id', userId),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(0);
         expect(_.keys(cardCollectionRow.cards).length).to.equal(0);
       }));
@@ -2057,7 +2057,7 @@ describe('inventory module', () => {
       it('should give user # of orbs equal to number opened and mark old orbs with "wiped_at" time', () => Promise.all([
         knex('user_spirit_orbs').where('user_id', userId),
         knex('user_spirit_orbs_opened').where('user_id', userId),
-      ]).spread((orbs, orbsOpened) => {
+      ]).then(([orbs, orbsOpened]) => {
         expect(orbs.count).to.equal(orbsOpened.count);
         _.each(orbsOpened, (openedOrb) => {
           expect(openedOrb.wiped_at).to.exist;
@@ -2111,7 +2111,7 @@ describe('inventory module', () => {
       it('should still have BASIC cards in the inventory', () => Promise.all([
         knex('user_cards').where('user_id', userId).andWhere('card_id', 11),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(1);
         expect(cardCountRows[0].count).to.equal(3);
         expect(cardCollectionRow.cards[11].count).to.equal(3);
@@ -2161,7 +2161,7 @@ describe('inventory module', () => {
       it('should still have BASIC cards in the inventory and card ledger count should be accurate', () => Promise.all([
         knex('user_cards').where('user_id', userId),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 11).count).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 19005).count).to.equal(2);
@@ -2175,7 +2175,7 @@ describe('inventory module', () => {
       it('should give user # of orbs equal to number opened and mark old orbs with "wiped_at" time', () => Promise.all([
         knex('user_spirit_orbs').where('user_id', userId),
         knex('user_spirit_orbs_opened').where('user_id', userId),
-      ]).spread((orbs, orbsOpened) => {
+      ]).then(([orbs, orbsOpened]) => {
         expect(orbs.count).to.equal(orbsOpened.count);
         _.each(orbsOpened, (openedOrb) => {
           expect(openedOrb.wiped_at).to.exist;
@@ -2223,7 +2223,7 @@ describe('inventory module', () => {
       it('should still have BASIC and ACHIEVEMENT cards in the inventory and card ledger count should be accurate', () => Promise.all([
         knex('user_cards').where('user_id', userId),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 11).count).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 19005).count).to.equal(2);
@@ -2237,7 +2237,7 @@ describe('inventory module', () => {
       it('should give user # of orbs equal to number opened and mark old orbs with "wiped_at" time', () => Promise.all([
         knex('user_spirit_orbs').where('user_id', userId),
         knex('user_spirit_orbs_opened').where('user_id', userId),
-      ]).spread((orbs, orbsOpened) => {
+      ]).then(([orbs, orbsOpened]) => {
         expect(orbs.count).to.equal(orbsOpened.count);
         _.each(orbsOpened, (openedOrb) => {
           expect(openedOrb.wiped_at).to.exist;
@@ -2267,7 +2267,7 @@ describe('inventory module', () => {
       it('should set users wallet spirit to 0 and create a currency ledger item for it', () => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_currency_log').whereNotNull('spirit').andWhere('user_id', userId).select(),
-      ]).spread((userRow, currencyLogRows) => {
+      ]).then(([userRow, currencyLogRows]) => {
         expect(userRow.wallet_spirit).to.equal(0);
         expect(currencyLogRows.length).to.equal(2);
         expect(_.find(currencyLogRows, (c) => c.memo === 'soft wipe')).to.exist;
@@ -2294,7 +2294,7 @@ describe('inventory module', () => {
       it('should restore BASIC and ACHIEVEMENT cards in the inventory', () => Promise.all([
         knex('user_cards').where('user_id', userId),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 11).count).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 19005).count).to.equal(2);
@@ -2308,7 +2308,7 @@ describe('inventory module', () => {
       it('should give user # of orbs equal to number opened and mark old orbs with "wiped_at" time', () => Promise.all([
         knex('user_spirit_orbs').where('user_id', userId),
         knex('user_spirit_orbs_opened').where('user_id', userId),
-      ]).spread((orbs, orbsOpened) => {
+      ]).then(([orbs, orbsOpened]) => {
         expect(orbs.count).to.equal(orbsOpened.count);
         _.each(orbsOpened, (openedOrb) => {
           expect(openedOrb.wiped_at).to.exist;
@@ -2338,7 +2338,7 @@ describe('inventory module', () => {
       it('should set users wallet spirit to 0 and create a currency ledger item for it', () => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_currency_log').whereNotNull('spirit').andWhere('user_id', userId).select(),
-      ]).spread((userRow, currencyLogRows) => {
+      ]).then(([userRow, currencyLogRows]) => {
         expect(userRow.wallet_spirit).to.equal(0);
         expect(currencyLogRows.length).to.equal(2);
         expect(_.find(currencyLogRows, (c) => c.memo === 'soft wipe')).to.exist;
@@ -2376,7 +2376,7 @@ describe('inventory module', () => {
       it('should restore BASIC and ACHIEVEMENT cards in the inventory', () => Promise.all([
         knex('user_cards').where('user_id', userId),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 11).count).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 19005).count).to.equal(2);
@@ -2390,7 +2390,7 @@ describe('inventory module', () => {
       it('should give user # of orbs equal to number opened and mark old orbs with "wiped_at" time', () => Promise.all([
         knex('user_spirit_orbs').where('user_id', userId),
         knex('user_spirit_orbs_opened').where('user_id', userId),
-      ]).spread((orbs, orbsOpened) => {
+      ]).then(([orbs, orbsOpened]) => {
         expect(orbs.count).to.equal(orbsOpened.count);
         _.each(orbsOpened, (openedOrb) => {
           expect(openedOrb.wiped_at).to.exist;
@@ -2420,7 +2420,7 @@ describe('inventory module', () => {
       it('should set users wallet spirit to 0 and create a currency ledger item for it', () => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_currency_log').whereNotNull('spirit').andWhere('user_id', userId).select(),
-      ]).spread((userRow, currencyLogRows) => {
+      ]).then(([userRow, currencyLogRows]) => {
         expect(userRow.wallet_spirit).to.equal(0);
         expect(_.find(currencyLogRows, (c) => c.memo === 'soft wipe')).to.exist;
       }));
@@ -2460,7 +2460,7 @@ describe('inventory module', () => {
       it('should restore BASIC and ACHIEVEMENT cards in the inventory', () => Promise.all([
         knex('user_cards').where('user_id', userId),
         knex('user_card_collection').first().where('user_id', userId),
-      ]).spread((cardCountRows, cardCollectionRow) => {
+      ]).then(([cardCountRows, cardCollectionRow]) => {
         expect(cardCountRows.length).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 11).count).to.equal(3);
         expect(_.find(cardCountRows, (c) => c.card_id === 19005).count).to.equal(2);
@@ -2474,7 +2474,7 @@ describe('inventory module', () => {
       it('should give user # of orbs equal to number opened and mark old orbs with "wiped_at" time', () => Promise.all([
         knex('user_spirit_orbs').where('user_id', userId),
         knex('user_spirit_orbs_opened').where('user_id', userId),
-      ]).spread((orbs, orbsOpened) => {
+      ]).then(([orbs, orbsOpened]) => {
         expect(orbs.count).to.equal(orbsOpened.count);
         _.each(orbsOpened, (openedOrb) => {
           expect(openedOrb.wiped_at).to.exist;
@@ -2504,7 +2504,7 @@ describe('inventory module', () => {
       it('should set users wallet spirit to 0 and create a currency ledger item for it', () => Promise.all([
         knex('users').where('id', userId).first(),
         knex('user_currency_log').whereNotNull('spirit').andWhere('user_id', userId).select(),
-      ]).spread((userRow, currencyLogRows) => {
+      ]).then(([userRow, currencyLogRows]) => {
         expect(userRow.wallet_spirit).to.equal(0);
         expect(_.find(currencyLogRows, (c) => c.memo === 'soft wipe')).to.exist;
       }));
@@ -2529,7 +2529,7 @@ describe('inventory module', () => {
           knex.first().from('user_card_collection').where({ user_id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
         ]))
-        .spread((cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+        .then(([cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
           expect(cardCountRows).to.exist;
           expect(cardCountRows.length).to.equal(1);
           expect(cardCountRows[0].count).to.equal(1);
@@ -2572,7 +2572,7 @@ describe('inventory module', () => {
           knex.first().from('user_card_collection').where({ user_id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
         ]))
-        .spread((cardCountRows, cardLogRows, cardCollection, fbCardCollection) => {
+        .then(([cardCountRows, cardLogRows, cardCollection, fbCardCollection]) => {
         // expect no card counts
           expect(cardCountRows).to.exist;
           expect(cardCountRows.length).to.equal(0);
@@ -2624,7 +2624,7 @@ describe('inventory module', () => {
           knex.first().from('users').where({ id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
         ]))
-        .spread((userRow, fbWallet) => {
+        .then(([userRow, fbWallet]) => {
         // expect prismatic disenchant spirit in wallet
           expect(userRow.wallet_spirit).to.equal(rarityData.spiritRewardPrismatic);
           expect(fbWallet.val().spirit_amount).to.equal(rarityData.spiritRewardPrismatic);
@@ -2642,7 +2642,7 @@ describe('inventory module', () => {
           knex.first().from('users').where({ id: userId }),
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
         ]))
-        .spread((userRow, fbWallet) => {
+        .then(([userRow, fbWallet]) => {
         // expect normal disenchant spirit in wallet
           expect(userRow.wallet_spirit).to.equal(rarityData.spiritReward);
           expect(fbWallet.val().spirit_amount).to.equal(rarityData.spiritReward);
@@ -2748,7 +2748,7 @@ describe('inventory module', () => {
       ])).then(() => Promise.all([
         knex('user_cards').first().where({ user_id: userId, card_id: baseCardId }),
         knex('users').where('id', userId).update({ wallet_spirit: rarityData.spiritCostPrismatic }),
-      ])).spread((cardRow) => {
+      ])).then(([cardRow]) => {
         expect(cardRow).to.exist;
         expect(cardRow.count).to.be.above(0);
         return InventoryModule.craftCard(userId, cardIdToCraft);
@@ -2814,7 +2814,7 @@ describe('inventory module', () => {
       ])).then(() => Promise.all([
         knex('user_cards').first().where({ user_id: userId, card_id: baseCardId }),
         knex('users').where('id', userId).update({ wallet_spirit: rarityData.spiritCostPrismatic }),
-      ])).spread((cardRow) => {
+      ])).then(([cardRow]) => {
         expect(cardRow).to.exist;
         expect(cardRow.count).to.be.above(0);
         return InventoryModule.craftCard(userId, cardIdToCraft);
@@ -3253,7 +3253,7 @@ describe('inventory module', () => {
         knex('user_cosmetic_inventory').first().where('user_id', userId),
         knex('users').first().where('id', userId),
       ]);
-    }).spread((cosmeticRow, userRow) => {
+    }).then(([cosmeticRow, userRow]) => {
       expect(cosmeticRow).to.exist;
       expect(cosmeticRow.user_id).to.equal(userId);
       expect(parseInt(cosmeticRow.cosmetic_id, 10)).to.equal(SDK.CosmeticsLookup.Emote.Faction1Angry);
@@ -3307,7 +3307,7 @@ describe('inventory module', () => {
         knex('user_cards').select().where('user_id', userId),
         FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
       ]))
-      .spread(function (userRow, cardCountRows, userSnapshot) {
+      .then(function ([userRow, cardCountRows, userSnapshot]) {
         expect(userRow.free_card_of_the_day_claimed_at).to.exist;
         expect(userRow.free_card_of_the_day_claimed_count).to.equal(1);
         expect(cardCountRows.length).to.equal(1);
@@ -3337,7 +3337,7 @@ describe('inventory module', () => {
           knex('user_cards').select().where('user_id', userId),
           FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
         ]))
-        .spread(function (userRow, cardCountRows, userSnapshot) {
+        .then(function ([userRow, cardCountRows, userSnapshot]) {
           expect(userRow.free_card_of_the_day_claimed_at.valueOf()).to.equal(systemTime.valueOf());
           expect(userRow.free_card_of_the_day_claimed_count).to.equal(2);
           expect(cardCountRows.length).to.equal(2);

@@ -69,7 +69,7 @@ describe('gift codes module', () => {
           knex('gift_codes').where('code', code).first(),
           knex('user_card_collection').where('user_id', userId).first(),
         ]))
-          .spread((giftCodeRow, cardCollectionRow) => {
+          .then(([giftCodeRow, cardCollectionRow]) => {
             expect(giftCodeRow.claimed_at).to.exist;
             expect(giftCodeRow.claimed_by_user_id).to.equal(userId);
             expect(cardCollectionRow.cards).to.exist;
@@ -107,7 +107,7 @@ describe('gift codes module', () => {
           knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
           knex('gift_codes').where('code', code).first(),
         ]))
-          .spread((userRow, giftCodeRow) => {
+          .then(([userRow, giftCodeRow]) => {
             expect(userRow.wallet_gold).to.equal(50);
             expect(userRow.wallet_spirit).to.equal(0);
             expect(giftCodeRow.claimed_at).to.exist;
@@ -127,7 +127,7 @@ describe('gift codes module', () => {
           knex('users').where('id', userId).first('wallet_gold', 'wallet_spirit'),
           knex('gift_codes').where('code', code).first(),
         ]))
-          .spread((userRow, giftCodeRow) => {
+          .then(([userRow, giftCodeRow]) => {
             expect(userRow.wallet_gold).to.equal(50);
             expect(userRow.wallet_spirit).to.equal(20);
             expect(giftCodeRow.claimed_at).to.exist;
@@ -148,7 +148,7 @@ describe('gift codes module', () => {
             knex('user_cards').where('user_id', userId).select(),
             knex('gift_codes').where('code', code).first(),
           ]))
-          .spread((userCardRows, giftCodeRow) => {
+          .then(([userCardRows, giftCodeRow]) => {
             expect(userCardRows).to.exist;
             expect(giftCodeRow).to.exist;
 
@@ -181,7 +181,7 @@ describe('gift codes module', () => {
           knex('user_gauntlet_tickets').where('user_id', userId).select(),
           knex('gift_codes').where('code', code).first(),
         ]))
-          .spread((userRow, orbRows, gauntletTicketRows, giftCodeRow) => {
+          .then(([userRow, orbRows, gauntletTicketRows, giftCodeRow]) => {
             expect(userRow.wallet_gold).to.equal(15);
             expect(userRow.wallet_spirit).to.equal(25);
             expect(giftCodeRow.claimed_at).to.exist;
@@ -210,7 +210,7 @@ describe('gift codes module', () => {
           knex('user_cosmetic_inventory').where('user_id', userId).select(),
           knex('gift_codes').where('code', code).first(),
         ]))
-          .spread((userCosmeticRows, giftCodeRow) => {
+          .then(([userCosmeticRows, giftCodeRow]) => {
             const healingMysticHappy = _.find(userCosmeticRows, (c) => parseInt(c.cosmetic_id, 10) === SDK.CosmeticsLookup.Emote.HealingMysticHappy);
             const agenorCardBack = _.find(userCosmeticRows, (c) => parseInt(c.cosmetic_id, 10) === SDK.CosmeticsLookup.CardBack.Agenor);
             expect(healingMysticHappy).to.exist;

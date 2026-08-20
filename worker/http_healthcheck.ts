@@ -40,7 +40,7 @@ const healthcheck = function () {
         knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
       ])
         .timeout(5000)
-        .spread(function (row) {
+        .then(function ([row]) {
           if (pool.queued >= MAX_QUEUED_ALLOWED) {
             return res.statusCode = 500;
           } else {

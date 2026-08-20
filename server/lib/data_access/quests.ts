@@ -69,7 +69,7 @@ class QuestsModule {
       knex('user_quests').select().where('user_id', userId),
     ])
       .bind({})
-      .spread(function (newPlayerProgressionRow, userRow, questRows) {
+      .then(function ([newPlayerProgressionRow, userRow, questRows]) {
         const currentStage = NewPlayerProgressionStageEnum[newPlayerProgressionRow != null ? newPlayerProgressionRow.stage : undefined] || NewPlayerProgressionStageEnum.Tutorial;
         if (currentStage.value < NewPlayerProgressionHelper.DailyQuestsStartToGenerateStage.value) {
           return Promise.resolve(false);
@@ -176,7 +176,7 @@ class QuestsModule {
           .where({ user_id: userId }),
       ])
         .bind(this_obj)
-        .spread(function (userRow, questRows) {
+        .then(function ([userRow, questRows]) {
           _chainState.updatedQuests = [];
           _chainState.userRow = userRow;
           _chainState.removedQuests = [];
@@ -520,7 +520,7 @@ class QuestsModule {
             tx('user_quests_complete').select('quest_type_id').where({ user_id: userId }),
           ])
             .bind(this_obj)
-            .spread(function (userRow, questRows, questCompleteRows) {
+            .then(function ([userRow, questRows, questCompleteRows]) {
               let sdkQuest;
               _chainState.updatedQuests = [];
               _chainState.userRow = userRow;
@@ -815,7 +815,7 @@ class QuestsModule {
       .then((userRow) => Promise.all([
         userRow,
         tx('user_quests').select().where({ user_id: userId }).forUpdate(),
-      ])).spread(function (userRow, questRows) {
+      ])).then(function ([userRow, questRows]) {
       // Logger.module("QuestsModule").debug "updateQuestProgressWithGame() -> ACQUIRED LOCK ON #{userId}".yellow
 
         _chainState.userRow = userRow;
@@ -920,7 +920,7 @@ class QuestsModule {
       tx('user_quests').select().where({ user_id: userId }).forUpdate(),
     ])
       .bind({})
-      .spread(function (userRow, questRows) {
+      .then(function ([userRow, questRows]) {
         _chainState.userRow = userRow;
         _chainState.questRows = questRows;
 
@@ -1090,7 +1090,7 @@ class QuestsModule {
       tx('user_quests').select().where({ user_id: userId }).forUpdate(),
     ])
       .bind({})
-      .spread(function (userRow, questRows) {
+      .then(function ([userRow, questRows]) {
         _chainState.userRow = userRow;
         _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {

@@ -60,7 +60,7 @@ router.get('/wartech_generals/progress', function (req, res, next) {
     knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction4Achievement.id),
     knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction5Achievement.id),
     knex('user_achievements').first(userAchievementsColumns).where('user_id', user_id).andWhere('achievement_id', WartechGeneralFaction6Achievement.id),
-  ]).spread(function (userWartechAchievementRows) {
+  ]).then(function ([userWartechAchievementRows]) {
     userWartechAchievementRows = DataAccessHelpers.restifyData(userWartechAchievementRows);
     return res.status(200).json(userWartechAchievementRows);
   }).catch(function (error) {

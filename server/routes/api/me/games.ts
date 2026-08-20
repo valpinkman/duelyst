@@ -337,7 +337,7 @@ router.get('/watchable/:division_name/:game_id/replay_data', function (req, res,
         return [null, null];
       }
     })
-    .spread(function (gameDataString, mouseUIDataString) {
+    .then(function ([gameDataString, mouseUIDataString]) {
       Logger.module('API').debug(`downloaded game ${game_id} replay data. size:${(gameDataString != null ? gameDataString.length : undefined) || 0}`);
       if ((gameDataString == null) || (mouseUIDataString == null)) {
         return res.status(404).json({});
@@ -436,7 +436,7 @@ router.post('/single_player', function (req, res, next) {
     ((battleMapId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId) : Promise.resolve()),
   ])
     .bind({})
-    .spread(function (ownedBattleMapCosmeticRows) {
+    .then(function ([ownedBattleMapCosmeticRows]) {
       if (battleMapId != null) {
         Logger.module('SINGLE PLAYER').debug(`${userId} selected battlemap: ${battleMapId}`);
         if (battleMapIndexesToSampleFrom == null) { battleMapIndexesToSampleFrom = [CosmeticsFactory.cosmeticForIdentifier(battleMapId).battleMapTemplateIndex]; }

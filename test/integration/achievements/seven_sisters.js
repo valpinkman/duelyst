@@ -84,7 +84,7 @@ describe("achievements module", function() {
           FirebasePromises.once(rootRef.child('user-achievements').child(userId),"value"),
           FirebasePromises.once(rootRef.child('user-rewards').child(userId),"value")
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow,achievementsSnapshot,rewardsSnapshot){
+      }).then(function([achievementRows,rewardRows,cardRow,achievementsSnapshot,rewardsSnapshot]){
         expect(achievementRows.length).to.equal(0)
         expect(cardRow).to.not.exist
       })
@@ -116,7 +116,7 @@ describe("achievements module", function() {
           FirebasePromises.once(rootRef.child('user-achievements').child(userId),"value"),
           FirebasePromises.once(rootRef.child('user-rewards').child(userId),"value")
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow,achievementsSnapshot,rewardsSnapshot){
+      }).then(function([achievementRows,rewardRows,cardRow,achievementsSnapshot,rewardsSnapshot]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(cardRow).to.exist
@@ -139,7 +139,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction1.SunSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(cardRow).to.exist
@@ -172,7 +172,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','lightningSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction2.LightningSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)
@@ -206,7 +206,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','sandSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction3.SandSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)
@@ -240,7 +240,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','shadowSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction4.ShadowSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)
@@ -274,7 +274,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','earthSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction5.EarthSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)
@@ -308,7 +308,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','windSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction6.WindSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)
@@ -334,7 +334,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','swornSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Neutral.SwornSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)
@@ -369,7 +369,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','lightningSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction2.LightningSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(0)
         expect(rewardRows.length).to.equal(0)
         expect(cardRow).to.not.exist
@@ -383,7 +383,7 @@ describe("achievements module", function() {
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','lightningSister'),
           knex('user_cards').first().where('user_id',userId).andWhere('card_id',SDK.Cards.Faction2.LightningSister),
         ])
-      }).spread(function(achievementRows,rewardRows,cardRow){
+      }).then(function([achievementRows,rewardRows,cardRow]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)

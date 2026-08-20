@@ -35,7 +35,7 @@ module.exports = function (job, done) {
     GameManager.loadGameMouseUIData(gameId),
   ])
     .bind({})
-    .spread(function (serializedGameData, serializedMouseAndUIEventData) {
+    .then(function ([serializedGameData, serializedMouseAndUIEventData]) {
       this.serializedGameData = serializedGameData;
       if (!serializedGameData) {
         throw new Error('Game data is null. Game may have already been archived.');

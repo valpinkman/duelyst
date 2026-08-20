@@ -77,7 +77,7 @@ describe("achievements module", function() {
           knex('user_achievements').select().where('user_id',userId).andWhere('achievement_id','collectorSupreme'),
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','collectorSupreme')
         ])
-      }).spread(function(achievementRows,rewardRows){
+      }).then(function([achievementRows,rewardRows]){
         expect(achievementRows.length).to.equal(0)
         expect(rewardRows.length).to.equal(0)
       })
@@ -101,7 +101,7 @@ describe("achievements module", function() {
           knex('user_achievements').select().where('user_id',userId).andWhere('achievement_id','collectorSupreme'),
           knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','collectorSupreme')
         ])
-      }).spread(function(achievementRows,rewardRows){
+      }).then(function([achievementRows,rewardRows]){
         expect(achievementRows.length).to.equal(1)
         expect(achievementRows[0].progress).to.equal(1)
         expect(rewardRows.length).to.equal(1)

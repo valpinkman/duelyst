@@ -72,7 +72,7 @@ describe('challenges module', () => {
         }).first(),
         FirebasePromises.once(rootRef.child('user-challenge-progression').child(userId).child(challengeType), 'value'),
       ]))
-      .spread((challengeRow, challengeDataSnapshot) => {
+      .then(([challengeRow, challengeDataSnapshot]) => {
         // Check that the challenge was marked as attempted
         expect(challengeRow.last_attempted_at).to.exist;
         expect(challengeDataSnapshot.val()).to.exist;
@@ -107,7 +107,7 @@ describe('challenges module', () => {
         FirebasePromises.once(rootRef.child('user-inventory').child(userId), 'value'),
         FirebasePromises.once(rootRef.child('user-challenge-progression').child(userId).child(challengeType), 'value'),
       ]))
-      .spread((userRow, userCardCollectionRow, inventoryDataSnapshot, challengeDataSnapshot) => {
+      .then(([userRow, userCardCollectionRow, inventoryDataSnapshot, challengeDataSnapshot]) => {
         expect(userRow.wallet_gold).to.equal(SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType));
         expect(userRow.wallet_spirit).to.equal(SDK.ChallengeFactory.getSpiritRewardedForChallengeType(challengeType));
 
@@ -148,7 +148,7 @@ describe('challenges module', () => {
         FirebasePromises.once(rootRef.child('user-inventory').child(userId), 'value'),
         FirebasePromises.once(rootRef.child('user-challenge-progression').child(userId).child(challengeType), 'value'),
       ]))
-      .spread((userRow, userCardCollectionRow, inventoryDataSnapshot, challengeDataSnapshot) => {
+      .then(([userRow, userCardCollectionRow, inventoryDataSnapshot, challengeDataSnapshot]) => {
         expect(userRow.wallet_gold).to.equal(SDK.ChallengeFactory.getGoldRewardedForChallengeType(challengeType));
         expect(userRow.wallet_spirit).to.equal(SDK.ChallengeFactory.getSpiritRewardedForChallengeType(challengeType));
 
@@ -194,7 +194,7 @@ describe('challenges module', () => {
             knex('user_quests').where('user_id', userId),
             FirebasePromises.once(rootRef.child('user-challenge-progression').child(userId).child(questChallenge1Type), 'value'),
           ]))
-          .spread((userRow, challengeRow, questRows, challengeDataSnapshot) => {
+          .then(([userRow, challengeRow, questRows, challengeDataSnapshot]) => {
             expect(challengeRow.completed_at).to.exist;
 
             const challengeQuestRow = _.find(questRows, (questRow) => questRow.quest_type_id === 9904);
@@ -217,7 +217,7 @@ describe('challenges module', () => {
             knex('user_challenges').where('user_id', userId).select(),
             knex('user_quests_complete').where('user_id', userId).select(),
           ]))
-          .spread((userRow, challengeRows, completeQuestRows) => {
+          .then(([userRow, challengeRows, completeQuestRows]) => {
             expect(challengeRows.length).to.equal(3);
             expect(challengeRows[2].reward_ids.length).to.equal(1);
             expect(completeQuestRows.length).to.equal(1);
@@ -270,7 +270,7 @@ describe('challenges module', () => {
         knex('user_daily_challenges_completed').where('user_id', userId).andWhere('challenge_id', challengeId).first(),
         knex('user_rewards').where('user_id', userId).orderBy('created_at', 'desc').first(),
       ]))
-      .spread((userRow, challengeRow, rewardRow) => {
+      .then(([userRow, challengeRow, rewardRow]) => {
         expect(userRow.daily_challenge_last_completed_at.valueOf()).to.equal(challengeDate.valueOf());
         expect(challengeRow).to.exist;
         expect(rewardRow.reward_type).to.equal(challengeId);

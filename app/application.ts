@@ -357,7 +357,7 @@ if (process.env.AI_TOOLS_ENABLED) {
         startSimulationPromise,
         loadingPromise,
       ]);
-    }).spread((sessionData) => {
+    }).then(([sessionData]) => {
       Logger.module('APPLICATION').log(`ai_runAIvAIGame - > starting ${sessionData.gameId} with data:`, sessionData);
       // reset and deserialize
       SDK.GameSession.reset();
@@ -1928,7 +1928,7 @@ App._startBossBattleGame = function (myPlayerDeck, myPlayerFactionId, myPlayerGe
   return Promise.all([
     bossBattleGamePromise,
     ui_promise,
-  ]).spread((gameListingData) => App._joinGame(gameListingData)).catch((errorMessage) => App._error((errorMessage != null) ? `Failed to start boss battle: ${errorMessage}` : undefined));
+  ]).then(([gameListingData]) => App._joinGame(gameListingData)).catch((errorMessage) => App._error((errorMessage != null) ? `Failed to start boss battle: ${errorMessage}` : undefined));
 };
 
 //
@@ -2738,7 +2738,7 @@ App._startLoadingGameOverData = function () {
 
   return App._gameOverDataThenable = whenGameJobsProcessedAsync
     .bind({})
-    .spread(function (userGameModel, challengeModel) {
+    .then(function ([userGameModel, challengeModel]) {
       let rewardId;
       this.userGameModel = userGameModel;
       this.challengeModel = challengeModel;
@@ -2820,7 +2820,7 @@ App.showVictoryWhenGameDataReady = function () {
 
   // resolve when post game assets are done loading
   return PackageManager.getInstance().loadMinorPackage('postgame')
-    .then(() => App._gameOverDataThenable).spread((userGameModel, rewardModels, newBeginnerQuestsCollection) => {
+    .then(() => App._gameOverDataThenable).then(([userGameModel, rewardModels, newBeginnerQuestsCollection]) => {
       if (!rewardModels) {
         throw new Error();
       }

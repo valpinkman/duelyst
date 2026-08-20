@@ -1109,7 +1109,7 @@ const CrateOpeningLayer = RewardLayer.extend({
             });
         }
       })
-        .spread((crateId, rewardsData) => {
+        .then(([crateId, rewardsData]) => {
           // store rewards in crate
           this._selectedCrateNode.setRewardsModels(rewardsData);
 

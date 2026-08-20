@@ -198,7 +198,7 @@ const findOpponent = (userId, lastOpponentId, rank, deckValue, attempt, firstAtt
       rankedQueue.search({ score: rank, searchRadius: scoreRadius }),
       rankedDeckValueQueue.search({ score: deckValue, searchRadius: deckValueRadius }),
     ]);
-  }).spread(function (playersWithinRank, playersWithinDeckValue) {
+  }).then(function ([playersWithinRank, playersWithinDeckValue]) {
   // exclude the user that's looking
     let rankPlayers = _.filter(playersWithinRank, (id) => id !== userId);
     let deckPlayers = _.filter(playersWithinDeckValue, (id) => id !== userId);

@@ -677,7 +677,7 @@ const SdkNode = cc.Node.extend({
       Promise.all([
         this.loadModifierResources(modifier),
         this.whenResourcesReady(this.getCardResourceRequestId()),
-      ]).spread((modifierLoadId, cardResourceRequestId) => {
+      ]).then(([modifierLoadId, cardResourceRequestId]) => {
         // ensure that modifier load and resources are valid
         if (!this.getAreModifierResourcesValid(modifierLoadId) || !this.getAreResourcesValid(cardResourceRequestId)) return;
 
@@ -718,7 +718,7 @@ const SdkNode = cc.Node.extend({
       Promise.all([
         this.loadModifierResources(modifier),
         this.whenResourcesReady(this.getCardResourceRequestId()),
-      ]).spread((modifierLoadId, cardResourceRequestId) => {
+      ]).then(([modifierLoadId, cardResourceRequestId]) => {
         // ensure that modifier load and resources are valid
         if (!this.getAreModifierResourcesValid(modifierLoadId) || !this.getAreResourcesValid(cardResourceRequestId)) return;
 
@@ -809,7 +809,7 @@ const SdkNode = cc.Node.extend({
       Promise.all([
         this.loadModifierResources(modifier),
         this.whenResourcesReady(this.getCardResourceRequestId()),
-      ]).spread((modifierIndex, cardResourceRequestId) => {
+      ]).then(([modifierIndex, cardResourceRequestId]) => {
         // ensure that resources are valid
         // no need to check modifier resources because we're just removing
         if (!this.getAreResourcesValid(cardResourceRequestId)) return;
@@ -871,7 +871,7 @@ const SdkNode = cc.Node.extend({
         Promise.all([
           this.loadModifierResources(modifier),
           this.whenResourcesReady(this.getCardResourceRequestId()),
-        ]).spread((modifierLoadId, cardResourceRequestId) => {
+        ]).then(([modifierLoadId, cardResourceRequestId]) => {
           // ensure that modifier load and resources are valid
           if (!this.getAreModifierResourcesValid(modifierLoadId) || !this.getAreResourcesValid(cardResourceRequestId)) return;
 

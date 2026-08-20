@@ -159,7 +159,7 @@ router.post('/matchmaking', function (req, res, next) {
           findRiftRatingIfNeeded(),
         ])
           .bind({})
-          .spread(function (deck, riftRunRating) {
+          .then(function ([deck, riftRunRating]) {
             // map deck for correct formatting and anti-cheat
             deck = _.map(deck, function (card) {
               if (_.isString(card) || _.isNumber(card)) {
@@ -184,7 +184,7 @@ router.post('/matchmaking', function (req, res, next) {
               // check if user is allowed to use the selected battlemap
               ((battleMapId != null) ? InventoryModule.isAllowedToUseCosmetic(Promise.resolve(), knex, userId, battleMapId) : Promise.resolve()),
             ]);
-          }).spread(function (ownedBattleMapCosmeticRows) {
+          }).then(function ([ownedBattleMapCosmeticRows]) {
             let findRankMetricPromise;
             if (battleMapId != null) {
               Logger.module('MATCHMAKING').debug(`${userId} selected battlemap: ${battleMapId}`);
@@ -218,7 +218,7 @@ router.post('/matchmaking', function (req, res, next) {
               knex('users').where('is_bot', true).offset(knex.raw('floor(random()*110)')).first('id', 'username'),
             ]);
           })
-          .spread(function (rankMetric, rankRow, lossStreakRow, randomBotRow) {
+          .then(function ([rankMetric, rankRow, lossStreakRow, randomBotRow]) {
             let topRank;
             const lossStreak = (lossStreakRow != null ? lossStreakRow.loss_streak : undefined) || 0;
             const winStreak = (lossStreakRow != null ? lossStreakRow.win_streak : undefined) || 0;
@@ -270,7 +270,7 @@ router.post('/matchmaking', function (req, res, next) {
                 Redis.TokenManager.add(token),
                 // after 5-10s match them into bot mode
                 Promise.delay(5000 + (Math.random() * 5000)),
-              ]).spread(() => // check if player is still in matchmaking
+              ]).then(() => // check if player is still in matchmaking
                 Redis.TokenManager.get(userId)
                   .then(function (existingToken) {
                     if ((existingToken == null)) {

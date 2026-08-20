@@ -155,7 +155,7 @@ class UsersModule {
           referralCodePromise,
         ]);
       })
-      .spread(function (idForUsername, referralCodeRow) {
+      .then(function ([idForUsername, referralCodeRow]) {
         if (idForUsername) {
           throw new Errors.AlreadyExistsError('Username not available');
         }
@@ -858,7 +858,7 @@ class UsersModule {
       const oldDeckPromise = knex('user_gauntlet_run_complete').first('deck', 'ended_at').where('user_id', userId).andWhere('id', ticketId)
         .andWhere('ended_at', '>', decksExpireMoment.toDate());
       return Promise.all([currentDeckPromise, oldDeckPromise])
-        .spread(function (currentRunRow, completedRunRow) {
+        .then(function ([currentRunRow, completedRunRow]) {
           let matchingRunRow = null;
           if (currentRunRow != null) {
             matchingRunRow = currentRunRow;
@@ -1066,7 +1066,7 @@ class UsersModule {
       .then((userRow) => Promise.all([
         userRow,
         tx('user_faction_progression').where({ user_id: userId, faction_id: factionId }).first().forUpdate(),
-      ])).spread(function (userRow, factionProgressionRow) {
+      ])).then(function ([userRow, factionProgressionRow]) {
         if (factionProgressionRow) {
           throw new Errors.AlreadyExistsError();
         }
@@ -1153,7 +1153,7 @@ class UsersModule {
       .then((userRow) => Promise.all([
         userRow,
         tx('user_faction_progression').where({ user_id: userId, faction_id: factionId }).first().forUpdate(),
-      ])).spread(function (userRow, factionProgressionRow) {
+      ])).then(function ([userRow, factionProgressionRow]) {
       // Logger.module("UsersModule").debug "updateUserFactionProgressionWithGameOutcome() -> ACQUIRED LOCK ON #{userId}".yellow
 
         _chainState.userRow = userRow;
@@ -1511,7 +1511,7 @@ class UsersModule {
           userRow,
           tx('user_progression').where('user_id', userId).first().forUpdate(),
           tx('user_progression_days').where({ user_id: userId, date: start_of_day_int }).first().forUpdate(),
-        ])).spread(function (userRow, progressionRow, progressionDayRow) {
+        ])).then(function ([userRow, progressionRow, progressionDayRow]) {
         // Logger.module("UsersModule").debug "updateUserProgressionWithGameOutcome() -> ACQUIRED LOCK ON #{userId}".yellow
 
           // ######
@@ -2031,7 +2031,7 @@ class UsersModule {
             .first(),
         ]);
       })
-      .spread(function (userRow, userBossDefeatedRow) {
+      .then(function ([userRow, userBossDefeatedRow]) {
         if (userBossDefeatedRow != null) {
           return Promise.resolve();
         }
@@ -2149,7 +2149,7 @@ class UsersModule {
           season_starting_at: MOMENT_SEASON_START_UTC.toDate(),
           game_type: gameType,
         }).first().forUpdate(),
-      ])).spread(function (userRow, counterRow, factionCounterRow, generalCounterRow, seasonCounterRow) {
+      ])).then(function ([userRow, counterRow, factionCounterRow, generalCounterRow, seasonCounterRow]) {
         const allPromises = [];
 
         // game type counter
@@ -2585,7 +2585,7 @@ class UsersModule {
                   _chainState.rewards,
                 ]);
               })
-              .spread(function (rootRef, challengeRow, rewards) {
+              .then(function ([rootRef, challengeRow, rewards]) {
                 const allPromises = [];
 
                 if (challengeRow != null) {
@@ -2661,7 +2661,7 @@ class UsersModule {
           .transacting(tx),
       ])
         .bind(this_obj)
-        .spread(function (challengeRow) {
+        .then(function ([challengeRow]) {
           _chainState.challengeRow = challengeRow;
 
           if (_chainState.challengeRow != null) {
@@ -2726,7 +2726,7 @@ class UsersModule {
           knex('user_quests_complete').where('user_id', userId).select(),
         ])
           .bind(_chainState)
-          .spread(function (quests, questsComplete) {
+          .then(function ([quests, questsComplete]) {
             let beginnerQuests = NewPlayerProgressionHelper.questsForStage(stage);
             // exclude non-required beginner quests for this tage
             beginnerQuests = _.filter(beginnerQuests, (q) => q.isRequired);
@@ -3118,13 +3118,12 @@ class UsersModule {
         knex('user_cosmetic_chest_keys').where('user_id', userId).select(),
         knex('user_cosmetic_chest_keys_used').where('user_id', userId).select(),
         knex('users').where('id', userId).first(userTableColumns),
-      ])).spread(function (fbUserAggregates, fbUserArenaRun, fbUserChallengeProgression, fbUserDecks, fbUserFactionProgression, fbUserGames, fbUserGameJobStatus, fbUserInventory, fbUserLogs,
+      ])).then(function ([fbUserAggregates, fbUserArenaRun, fbUserChallengeProgression, fbUserDecks, fbUserFactionProgression, fbUserGames, fbUserGameJobStatus, fbUserInventory, fbUserLogs,
         fbUserMatchmakingErrors, fbUserNews, fbUserProgression, fbUserQuests, fbUserRanking, fbUserRewards, fbUserStats, fbUserTransactions, fbUserAchievements,
         sqlUserCards, sqlUserCardCollection, sqlUserCardLog, sqlUserChallenges, sqlUserCharges, sqlUserCurrencyLog, sqlUserDecks, sqlUserFactionProgression, sqlUserFactionProgressionEvents,
         sqlUserGames, sqlUserGauntletRun, sqlUserGauntletRunComplete, sqlUserGauntletTickets, sqlUserGauntletTicketsUsed, sqlUserProgression,
         sqlUserProgressionDays, sqlUserQuests, sqlUserQuestsComplete, sqlUserRankEvents, sqlUserRankHistory, sqlUserRewards, sqlUserSpiritOrbs, sqlUserSpiritOrbsOpened,
-        sqlUserCodexInventory, sqlUserNewPlayerProgression, sqlUserAchievements, sqlUserChestRows, sqlUserChestOpenedRows, sqlUserChestKeyRows, sqlUserChestKeyUsedRows, sqlUserRow,
-      ) {
+        sqlUserCodexInventory, sqlUserNewPlayerProgression, sqlUserAchievements, sqlUserChestRows, sqlUserChestOpenedRows, sqlUserChestKeyRows, sqlUserChestKeyUsedRows, sqlUserRow]) {
         const userSnapshot = {
           firebase: {},
           sql: {},
@@ -3205,7 +3204,7 @@ class UsersModule {
     return Promise.all([
       knex('users').where('id', userId).first('username', 'wallet_gold'),
       knex('user_games').where({ user_id: userId, game_id: gameId }).first(),
-    ]).spread(function (userRow, gameRow) {
+    ]).then(function ([userRow, gameRow]) {
       // we need a game row
       if ((gameRow == null)) {
         throw new Errors.NotFoundError('Player game not found');

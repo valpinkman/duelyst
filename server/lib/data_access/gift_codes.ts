@@ -49,7 +49,7 @@ class GiftCodesModule {
         tx('user_progression').first('game_count').where('user_id', userId),
       ])
         .bind(this_obj)
-        .spread(function (userRow, giftCodeRow, progressionRow) {
+        .then(function ([userRow, giftCodeRow, progressionRow]) {
           _chainState.giftCodeRow = giftCodeRow;
           _chainState.userRow = userRow;
           _chainState.progressionRow = progressionRow;

@@ -69,7 +69,7 @@ const BoosterRewardLayer = RewardLayer.extend({
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(orbRequestId),
     ])
-      .spread((requestId, orbRequestId) => {
+      .then(([requestId, orbRequestId]) => {
         if (!this.getAreResourcesValid(requestId) || !this.getAreResourcesValid(orbRequestId)) return; // load invalidated or resources changed
 
         // disable and reset continue

@@ -111,7 +111,7 @@ router.get('/:game_id/replay_data', function (req, res, next) {
         return [null, null];
       }
     })
-    .spread(function (gameDataString, mouseUIDataString) {
+    .then(function ([gameDataString, mouseUIDataString]) {
       Logger.module('API').debug(`downloaded game ${game_id} replay data. size:${(gameDataString != null ? gameDataString.length : undefined) || 0}`);
       if ((gameDataString == null) || (mouseUIDataString == null)) {
         return res.status(404).json({});

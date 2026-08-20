@@ -104,7 +104,7 @@ describe('rift module', () => {
         knex.select().from('user_rift_tickets').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('rift-tickets'), 'value'),
       ]))
-      .spread((userRow, ticketRows, fbTickets) => {
+      .then(([userRow, ticketRows, fbTickets]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(ticketRows.length).to.equal(0);
         expect(fbTickets.numChildren()).to.equal(0);
@@ -120,7 +120,7 @@ describe('rift module', () => {
         knex.select().from('user_rift_tickets').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('rift-tickets'), 'value'),
       ]))
-      .spread((userRow, ticketRows, fbTickets) => {
+      .then(([userRow, ticketRows, fbTickets]) => {
         expect(userRow.wallet_gold).to.equal(0);
         expect(ticketRows.length).to.equal(1);
         expect(fbTickets.numChildren()).to.equal(1);
@@ -152,7 +152,7 @@ describe('rift module', () => {
         knex.first().from('user_rift_runs').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child('current'), 'value'),
       ]))
-      .spread((runRow, fbRun) => {
+      .then(([runRow, fbRun]) => {
         expect(runRow).to.not.exist;
         expect(fbRun.val()).to.not.exist;
       }));
@@ -169,7 +169,7 @@ describe('rift module', () => {
         knex.first().from('user_rift_runs').where({ user_id: userId }),
         FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child('current'), 'value'),
       ]))
-      .spread((runRow, fbRun) => {
+      .then(([runRow, fbRun]) => {
         expect(runRow).to.not.exist;
         expect(fbRun.val()).to.not.exist;
       }));
@@ -191,7 +191,7 @@ describe('rift module', () => {
           FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(this.ticketId), 'value'),
         ]);
       })
-      .spread((ticketRows, runRow, fbRun) => {
+      .then(([ticketRows, runRow, fbRun]) => {
         expect(ticketRows.length).to.equal(0);
         expect(runRow).to.exist;
         expect(fbRun.val()).to.exist;
@@ -239,7 +239,7 @@ describe('rift module', () => {
           knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId),
           FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(runTicketId), 'value'),
         ]))
-        .spread((riftRow, fbRun) => {
+        .then(([riftRow, fbRun]) => {
           expect(riftRow.deck.length).to.equal(40);
           expect(riftRow.general_id).to.equal(riftRow.general_choices[0]);
           expect(riftRow.faction_id).to.exist;
@@ -377,7 +377,7 @@ describe('rift module', () => {
           FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(runTicketId), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
         ]))
-        .spread((riftRow, fbRun, firebaseGameJobStatusSnapshot) => {
+        .then(([riftRow, fbRun, firebaseGameJobStatusSnapshot]) => {
           expect(riftRow.win_count).to.equal(1);
           expect(riftRow.loss_count).to.equal(0);
           expect(riftRow.rift_rating).to.be.above(riftRatingBefore);
@@ -406,7 +406,7 @@ describe('rift module', () => {
           knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', runTicketId),
           FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(runTicketId), 'value'),
         ]))
-        .spread((riftRow, fbRun) => {
+        .then(([riftRow, fbRun]) => {
           expect(riftRow.win_count).to.equal(1);
           expect(riftRow.loss_count).to.equal(1);
           expect(fbRun.val().win_count).to.equal(1);
@@ -424,7 +424,7 @@ describe('rift module', () => {
       }).then((rootRef) => Promise.all([
         knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', runTicketId),
         FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(runTicketId), 'value'),
-      ])).spread((riftRow, fbRun) => {
+      ])).then(([riftRow, fbRun]) => {
         expect(riftRow.win_count).to.equal(1);
         expect(riftRow.loss_count).to.equal(2);
         expect(fbRun.val().win_count).to.equal(1);
@@ -450,7 +450,7 @@ describe('rift module', () => {
           knex.first().from('user_rift_runs').where({ user_id: userId }).andWhere('ticket_id', runTicketId),
           FirebasePromises.once(rootRef.child('user-rift-runs').child(userId).child(runTicketId), 'value'),
         ]))
-        .spread((riftRow, fbRun) => {
+        .then(([riftRow, fbRun]) => {
           expect(riftRow.win_count).to.equal(1);
           expect(riftRow.loss_count).to.equal(2);
           expect(riftRow.draw_count).to.equal(1);
@@ -551,7 +551,7 @@ describe('rift module', () => {
 
       return knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)
         .then((riftRow) => Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, false, gameId, true, 10, fakeGameSessionData)))
-        .spread((runData) => {
+        .then(([runData]) => {
           upgradeCountBefore = runData.upgrades_available_count || 0;
           return RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1]);
         })
@@ -565,7 +565,7 @@ describe('rift module', () => {
     it('expect initiating a run upgrade to generate 6 card choices', () => {
       const gameIds = [];
       _.times(10, () => { gameIds.push(generatePushId()); });
-      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).spread((runData) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => {
+      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => {
         expect(runRow.card_id_to_upgrade).to.equal(runRow.deck[1]);
         expect(runRow.upgrades_available_count).to.equal(9);
         expect(runRow.card_choices.length).to.equal(6);
@@ -625,7 +625,7 @@ describe('rift module', () => {
     it('expect NOT to be able to choose an invalid card as an upgrade', () => {
       const gameIds = [];
       _.times(10, () => { gameIds.push(generatePushId()); });
-      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).spread((runData) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => RiftModule.upgradeCard(userId, runTicketId, SDK.Cards.Faction1.SilverguardSquire))
+      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => RiftModule.chooseCardToUpgrade(userId, runTicketId, runData.deck[1])).then(() => knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', runTicketId)).then((runRow) => RiftModule.upgradeCard(userId, runTicketId, SDK.Cards.Faction1.SilverguardSquire))
         .then((response) => {
           expect(response).to.not.exist;
         })
@@ -643,7 +643,7 @@ describe('rift module', () => {
       _.times(10, () => {
         gameIds.push(generatePushId());
       });
-      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).spread((runData) => {
+      return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => {
         deckBefore = runData.deck;
         cardIdToUpgrade = runData.deck[1];
         return RiftModule.chooseCardToUpgrade(userId, runTicketId, cardIdToUpgrade);
@@ -668,7 +668,7 @@ describe('rift module', () => {
         _.times(10, () => {
           gameIds.push(generatePushId());
         });
-        return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).spread((runData) => {
+        return Promise.map(gameIds, (gameId) => RiftModule.updateRiftRunWithGameOutcome(userId, runTicketId, true, gameId, null, 10, fakeGameSessionData)).then(([runData]) => {
           deckBefore = runData.deck;
           cardIdToUpgrade = runData.deck[1];
           return RiftModule.chooseCardToUpgrade(userId, runTicketId, cardIdToUpgrade);
@@ -935,7 +935,7 @@ describe('rift module', () => {
             knex('users').where('id', userId).first(),
           ]);
         })
-        .spread((userRiftRunRow, userRow) => {
+        .then(([userRiftRunRow, userRow]) => {
           expect(userRow.wallet_spirit).to.equal(975);
           expect(userRiftRunRow.current_upgrade_reroll_count).to.equal(1);
           expect(userRiftRunRow.total_reroll_count).to.equal(1);

@@ -78,7 +78,7 @@ describe("achievements module", function() {
             FirebasePromises.once(rootRef.child('user-achievements').child(userId),"value"),
             FirebasePromises.once(rootRef.child('user-rewards').child(userId),"value")
           ])
-        }).spread(function(achievementRows,rewardRows,achievementsSnapshot,rewardsSnapshot){
+        }).then(function([achievementRows,rewardRows,achievementsSnapshot,rewardsSnapshot]){
           expect(achievementRows.length).to.equal(1);
         });
       });
@@ -97,7 +97,7 @@ describe("achievements module", function() {
     //        FirebasePromises.once(rootRef.child('user-achievements').child(userId),"value"),
     //        FirebasePromises.once(rootRef.child('user-rewards').child(userId),"value")
     //      ])
-    //    }).spread(function(achievementRows,rewardRows,achievementsSnapshot,rewardsSnapshot){
+    //    }).then(function([achievementRows,rewardRows,achievementsSnapshot,rewardsSnapshot]){
     //      expect(achievementRows.length).to.equal(2);
     //    });
     //  });

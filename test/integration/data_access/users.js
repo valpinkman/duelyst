@@ -127,7 +127,7 @@ describe('users module', () => {
               FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
             ]);
           })
-          .spread((userRow, userSnapshot) => {
+          .then(([userRow, userSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userSnapshot.val().username).to.equal(username);
           });
@@ -160,7 +160,7 @@ describe('users module', () => {
               knex('users').where('id', this.newUserId).first(),
               FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
             ]);
-          }).spread((userRow, userSnapshot) => {
+          }).then(([userRow, userSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userSnapshot.val().username).to.equal(username);
           });
@@ -196,7 +196,7 @@ describe('users module', () => {
               FirebasePromises.once(rootRef.child('user-inventory').child(this.newUserId).child('wallet'), 'value'),
             ]);
           })
-          .spread((userRow, referralCodeRow, userSnapshot, walletSnapshot) => {
+          .then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userRow.wallet_gold).to.equal(20);
             expect(referralCodeRow.signup_count).to.equal(1);
@@ -222,7 +222,7 @@ describe('users module', () => {
               FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
               FirebasePromises.once(rootRef.child('user-inventory').child(this.newUserId).child('wallet'), 'value'),
             ]);
-          }).spread((userRow, referralCodeRow, userSnapshot, walletSnapshot) => {
+          }).then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userRow.wallet_gold).to.equal(20);
             expect(referralCodeRow.signup_count).to.equal(2);
@@ -248,7 +248,7 @@ describe('users module', () => {
               FirebasePromises.once(rootRef.child('users').child(this.newUserId), 'value'),
               FirebasePromises.once(rootRef.child('user-inventory').child(this.newUserId).child('wallet'), 'value'),
             ]);
-          }).spread((userRow, referralCodeRow, userSnapshot, walletSnapshot) => {
+          }).then(([userRow, referralCodeRow, userSnapshot, walletSnapshot]) => {
             expect(userRow.username).to.equal(username);
             expect(userRow.wallet_gold).to.equal(20);
             expect(referralCodeRow.signup_count).to.equal(3);
@@ -293,7 +293,7 @@ describe('users module', () => {
       //       FirebasePromises.once(rootRef.child("users").child(this.newUserId),"value"),
       //       FirebasePromises.once(rootRef.child("users").child(friendId),"value"),
       //     ])
-      //   }).spread(function(userRow,referralCodeRow,userSnapshot,friendSnapshot){
+      //   }).then(function([userRow,referralCodeRow,userSnapshot,friendSnapshot]){
       //     expect(userRow.wallet_gold).to.equal(10)
       //     expect(referralCodeRow.signup_count).to.equal(1)
       //     expect(userSnapshot.val().buddies[friendId]).to.exist
@@ -345,7 +345,7 @@ describe('users module', () => {
         //     knex("users").where('id',this.newUserId).first(),
         //     FirebasePromises.once(rootRef.child("users").child(this.newUserId),"value"),
         //   ])
-        // }).spread(function(userRow,userSnapshot){
+        // }).then(function([userRow,userSnapshot]){
         //   expect(userRow.username).to.equal(username)
         //   expect(userRow.referral_code).to.not.exist
         //   expect(userRow.wallet_gold).to.equal(0)
@@ -383,7 +383,7 @@ describe('users module', () => {
         //     knex("users").where('id',this.newUserId).first(),
         //     FirebasePromises.once(rootRef.child("users").child(this.newUserId),"value"),
         //   ])
-        // }).spread(function(userRow,userSnapshot){
+        // }).then(function([userRow,userSnapshot]){
         //   expect(userRow.username).to.equal(username)
         //   expect(userRow.referral_code).to.not.exist
         //   expect(userRow.wallet_gold).to.equal(0)
@@ -420,7 +420,7 @@ describe('users module', () => {
         //     knex("users").where('id',this.newUserId).first(),
         //     FirebasePromises.once(rootRef.child("users").child(this.newUserId),"value"),
         //   ])
-        // }).spread(function(userRow,userSnapshot){
+        // }).then(function([userRow,userSnapshot]){
         //   expect(userRow.username).to.equal(username)
         //   expect(userRow.referral_code).to.not.exist
         //   expect(userRow.wallet_gold).to.equal(0)
@@ -526,7 +526,7 @@ describe('users module', () => {
         knex('users').where('id', userId).first(),
         FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
       ]))
-      .spread((userRow, userSnapshot) => {
+      .then(([userRow, userSnapshot]) => {
         expect(userRow.portrait_id).to.equal(SDK.CosmeticsLookup.ProfileIcon.Tree);
         expect(userSnapshot.val().presence.portrait_id).to.equal(SDK.CosmeticsLookup.ProfileIcon.Tree);
       }));
@@ -552,7 +552,7 @@ describe('users module', () => {
           knex('users').where('id', userId).first(),
           FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
         ]))
-        .spread((userRow, userSnapshot) => {
+        .then(([userRow, userSnapshot]) => {
           expect(userRow.battle_map_id).to.equal(SDK.CosmeticsLookup.BattleMap.Magmar);
           expect(userSnapshot.val().battle_map_id).to.equal(SDK.CosmeticsLookup.BattleMap.Magmar);
         });
@@ -577,7 +577,7 @@ describe('users module', () => {
         knex('users').where('id', userId).first(),
         FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
       ]))
-      .spread((userRow, userSnapshot) => {
+      .then(([userRow, userSnapshot]) => {
         expect(userRow.battle_map_id).to.equal(null);
         expect(userSnapshot.val().battle_map_id).to.equal(undefined);
       }));
@@ -596,7 +596,7 @@ describe('users module', () => {
   //         FirebasePromises.once(rootRef.child("users").child(userId),"value"),
   //       ])
   //     })
-  //     .spread(function(userRow,userSnapshot){
+  //     .then(function([userRow,userSnapshot]){
   //       expect(userRow.card_back_id).to.equal(SDK.CosmeticsLookup.CardBack.Normal)
   //       expect(userSnapshot.val().presence.card_back_id).to.equal(SDK.CosmeticsLookup.CardBack.Normal)
   //     });
@@ -638,7 +638,7 @@ describe('users module', () => {
   //       return Promise.all([
   //         knex("referral_codes").where('code','unittestercode').first()
   //       ])
-  //     }).spread(function(referralCodeRow,userSnapshot,indexSnapshot,walletSnapshot){
+  //     }).then(function([referralCodeRow,userSnapshot,indexSnapshot,walletSnapshot]){
   //       expect(referralCodeRow).to.exist
   //       expect(referralCodeRow.user_id).to.equal(userId)
   //     })
@@ -679,7 +679,7 @@ describe('users module', () => {
         knex('users').where('id', userId).first(),
         FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
         FirebasePromises.once(rootRef.child('username-index').child('unittest_2'), 'value'),
-      ])).spread((userRow, userSnapshot, indexSnapshot) => {
+      ])).then(([userRow, userSnapshot, indexSnapshot]) => {
         expect(userRow.username).to.equal('unittest_2');
         expect(userSnapshot.val().username).to.equal('unittest_2');
         expect(indexSnapshot.val()).to.equal(userId);
@@ -716,7 +716,7 @@ describe('users module', () => {
         FirebasePromises.once(rootRef.child('username-index').child('unittest'), 'value'),
         FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('wallet'), 'value'),
       ]))
-        .spread((userRow, userSnapshot, indexSnapshot, walletSnapshot) => {
+        .then(([userRow, userSnapshot, indexSnapshot, walletSnapshot]) => {
           expect(userRow.username).to.equal('unittest');
           expect(userRow.wallet_gold).to.equal(0);
           expect(userSnapshot.val().username).to.equal('unittest');
@@ -744,7 +744,7 @@ describe('users module', () => {
         expect(response).exist;
       }).then((rootRef) => Promise.all([
         knex('users').where('id', userId).first(),
-      ])).spread((userRow) => {
+      ])).then(([userRow]) => {
         expect(userRow.password).to.exist;
       }));
   });
@@ -773,7 +773,7 @@ describe('users module', () => {
           knex('user_new_player_progression').where('user_id', userId).andWhere('module_name', SDK.NewPlayerProgressionModuleLookup.Core).first(),
           knex('user_quests').where('user_id', userId).select(),
         ]);
-      }).spread((moduleRow, questRows) => {
+      }).then(([moduleRow, questRows]) => {
         expect(moduleRow.stage).to.equal(SDK.NewPlayerProgressionStageEnum.TutorialDone.key);
         expect(questRows.length).to.equal(1);
       }));
@@ -804,7 +804,7 @@ describe('users module', () => {
             knex('user_new_player_progression').where('user_id', userId).andWhere('module_name', SDK.NewPlayerProgressionModuleLookup.Core).first(),
             knex('user_quests').where('user_id', userId).select(),
           ]);
-        }).spread((moduleRow, questRows) => {
+        }).then(([moduleRow, questRows]) => {
           expect(moduleRow.stage).to.equal(SDK.NewPlayerProgressionStageEnum.FirstPracticeDuelDone.key);
           expect(questRows.length).to.equal(1);
         });
@@ -819,7 +819,7 @@ describe('users module', () => {
           knex('user_quests').where('user_id', userId).select(),
         ]);
       })
-      .spread((moduleRow, questRows) => {
+      .then(([moduleRow, questRows]) => {
         expect(moduleRow.stage).to.equal(SDK.NewPlayerProgressionStageEnum.FirstPracticeDuelDone.key);
         expect(questRows.length).to.equal(1);
       }));
@@ -853,7 +853,7 @@ describe('users module', () => {
     //       FirebasePromises.once(rootRef.child("user-game-counters").child(userId).child("ranked").child('stats'),"value"),
     //       FirebasePromises.once(rootRef.child("user-game-counters").child(userId).child("ranked").child('factions').child(SDK.Factions.Lyonar),"value"),
     //     ])
-    //   }).spread(function(counterRow,factionCounterRow,counterSnapshot,factionCounterSnapshot){
+    //   }).then(function([counterRow,factionCounterRow,counterSnapshot,factionCounterSnapshot]){
     //     expect(counterRow.game_count).to.equal(1);
     //     expect(counterRow.win_count).to.equal(1);
 
@@ -906,7 +906,7 @@ describe('users module', () => {
         FirebasePromises.once(rootRef.child('user-game-counters').child(userId), 'value'),
         FirebasePromises.once(rootRef.child('user-game-counters').child(userId), 'value'),
       ]))
-      .spread((counterRows, factionCounterRows, generalCounterRows, seasonCounterRows, counterSnapshot, factionCounterSnapshot) => {
+      .then(([counterRows, factionCounterRows, generalCounterRows, seasonCounterRows, counterSnapshot, factionCounterSnapshot]) => {
         const rankedCounter = _.find(counterRows, (row) => row.game_type === 'ranked');
         const lyonarRankedFactionCounter = _.find(factionCounterRows, (row) => row.faction_id === SDK.Factions.Lyonar && row.game_type === 'ranked');
         const songhaiRankedFactionCounter = _.find(factionCounterRows, (row) => row.faction_id === SDK.Factions.Songhai && row.game_type === 'ranked');
@@ -975,7 +975,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
         ]))
-        .spread((progressionRow, progressionSnapshot, firebaseGameJobStatusSnapshot) => {
+        .then(([progressionRow, progressionSnapshot, firebaseGameJobStatusSnapshot]) => {
           expect(progressionRow.game_count).to.equal(1);
           expect(progressionRow.loss_count).to.equal(1);
           expect(progressionRow.loss_streak).to.equal(1);
@@ -999,7 +999,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         // unchanged game count
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count);
         // unchanged loss count
@@ -1026,7 +1026,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 2);
         expect(progressionRow.draw_count).to.equal(lastProgressionRow.draw_count + 2);
         expect(progressionRow.loss_count).to.equal(lastProgressionRow.loss_count);
@@ -1054,7 +1054,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 2);
         expect(progressionRow.loss_count).to.equal(lastProgressionRow.loss_count + 2);
         expect(progressionRow.loss_streak).to.equal(progressionRow.loss_count);
@@ -1073,7 +1073,7 @@ describe('users module', () => {
     //     knex("users").where('id',userId).first()
     //   ])
     //   .bind({})
-    //   .spread(function(rewardRow,userRow){
+    //   .then(function([rewardRow,userRow]){
     //     expect(rewardRow).to.exist;
     //     expect(userRow.wallet_gold).to.equal(rewardRow.gold);
     //     this.rewardId = rewardRow.id;
@@ -1096,7 +1096,7 @@ describe('users module', () => {
     //       knex("user_rewards").where({"user_id":userId,"reward_type":"play count"}).first(),
     //       knex("users").where('id',userId).first()
     //     ])
-    //   }).spread(function(rewardRow,userRow){
+    //   }).then(function([rewardRow,userRow]){
     //     expect(rewardRow).to.exist;
     //     expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRow.gold);
     //     this.rewardId = rewardRow.id;
@@ -1116,7 +1116,7 @@ describe('users module', () => {
       .then(() => Promise.all([
         knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).first(),
         knex('users').where('id', userId).first(),
-      ])).spread(function (rewardRow, userRow) {
+      ])).then(function ([rewardRow, userRow]) {
         expect(rewardRow).to.exist;
         expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRow.gold);
         this.rewardId = rewardRow.id;
@@ -1130,7 +1130,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-rewards').child(userId).child(this.rewardId), 'value'),
         ]);
       })
-      .spread((progressionRow, progressionSnapshot, rewardSnapshot) => {
+      .then(([progressionRow, progressionSnapshot, rewardSnapshot]) => {
         expect(progressionRow.win_count).to.equal(lastProgressionRow.win_count + 1);
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 1);
         expect(progressionRow.loss_streak).to.equal(0);
@@ -1152,7 +1152,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionSnapshot.val().win_count).to.equal(lastProgressionRow.win_count + 1);
         expect(progressionSnapshot.val().win_streak).to.equal(2);
         expect(progressionSnapshot.val().game_count).to.equal(lastProgressionRow.game_count + 1);
@@ -1165,7 +1165,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionSnapshot.val().draw_count).to.equal(lastProgressionRow.draw_count + 1);
         expect(progressionSnapshot.val().win_count).to.equal(lastProgressionRow.win_count);
         expect(progressionSnapshot.val().win_streak).to.equal(2);
@@ -1180,7 +1180,7 @@ describe('users module', () => {
         knex('user_rewards').where({ user_id: userId, reward_type: 'win count' }).first(),
         knex('users').where('id', userId).first(),
       ]))
-      .spread(function (progressionRow, rewardRow, userRow) {
+      .then(function ([progressionRow, rewardRow, userRow]) {
         expect(rewardRow).to.exist;
         expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRow.gold);
         this.rewardId = rewardRow.id;
@@ -1196,7 +1196,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).select(),
         knex('users').where('id', userId).first(),
-      ])).spread((progressionRow, rewardRows, userRow) => {
+      ])).then(([progressionRow, rewardRows, userRow]) => {
         expect(progressionRow.win_count).to.equal(lastProgressionRow.win_count + 1);
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 1);
         expect(rewardRows.length).to.equal(1);
@@ -1214,7 +1214,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 1);
         expect(progressionRow.win_count).to.equal(lastProgressionRow.win_count);
         expect(progressionRow.loss_count).to.equal(lastProgressionRow.loss_count + 1);
@@ -1235,7 +1235,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.win_count).to.equal(lastProgressionRow.win_count);
         expect(progressionRow.loss_count).to.equal(lastProgressionRow.loss_count + 1);
         expect(progressionRow.win_streak).to.equal(0);
@@ -1258,7 +1258,7 @@ describe('users module', () => {
     //     knex("users").where('id',userId).first()
     //   ])
     //   .bind({})
-    //   .spread(function(rewardRows,userRow){
+    //   .then(function([rewardRows,userRow]){
     //     expect(rewardRows.length).to.equal(2);
     //     expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
     //     this.rewardId = rewardRows[0].id;
@@ -1282,7 +1282,7 @@ describe('users module', () => {
     //      knex("user_rewards").where({"user_id":userId,"reward_type":"win count"}).orderBy('created_at','desc').select(),
     //      knex("users").where('id',userId).first()
     //    ])
-    //  }).spread(function(progressionRow,rewardRows,userRow){
+    //  }).then(function([progressionRow,rewardRows,userRow]){
     //    expect(rewardRows.length).to.equal(2);
     //    expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
     //    this.rewardId = rewardRows[0].id;
@@ -1317,7 +1317,7 @@ describe('users module', () => {
     //       knex("user_rewards").where({"user_id":userId,"reward_type":"first 10 games"}).first(),
     //       knex("users").where('id',userId).first()
     //     ])
-    //   }).spread(function(rewardRow,userRow){
+    //   }).then(function([rewardRow,userRow]){
     //     expect(rewardRow).to.exist;
     //     expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRow.gold);
     //     this.rewardId = rewardRow.id;
@@ -1352,7 +1352,7 @@ describe('users module', () => {
     //       knex("user_rewards").where({"user_id":userId,"reward_type":"play count"}).orderBy('created_at','desc').select(),
     //       knex("users").where('id',userId).first()
     //     ])
-    //   }).spread(function(rewardRows,userRow){
+    //   }).then(function([rewardRows,userRow]){
     //     expect(rewardRows.length).to.equal(5);
     //     expect(userRow.wallet_gold - walletGoldSoFar).to.equal(3*rewardRows[0].gold);
     //     this.rewardId = rewardRows[0].id;
@@ -1384,7 +1384,7 @@ describe('users module', () => {
           knex('user_progression').where('user_id', userId).first(),
           knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).select(),
           knex('users').where('id', userId).first(),
-        ])).spread((progressionRow, rewardRows, userRow) => {
+        ])).then(([progressionRow, rewardRows, userRow]) => {
           expect(rewardRows.length).to.equal(1);
           expect(userRow.wallet_gold).to.equal(walletGoldSoFar);
           expect(progressionRow.last_daily_win_at.valueOf()).to.equal(lastDailyWinAt);
@@ -1399,7 +1399,7 @@ describe('users module', () => {
         knex('user_rewards').where({ user_id: userId, reward_type: 'win count' }).orderBy('created_at', 'desc').select(),
         knex('users').where('id', userId).first(),
       ]))
-      .spread(function (progressionRow, rewardRows, userRow) {
+      .then(function ([progressionRow, rewardRows, userRow]) {
         expect(rewardRows.length).to.equal(2);
         expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
         this.rewardId = rewardRows[0].id;
@@ -1416,7 +1416,7 @@ describe('users module', () => {
           knex('user_progression').where('user_id', userId).first(),
           knex('user_rewards').where({ user_id: userId, reward_type: 'daily win' }).orderBy('created_at', 'desc').select(),
           knex('users').where('id', userId).first(),
-        ])).spread(function (progressionRow, rewardRows, userRow) {
+        ])).then(function ([progressionRow, rewardRows, userRow]) {
           expect(rewardRows.length).to.equal(2);
           expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
           expect(progressionRow.last_daily_win_at.valueOf()).to.not.equal(lastDailyWinAt);
@@ -1449,7 +1449,7 @@ describe('users module', () => {
           knex('user_rewards').where({ user_id: userId, reward_type: 'win count' }).orderBy('created_at', 'desc').select(),
           knex('users').where('id', userId).first(),
         ]))
-        .spread(function (progressionRow, rewardRows, userRow) {
+        .then(function ([progressionRow, rewardRows, userRow]) {
           expect(rewardRows.length).to.equal(3);
           expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
           this.rewardId = rewardRows[0].id;
@@ -1485,7 +1485,7 @@ describe('users module', () => {
     //      knex("user_rewards").where({"user_id":userId,"reward_type":"win count"}).andWhere('created_at','>',queryTime.toDate()).orderBy('created_at','asc').select(),
     //      knex("users").where('id',userId).first()
     //    ])
-    //  }).spread(function(progressionRow,rewardRows,userRow){
+    //  }).then(function([progressionRow,rewardRows,userRow]){
     //    expect(rewardRows.length).to.equal(10);
     //    for (var i=0; i<7; i++) {
     //      expect(rewardRows[i].gold).to.equal(15);
@@ -1519,7 +1519,7 @@ describe('users module', () => {
     //       knex("user_rewards").where({"user_id":userId,"reward_type":"play count"}).orderBy('created_at','desc').select(),
     //       knex("users").where('id',userId).first()
     //     ])
-    //   }).spread(function(rewardRows,userRow){
+    //   }).then(function([rewardRows,userRow]){
     //     expect(rewardRows.length).to.equal(6);
     //     expect(userRow.wallet_gold - walletGoldSoFar).to.equal(rewardRows[0].gold);
     //     this.rewardId = rewardRows[0].id;
@@ -1547,7 +1547,7 @@ describe('users module', () => {
     //       knex("user_rewards").where({"user_id":userId,"reward_type":"play count"}).orderBy('created_at','desc').select(),
     //       knex("users").where('id',userId).first()
     //     ])
-    //   }).spread(function(progressionRow,rewardRows,userRow){
+    //   }).then(function([progressionRow,rewardRows,userRow]){
     //     expect(rewardRows.length).to.equal(currentPlayRewardCount)
     //     expect(userRow.wallet_gold).to.equal(walletGoldSoFar);
     //     expect(progressionRow.unscored_count).to.equal(7);
@@ -1563,7 +1563,7 @@ describe('users module', () => {
         knex('user_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-progression').child(userId).child('game-counter'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(lastProgressionRow.game_count + 1);
         expect(progressionRow.win_count).to.equal(lastProgressionRow.win_count + 1);
         expect(progressionRow.loss_count).to.equal(lastProgressionRow.loss_count);
@@ -1624,7 +1624,7 @@ describe('users module', () => {
           knex('user_rewards').where({ user_id: userId, reward_category: 'codex' }).select(),
           knex('user_games').where({ user_id: userId, game_id: gameId }).first('reward_ids'),
         ]))
-        .spread((codexChapterRows, fbCodexCollection, userCodexRewardRows, userGameRow) => {
+        .then(([codexChapterRows, fbCodexCollection, userCodexRewardRows, userGameRow]) => {
           expect(codexChapterRows.length).to.equal(1);
           expect(_.keys(fbCodexCollection.val()).length).to.equal(1);
           expect(userCodexRewardRows).to.exist;
@@ -1647,7 +1647,7 @@ describe('users module', () => {
         knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Lyonar }).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(0);
         expect(progressionRow.loss_count).to.equal(0);
         expect(progressionRow.xp).to.equal(0);
@@ -1670,7 +1670,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
         ]))
-        .spread((progressionRow, progressionSnapshot, firebaseGameJobStatusSnapshot) => {
+        .then(([progressionRow, progressionSnapshot, firebaseGameJobStatusSnapshot]) => {
           expect(progressionRow.game_count).to.equal(1);
           expect(progressionRow.loss_count).to.equal(1);
           expect(progressionRow.xp).to.equal(SDK.FactionProgression.lossXP);
@@ -1690,7 +1690,7 @@ describe('users module', () => {
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(1);
         expect(progressionRow.win_count).to.equal(0);
         expect(progressionRow.xp).to.equal(SDK.FactionProgression.lossXP);
@@ -1704,7 +1704,7 @@ describe('users module', () => {
       knex('user_rewards').where({ user_id: userId, reward_category: 'faction xp' }).orderBy('created_at', 'desc').select(),
     ])
       .bind({})
-      .spread(function (rewardRows) {
+      .then(function ([rewardRows]) {
         expect(rewardRows.length).to.equal(1);
         expect(rewardRows[0].cards).to.exist;
         expect(rewardRows[0].cards.length).to.be.above(0);
@@ -1726,7 +1726,7 @@ describe('users module', () => {
         knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Lyonar }).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(1);
         expect(progressionRow.loss_count).to.equal(1);
         expect(progressionRow.unscored_count).to.equal(1);
@@ -1747,7 +1747,7 @@ describe('users module', () => {
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(2);
         expect(progressionRow.loss_count).to.equal(2);
         expect(progressionRow.win_count).to.equal(0);
@@ -1764,7 +1764,7 @@ describe('users module', () => {
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(3);
         expect(progressionRow.loss_count).to.equal(2);
         expect(progressionRow.win_count).to.equal(1);
@@ -1781,7 +1781,7 @@ describe('users module', () => {
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(3);
         expect(progressionRow.unscored_count).to.equal(2);
         expect(progressionRow.xp).to.equal(2 * SDK.FactionProgression.lossXP + 1 * SDK.FactionProgression.winXP);
@@ -1797,7 +1797,7 @@ describe('users module', () => {
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.game_count).to.equal(4);
         expect(progressionRow.unscored_count).to.equal(2);
         expect(progressionRow.xp).to.equal(3 * SDK.FactionProgression.lossXP + 1 * SDK.FactionProgression.winXP);
@@ -1821,7 +1821,7 @@ describe('users module', () => {
         knex('user_faction_progression').where('user_id', userId).first(),
         FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Lyonar).child('stats'), 'value'),
       ]))
-      .spread((progressionRow, progressionSnapshot) => {
+      .then(([progressionRow, progressionSnapshot]) => {
         expect(progressionRow.xp).to.equal(xpCap);
         expect(SDK.FactionProgression.levelForXP(progressionRow.xp)).to.equal(SDK.FactionProgression.maxLevel);
         expect(progressionRow.xp).to.equal(progressionSnapshot.val().xp);
@@ -1837,7 +1837,7 @@ describe('users module', () => {
           knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Songhai }).first(),
           FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Songhai).child('stats'), 'value'),
         ]))
-        .spread((progressionRow, progressionSnapshot) => {
+        .then(([progressionRow, progressionSnapshot]) => {
           expect(progressionRow.game_count).to.equal(22);
           expect(progressionRow.unscored_count).to.equal(0);
           expect(progressionRow.win_count).to.equal(22);
@@ -1854,7 +1854,7 @@ describe('users module', () => {
     //     knex("user_rewards").where({"user_id":userId,"reward_category":"faction xp"}).orderBy('created_at','desc').select(),
     //   ])
     //   .bind({})
-    //   .spread(function(rewardRows){
+    //   .then(function([rewardRows]){
     //     const foundSonghaiEmoteRow = false;
     //     _.each(rewardRows,function(rewardRow) {
     //       if (rewardRow.emotes && rewardRow.emotes[0] == SDK.CosmeticsLookup.Emote.Faction2Taunt) {
@@ -1876,7 +1876,7 @@ describe('users module', () => {
     //       knex("user_emotes").where({"user_id":userId,"emote_id":SDK.CosmeticsLookup.Emote.Faction2Taunt}).select(),
     //       FirebasePromises.once(this.rootRef.child("user-inventory").child(userId).child("emotes").child(SDK.CosmeticsLookup.Emote.Faction2Taunt),"value")
     //     ])
-    //   }).spread(function(emoteRows,emoteSnapshot){
+    //   }).then(function([emoteRows,emoteSnapshot]){
     //
     //     expect(emoteRows.length).to.equal(1);
     //     expect(emoteSnapshot.val()).to.exist;
@@ -1890,7 +1890,7 @@ describe('users module', () => {
       }),
     ])
       .bind({})
-      .spread(function () {
+      .then(function () {
         this.gameId = generatePushId();
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Songhai, true, this.gameId, 'ranked');
       }).then(() => DuelystFirebase.connect().getRootRef())
@@ -1902,7 +1902,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-ribbons').child(userId), 'value'),
         ]);
       })
-      .spread((ribbonRows, rewardRows, ribbonsSnapshot) => {
+      .then(([ribbonRows, rewardRows, ribbonsSnapshot]) => {
         expect(ribbonsSnapshot.val()).to.exist;
         expect(ribbonRows.length).to.be.above(0);
         const ribbonId = ribbonRows[0].ribbon_id;
@@ -1919,13 +1919,13 @@ describe('users module', () => {
       }),
     ])
       .bind({})
-      .spread(function () {
+      .then(function () {
         this.gameId = generatePushId();
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, this.gameId, SDK.GameType.SinglePlayer);
       }).then(() => Promise.all([
         knex('user_ribbons').where({ user_id: userId, ribbon_id: 'f5_champion' }).select(),
       ]))
-      .spread((ribbonRows, rewardRows, ribbonsSnapshot) => {
+      .then(([ribbonRows, rewardRows, ribbonsSnapshot]) => {
         expect(ribbonRows.length).to.equal(0);
       }));
 
@@ -1936,13 +1936,13 @@ describe('users module', () => {
       }),
     ])
       .bind({})
-      .spread(function () {
+      .then(function () {
         this.gameId = generatePushId();
         return UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Magmar, true, this.gameId, SDK.GameType.Ranked);
       }).then(() => Promise.all([
         knex('user_ribbons').where({ user_id: userId, ribbon_id: 'f3_champion' }).select(),
       ]))
-      .spread((ribbonRows, rewardRows, ribbonsSnapshot) => {
+      .then(([ribbonRows, rewardRows, ribbonsSnapshot]) => {
         expect(ribbonRows.length).to.equal(0);
         return Promise.resolve();
       })
@@ -1963,7 +1963,7 @@ describe('users module', () => {
           knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Vanar }).first(),
           FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Vanar).child('stats'), 'value'),
         ]))
-        .spread((progressionRow, progressionSnapshot) => {
+        .then(([progressionRow, progressionSnapshot]) => {
           expect(progressionRow.game_count).to.equal(numGamesToLevel11);
           expect(progressionRow.unscored_count).to.equal(0);
           expect(progressionRow.win_count).to.equal(numGamesToLevel11);
@@ -1987,7 +1987,7 @@ describe('users module', () => {
           knex('user_faction_progression').where('user_id', userId).first(),
         ]);
       })
-      .spread(function (progressionRow) {
+      .then(function ([progressionRow]) {
         expect(progressionRow.xp).to.equal(this.previousRow.xp);
         expect(progressionRow.level).to.equal(this.previousRow.level);
         expect(progressionRow.updated_at.valueOf()).to.equal(this.previousRow.updated_at.valueOf());
@@ -2002,7 +2002,7 @@ describe('users module', () => {
       .then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vanar).first(),
       ]))
-      .spread(function (progressionRow) {
+      .then(function ([progressionRow]) {
         if (this.previousRow == null) {
           expect(progressionRow).to.exist;
           expect(progressionRow.xp).to.not.equal(0);
@@ -2021,7 +2021,7 @@ describe('users module', () => {
       .then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vetruvian).first(),
       ]))
-      .spread((progressionRow) => {
+      .then(([progressionRow]) => {
         expect(progressionRow.game_count).to.equal(1);
         expect(progressionRow.draw_count).to.equal(1);
         expect(progressionRow.loss_count).to.equal(0);
@@ -2037,7 +2037,7 @@ describe('users module', () => {
       .then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vetruvian).first(),
       ]))
-      .spread(function (progressionRow) {
+      .then(function ([progressionRow]) {
         if (this.previousRow == null) {
           expect(progressionRow).to.exist;
         } else {
@@ -2051,7 +2051,7 @@ describe('users module', () => {
       .then(() => UsersModule.updateUserFactionProgressionWithGameOutcome(userId, SDK.Factions.Vanar, true, generatePushId(), SDK.GameType.Friendly, false)).then((result) => Promise.all([
         knex('user_faction_progression').where('user_id', userId).andWhere('faction_id', SDK.Factions.Vanar).first(),
       ]))
-      .spread((progressionRow) => {
+      .then(([progressionRow]) => {
         expect(progressionRow).to.exist;
         expect(progressionRow.xp).to.not.equal(0);
         expect(progressionRow.friendly_win_count).to.equal(1);
@@ -2075,7 +2075,7 @@ describe('users module', () => {
           knex('user_faction_progression').where({ user_id: userId, faction_id: SDK.Factions.Vanar }).first(),
           FirebasePromises.once(rootRef.child('user-faction-progression').child(userId).child(SDK.Factions.Vanar).child('stats'), 'value'),
         ]))
-        .spread((progressionRow, progressionSnapshot) => {
+        .then(([progressionRow, progressionSnapshot]) => {
           expect(progressionRow.game_count).to.equal(numGamesToLevel11);
           expect(progressionRow.unscored_count).to.equal(0);
           expect(progressionRow.win_count).to.equal(numGamesToLevel11);
@@ -2100,7 +2100,7 @@ describe('users module', () => {
       .then(() => Promise.all([
         knex('user_ribbons').where({ user_id: userId }).select(),
       ]))
-      .spread((ribbonRows, rewardRows, ribbonsSnapshot) => {
+      .then(([ribbonRows, rewardRows, ribbonsSnapshot]) => {
         expect(ribbonRows.length).to.equal(0);
       }));
 
@@ -2136,7 +2136,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(this.cardId), 'value'),
         ]);
       })
-      .spread(function (cardCountRow, cardCollection, rewardSnapshot, fbCardEntry) {
+      .then(function ([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) {
         expect(cardCountRow[0].is_new).to.equal(true);
         expect(cardCountRow[0].is_unread).to.equal(true);
         expect(cardCollection.cards[this.cardId]).to.exist;
@@ -2185,7 +2185,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(this.cardId), 'value'),
         ]);
       })
-      .spread(function (cardCountRow, cardCollection, rewardSnapshot, fbCardEntry) {
+      .then(function ([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) {
         expect(cardCountRow[0].is_new).to.equal(true);
         expect(cardCountRow[0].is_unread).to.equal(true);
         expect(cardCollection.cards[this.cardId]).to.exist;
@@ -2230,7 +2230,7 @@ describe('users module', () => {
           FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('card-collection').child(this.cardId), 'value'),
         ]);
       })
-      .spread(function (cardCountRow, cardCollection, rewardSnapshot, fbCardEntry) {
+      .then(function ([cardCountRow, cardCollection, rewardSnapshot, fbCardEntry]) {
         expect(cardCountRow[0].is_new).to.equal(true);
         expect(cardCountRow[0].is_unread).to.equal(true);
         expect(cardCollection.cards[this.cardId]).to.exist;
@@ -2254,7 +2254,7 @@ describe('users module', () => {
     it('expect player to be allowed to use a SONGHAI starter level 0 deck in RANKED play', function() {
       const deck = SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction2,0);
       return UsersModule.isAllowedToUseDeck(userId,deck,'ranked',null,true)
-      .spread(function(cardsAreValid, skinsAreValid){
+      .then(function([cardsAreValid, skinsAreValid]){
         expect(cardsAreValid).to.equal(true);
         expect(skinsAreValid).to.equal(true);
       })
@@ -2297,7 +2297,7 @@ describe('users module', () => {
           const deck = SDK.FactionFactory.starterDeckForFactionLevel(SDK.Factions.Faction2, SDK.FactionProgression.maxLevel);
           return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
         })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         });
@@ -2385,7 +2385,7 @@ describe('users module', () => {
 
           return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
         })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         });
@@ -2450,7 +2450,7 @@ describe('users module', () => {
           deck.push({ id: SDK.Cards.Neutral.FirstSwordofAkrane });
           return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
         })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         })
@@ -2543,7 +2543,7 @@ describe('users module', () => {
         deck.push({ id: prismaticCardId });
         return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
       })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         })
@@ -2564,7 +2564,7 @@ describe('users module', () => {
           cardId, cardId, cardId,
           prismaticCardId, prismaticCardId, prismaticCardId,
         ]),
-      ])).spread((factionProgressionRow) => {
+      ])).then(([factionProgressionRow]) => {
         const maxXp = SDK.FactionProgression.totalXPForLevel(SDK.FactionProgression.maxLevel);
         if (factionProgressionRow == null) {
           return knex('user_faction_progression').insert({ user_id: userId, faction_id: SDK.Factions.Songhai, xp: maxXp });
@@ -2584,7 +2584,7 @@ describe('users module', () => {
         deck.push({ id: prismaticCardId });
         return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
       })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         })
@@ -2663,7 +2663,7 @@ describe('users module', () => {
           deck.unshift({ id: skinnedCardId });
           return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
         })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         })
@@ -2697,7 +2697,7 @@ describe('users module', () => {
           deck.unshift({ id: skinnedCardId });
           return UsersModule.isAllowedToUseDeck(userId, deck, 'ranked', null, true);
         })
-        .spread((cardsAreValid, skinsAreValid) => {
+        .then(([cardsAreValid, skinsAreValid]) => {
           expect(cardsAreValid).to.equal(true);
           expect(skinsAreValid).to.equal(true);
         })

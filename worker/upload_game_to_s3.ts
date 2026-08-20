@@ -44,7 +44,7 @@ const upload = function (gameId, serializedGameSession, serializedMouseUIEventDa
 
   const filename = env + '/' + gameId + '.json';
   return Promise.all(allDeflatePromises)
-    .spread(function (gzipGameSessionData, gzipMouseUIEventData) {
+    .then(function ([gzipGameSessionData, gzipMouseUIEventData]) {
       let cmd,
         params;
       Logger.module('REPLAYS').log(`done compressing game ${gameId} for upload`);
@@ -77,7 +77,7 @@ const upload = function (gameId, serializedGameSession, serializedMouseUIEventDa
       }
 
       return Promise.all(allPromises);
-    }).spread(function (gameDataPutResp, mouseDataPutResp) {
+    }).then(function ([gameDataPutResp, mouseDataPutResp]) {
       Logger.module('REPLAYS').log(`Successfully uploaded game ${gameId}`);
       return `https://s3.${awsRegion}.amazonaws.com/` + replaysBucket + '/' + filename;
     }).catch(function (e) {

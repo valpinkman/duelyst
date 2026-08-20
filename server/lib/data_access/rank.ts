@@ -520,12 +520,12 @@ class RankModule {
       tx('users').first('rank', 'top_rank_rating').where('id', player2Id).forUpdate(),
     ])
       .bind(this_obj)
-      .spread((player1UserRow, player2UserRow) => Promise.all([
+      .then(([player1UserRow, player2UserRow]) => Promise.all([
         player1UserRow,
         tx('user_rank_ratings').first().where({ user_id: player1Id, season_starting_at: seasonStartingAt }).forUpdate(),
         player2UserRow,
         tx('user_rank_ratings').first().where({ user_id: player2Id, season_starting_at: seasonStartingAt }).forUpdate(),
-      ])).spread(function (player1UserRow, player1RatingRow, player2UserRow, player2RatingRow) {
+      ])).then(function ([player1UserRow, player1RatingRow, player2UserRow, player2RatingRow]) {
         _chainState.player1UserRow = player1UserRow;
         _chainState.player1RatingRow = player1RatingRow;
         _chainState.player2UserRow = player2UserRow;
@@ -731,7 +731,7 @@ class RankModule {
 
         return Promise.all(ladderRankingPromises)
           .bind(this_obj)
-          .spread(function (player1LadderPositionAfter, player2LadderPositionAfter) {
+          .then(function ([player1LadderPositionAfter, player2LadderPositionAfter]) {
             _chainState.player1LadderPositionAfter = player1LadderPositionAfter;
             return _chainState.player2LadderPositionAfter = player2LadderPositionAfter;
           });
@@ -847,7 +847,7 @@ class RankModule {
 
           ])
             .bind(this_obj)
-            .spread(function (userRowData, userRatingRowData) {
+            .then(function ([userRowData, userRatingRowData]) {
               const allPromises = [];
 
               const fbUserRatingData = {

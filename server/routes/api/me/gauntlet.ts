@@ -115,7 +115,7 @@ router.get('/decks', function (req, res, next) {
     .orderBy('ended_at', 'desc');
 
   return Promise.all([currentGauntletDeckPromise, recentGauntletDecksPromise])
-    .spread(function (currentRunRow, recentRunRows) {
+    .then(function ([currentRunRow, recentRunRows]) {
       const runs = [];
       _.each(recentRunRows, function (recentRun) {
         if (recentRun.is_complete) {

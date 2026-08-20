@@ -138,7 +138,7 @@ const RunLayer = BaseLayer.extend({
         this.keyBladeSprite.whenRequiredResourcesReady(),
         this.keyBladeGlowSprite.whenRequiredResourcesReady(),
       ])
-        .spread((keybladeRequestId, keybladeGlowRequestId) => {
+        .then(([keybladeRequestId, keybladeGlowRequestId]) => {
           if (!this.keyBladeSprite.getAreResourcesValid(keybladeRequestId) || !this.keyBladeGlowSprite.getAreResourcesValid(keybladeGlowRequestId)) return; // load invalidated or resources changed
 
           this.keyBladeGlowSprite.setOpacity(0.0);

@@ -275,7 +275,7 @@ class GamesModule {
     return knex.transaction((tx) => Promise.all([
       tx('user_games').where({ user_id: userId, game_id: gameId }).first(),
       tx('user_replays').where({ user_id: userId, game_id: gameId }).first(),
-    ]).spread(function (userGameData, replayData) {
+    ]).then(function ([userGameData, replayData]) {
       if ((userGameData == null)) {
         throw new Errors.NotFoundError('Game not found');
       } else if (replayData != null) {

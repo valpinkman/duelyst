@@ -137,7 +137,7 @@ describe('rank module', () => {
         knex.first().from('users').where('id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('current'), 'value'),
       ]))
-      .spread((userRow, rankSnapshot) => {
+      .then(([userRow, rankSnapshot]) => {
         expect(userRow).to.exist;
         expect(rankSnapshot.val()).to.exist;
         expect(userRow.rank).to.equal(currentRankData.rank);
@@ -173,7 +173,7 @@ describe('rank module', () => {
         knex.first().from('user_rank_history').where('user_id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('history').limitToLast(1), 'child_added'),
       ]))
-      .spread((historyRow, historySnapshot) => {
+      .then(([historyRow, historySnapshot]) => {
         const expectedSeasonTimestamp = moment().utc().startOf('month').valueOf();
 
         const historyRankData = historySnapshot.val();
@@ -192,7 +192,7 @@ describe('rank module', () => {
         knex.first().from('users').where('id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('top'), 'value'),
       ]))
-      .spread((userRow, topRankSnapshot) => {
+      .then(([userRow, topRankSnapshot]) => {
         const expectedSeasonTimestamp = moment().utc().startOf('month').valueOf();
 
         const topRankData = topRankSnapshot.val();
@@ -251,7 +251,7 @@ describe('rank module', () => {
           knex('user_rank_history').first().where('user_id', userIdsByUsername[player4UserName]).andWhere('starting_at', startOfCurrentSeasonDate),
           knex('user_rank_ratings').first().where('user_id', userIdsByUsername[player4UserName]).andWhere('season_starting_at', startOfCurrentSeasonDate),
         ]))
-        .spread((user1RankHistoryRow, user1RatingHistoryRow, user2RankHistoryRow, user2RatingHistoryRow, user3RankHistoryRow, user3RatingHistoryRow, user4RankHistoryRow, user4RatingHistoryRow) => {
+        .then(([user1RankHistoryRow, user1RatingHistoryRow, user2RankHistoryRow, user2RatingHistoryRow, user3RankHistoryRow, user3RatingHistoryRow, user4RankHistoryRow, user4RatingHistoryRow]) => {
           expect(user1RankHistoryRow).to.not.equal(null);
           expect(user1RatingHistoryRow).to.not.equal(null);
           expect(user2RankHistoryRow).to.not.equal(null);
@@ -334,7 +334,7 @@ describe('rank module', () => {
           knex.first().from('users').where('id', userId),
           FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('current'), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
-        ])).spread((userRow, rankSnapshot, firebaseGameJobStatusSnapshot) => {
+        ])).then(([userRow, rankSnapshot, firebaseGameJobStatusSnapshot]) => {
           expect(userRow).to.exist;
           expect(userRow.rank).to.equal(19);
           expect(userRow.rank_stars).to.equal(1);
@@ -379,7 +379,7 @@ describe('rank module', () => {
         knex.first().from('users').where('id', userId),
         FirebasePromises.once(rootRef.child('user-ranking').child(userId).child('current'), 'value'),
       ]))
-      .spread((userRow, rankSnapshot) => {
+      .then(([userRow, rankSnapshot]) => {
         expect(userRow).to.exist;
         expect(userRow.rank).to.equal(20);
         expect(userRow.rank_stars).to.equal(SDK.RankFactory.starsNeededToAdvanceRank(20));
@@ -524,7 +524,7 @@ describe('rank module', () => {
       createOrWipeUser('unit-test-rating-2@duelyst.local', player2UserName, 20),
       createOrWipeUser('unit-test-rating-3@duelyst.local', player3UserName, 0),
       createOrWipeUser('unit-test-rating-4@duelyst.local', player4UserName, 0),
-    ]).spread((player1CreatedId, player2CreatedId, player3CreatedId, player4CreatedId) => {
+    ]).then(([player1CreatedId, player2CreatedId, player3CreatedId, player4CreatedId]) => {
       player1Id = player1CreatedId;
       player2Id = player2CreatedId;
       player3Id = player3CreatedId;
@@ -542,7 +542,7 @@ describe('rank module', () => {
         .then(() => Promise.all([
           knex.first().from('user_rank_ratings').where('user_id', player1Id).andWhere('season_starting_at', seasonStartingAt),
           knex.first().from('user_rank_ratings').where('user_id', player2Id).andWhere('season_starting_at', seasonStartingAt),
-        ]).spread((player1RatingRow, player2RatingRow) => {
+        ]).then(([player1RatingRow, player2RatingRow]) => {
           expect(player1RatingRow).to.not.exist;
           expect(player2RatingRow).to.not.exist;
         }));
@@ -556,7 +556,7 @@ describe('rank module', () => {
         .then(() => Promise.all([
           knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
           knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
-        ]).bind({}).spread(function (player3RatingRow, player4RatingRow) {
+        ]).bind({}).then(function ([player3RatingRow, player4RatingRow]) {
           expect(player3RatingRow).to.exist;
           expect(player3RatingRow.rating).to.exist;
           expect(player3RatingRow.ladder_position).to.exist;
@@ -575,7 +575,7 @@ describe('rank module', () => {
           FirebasePromises.once(rootRef.child('users').child(player3Id).child('presence').child('ladder_position'), 'value'),
           FirebasePromises.once(rootRef.child('users').child(player4Id).child('presence').child('ladder_position'), 'value'),
         ]))
-          .spread(function (player3LPSnapshot, player4LPSnapshot) {
+          .then(function ([player3LPSnapshot, player4LPSnapshot]) {
             expect(player3LPSnapshot.val()).to.exist;
             expect(player3LPSnapshot.val()).to.equal(this.player3RatingRow.ladder_position);
 
@@ -592,7 +592,7 @@ describe('rank module', () => {
         .then(() => Promise.all([
           knex.first().from('user_rank_ratings').where('user_id', player1Id).andWhere('season_starting_at', seasonStartingAt),
           knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
-        ]).spread((player1RatingRow, player3RatingRow) => {
+        ]).then(([player1RatingRow, player3RatingRow]) => {
           expect(player1RatingRow).to.not.exist;
           expect(player3RatingRow).to.exist;
         }));
@@ -615,7 +615,7 @@ describe('rank module', () => {
           return Promise.all([
             knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
             knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
-          ]).bind(this).spread(function (player3RatingRow, player4RatingRow) {
+          ]).bind(this).then(function ([player3RatingRow, player4RatingRow]) {
             expect(player3RatingRow).to.exist;
             expect(player3RatingRow.rating).to.exist;
             expect(player3RatingRow.rating).to.equal(this.player3RatingBefore);
@@ -667,7 +667,7 @@ describe('rank module', () => {
         knex.first().from('user_rank_ratings').where('user_id', player1Id).andWhere('season_starting_at', seasonStartingAt),
         knex.first().from('user_rank_ratings').where('user_id', player2Id).andWhere('season_starting_at', seasonStartingAt),
       ]))
-        .spread((p1RatingsRow, p2RatingsRow) => {
+        .then(([p1RatingsRow, p2RatingsRow]) => {
           expect(p1RatingsRow).to.exist;
           expect(p1RatingsRow.rating).to.exist;
           expect(p1RatingsRow.top_rating).to.exist;
@@ -695,7 +695,7 @@ describe('rank module', () => {
             SRankManager.getUserLadderPosition(player2Id, startOfSeasonMonth),
           ]);
         })
-        .spread((ladderPosition1, ladderPosition2) => {
+        .then(([ladderPosition1, ladderPosition2]) => {
           expect(ladderPosition1).to.not.exist;
           expect(ladderPosition2).to.not.exist;
         });
@@ -716,7 +716,7 @@ describe('rank module', () => {
         knex.first().from('user_rank_ratings').where('user_id', player1Id).andWhere('season_starting_at', seasonStartingAt),
         knex.first().from('user_rank_ratings').where('user_id', player2Id).andWhere('season_starting_at', seasonStartingAt),
       ]))
-        .spread((p1RatingsRow, p2RatingsRow) => {
+        .then(([p1RatingsRow, p2RatingsRow]) => {
           expect(p1RatingsRow).to.exist;
           expect(p1RatingsRow.rating).to.exist;
           expect(p1RatingsRow.top_rating).to.exist;
@@ -774,7 +774,7 @@ describe('rank module', () => {
         createOrWipeUser('unit-test-position-4@duelyst.local', player4UserName, 0),
         createOrWipeUser('unit-test-position-5@duelyst.local', player5UserName, 0),
         createOrWipeUser('unit-test-position-6@duelyst.local', player6UserName, 0),
-      ]).spread((player1CreatedId, player2CreatedId, player3CreatedId, player4CreatedId, player5CreatedId, player6CreatedId) => {
+      ]).then(([player1CreatedId, player2CreatedId, player3CreatedId, player4CreatedId, player5CreatedId, player6CreatedId]) => {
         player1Id = player1CreatedId;
         player2Id = player2CreatedId;
         player3Id = player3CreatedId;
@@ -858,7 +858,7 @@ describe('rank module', () => {
         }).then((rootRef) => Promise.all([
           knex('user_rank_history').first().where({ user_id: userId, starting_at: lastSeasonMoment.startOf('month') }),
         ]))
-        .spread((historyRow) => {
+        .then(([historyRow]) => {
           expect(historyRow).to.exist;
           expect(historyRow.rewards_claimed_at.valueOf()).to.equal(daySoFar.valueOf());
           expect(historyRow.reward_ids.length).to.equal(0);
@@ -899,7 +899,7 @@ describe('rank module', () => {
           knex('user_rank_history').first().where({ user_id: userId, starting_at: lastSeasonMoment.startOf('month') }),
           knex('user_rewards').select().where({ user_id: userId, reward_category: 'season rank', source_id: lastSeasonMoment.format('YYYY/MM') }),
         ]))
-        .spread((historyRow, rewardRows) => {
+        .then(([historyRow, rewardRows]) => {
           expect(historyRow).to.exist;
           expect(historyRow.rewards_claimed_at.valueOf()).to.equal(daySoFar.valueOf());
           expect(historyRow.reward_ids.length).to.equal(3);
@@ -939,7 +939,7 @@ describe('rank module', () => {
           knex('user_rank_history').first().where({ user_id: userId, starting_at: lastSeasonMoment.startOf('month') }),
           knex('user_rewards').select().where({ user_id: userId, reward_category: 'season rank', source_id: lastSeasonMoment.format('YYYY/MM') }),
         ]))
-        .spread((historyRow, rewardRows) => {
+        .then(([historyRow, rewardRows]) => {
           expect(historyRow).to.exist;
           expect(historyRow.rewards_claimed_at.valueOf()).to.equal(daySoFar.valueOf());
           expect(historyRow.reward_ids.length).to.equal(3);
@@ -979,7 +979,7 @@ describe('rank module', () => {
           knex('user_rank_history').first().where({ user_id: userId, starting_at: lastSeasonMoment.startOf('month') }),
           knex('user_rewards').select().where({ user_id: userId, reward_category: 'season rank', source_id: lastSeasonMoment.format('YYYY/MM') }),
         ]))
-        .spread((historyRow, rewardRows) => {
+        .then(([historyRow, rewardRows]) => {
           expect(historyRow).to.exist;
           expect(historyRow.rewards_claimed_at.valueOf()).to.equal(daySoFar.valueOf());
           expect(historyRow.reward_ids.length).to.equal(3);
@@ -1019,7 +1019,7 @@ describe('rank module', () => {
           knex('user_rank_history').first().where({ user_id: userId, starting_at: lastSeasonMoment.startOf('month') }),
           knex('user_rewards').select().where({ user_id: userId, reward_category: 'season rank', source_id: lastSeasonMoment.format('YYYY/MM') }),
         ]))
-        .spread((historyRow, rewardRows) => {
+        .then(([historyRow, rewardRows]) => {
           expect(historyRow).to.exist;
           expect(historyRow.rewards_claimed_at.valueOf()).to.equal(daySoFar.valueOf());
           expect(historyRow.reward_ids.length).to.equal(3);

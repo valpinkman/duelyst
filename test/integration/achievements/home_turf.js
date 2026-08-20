@@ -72,7 +72,7 @@ describe("achievements module", function() {
   //         knex('user_rewards').select().where('user_id',userId).andWhere('reward_type','homeTurf'),
   //         knex('user_cosmetic_inventory').select().where('user_id',userId)
   //       ])
-  //     }).spread(function(achievementRows,rewardRows,cosmeticsRows){
+  //     }).then(function([achievementRows,rewardRows,cosmeticsRows]){
   //       expect(achievementRows.length).to.equal(1)
   //       expect(rewardRows.length).to.equal(1)
   //       expect(rewardRows[0].cosmetics.length).to.equal(1)

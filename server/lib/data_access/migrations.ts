@@ -373,7 +373,7 @@ class MigrationsModule {
       Promise.all([
         tx('users').where('id', userId).first('has_purchased_starter_bundle'),
         DuelystFirebase.connect().getRootRef(),
-      ]).spread(function (userRow, rootRef) {
+      ]).then(function ([userRow, rootRef]) {
         if (userRow.has_purchased_starter_bundle) {
           return FirebasePromises.set(rootRef.child('user-purchase-counts').child(userId).child('STARTERBUNDLE_201604'), { count: 1 });
         }

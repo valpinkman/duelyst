@@ -59,7 +59,7 @@ describe('cosmetic chests module', () => {
     return Promise.all([
       createOrInsertUser('unit-test-1@duelyst.local', 'player 1', 0),
       createOrInsertUser('unit-test-2@duelyst.local', 'player 2', 0),
-    ]).spread((player1CreatedId, player2CreatedId) => {
+    ]).then(([player1CreatedId, player2CreatedId]) => {
       userId = player1CreatedId;
       user2Id = player2CreatedId;
 
@@ -242,7 +242,7 @@ describe('cosmetic chests module', () => {
       const txPromise = knex.transaction((tx) => Promise.all([
         CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId()),
         CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, 1, 'Unit test', generatePushId()),
-      ]).spread((chestDatas, chestKeyDatas) => {
+      ]).then(([chestDatas, chestKeyDatas]) => {
         chestId = chestDatas[0].chest_id;
         keyId = chestKeyDatas[0].key_id;
       })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((chestRewardDatas) => {
@@ -259,7 +259,7 @@ describe('cosmetic chests module', () => {
           const txPromise = knex.transaction((tx) => Promise.all([
             CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, 'QA-Event-Test-1', 1, 'Unit test', generatePushId()),
             CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, 1, 'Unit test', generatePushId()),
-          ]).spread((chestDatas, chestKeyDatas) => {
+          ]).then(([chestDatas, chestKeyDatas]) => {
             chestId = chestDatas[0].chest_id;
             keyId = chestKeyDatas[0].key_id;
           })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((chestRewardDatas) => {
@@ -277,7 +277,7 @@ describe('cosmetic chests module', () => {
           const txPromise = knex.transaction((tx) => Promise.all([
             CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, 'QA-Event-Test-1', 1, 'Unit test', generatePushId()),
             CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, 1, 'Unit test', generatePushId()),
-          ]).spread((chestDatas, chestKeyDatas) => {
+          ]).then(([chestDatas, chestKeyDatas]) => {
             chestId = chestDatas[0].chest_id;
             keyId = chestKeyDatas[0].key_id;
           })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId, moment.utc().add(50, 'hour'))).then((chestRewardDatas) => {
@@ -294,7 +294,7 @@ describe('cosmetic chests module', () => {
               Promise.all([
                 knex('user_cosmetic_chests').where('chest_id', chestId).first(),
                 knex('user_cosmetic_chests_opened').where('chest_id', chestId).first(),
-              ])).spread((chestRow, chestRowOpened) => {
+              ])).then(([chestRow, chestRowOpened]) => {
               expect(chestRow).to.exist;
               expect(chestRowOpened).to.not.exist;
             });
@@ -312,7 +312,7 @@ describe('cosmetic chests module', () => {
     //          CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, "QA-Event-Test-1", 1, "Unit test", generatePushId(),moment.utc().subtract(1,"week")),
     //          CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, SDK.Cards.Boss.Boss3, "QA-Event-Test-1", 1, "Unit test", generatePushId()),
     //          CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Boss, 1, "Unit test", generatePushId())
-    //        ]).spread(function (expiredChestDatas, chestDatas, chestKeyDatas) {
+    //        ]).then(function ([expiredChestDatas, chestDatas, chestKeyDatas]) {
     //          expiredChestId = expiredChestDatas[0].chest_id
     //          chestId = chestDatas[0].chest_id
     //          keyId = chestKeyDatas[0].key_id
@@ -336,7 +336,7 @@ describe('cosmetic chests module', () => {
     //            knex("user_cosmetic_chests").where("chest_id",expiredChestId).first(),
     //            knex("user_cosmetic_chests_opened").where("chest_id",expiredChestId).first()
     //          ])
-    //        }).spread(function(chestRow,chestRowOpened,expiredChestRow,expiredChestRowOpened) {
+    //        }).then(function([chestRow,chestRowOpened,expiredChestRow,expiredChestRowOpened]) {
     //          expect(chestRow).to.not.exist;
     //          expect(chestRowOpened).to.exist;
     //
@@ -352,7 +352,7 @@ describe('cosmetic chests module', () => {
       const txPromise = knex.transaction((tx) => Promise.all([
         CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId()),
         CosmeticChestsModule.giveUserChestKey(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Rare, 1, 'Unit test', generatePushId()),
-      ]).spread((chestDatas, chestKeyDatas) => {
+      ]).then(([chestDatas, chestKeyDatas]) => {
         chestId = chestDatas[0].chest_id;
         keyId = chestKeyDatas[0].key_id;
       })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((openedChestData) => {
@@ -370,7 +370,7 @@ describe('cosmetic chests module', () => {
       const txPromise = knex.transaction((tx) => Promise.all([
         CosmeticChestsModule.giveUserChest(txPromise, tx, userId, SDK.CosmeticsChestTypeLookup.Common, null, null, 1, 'Unit test', generatePushId()),
         CosmeticChestsModule.giveUserChestKey(txPromise, tx, user2Id, SDK.CosmeticsChestTypeLookup.Common, 1, 'Unit test', generatePushId()),
-      ]).spread((chestDatas, chestKeyDatas) => {
+      ]).then(([chestDatas, chestKeyDatas]) => {
         chestId = chestDatas[0].chest_id;
         keyId = chestKeyDatas[0].key_id;
       })).then(() => CosmeticChestsModule.openChest(userId, chestId, keyId)).then((openedChestData) => {
@@ -403,7 +403,7 @@ describe('cosmetic chests module', () => {
       });
 
       return txPromise
-      .spread(function(chestDatas, keyDatas){
+      .then(function([chestDatas, keyDatas]){
         chestDatas = _.flatten(chestDatas);
         keyDatas = _.flatten(keyDatas);
         return Promise.map(chestDatas,function(chestData, i){
@@ -473,7 +473,7 @@ describe('cosmetic chests module', () => {
             knex('user_progression').where('user_id', userId).first(),
           ]);
         })
-        .spread((rewardRows, chestRows, userProgressionRow) => {
+        .then(([rewardRows, chestRows, userProgressionRow]) => {
           expect(rewardRows.length).to.be.above(0);
           expect(rewardRows[0].cosmetic_chests).to.contain(SDK.CosmeticsChestTypeLookup.Common);
           expect(chestRows.length).to.be.above(0);

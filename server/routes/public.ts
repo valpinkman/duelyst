@@ -117,7 +117,7 @@ router.get('/rift_ladder', (req, res) => RiftManager.getTopLadderUserIdAndRunIds
     return Promise.all([
       knex.first('username').from('users').where('id', userId),
       knex.first().from('user_rift_runs').where('user_id', userId).andWhere('ticket_id', ticketId),
-    ]).spread(function (userNameRow, userRiftRun) {
+    ]).then(function ([userNameRow, userRiftRun]) {
       if ((userNameRow != null) && (userRiftRun != null)) { // Only needed in case a user's data is wiped, but good safety check to have
         return Promise.resolve({
           username: userNameRow.username,
@@ -149,7 +149,7 @@ router.get('/health', function (req, res) {
     knex('knex_migrations').select('migration_time').orderBy('id', 'desc').limit(1),
   ])
     .timeout(5000)
-    .spread(function (row) {
+    .then(function ([row]) {
       if (pool.queued >= MAX_QUEUED_ALLOWED) {
         res.status(500);
       } else {

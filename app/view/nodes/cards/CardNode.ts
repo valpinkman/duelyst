@@ -499,7 +499,7 @@ var CardNode = SdkNode.extend({
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
         ])
-          .spread((requiredRequestId, cardResourceRequestId) => {
+          .then(([requiredRequestId, cardResourceRequestId]) => {
             if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
 
             this._containerNode.setVisible(true);
@@ -1705,7 +1705,7 @@ var CardNode = SdkNode.extend({
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this.getCardResourceRequestId()),
     ])
-      .spread((requiredRequestId, cardResourceRequestId) => {
+      .then(([requiredRequestId, cardResourceRequestId]) => {
         if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
 
         if (this._manaInstructionalBg == null) {
@@ -1729,7 +1729,7 @@ var CardNode = SdkNode.extend({
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this.getCardResourceRequestId()),
     ])
-      .spread((requiredRequestId, cardResourceRequestId) => {
+      .then(([requiredRequestId, cardResourceRequestId]) => {
         if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
 
         if (this._atkInstructionalLabel != null) {
@@ -1842,7 +1842,7 @@ var CardNode = SdkNode.extend({
             this.whenResourcesReady(this.getCardResourceRequestId()),
             this.whenResourcesReady(this.getCardBackResourceRequestId()),
           ])
-            .spread((requiredRequestId, cardResourceRequestId, cardBackResourceRequestId) => {
+            .then(([requiredRequestId, cardResourceRequestId, cardBackResourceRequestId]) => {
               if (!this.getAreResourcesValid(requiredRequestId)
               || !this.getAreResourcesValid(cardResourceRequestId)
               || !this.getAreResourcesValid(cardBackResourceRequestId)) return; // load invalidated or resources changed
@@ -2352,7 +2352,7 @@ var CardNode = SdkNode.extend({
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
         ])
-          .spread((requiredRequestId, cardResourceRequestId) => {
+          .then(([requiredRequestId, cardResourceRequestId]) => {
             if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
 
             const centerPosition = this.getCenterPosition();
@@ -2472,7 +2472,7 @@ var CardNode = SdkNode.extend({
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
         ])
-          .spread((requiredRequestId, cardResourceRequestId) => {
+          .then(([requiredRequestId, cardResourceRequestId]) => {
             if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
 
             this._outlineGlow.setVisible(true);
@@ -2812,7 +2812,7 @@ var CardNode = SdkNode.extend({
           this.whenRequiredResourcesReady(),
           this.whenResourcesReady(this.getCardResourceRequestId()),
         ])
-          .spread((requiredRequestId, cardResourceRequestId) => {
+          .then(([requiredRequestId, cardResourceRequestId]) => {
             if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(cardResourceRequestId)) return; // load invalidated or resources changed
 
             // begin: animation base states

@@ -668,13 +668,46 @@ server and worker. What remains is *typing* (5T.4), not converting.
     - [ ] `knex` 0.19 → 3 — **gated on bluebird.** knex <1.0 returned *bluebird* promises;
       **168 knex query sites across 24 files** chain bluebird-only methods (`.bind`, `.spread`,
       `.error`) within 8 lines. knex 1.0+ returns native promises, so all of those break.
-    - [ ] `bluebird` 2.11 → native — **the real gate, not the endgame** (this reverses the
-      original ordering). ~660 bluebird-specific call sites in `server/` alone: `.bind` 234,
-      `.error` 153, `.spread` 76, typed `.catch(SomeError, fn)` 72, `.each` 72, `.nodeify` 21,
-      `.timeout` 20, `.finally` 13. Several have no native equivalent.
-      *(`bluebird` 2 → 3 is a cheap alternative — only `Promise.defer` (3), `.cancellable` (7)
-      and `.fork` (1) would need touching — but bluebird has **0 advisory paths**, so it buys
-      nothing but currency.)*
+    - [~] `bluebird` 2.11 → **native, dropping it entirely** (owner decision). It is **the gate**
+      for knex, not the endgame after it.
+
+      **Scope corrected by measurement: ~1,400 chain-position sites, not the ~660 first quoted**
+      (that figure was `server/` only). Counting only calls in chain position — line-initial `.m(`
+      or following `)` — so `Function.prototype.bind`, `Array.map` and `Logger.error` are excluded:
+
+      | idiom | sites | becomes |
+      |---|---|---|
+      | `.bind(obj)` | 442 | closure variable (as the `_chainState` work already did for 15 files) |
+      | `.spread(fn)` | 402 | `.then(([a, b]) => …)` |
+      | `.error(fn)` | 174 | `.catch(fn)` |
+      | `.map`/`.each`/`.filter` | 129 | `Promise.all` + array methods |
+      | `.get(prop)`/`.call(m)` | 115 | `.then(x => x.prop)` |
+      | typed `.catch(Class, fn)` | 72 | `onType` helper / `ts-pattern` |
+      | `.timeout`/`.delay`/`.nodeify`/`.finally` | 83 | helpers, or dropped |
+      | statics (`promisifyAll`, `join`, `defer`) | ~28 | native equivalents |
+
+      **Why it stages cleanly:** bluebird promises are thenable-compatible, so each idiom can be
+      converted while bluebird is still installed. Every stage stands alone and stays green;
+      bluebird is removed last.
+
+      **Error handling (owner decision):** `ts-pattern` (CJS build, zero deps) for the **10**
+      stacked typed-catch sites, where a multi-branch `match` reads better and `.otherwise()` is
+      *mandatory* — which structurally prevents the main hazard of this migration, converting
+      `.catch(SomeError, fn)` into a `.catch` that forgets to rethrow and silently swallows
+      unrelated errors. A three-line local `onType` helper for the **61** single-catch sites,
+      where it preserves the exact call shape for a one-token diff.
+
+      - [x] **Stage 1 — `.spread` → destructured `.then` (407 sites, 56 files).**
+        `scripts/codemods/spread-to-then.mjs`. The `function` form is deliberately **preserved
+        rather than arrowed**: these chains rely on `.bind()` to set `this`, and an arrow would
+        capture the enclosing `this` instead — verified that `this` still flows through `.bind()`
+        into the converted form. — (this commit)
+      - [ ] Stage 2 — `.get`/`.call` shorthands (115)
+      - [ ] Stage 3 — typed `.catch` (72), via `onType` + `ts-pattern`
+      - [ ] Stage 4 — `.error` → `.catch` (174)
+      - [ ] Stage 5 — `.bind` chains → closures (442), the delicate one
+      - [ ] Stage 6 — `.map`/`.each`/`.filter`/`.timeout`/`.delay`/`.nodeify` + statics
+      - [ ] Stage 7 — drop `require('bluebird')` and the dependency; then `knex` 3
 
   **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before
   anyone counted where the advisories actually come from. Of the 129 remaining, the top sources

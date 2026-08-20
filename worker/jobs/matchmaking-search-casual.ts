@@ -215,7 +215,7 @@ const findOpponent = function (userId, lastOpponentId, rank, timeServed, deckVal
       //   queueSearchPromises.push(rankedDeckValueQueue.search({score: deckValue, searchRadius: deckValueRadius}))
 
       return Promise.all(queueSearchPromises);
-    }).spread(function (casualPlayersWithinSearch, casualPlayersWithinDeckValueSearch, rankedPlayersWithinRankSearch, rankedPlayersWithinDeckValueSearch) {
+    }).then(function ([casualPlayersWithinSearch, casualPlayersWithinDeckValueSearch, rankedPlayersWithinRankSearch, rankedPlayersWithinDeckValueSearch]) {
     // exclude self from casual results
       let opponents = _.filter(casualPlayersWithinSearch, (id) => id !== userId);
       opponents = _.filter(casualPlayersWithinDeckValueSearch, (id) => id !== userId);

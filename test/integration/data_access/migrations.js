@@ -60,7 +60,7 @@ describe('migrations module', () => {
     return Promise.all([
       createOrInsertUser('unit-test-1@duelyst.local', 'player 1', 0),
       createOrInsertUser('unit-test-2@duelyst.local', 'player 2', 0),
-    ]).spread((player1CreatedId, player2CreatedId) => {
+    ]).then(([player1CreatedId, player2CreatedId]) => {
       userId = player1CreatedId;
       user2Id = player2CreatedId;
     });
@@ -225,7 +225,7 @@ describe('migrations module', () => {
             knex('user_spirit_orbs_opened').where('user_id', userId),
             knex('user_cards').where('user_id', userId),
           ]))
-        .spread(function (spiritOrbsOpenedRow, cardRows) {
+        .then(function ([spiritOrbsOpenedRow, cardRows]) {
           expect(spiritOrbsOpenedRow).to.exist;
           expect(spiritOrbsOpenedRow.length).to.equal(10);
 
@@ -286,7 +286,7 @@ describe('migrations module', () => {
             knex('user_spirit_orbs_opened').where('user_id', userId),
             knex('user_cards').where('user_id', userId),
           ]))
-        .spread(function (spiritOrbsOpenedRow, cardRows) {
+        .then(function ([spiritOrbsOpenedRow, cardRows]) {
           expect(spiritOrbsOpenedRow).to.exist;
           expect(spiritOrbsOpenedRow.length).to.equal(10 + 20);
 
@@ -341,7 +341,7 @@ describe('migrations module', () => {
             knex('user_spirit_orbs_opened').where('user_id', userId),
             knex('user_cards').where('user_id', userId),
           ]))
-        .spread(function (spiritOrbsOpenedRow, cardRows) {
+        .then(function ([spiritOrbsOpenedRow, cardRows]) {
           expect(spiritOrbsOpenedRow).to.exist;
           expect(spiritOrbsOpenedRow.length).to.equal(28);
 
@@ -429,7 +429,7 @@ describe('migrations module', () => {
             knex('user_spirit_orbs_opened').where('user_id', userId),
             knex('user_cards').where('user_id', userId),
           ]))
-        .spread(function (spiritOrbsOpenedRow, cardRows) {
+        .then(function ([spiritOrbsOpenedRow, cardRows]) {
           expect(spiritOrbsOpenedRow).to.exist;
           expect(spiritOrbsOpenedRow.length).to.equal(28 + 25);
 
@@ -513,7 +513,7 @@ describe('migrations module', () => {
             knex('user_spirit_orbs_opened').where('user_id', userId),
             knex('user_cards').where('user_id', userId),
           ]))
-        .spread(function (spiritOrbsOpenedRow, cardRows) {
+        .then(function ([spiritOrbsOpenedRow, cardRows]) {
           expect(spiritOrbsOpenedRow).to.exist;
           expect(spiritOrbsOpenedRow.length).to.equal(119);
 

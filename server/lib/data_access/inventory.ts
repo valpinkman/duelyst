@@ -623,7 +623,7 @@ class InventoryModule {
       tx('user_faction_progression').where('user_id', userId),
       tx('user_card_collection').where('user_id', userId).first(),
     ])
-      .spread(function (factionProgression, cardCollectionRow) {
+      .then(function ([factionProgression, cardCollectionRow]) {
       // map faction level by faction id
         let factionLevel;
         const factionLevel_FactionId = {};
@@ -694,7 +694,7 @@ class InventoryModule {
       tx('user_faction_progression').where('user_id', userId),
       tx('user_card_collection').where('user_id', userId).first(),
     ])
-      .spread(function (factionProgression, cardCollectionRow) {
+      .then(function ([factionProgression, cardCollectionRow]) {
         let factionLevel;
         const usableCards = [];
 
@@ -1369,7 +1369,7 @@ class InventoryModule {
         tx('user_spirit_orbs').first().where('id', boosterPackId).forUpdate(),
       ])
         .bind(this_obj)
-        .spread(function (userRow, boosterRow) {
+        .then(function ([userRow, boosterRow]) {
           if ((boosterRow == null) || (boosterRow.user_id !== userId)) {
             return Promise.reject(new Errors.NotFoundError('The booster pack ID you provided does not exist or belong to you.'));
           }
@@ -1883,7 +1883,7 @@ class InventoryModule {
           .forUpdate(),
       ])
         .bind(this_obj)
-        .spread(function (progressionRow, codexInventoryRows) {
+        .then(function ([progressionRow, codexInventoryRows]) {
           let gameCount = 0;
           if ((progressionRow != null ? progressionRow.game_count : undefined) != null) {
             gameCount = progressionRow.game_count;
@@ -2447,7 +2447,7 @@ class InventoryModule {
             knex('user_currency_log').insert(userCurrencyLogItem).transacting(tx),
           ]);
         })
-        .spread(function (cardCollection) {
+        .then(function ([cardCollection]) {
           _chainState.cardCollection = cardCollection;
           return DuelystFirebase.connect().getRootRef();
         })
@@ -2686,7 +2686,7 @@ class InventoryModule {
       trx.insert(cardDataList).into('user_card_log'),
     ])
       .bind({})
-      .spread(function (cardCountRows) {
+      .then(function ([cardCountRows]) {
         _chainState.cardCountRows = cardCountRows;
 
         const allPromises = [];

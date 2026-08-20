@@ -148,7 +148,7 @@ class RiftModule {
         tx('user_rift_runs').first().where('user_id', userId).forUpdate(),
       ])
         .bind(this_obj)
-        .spread(function (userRow, ticketRow, usedTicketRow, existingRun) {
+        .then(function ([userRow, ticketRow, usedTicketRow, existingRun]) {
         // Can not already have a ticket
           if (ticketRow != null) {
             Logger.module('RiftModule').log(`claimFirstFreeRiftTicket() -> user ID - ${userId} already has a ticket.`.red);
@@ -283,7 +283,7 @@ class RiftModule {
           .forUpdate(),
       ])
         .bind(this_obj)
-        .spread(function (userRow, ticketRow, existingRun, storedUpgradeRows) {
+        .then(function ([userRow, ticketRow, existingRun, storedUpgradeRows]) {
           _chainState.ticketRow = ticketRow;
           _chainState.isFirstRun = false;
           if ((existingRun == null)) {
@@ -499,7 +499,7 @@ class RiftModule {
         userRow,
         tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', ticketId)
           .forUpdate(),
-      ])).spread(function (userRow, existingRun) {
+      ])).then(function ([userRow, existingRun]) {
         if (existingRun != null) {
           const allPromises = [];
           _chainState.runData = existingRun;
@@ -1205,7 +1205,7 @@ class RiftModule {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', riftTicketId)
         .forUpdate(),
     ]).bind(this_obj)
-      .spread(function (userRow, existingRun) {
+      .then(function ([userRow, existingRun]) {
         if ((userRow == null)) {
           throw new Errors.BadRequestError(`User id not found: ${userId}`);
         }
@@ -1328,7 +1328,7 @@ class RiftModule {
       tx('user_rift_runs').first().where('user_id', userId).andWhere('ticket_id', riftTicketId)
         .forUpdate(),
     ]).bind(this_obj)
-      .spread(function (userRow, existingRun) {
+      .then(function ([userRow, existingRun]) {
         if ((userRow == null)) {
           throw new Errors.BadRequestError(`User id not found: ${userId}`);
         }

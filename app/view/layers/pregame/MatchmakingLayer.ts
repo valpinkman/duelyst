@@ -325,7 +325,7 @@ const MatchmakingLayer = ParallaxLayer.extend({
         this.whenRequiredResourcesReady(),
         this.whenResourcesReady(requestId),
       ])
-        .spread((requiredRequestId, runesRequestId) => {
+        .then(([requiredRequestId, runesRequestId]) => {
           if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(runesRequestId)) return; // load invalidated or resources changed
 
           // add all runes
@@ -355,7 +355,7 @@ const MatchmakingLayer = ParallaxLayer.extend({
         this._crestNode.whenRequiredResourcesReady(),
         this._myGeneralSprite.whenRequiredResourcesReady(),
       ])
-        .spread((crestRequestId, generalRequestId) => {
+        .then(([crestRequestId, generalRequestId]) => {
           if (!this._crestNode.getAreResourcesValid(crestRequestId)
           || !this._myGeneralSprite.getAreResourcesValid(generalRequestId)) return; // resources have been invalidated
 

@@ -74,7 +74,7 @@ class SyncModule {
           FirebasePromises.once(_chainState.fbRootRef.child('users').child(userId).child('tx_counter').child('count'), 'value'),
         ]);
       })
-      .spread(function (userRow, txCountSnapshot) {
+      .then(function ([userRow, txCountSnapshot]) {
         _chainState.firebaseTxCount = txCountSnapshot.val();
         let shouldSyncBuddyList = false;
 
@@ -349,7 +349,7 @@ class SyncModule {
         knex('user_buddies').where('user_id', userId).select(),
         buddiesSnapshot.val(),
       ]))
-      .spread(function (buddyRows, buddies) {
+      .then(function ([buddyRows, buddies]) {
         if (((buddyRows != null ? buddyRows.length : undefined) > 0) || (buddies != null)) {
           let buddy;
           const allPromises = [];
@@ -436,7 +436,7 @@ class SyncModule {
         knex.select().from('user_bosses_defeated').where('user_id', userId),
         knex.select().from('user_rift_runs').where('user_id', userId),
       ]))
-      .spread(function (cardRows, cardCollection, rankHistoryRows, chargeRows, gauntletRun, gauntletTicketRows, spiritOrbRows, decks, progression, factionProgressionRows, questRows, rewardRows, challengeRows, newPlayerModules, completedAchievements, buddyRows, gameCounterRows, factionGameCounterRows, userRibbonRows, userRankRatings, userCodexRows, userCosmeticChests, userCosmeticChestKeys, userCosmeticInventory, userBossesDefeated, userRiftRuns) {
+      .then(function ([cardRows, cardCollection, rankHistoryRows, chargeRows, gauntletRun, gauntletTicketRows, spiritOrbRows, decks, progression, factionProgressionRows, questRows, rewardRows, challengeRows, newPlayerModules, completedAchievements, buddyRows, gameCounterRows, factionGameCounterRows, userRibbonRows, userRankRatings, userCodexRows, userCosmeticChests, userCosmeticChestKeys, userCosmeticInventory, userBossesDefeated, userRiftRuns]) {
         let row;
         const allPromises = [];
 
@@ -751,7 +751,7 @@ class SyncModule {
         // FirebasePromises.once(fbRootRef.child('user-aggregates').child(userId),"value"),
         ]);
       })
-      .spread(function (user, inventory, quests, ranking, decks, games, progression, factionProgression, challengeProgression, arenaRun, news, matchmakingErrors, stats, rewards, receipts, newPlayerProgression, achievements, logs, aggregates) {
+      .then(function ([user, inventory, quests, ranking, decks, games, progression, factionProgression, challengeProgression, arenaRun, news, matchmakingErrors, stats, rewards, receipts, newPlayerProgression, achievements, logs, aggregates]) {
         let i;
         _chainState.user = user.val();
         _chainState.buddies = __guard__(user.val(), (x) => x.buddies);

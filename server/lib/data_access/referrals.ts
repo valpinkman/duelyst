@@ -46,7 +46,7 @@ class ReferralsModule {
         tx('user_progression').where('user_id', userId).first('game_count'),
       ])
         .bind(this_obj)
-        .spread(function (userRow, referrerRow, progressionRow) {
+        .then(function ([userRow, referrerRow, progressionRow]) {
           _chainState.userRow = userRow;
 
           if (!userRow || !referrerRow) {
@@ -160,7 +160,7 @@ class ReferralsModule {
         tx('user_referrals').where('referred_user_id', userId).first().forUpdate(),
       ])
         .bind(this_obj)
-        .spread(function (userRow, referralRow) {
+        .then(function ([userRow, referralRow]) {
           _chainState.userRow = userRow;
 
           if (!userRow.referred_by_user_id || (userRow.referred_by_user_id !== referrerId)) {

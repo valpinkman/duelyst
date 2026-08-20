@@ -75,7 +75,7 @@ var TooltipNode = cc.Node.extend({
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this._bgResourceRequestId),
     ])
-      .spread((requiredRequestId, bgRequestId) => {
+      .then(([requiredRequestId, bgRequestId]) => {
         if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId)) return; // load invalidated or resources changed
 
         // play sound
@@ -104,7 +104,7 @@ var TooltipNode = cc.Node.extend({
         this.whenRequiredResourcesReady(),
         this.whenResourcesReady(this._bgResourceRequestId),
       ])
-        .spread((requiredRequestId, bgRequestId) => {
+        .then(([requiredRequestId, bgRequestId]) => {
           if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId)) return; // load invalidated or resources changed
           if (this._stoppingShow && (this._stopShowingAction == null || !this._stopShowingAction.getActive())) {
             this._stoppingShow = false;
@@ -140,7 +140,7 @@ var TooltipNode = cc.Node.extend({
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(this._bgResourceRequestId),
     ])
-      .spread((requiredRequestId, bgRequestId) => {
+      .then(([requiredRequestId, bgRequestId]) => {
         if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(bgRequestId)) return; // load invalidated or resources changed
 
         if (this.bgSprite != null) {

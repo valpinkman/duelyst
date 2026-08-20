@@ -206,7 +206,7 @@ class GauntletModule {
           .transacting(tx),
       ])
         .bind(this_obj)
-        .spread(function (existingRun, ticketRow) {
+        .then(function ([existingRun, ticketRow]) {
           if (existingRun != null) {
             if (!existingRun.ended_at) {
               return Promise.reject(new Errors.InvalidRequestError('Could not start run: user already has an active run.'));
@@ -383,7 +383,7 @@ class GauntletModule {
       .then((userRow) => Promise.all([
         userRow,
         tx('user_gauntlet_run').first().where('user_id', userId).forUpdate(),
-      ])).spread(function (userRow, existingRun) {
+      ])).then(function ([userRow, existingRun]) {
         if (existingRun != null) {
           const allPromises = [];
 
@@ -498,7 +498,7 @@ class GauntletModule {
       .then((userRow) => Promise.all([
         userRow,
         tx('user_gauntlet_run').first().where('user_id', userId).forUpdate(),
-      ])).spread(function (userRow, existingRun) {
+      ])).then(function ([userRow, existingRun]) {
         if (existingRun != null) {
           let reward,
             rewardInsertData;

@@ -119,7 +119,7 @@ describe('quests module', () => {
         return DuelystFirebase.connect().getRootRef();
       }).then((rootRef) => Promise.all([
         knex.select().from('user_quests_complete').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
-      ])).spread((questRows) => {
+      ])).then(([questRows]) => {
         expect(questRows).to.exist;
         expect(questRows[0].progress).to.equal(1);
       }));
@@ -167,7 +167,7 @@ describe('quests module', () => {
           knex('users').first().where('id', userId),
           knex.select().from('user_quests').where('user_id', userId),
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ])).spread((userRow, questRows, firebaseQuestsSnapshot) => {
+        ])).then(([userRow, questRows, firebaseQuestsSnapshot]) => {
           expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
           expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
           // expect(questRows.length).to.equal(2);
@@ -196,7 +196,7 @@ describe('quests module', () => {
           return Promise.all([
             knex('users').first().where('id', userId),
           ]);
-        }).spread((userRow) => {
+        }).then(([userRow]) => {
           expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
           expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
         }));
@@ -220,7 +220,7 @@ describe('quests module', () => {
             return Promise.all([
               knex('users').first().where('id', userId),
             ]);
-          }).spread((userRow) => {
+          }).then(([userRow]) => {
             expect(userRow.daily_quests_generated_at.valueOf()).to.equal(generatedAt.valueOf());
             expect(userRow.daily_quests_updated_at.valueOf()).to.equal(updatedAt.valueOf());
           });
@@ -262,7 +262,7 @@ describe('quests module', () => {
             knex('users').first().where('id', userId),
             knex.select().from('user_quests').where('user_id', userId),
             FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-          ])).spread((userRow, questRows, firebaseQuestsSnapshot) => {
+          ])).then(([userRow, questRows, firebaseQuestsSnapshot]) => {
             expect(userRow.daily_quests_generated_at.valueOf()).to.be.above(generatedAt.valueOf());
             expect(userRow.daily_quests_updated_at.valueOf()).to.be.above(updatedAt.valueOf());
 
@@ -295,7 +295,7 @@ describe('quests module', () => {
         }).then((rootRef) => Promise.all([
           knex.select().from('user_quests').where('user_id', userId),
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ])).spread((questRows, firebaseQuestsSnapshot) => {
+        ])).then(([questRows, firebaseQuestsSnapshot]) => {
           const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
           expect(dailyQuestRows.length).to.equal(2);
 
@@ -340,7 +340,7 @@ describe('quests module', () => {
             //     knex.select().from("user_quests").where('user_id',userId),
             //     FirebasePromises.once(rootRef.child("user-quests").child(userId),"value")
             //   ])
-            // }).spread(function(questRows,firebaseQuestsSnapshot){
+            // }).then(function([questRows,firebaseQuestsSnapshot]){
             //
             //   expect(questRows.length).to.equal(2);
             //
@@ -362,7 +362,7 @@ describe('quests module', () => {
         }).then((rootRef) => Promise.all([
           knex.select().from('user_quests').where('user_id', userId),
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-        ])).spread((questRows, firebaseQuestsSnapshot) => {
+        ])).then(([questRows, firebaseQuestsSnapshot]) => {
           const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
           expect(dailyQuestRows.length).to.equal(2);
 
@@ -386,7 +386,7 @@ describe('quests module', () => {
           }).then((rootRef) => Promise.all([
             knex.select().from('user_quests').where('user_id', userId),
             FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
-          ])).spread((questRows, firebaseQuestsSnapshot) => {
+          ])).then(([questRows, firebaseQuestsSnapshot]) => {
             const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
             expect(dailyQuestRows.length).to.equal(2);
 
@@ -440,7 +440,7 @@ describe('quests module', () => {
             knex.select().from('user_quests').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
             FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
             FirebasePromises.once(rootRef.child('user-games').child(userId).child('game1').child('job_status'), 'value'),
-          ])).spread((questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot) => {
+          ])).then(([questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
             expect(questRows).to.exist;
             expect(questRows[0].progress).to.equal(1);
             expect(questRows[0].updated_at.valueOf()).to.equal(systemTime.valueOf());
@@ -462,7 +462,7 @@ describe('quests module', () => {
         return Promise.all([
           QuestsModule.updateQuestProgressWithGame(userId, 'game2', fakeGameSessionData, systemTime),
           QuestsModule.updateQuestProgressWithGame(userId, 'game3', fakeGameSessionData, systemTime),
-        ]).spread((result1, result2) =>
+        ]).then(([result1, result2]) =>
           // this should finish it
           QuestsModule.updateQuestProgressWithGame(userId, gameId, fakeGameSessionData, systemTime)).then((result3) => {
           expect(result3).to.exist;
@@ -478,7 +478,7 @@ describe('quests module', () => {
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
         ]))
-          .spread((userRow, questRows, completeQuestRows, rewardRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot) => {
+          .then(([userRow, questRows, completeQuestRows, rewardRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
             expect(questRows).to.exist;
             const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
             expect(dailyQuestRows.length).to.equal(1);
@@ -567,7 +567,7 @@ describe('quests module', () => {
             knex.select().from('user_quests').where('user_id', userId).orderBy('quest_slot_index', 'asc'),
             FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
             FirebasePromises.once(rootRef.child('user-games').child(userId).child('game1').child('job_status'), 'value'),
-          ])).spread((questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot) => {
+          ])).then(([questRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
             expect(questRows).to.exist;
             expect(questRows[0].progress).to.equal(1);
             expect(questRows[0].updated_at.valueOf()).to.equal(systemTime.valueOf());
@@ -589,7 +589,7 @@ describe('quests module', () => {
         return Promise.all([
           QuestsModule.updateQuestProgressWithGame(userId, 'game2', fakeGameSessionData, systemTime),
           QuestsModule.updateQuestProgressWithGame(userId, 'game3', fakeGameSessionData, systemTime),
-        ]).spread((result1, result2) =>
+        ]).then(([result1, result2]) =>
           // this should finish it
           QuestsModule.updateQuestProgressWithGame(userId, gameId, fakeGameSessionData, systemTime)).then((result3) => {
           expect(result3).to.exist;
@@ -605,7 +605,7 @@ describe('quests module', () => {
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
           FirebasePromises.once(rootRef.child('user-games').child(userId).child(gameId).child('job_status'), 'value'),
         ]))
-          .spread((userRow, questRows, completeQuestRows, rewardRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot) => {
+          .then(([userRow, questRows, completeQuestRows, rewardRows, firebaseQuestsSnapshot, firebaseGameJobStatusSnapshot]) => {
             expect(questRows).to.exist;
             const dailyQuestRows = _.filter(questRows, (questRow) => _.contains(QuestsModule.DAILY_QUEST_SLOTS, questRow.quest_slot_index));
             expect(dailyQuestRows.length).to.equal(1);
@@ -673,7 +673,7 @@ describe('quests module', () => {
             knex.select().from('user_spirit_orbs').where('user_id', userId),
             FirebasePromises.once(rootRef.child('user-inventory').child(userId).child('spirit-orbs'), 'value'),
           ]))
-          .spread(function (userSpiritOrbRows, firebaseSpiritOrbsSnapshot) {
+          .then(function ([userSpiritOrbRows, firebaseSpiritOrbsSnapshot]) {
             expect(userSpiritOrbRows.length).to.equal(this.userSpiritOrbRows.length + 1);
 
             const fbBoosters = firebaseSpiritOrbsSnapshot.val();
@@ -719,7 +719,7 @@ describe('quests module', () => {
           FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
             .child('quests')
             .child(QuestsModule.CATCH_UP_QUEST_SLOT), 'value'),
-        ])).spread((catchUpQuestRow, fbCatchUpQuest) => {
+        ])).then(([catchUpQuestRow, fbCatchUpQuest]) => {
           expect(catchUpQuestRow).to.exist;
           expect(catchUpQuestRow.gold).to.equal(QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect);
 
@@ -752,7 +752,7 @@ describe('quests module', () => {
             FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
               .child('quests')
               .child(QuestsModule.CATCH_UP_QUEST_SLOT), 'value'),
-          ])).spread((catchUpQuestRow, fbCatchUpQuest) => {
+          ])).then(([catchUpQuestRow, fbCatchUpQuest]) => {
             expect(catchUpQuestRow).to.exist;
             expect(catchUpQuestRow.gold).to.equal(QuestsModule.CATCH_UP_CHARGE_GOLD_VALUE * catchUpChargesToExpect);
 
@@ -784,7 +784,7 @@ describe('quests module', () => {
             FirebasePromises.once(rootRef.child('user-quests').child(userId).child('daily').child('current')
               .child('quests')
               .child(QuestsModule.CATCH_UP_QUEST_SLOT), 'value'),
-          ])).spread((catchUpQuestRow, fbCatchUpQuest) => {
+          ])).then(([catchUpQuestRow, fbCatchUpQuest]) => {
             expect(catchUpQuestRow).to.exist;
             expect(catchUpQuestRow.gold).to.equal(QuestsModule.CATCH_UP_MAX_GOLD_VALUE);
 
@@ -834,7 +834,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(2);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(0);
@@ -869,7 +869,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);
@@ -909,7 +909,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);
@@ -950,7 +950,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);
@@ -993,7 +993,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);
@@ -1034,7 +1034,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             expect(questRows.length).to.equal(3);
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);
@@ -1088,7 +1088,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(0);
 
@@ -1121,7 +1121,7 @@ describe('quests module', () => {
               FirebasePromises.once(this.fbRootRef.child('user-quests').child(userId), 'value'),
             ]);
           })
-          .spread((questRows, firebaseQuestsSnapshot) => {
+          .then(([questRows, firebaseQuestsSnapshot]) => {
             const catchUpQuestRows = _.filter(questRows, (questRow) => questRow.quest_slot_index === QuestsModule.CATCH_UP_QUEST_SLOT);
             expect(catchUpQuestRows.length).to.equal(1);
 
@@ -1195,7 +1195,7 @@ describe('quests module', () => {
           knex('user_quests_complete').where('user_id', userId).select(),
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
         ]))
-          .spread((questRows, questCompleteRows, questSnapshot) => {
+          .then(([questRows, questCompleteRows, questSnapshot]) => {
             const currentQuestsData = questSnapshot.val().daily.current;
             expect(currentQuestsData[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
             const q1 = _.find(questRows, (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT);
@@ -1285,7 +1285,7 @@ describe('quests module', () => {
           generatePushId(),
           generatePushId(),
         ], (gameId) => QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData), { concurrency: 1 })
-          .spread(() => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first()).then((questRow) => {
+          .then(() => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first()).then((questRow) => {
             expect(questRow.progress).to.equal(1);
           }));
 
@@ -1307,7 +1307,7 @@ describe('quests module', () => {
               generatePushId(),
               generatePushId(),
             ], (gameId) => QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData), { concurrency: 1 }))
-            .spread(() => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first())
+            .then(() => knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first())
             .then((questRow) => {
               expect(questRow.progress).to.equal(2);
             });
@@ -1332,12 +1332,12 @@ describe('quests module', () => {
               generatePushId(),
               generatePushId(),
             ], (gameId) => QuestsModule.updateQuestProgressWithGame(userId, generatePushId(), fakeGameSessionData), { concurrency: 1 }))
-            .spread(() => Promise.all([
+            .then(() => Promise.all([
               knex('user_quests').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
               knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
               knex('user_gift_crates').where('user_id', userId),
             ]))
-            .spread((questRow, completedQuestRow, giftChestRows) => {
+            .then(([questRow, completedQuestRow, giftChestRows]) => {
               expect(questRow).to.not.exist;
               expect(completedQuestRow.progress).to.equal(15);
               expect(giftChestRows.length).to.equal(1);
@@ -1387,7 +1387,7 @@ describe('quests module', () => {
       //     ],function(gameId){
       //       return QuestsModule.updateQuestProgressWithGame(userId,generatePushId(),fakeGameSessionData)
       //     },{concurrency:1})
-      //     .spread(function(){
+      //     .then(function(){
       //       return knex("user_quests").where("user_id",userId).andWhere("quest_slot_index",QuestsModule.SEASONAL_QUEST_SLOT).first()
       //     }).then(function(questRow){
       //       expect(questRow.progress).to.equal(1)
@@ -1428,7 +1428,7 @@ describe('quests module', () => {
               knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
               knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
             ]))
-            .spread((giftCrateRows, questRow, rewardRows) => {
+            .then(([giftCrateRows, questRow, rewardRows]) => {
               expect(giftCrateRows.length).to.equal(1);
               expect(giftCrateRows[0].crate_type).to.equal(GiftCrateLookup.Frostfire2016);
               expect(questRow).to.exist;
@@ -1497,7 +1497,7 @@ describe('quests module', () => {
           knex('user_quests_complete').where('user_id', userId).select(),
           FirebasePromises.once(rootRef.child('user-quests').child(userId), 'value'),
         ]))
-          .spread((questRows, questCompleteRows, questSnapshot) => {
+          .then(([questRows, questCompleteRows, questSnapshot]) => {
             const currentQuestsData = questSnapshot.val().daily.current;
             expect(currentQuestsData[QuestsModule.SEASONAL_QUEST_SLOT]).to.not.exist;
             const q1 = _.find(questRows, (q) => q.quest_slot_index === QuestsModule.SEASONAL_QUEST_SLOT);
@@ -1540,7 +1540,7 @@ describe('quests module', () => {
               knex('user_cosmetic_chest_keys').where('user_id', userId).andWhere('key_type', SDK.CosmeticsChestTypeLookup.Common).select(),
               knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
               knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
-            ])).spread((giftCrateRows, crateKeyRows, questRow, rewardRows) => {
+            ])).then(([giftCrateRows, crateKeyRows, questRow, rewardRows]) => {
               expect(giftCrateRows.length).to.equal(0);
               expect(crateKeyRows.length).to.equal(1);
               expect(questRow).to.exist;
@@ -1586,7 +1586,7 @@ describe('quests module', () => {
             knex('user_quests_complete').where('user_id', userId).andWhere('quest_slot_index', QuestsModule.SEASONAL_QUEST_SLOT).first(),
             knex('user_rewards').where('user_id', userId).andWhere('game_id', gameId).select(),
           ]))
-          .spread((giftCrateRows, questRow, rewardRows) => {
+          .then(([giftCrateRows, questRow, rewardRows]) => {
             expect(giftCrateRows.length).to.equal(1);
             expect(giftCrateRows[0].crate_type).to.equal(GiftCrateLookup.Frostfire2016);
             expect(questRow).to.exist;

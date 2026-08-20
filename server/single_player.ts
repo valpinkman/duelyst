@@ -222,7 +222,7 @@ var onGamePlayerJoin = function (requestData) {
   // initialize a server-side game session and join it
   return initGameSession(gameId)
     .bind(this)
-    .spread(function (gameSession) {
+    .then(function ([gameSession]) {
     // Logger.module("IO").debug "[G:#{gameId}]", "join_game -> players in data: ", gameSession.players
 
       // player
@@ -1207,11 +1207,11 @@ var initGameSession = function (gameId, onComplete) {
     GameManager.loadGameSession(gameId),
     GameManager.loadGameMouseUIData(gameId),
   ])
-    .spread((gameData, mouseData) => [
+    .then(([gameData, mouseData]) => [
       JSON.parse(gameData),
       JSON.parse(mouseData),
     ])
-    .spread(function (gameDataIn, mouseData) {
+    .then(function ([gameDataIn, mouseData]) {
       Logger.module('IO').log(`[G:${gameId}]`, `initGameSession -> loaded game data for game:${gameId}`);
 
       // deserialize game session

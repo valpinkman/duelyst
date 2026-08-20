@@ -291,7 +291,7 @@ class CosmeticChestsModule {
           tx.first().from('user_cosmetic_chests').where('chest_id', chestId).forUpdate(),
           tx.select('cosmetic_id').from('user_cosmetic_inventory').where('user_id', userId).forUpdate(),
         ]))
-        .spread(function (chestRow, userCosmeticRows) {
+        .then(function ([chestRow, userCosmeticRows]) {
           if ((chestRow == null) || (chestRow.user_id !== userId)) {
             return Promise.reject(new Errors.NotFoundError('The chest ID you provided does not exist or belong to you.'));
           }
@@ -867,7 +867,7 @@ class CosmeticChestsModule {
             .forUpdate(),
         ]);
       })
-      .spread(function (userChestForBossRow, userOpenedChestForBossRow) {
+      .then(function ([userChestForBossRow, userOpenedChestForBossRow]) {
         if ((userChestForBossRow != null) || (userOpenedChestForBossRow != null)) {
         // Chest for this boss already earned
           return Promise.resolve([]);

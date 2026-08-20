@@ -26,7 +26,7 @@ router.get('/summary', function (req, res, next) {
         knex('user_referral_events').where('referrer_id', user_id).andWhere('created_at', '>', userRow.referral_rewards_claimed_at).select(),
       ]);
     })
-    .spread(function (referralRows, unreadEventRows) {
+    .then(function ([referralRows, unreadEventRows]) {
       let row;
       Logger.module('API').debug('referralRows', referralRows);
       Logger.module('API').debug('unreadEventRows', unreadEventRows);

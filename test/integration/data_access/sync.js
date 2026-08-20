@@ -56,7 +56,7 @@ describe('sync module', () => {
     return Promise.all([
       createOrInsertUser('unit-test-1@duelyst.local', 'player 1', 0),
       createOrInsertUser('unit-test-2@duelyst.local', 'player 2', 0),
-    ]).spread((player1CreatedId, player2CreatedId) => {
+    ]).then(([player1CreatedId, player2CreatedId]) => {
       const userId = player1CreatedId;
       const user2Id = player2CreatedId;
     });
@@ -82,7 +82,7 @@ describe('sync module', () => {
             FirebasePromises.once(this.rootRef.child('user-inventory').child(userId).child('card-collection'), 'value'),
           ]);
         })
-        .spread((cardCountRows, cardCollection, fbCardCollection) => {
+        .then(([cardCountRows, cardCollection, fbCardCollection]) => {
           expect(cardCountRows.length).to.equal(5);
           expect(_.keys(fbCardCollection.val()).length).to.equal(5);
         })

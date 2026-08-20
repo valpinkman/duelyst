@@ -90,7 +90,7 @@ const LadderProgressLayer = RewardLayer.extend({
       this.whenRequiredResourcesReady(),
       this.whenResourcesReady(rankRequestId),
     ])
-      .spread((requiredRequestId, rankRequestId) => {
+      .then(([requiredRequestId, rankRequestId]) => {
         if (!this.getAreResourcesValid(requiredRequestId) || !this.getAreResourcesValid(rankRequestId)) return; // load invalidated or resources changed
 
         // disable and reset continue

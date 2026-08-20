@@ -93,7 +93,7 @@ router.get('/:player_id', function (req, res, next) {
       FirebasePromises.once(rootRef.child('users').child(user_id).child('buddies'), 'value'),
       FirebasePromises.once(rootRef.child('users').child(player_id).child('blockSpectators'), 'value'),
     ]))
-    .spread(function (buddiesSnapshot, blockSpectatorsSnapshot) {
+    .then(function ([buddiesSnapshot, blockSpectatorsSnapshot]) {
       const buddies = buddiesSnapshot.val();
       const buddyIds = _.keys(buddies);
 

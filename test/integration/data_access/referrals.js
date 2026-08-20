@@ -79,7 +79,7 @@ describe('referrals module', () => {
         UsersModule.createNewUser(email3, username3, 'testpassword', 'kumite14'),
         UsersModule.createNewUser(email4, username4, 'testpassword', 'kumite14'),
         SyncModule.wipeUserData(userId),
-      ]).spread((newUserId1, newUserId2, newUserId3, newUserId4) => {
+      ]).then(([newUserId1, newUserId2, newUserId3, newUserId4]) => {
         newUserId = newUserId1;
         oldUserId = newUserId2;
         oldUserWithEventsId = newUserId3;
@@ -118,7 +118,7 @@ describe('referrals module', () => {
           knex('user_referral_events').where('referrer_id', userId).select(),
           FirebasePromises.once(rootRef.child('users').child(newUserId), 'value'),
           FirebasePromises.once(rootRef.child('users').child(userId), 'value'),
-        ])).spread((userRow, referralRows, referralEventRows, userSnapshot, friendSnapshot) => {
+        ])).then(([userRow, referralRows, referralEventRows, userSnapshot, friendSnapshot]) => {
           expect(userRow.referred_by_user_id).to.equal(userId);
           expect(userRow.wallet_gold).to.equal(100);
           expect(referralRows.length).to.equal(1);
@@ -165,7 +165,7 @@ describe('referrals module', () => {
             knex('users').where('id', oldUserWithEventsId).first(),
             knex('user_referral_events').where('referrer_id', newUserId).select(),
           ]);
-        }).spread((userRow, referralEventRows) => {
+        }).then(([userRow, referralEventRows]) => {
           expect(userRow.referred_by_user_id).to.equal(newUserId);
           expect(referralEventRows.length).to.equal(2);
         }));
@@ -208,7 +208,7 @@ describe('referrals module', () => {
         }).then((rootRef) => Promise.all([
           knex('user_referrals').where('user_id', userId).select(),
           knex('user_referral_events').where('referrer_id', userId).select(),
-        ])).spread((referralRows, referralEventRows) => {
+        ])).then(([referralRows, referralEventRows]) => {
           expect(referralRows.length).to.equal(1);
           expect(referralRows[0].level_reached).to.equal(1);
           expect(referralEventRows.length).to.equal(1);
@@ -222,7 +222,7 @@ describe('referrals module', () => {
         }).then((rootRef) => Promise.all([
           knex('user_referrals').where('user_id', userId).select(),
           knex('user_referral_events').where('referrer_id', userId).select(),
-        ])).spread((referralRows, referralEventRows) => {
+        ])).then(([referralRows, referralEventRows]) => {
           expect(referralRows.length).to.equal(1);
           expect(referralRows[0].level_reached).to.equal(2);
           expect(referralEventRows.length).to.equal(2);
@@ -236,7 +236,7 @@ describe('referrals module', () => {
         }).then((rootRef) => Promise.all([
           knex('user_referrals').where('user_id', userId).select(),
           knex('user_referral_events').where('referrer_id', userId).select(),
-        ])).spread((referralRows, referralEventRows) => {
+        ])).then(([referralRows, referralEventRows]) => {
           expect(referralRows.length).to.equal(1);
           expect(referralRows[0].level_reached).to.equal(2);
           expect(referralEventRows.length).to.equal(3);
@@ -253,7 +253,7 @@ describe('referrals module', () => {
       //       knex("referral_codes").where('code','unittestercode').first(),
       //       knex("referral_events").where('code','unittestercode').select()
       //     ])
-      //   }).spread(function(referralCodeRow,referralEventRows){
+      //   }).then(function([referralCodeRow,referralEventRows]){
       //     expect(referralCodeRow).to.exist
       //     expect(referralCodeRow.event_stats_json['gold']).to.equal(2)
       //     expect(referralEventRows.length).to.equal(2)
@@ -290,7 +290,7 @@ describe('referrals module', () => {
             knex('users').where('id', userId).first(),
             knex('user_rewards').where('user_id', userId).andWhere('reward_category', 'referral').select(),
           ]);
-        }).spread((userRow, rewardRows) => {
+        }).then(([userRow, rewardRows]) => {
           expect(userRow.referral_rewards_claimed_at).to.exist;
           expect(rewardRows.length).to.equal(2);
           const rewards = _.reduce(rewardRows, (memo, r) => {
@@ -327,7 +327,7 @@ describe('referrals module', () => {
           .then(() => Promise.all([
             knex('user_achievements').where('user_id', userId).select(),
             knex('user_cosmetic_inventory').where('user_id', userId).select(),
-          ])).spread((achievementRows, emoteRows) => {
+          ])).then(([achievementRows, emoteRows]) => {
             expect(achievementRows.length).to.equal(1);
             expect(achievementRows[0].achievement_id).to.equal(FirstReferralPurchaseAchievement.id);
             expect(emoteRows.length).to.equal(1);
