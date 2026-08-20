@@ -1007,7 +1007,6 @@ class InventoryModule {
     Logger.module('InventoryModule').time(`buyBoosterPacksWithGold() -> bought by user ${userId.blue}.`.green);
 
     const NOW_UTC_MOMENT = moment.utc();
-    const this_obj = { cardSetData };
 
     let final_wallet_gold = null;
     var txPromise = knex.transaction(function (tx) {
@@ -1052,7 +1051,11 @@ class InventoryModule {
             const userCurrencyLogItem = {
               id: generatePushId(),
               user_id: userId,
-              gold: -_chainState.cardSetData.orbGoldCost,
+              // `cardSetData` is the closure local declared at the top of this
+              // function. This read used to be `_chainState.cardSetData`, which is
+              // never assigned -- the value was put in a separate `this_obj` bag --
+              // so it threw on `.orbGoldCost` and buying boosters with gold failed.
+              gold: -cardSetData.orbGoldCost,
               memo: `spirit orb ${boosterId}`,
               created_at: NOW_UTC_MOMENT.toDate(),
             };

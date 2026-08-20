@@ -128,6 +128,18 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **chased the undefined-value cluster: 5 more production bugs, data_access
+  455 → 493 passing.** A second `.bind(this)` artifact: code reading `_chainState.X` where X is
+  **never assigned** — sometimes the function's own PARAMETER. Detector had to ignore
+  `_.extend(_chainState, data)` (bulk population), which caught two false positives before I
+  "fixed" working code. Real: `rank.updateUsersRatingsWithGameOutcome` read `_chainState.gameId`
+  /`player1Id`/`player2Id` (parameters) so every Firebase write became `.child(undefined)` and
+  threw — ratings after a game were dead; `inventory.buyBoosterPacksWithGold` read
+  `_chainState.cardSetData` (put in a separate bag) so `.orbGoldCost` threw — buying boosters
+  with gold was dead; `cosmetic_chests` read a progression row it never loaded;
+  `shop.debitUserPremiumCurrency` returned a `purchaseId` whose assignment upstream had
+  commented out; `sync` read an `authUser` that never existed upstream either (dead function).
+  Both live paths verified against the real stack.
 - 2026-08-20 — **the revived suites found a real cluster: 15 data_access functions used TWO
   state bags.** The bluebird `.bind(this)` migration left both a `_chainState` and a `this_obj`
   in the same function, with a value written to one and read from the other — so the read was

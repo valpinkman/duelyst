@@ -811,7 +811,17 @@ class SyncModule {
           const userData: Record<string, any> = {
             id: userId,
             username: _chainState.user.username.toLowerCase(),
-            invite_code: _chainState.authUser.inviteCode,
+            /*
+             * Was `_chainState.authUser.inviteCode`. `authUser` is never assigned --
+             * not here and not in the CoffeeScript original, which also wrote
+             * `@.authUser.inviteCode` -- so this threw. The user record loaded from
+             * Firebase into `_chainState.user` is the only thing in scope that could
+             * carry it, and the column is nullable.
+             *
+             * NOTE: _syncUserFromFirebaseToSQL currently has NO callers, so this was
+             * a latent crash rather than a live one.
+             */
+            invite_code: _chainState.user.inviteCode || null,
             created_at: toPgDate(_chainState.user.createdAt),
             updated_at: toPgDate(_chainState.user.updatedAt),
             last_session_at: toPgDate(_chainState.user.presence != null ? _chainState.user.presence.began : undefined),

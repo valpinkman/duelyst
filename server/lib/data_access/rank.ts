@@ -675,12 +675,12 @@ class RankModule {
         if (_chainState.player1IsDiamondOrBetter && _chainState.player2IsDiamondOrBetter) {
           if (_chainState.trackRatingForPlayer1) {
             _chainState.player1NewRatingData = {};
-            updateOrInsertUserRating(_chainState.player1Id, _chainState.player1UserRow, _chainState.player1RatingRow, player1, gameId, player1IsWinner, _chainState.player1NewRatingData);
+            updateOrInsertUserRating(player1Id, _chainState.player1UserRow, _chainState.player1RatingRow, player1, gameId, player1IsWinner, _chainState.player1NewRatingData);
           }
 
           if (_chainState.trackRatingForPlayer2) {
             _chainState.player2NewRatingData = {};
-            updateOrInsertUserRating(_chainState.player2Id, _chainState.player2UserRow, _chainState.player2RatingRow, player2, gameId, player2IsWinner, _chainState.player2NewRatingData);
+            updateOrInsertUserRating(player2Id, _chainState.player2UserRow, _chainState.player2RatingRow, player2, gameId, player2IsWinner, _chainState.player2NewRatingData);
           }
         }
 
@@ -690,11 +690,11 @@ class RankModule {
       // Update rating in redis
         const redisPromises = [];
         if ((_chainState.player1NewRatingData != null) && (_chainState.player1NewRatingData.new_ladder_rating != null) && _chainState.player1IsSRank) {
-          redisPromises.push(SRankManager.updateUserLadderRating(_chainState.player1Id, _chainState.startOfSeasonMoment, _chainState.player1NewRatingData.new_ladder_rating));
+          redisPromises.push(SRankManager.updateUserLadderRating(player1Id, _chainState.startOfSeasonMoment, _chainState.player1NewRatingData.new_ladder_rating));
         }
 
         if ((_chainState.player2NewRatingData != null) && (_chainState.player2NewRatingData.new_ladder_rating != null) && _chainState.player2IsSRank) {
-          redisPromises.push(SRankManager.updateUserLadderRating(_chainState.player2Id, _chainState.startOfSeasonMoment, _chainState.player2NewRatingData.new_ladder_rating));
+          redisPromises.push(SRankManager.updateUserLadderRating(player2Id, _chainState.startOfSeasonMoment, _chainState.player2NewRatingData.new_ladder_rating));
         }
 
         return Promise.all(redisPromises);
@@ -704,13 +704,13 @@ class RankModule {
         const ladderRankingPromises = [];
 
         if (_chainState.player1IsSRank) {
-          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, _chainState.player1Id, _chainState.startOfSeasonMoment, false, MOMENT_UTC_NOW));
+          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, player1Id, _chainState.startOfSeasonMoment, false, MOMENT_UTC_NOW));
         } else {
           ladderRankingPromises.push(Promise.resolve(null));
         }
 
         if (_chainState.player2IsSRank) {
-          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, _chainState.player2Id, _chainState.startOfSeasonMoment, false, MOMENT_UTC_NOW));
+          ladderRankingPromises.push(RankModule.updateAndGetUserLadderPosition(txPromise, tx, player2Id, _chainState.startOfSeasonMoment, false, MOMENT_UTC_NOW));
         } else {
           ladderRankingPromises.push(Promise.resolve(null));
         }
@@ -732,20 +732,28 @@ class RankModule {
 
         const fbUpdatePromises = [];
 
+        /*
+         * player1Id / player2Id / gameId below are this function's PARAMETERS.
+         * They used to be read as `_chainState.<name>`, which was never assigned,
+         * so every one was undefined and these Firebase writes became
+         * .child(undefined) -- which throws, taking the whole ratings update with
+         * it. That is the `path argument was an invalid path = "undefined"` the
+         * revived rank suite reported.
+         */
         // if players had a ladder position before add it to game over data
         if ((_chainState.player1RatingRow != null ? _chainState.player1RatingRow.ladder_position : undefined) != null) {
-          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player1Id).child(_chainState.gameId).child('ladder_position_before'), _chainState.player1RatingRow.ladder_position));
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(player1Id).child(gameId).child('ladder_position_before'), _chainState.player1RatingRow.ladder_position));
         }
         if ((_chainState.player2RatingRow != null ? _chainState.player2RatingRow.ladder_position : undefined) != null) {
-          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player2Id).child(_chainState.gameId).child('ladder_position_before'), _chainState.player2RatingRow.ladder_position));
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(player2Id).child(gameId).child('ladder_position_before'), _chainState.player2RatingRow.ladder_position));
         }
 
         // If players have a new ladder position after match add it to game over data
         if (_chainState.player1LadderPositionAfter) {
-          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player1Id).child(_chainState.gameId).child('ladder_position_after'), _chainState.player1LadderPositionAfter));
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(player1Id).child(gameId).child('ladder_position_after'), _chainState.player1LadderPositionAfter));
         }
         if (_chainState.player2LadderPositionAfter) {
-          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(_chainState.player2Id).child(_chainState.gameId).child('ladder_position_after'), _chainState.player2LadderPositionAfter));
+          fbUpdatePromises.push(FirebasePromises.set(_chainState.fbRootRef.child('user-games').child(player2Id).child(gameId).child('ladder_position_after'), _chainState.player2LadderPositionAfter));
         }
 
         return Promise.all(fbUpdatePromises);
@@ -756,8 +764,11 @@ class RankModule {
       })
       .finally(function () {
         return Promise.all([
-          GamesModule.markClientGameJobStatusAsComplete(_chainState.player1Id, _chainState.gameId, 'ladder'),
-          GamesModule.markClientGameJobStatusAsComplete(_chainState.player2Id, _chainState.gameId, 'ladder'),
+          // player1Id/player2Id/gameId are PARAMETERS of this function; they were
+          // never assigned onto _chainState, so these were all undefined and the
+          // Firebase write below became .child(undefined), which throws.
+          GamesModule.markClientGameJobStatusAsComplete(player1Id, gameId, 'ladder'),
+          GamesModule.markClientGameJobStatusAsComplete(player2Id, gameId, 'ladder'),
         ]);
       });
 

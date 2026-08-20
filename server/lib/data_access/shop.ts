@@ -514,7 +514,15 @@ class ShopModule {
         return Promise.all(allPromises);
       }))
       .then(function () {
-        return _chainState.purchaseId;
+        /*
+         * This used to `return _chainState.purchaseId`, which is never assigned.
+         * In the CoffeeScript original both the assignment AND this return were
+         * commented out, along with the purchase-record insert they went with --
+         * decaffeination resurrected the return but not the rest, so it resolved
+         * to undefined. There is no purchase record to identify, so the function
+         * simply resolves when the debit is done. Its one caller (qa.ts) is
+         * commented out too.
+         */
       });
     return trxPromise;
   }

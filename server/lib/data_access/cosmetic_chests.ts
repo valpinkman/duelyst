@@ -745,7 +745,10 @@ class CosmeticChestsModule {
       .then(function () {
         for (var chestData of Array.from<any>(_chainState.awardedChestData)) {
         // Currently there is only an achievement for first bronze chest so don't bother with others
-          if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common) && ((_chainState.userProgressionRow.last_crate_awarded_at == null))) {
+          // no progression row at all means no crate has ever been awarded, which is
+          // the same case this guard is looking for
+          if ((chestData.chest_type === SDK.CosmeticsChestTypeLookup.Common)
+            && (_chainState.userProgressionRow == null || _chainState.userProgressionRow.last_crate_awarded_at == null)) {
             Jobs.enqueue('update-user-achievements', {
               name: 'Update User Cosmetic Chest Achievements',
               title: util.format('User %s :: Update Cosmetic Chest Achievements', userId),
@@ -855,9 +858,19 @@ class CosmeticChestsModule {
           tx('user_cosmetic_chests_opened').where('user_id', userId).andWhere('boss_id', bossId).andWhere('boss_event_id', _chainState.matchingEventId)
             .first()
             .forUpdate(),
+          /*
+           * The achievement guard further down reads
+           * `_chainState.userProgressionRow.last_crate_awarded_at`, but this function
+           * never loaded a progression row -- that read is a copy-paste from the
+           * non-boss sibling, which does load one. So it threw whenever a bronze
+           * chest was awarded from a boss game. Loading it here makes the guard work
+           * as written rather than changing what it means.
+           */
+          tx('user_progression').where('user_id', userId).first(),
         ]);
       })
-      .then(function ([userChestForBossRow, userOpenedChestForBossRow]) {
+      .then(function ([userChestForBossRow, userOpenedChestForBossRow, userProgressionRow]) {
+        _chainState.userProgressionRow = userProgressionRow;
         if ((userChestForBossRow != null) || (userOpenedChestForBossRow != null)) {
         // Chest for this boss already earned
           return Promise.resolve([]);
