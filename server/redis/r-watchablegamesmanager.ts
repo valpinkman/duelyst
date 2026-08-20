@@ -11,6 +11,7 @@ const config = require('../../config/config');
 
 const env = config.get('env');
 const generatePushID = require('../../app/common/generate_push_id');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 // Helper returns the Game Data Redis key prefix
 const keyPrefix = () => `${env}:watchable_games:`;
@@ -49,8 +50,7 @@ class RedisWatchableGamesManager {
     multi.set(key, dataJson);
     multi.expire(key, config.get('watchSectionCacheTTL')); // when to expire the cache
 
-    return multi.execAsync()
-      .nodeify(callback);
+    return PromiseUtils.nodeify(multi.execAsync(), callback);
   }
 
   /**
@@ -65,9 +65,8 @@ class RedisWatchableGamesManager {
     const key = `${keyPrefix()}${divisionName}:${dateKey}`;
     Logger.module('REDIS').debug(`loadGamesDataForDivision() -> ${divisionName}`);
 
-    return this.redis.getAsync(key)
-      .then(JSON.parse)
-      .nodeify(callback);
+    return PromiseUtils.nodeify(this.redis.getAsync(key)
+      .then(JSON.parse), callback);
   }
 }
 

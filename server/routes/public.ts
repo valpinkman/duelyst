@@ -166,7 +166,7 @@ router.get('/stats', function (req, res) {
   const getPlayers = Redis.hgetAsync(`servers:${serverId}`, 'players');
   const getGames = Redis.hgetAsync(`servers:${serverId}`, 'games');
 
-  return Promise.join(getPlayers, getGames, (players, games) => res.json({ players, games, pool: poolStats(knex.client.pool) }));
+  return Promise.all([getPlayers, getGames]).then(([players, games]) => res.json({ players, games, pool: poolStats(knex.client.pool) }));
 });
 
 router.get('/replay', function (req, res, next) {

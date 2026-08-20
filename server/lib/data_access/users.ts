@@ -55,6 +55,7 @@ const NewPlayerProgressionHelper = require('../../../app/sdk/progression/newPlay
 const NewPlayerProgressionStageEnum = require('../../../app/sdk/progression/newPlayerProgressionStageEnum');
 const NewPlayerProgressionModuleLookup = require('../../../app/sdk/progression/newPlayerProgressionModuleLookup');
 const { onType } = require('../../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../../app/common/utils/utils_promise');
 
 ({ Redis, Jobs } = require('../../redis'));
 
@@ -747,13 +748,13 @@ class UsersModule {
     username = username != null ? username.toLowerCase() : undefined;
 
     return knex.first('id').from('users').where('username', username)
-      .then((userRow) => new Promise(function (resolve, reject) {
+      .then((userRow) => PromiseUtils.nodeify(new Promise(function (resolve, reject) {
         if (userRow) {
           return resolve(userRow.id);
         } else {
           return resolve(null);
         }
-      }).nodeify(callback));
+      }), callback));
   }
 
   /**
@@ -764,13 +765,13 @@ class UsersModule {
    */
   static userIdForGooglePlayId(googlePlayId, callback) {
     return knex.first('id').from('users').where('google_play_id', googlePlayId)
-      .then((userRow) => new Promise(function (resolve, reject) {
+      .then((userRow) => PromiseUtils.nodeify(new Promise(function (resolve, reject) {
         if (userRow) {
           return resolve(userRow.id);
         } else {
           return resolve(null);
         }
-      }).nodeify(callback));
+      }), callback));
   }
 
   /**
@@ -781,13 +782,13 @@ class UsersModule {
    */
   static userIdForGameCenterId(gameCenterId, callback) {
     return knex.first('id').from('users').where('gamecenter_id', gameCenterId)
-      .then((userRow) => new Promise(function (resolve, reject) {
+      .then((userRow) => PromiseUtils.nodeify(new Promise(function (resolve, reject) {
         if (userRow) {
           return resolve(userRow.id);
         } else {
           return resolve(null);
         }
-      }).nodeify(callback));
+      }), callback));
   }
 
   /**

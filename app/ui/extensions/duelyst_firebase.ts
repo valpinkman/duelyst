@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var _ = require('underscore');
+const PromiseUtils = require('../../common/utils/utils_promise');
 
 /*
  * backfire (app/vendor/backfire) is a Backbone<->Firebase binding written for
@@ -55,7 +56,7 @@ Backbone.DuelystFirebase.Model = Backbone.Firebase.Model.extend({
         });
       }
     }.bind(this));
-    p.nodeify(callback);
+    PromiseUtils.nodeify(p, callback);
     return p;
   },
 
@@ -121,7 +122,7 @@ Backbone.DuelystFirebase.Collection = Backbone.Firebase.Collection.extend({
         });
       }
     }.bind(this));
-    p.nodeify(callback);
+    PromiseUtils.nodeify(p, callback);
     return p;
   },
 

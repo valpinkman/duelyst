@@ -249,7 +249,7 @@ router.post('/card_collection/soft_wipe', (req, res, next) => res.status(403).js
       user_card_log: cardLogRows
       user_card_collection: cardCollectionRow
       user_spirit_orbs_opened: spiritOrbOpenedRows
-    return zlib.gzipAsync(JSON.stringify(backup))
+    return gzipAsync(JSON.stringify(backup))
   .then (backupDataZipped)->
     @.backupDataZipped = backupDataZipped
     return InventoryModule.softWipeUserCardInventory(user_id)

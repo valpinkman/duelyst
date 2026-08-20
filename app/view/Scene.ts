@@ -279,7 +279,7 @@ var _Scene = cc.Scene.extend({
   showContent(layer, withoutOverlay) {
     this._beforeShowOrEmptyLayer();
     this._contentPromise = this._contentOnlyPromise = this._contentContainer.show(layer);
-    this._contentOnlyPromise.nodeify(this._afterShowOrEmptyLayer.bind(this));
+    this._contentOnlyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
 
     if (withoutOverlay && this._overlay.getCurrentLayer() != null) {
       this._contentPromise = Promise.all([this._contentOnlyPromise, this.destroyOverlay()]);
@@ -311,7 +311,7 @@ var _Scene = cc.Scene.extend({
   destroyContent() {
     this._beforeShowOrEmptyLayer();
     const destroyPromise = this._contentContainer.empty();
-    destroyPromise.nodeify(this._afterShowOrEmptyLayer.bind(this));
+    destroyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
     return destroyPromise;
   },
 
@@ -338,7 +338,7 @@ var _Scene = cc.Scene.extend({
   showOverlay(layer) {
     this._beforeShowOrEmptyLayer();
     this._overlayPromise = this._overlay.show(layer);
-    this._overlayPromise.nodeify(this._afterShowOrEmptyLayer.bind(this));
+    this._overlayPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
     return this._overlayPromise;
   },
 
@@ -361,7 +361,7 @@ var _Scene = cc.Scene.extend({
   destroyOverlay() {
     this._beforeShowOrEmptyLayer();
     const destroyPromise = this._overlay.empty();
-    destroyPromise.nodeify(this._afterShowOrEmptyLayer.bind(this));
+    destroyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
     return destroyPromise;
   },
 

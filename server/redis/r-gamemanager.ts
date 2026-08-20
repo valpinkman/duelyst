@@ -11,7 +11,13 @@ const config = require('../../config/config');
 const env = config.get('env');
 const ttl = config.get('redis.ttl');
 const generatePushID = require('../../app/common/generate_push_id');
-const zlib = Promise.promisifyAll(require('zlib'));
+const zlib = require('zlib');
+const { promisify } = require('util');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
+// bluebird's promisifyAll gave us gzipAsync/gunzipAsync; node's promisify is the
+// direct replacement and needs no extra dependency
+const gzipAsync = promisify(zlib.gzip);
+const gunzipAsync = promisify(zlib.gunzip);
 
 // Helper returns the Game Data Redis key prefix
 const keyPrefix = () => `${env}:games:`;
@@ -44,7 +50,7 @@ class RedisGameManager {
   generateGameId(callback) {
     const p = new Promise((resolve, reject) => resolve(generatePushID()));
 
-    return p.nodeify(callback);
+    return PromiseUtils.nodeify(p, callback);
   }
 
   /**
@@ -57,14 +63,14 @@ class RedisGameManager {
   saveGameSession(gameId, serializedGameData, callback) {
     Logger.module('REDIS').debug(`saveGameSession() -> saving GameSession ${gameId}`);
     const gameKey = keyPrefix() + gameId;
-    return zlib.gzipAsync(serializedGameData)
+    return PromiseUtils.nodeify(gzipAsync(serializedGameData)
       .then((gzipGameData) => {
       // gzipGameData is a buffer
         const multi = this.redis.multi(); // start a multi command
         multi.set(gameKey, gzipGameData);
         multi.expire(gameKey, ttl); // mark to expire at ttl
         return multi.execAsync();
-      }).nodeify(callback);
+      }), callback);
   }
 
   /**
@@ -77,14 +83,14 @@ class RedisGameManager {
     Logger.module('REDIS').debug(`loadGameSession() -> loading GameSession ${gameId}`);
     const gameKey = keyPrefix() + gameId;
     // Must pass a new Buffer(key) to get back a buffer object
-    return this.redis.getAsync(new Buffer(gameKey))
+    return PromiseUtils.nodeify(this.redis.getAsync(new Buffer(gameKey))
       .then((buffer) => {
         if (buffer) {
-          return zlib.gunzipAsync(buffer);
+          return gunzipAsync(buffer);
         }
         // just return the empty buffer (null)
         return buffer;
-      }).nodeify(callback);
+      }), callback);
   }
 
   /**
@@ -97,14 +103,14 @@ class RedisGameManager {
   saveGameMouseUIData(gameId, serializedData, callback) {
     Logger.module('REDIS').debug(`saveGameMouseUIData() -> saving data for game ${gameId}`);
     const key = keyPrefixForMouseUIData() + gameId;
-    return zlib.gzipAsync(serializedData)
+    return PromiseUtils.nodeify(gzipAsync(serializedData)
       .then((gzipMouseData) => {
       // gzipMouseData is a buffer
         const multi = this.redis.multi(); // start a multi command
         multi.set(key, gzipMouseData);
         multi.expire(key, ttl); // mark to expire at ttl
         return multi.execAsync();
-      }).nodeify(callback);
+      }), callback);
   }
 
   /**
@@ -116,14 +122,14 @@ class RedisGameManager {
   loadGameMouseUIData(gameId, callback) {
     Logger.module('REDIS').debug(`loadGameMouseUIData() -> loading data for game ${gameId}`);
     const key = keyPrefixForMouseUIData() + gameId;
-    return this.redis.getAsync(new Buffer(key))
+    return PromiseUtils.nodeify(this.redis.getAsync(new Buffer(key))
       .then((buffer) => {
         if (buffer) {
-          return zlib.gunzipAsync(buffer);
+          return gunzipAsync(buffer);
         }
         // just return the empty buffer (null)
         return buffer;
-      }).nodeify(callback);
+      }), callback);
   }
 }
 

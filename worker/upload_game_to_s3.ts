@@ -37,9 +37,9 @@ const s3Client = new S3Client(s3Opts);
 const upload = function (gameId, serializedGameSession, serializedMouseUIEventData) {
   Logger.module('REPLAYS').log(`uploading game ${gameId} to S3`);
 
-  const allDeflatePromises = [zlib.gzipAsync(serializedGameSession)];
+  const allDeflatePromises = [gzipAsync(serializedGameSession)];
   if (serializedMouseUIEventData != null) {
-    allDeflatePromises.push(zlib.gzipAsync(serializedMouseUIEventData));
+    allDeflatePromises.push(gzipAsync(serializedMouseUIEventData));
   }
 
   const filename = env + '/' + gameId + '.json';

@@ -16,6 +16,7 @@ const moment = require('moment');
 const GamesModule = require('../server/lib/data_access/games');
 const { GameManager } = require('../server/redis');
 const fs = require('fs');
+const PromiseUtils = require('../app/common/utils/utils_promise');
 
 const { version } = JSON.parse(fs.readFileSync('./version.json'));
 
@@ -49,7 +50,7 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
     error = new Error('Could not create a game because one or both the player IDs are invalid');
 
     // send the error along to the callback
-    return Promise.reject(error).nodeify();
+    return Promise.reject(error);
   }
 
   Logger.module('GAME CREATE').debug(`Setting up game for user ${player1Name} and user ${player2Name} on ${gameServer}`);
@@ -77,15 +78,14 @@ const createGame = function (gameType, player1Data, player2Data, gameServer, cal
     error = error1;
     Logger.module('GAME CREATE').error(`ERROR: setting up GameSession: ${JSON.stringify(error.message)}`.red);
     Logger.module('GAME CREATE').error(error.stack);
-    return Promise.reject(error).nodeify();
+    return Promise.reject(error);
   }
 
   const createdDate = moment().utc().valueOf();
   newGameSession.createdAt = createdDate;
   newGameSession.gameServer = gameServer;
 
-  return GameManager.generateGameId()
-    .nodeify(callback)
+  return PromiseUtils.nodeify(GameManager.generateGameId(), callback)
     .then(function (gameId) {
       _chainState.gameId = gameId;
       Logger.module('GAME CREATE').debug(`Unique game id ${gameId}`);

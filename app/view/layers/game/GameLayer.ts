@@ -64,6 +64,7 @@ const Player2Layer = require('./Player2Layer');
 const Player1Layer = require('./Player1Layer');
 const BottomDeckLayer = require('./BottomDeckLayer');
 const TileLayer = require('./TileLayer');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 
 // custom UI modules
 // var TimeMaelstromUIModule = require('app/view/ui_modules/TimeMaelstromUIModule');
@@ -546,7 +547,7 @@ var GameLayer = FXCompositeLayer.extend({
       });
     }
 
-    statusPromise.nodeify(callback);
+    PromiseUtils.nodeify(statusPromise, callback);
 
     return statusPromise;
   },
@@ -5569,7 +5570,7 @@ var GameLayer = FXCompositeLayer.extend({
       });
     }
 
-    this._highlightedGeneralsPromise.nodeify(callback);
+    PromiseUtils.nodeify(this._highlightedGeneralsPromise, callback);
 
     return this._highlightedGeneralsPromise;
   },

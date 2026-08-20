@@ -9,6 +9,8 @@ const BaseSprite = require('app/view/nodes/BaseSprite');
 const GlowSprite = require('app/view/nodes/GlowSprite');
 const CrateManager = require('app/ui/managers/crate_manager');
 const Promise = require('bluebird');
+const PromiseUtils = require('app/common/utils/utils_promise');
+const { onType } = require('app/common/utils/utils_promise');
 const LootCrateNode = require('./LootCrateNode');
 
 /** **************************************************************************
@@ -80,7 +82,7 @@ const MysteryCrateNode = LootCrateNode.extend({
       }
 
       // create/show key
-      this._showKeyPromise = this.whenRequiredResourcesReady().then((requestId) => {
+      this._showKeyPromise = PromiseUtils.cancellable(this.whenRequiredResourcesReady().then((requestId) => {
         if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
         return new Promise((resolve) => {
@@ -103,11 +105,10 @@ const MysteryCrateNode = LootCrateNode.extend({
           });
         })
           .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
-      })
-        .cancellable()
-        .catch(Promise.CancellationError, () => {
+      }))
+        .catch(onType(PromiseUtils.CancellationError, () => {
           Logger.module('APPLICATION').log('MysteryCrateNode -> key show promise chain cancelled');
-        });
+        }));
     }
     return this._showKeyPromise;
   },
@@ -127,7 +128,7 @@ const MysteryCrateNode = LootCrateNode.extend({
     // hide key
     if (this._lootCrateKeySprite != null) {
       if (duration == null) { duration = 0.0; }
-      this._stopShowingKeyPromise = this.whenRequiredResourcesReady().then((requestId) => {
+      this._stopShowingKeyPromise = PromiseUtils.cancellable(this.whenRequiredResourcesReady().then((requestId) => {
         if (!this.getAreResourcesValid(requestId)) return; // load invalidated or resources changed
 
         return new Promise((resolve) => {
@@ -135,11 +136,10 @@ const MysteryCrateNode = LootCrateNode.extend({
           this._lootCrateKeySprite.fadeToInvisible(duration, () => { resolve(); });
         })
           .catch((error) => { EventBus.getInstance().trigger(EVENTS.error, error); });
-      })
-        .cancellable()
-        .catch(Promise.CancellationError, () => {
+      }))
+        .catch(onType(PromiseUtils.CancellationError, () => {
           Logger.module('APPLICATION').log('MysteryCrateNode -> key hide promise chain cancelled');
-        });
+        }));
     }
 
     return this._stopShowingKeyPromise;

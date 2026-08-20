@@ -18,6 +18,7 @@ const TileMapGridSprite = require('app/view/nodes/map/TileMapGridSprite');
 const Light = require('app/view/nodes/fx/Light');
 const FXSprite = require('app/view/nodes/fx/FXSprite');
 const audio_engine = require('app/audio/audio_engine');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 
 /** **************************************************************************
  BattleMap
@@ -208,7 +209,7 @@ var BattleMap = cc.Class.extend({
       });
     }
 
-    statusPromise.nodeify(callback);
+    PromiseUtils.nodeify(statusPromise, callback);
 
     return statusPromise;
   },

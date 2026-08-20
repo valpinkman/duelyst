@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var _ = require('underscore');
+const PromiseUtils = require('../../common/utils/utils_promise');
 
 Backbone.Duelyst = {};
 
@@ -37,7 +38,7 @@ Backbone.Duelyst.Model = Backbone.Model.extend({
         });
       }
     }.bind(this));
-    p.nodeify(callback);
+    PromiseUtils.nodeify(p, callback);
     return p;
   },
 
@@ -77,7 +78,7 @@ Backbone.Duelyst.Collection = Backbone.Collection.extend({
         });
       }
     }.bind(this));
-    p.nodeify(callback);
+    PromiseUtils.nodeify(p, callback);
     return p;
   },
 

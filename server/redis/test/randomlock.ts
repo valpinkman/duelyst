@@ -39,7 +39,7 @@ const randomlock1 = tk.lock(locked[0], 250).catch((err) => console.log(err));
 const randomlock2 = tk.lock(locked[1], 250).catch((err) => console.log(err));
 
 // Wait till locking is complete
-Promise.join(randomlock1, randomlock2, () => {
+Promise.all([randomlock1, randomlock2]).then(() => {
   console.log(`Randomly locked players: ${locked}`);
   // Call find lock on array of players
   return findLock(players).then((lock) => console.log(`findLock() done: ${JSON.stringify(lock)}`));

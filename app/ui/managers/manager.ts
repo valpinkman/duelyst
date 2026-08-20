@@ -6,6 +6,7 @@ var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var Logger = require('app/common/logger');
 var Promise = require('bluebird');
+const PromiseUtils = require('../../common/utils/utils_promise');
 
 var Manager = Backbone.Marionette.Controller.extend({
 
@@ -78,7 +79,7 @@ var Manager = Backbone.Marionette.Controller.extend({
       }
     }.bind(this));
 
-    p.nodeify(callback);
+    PromiseUtils.nodeify(p, callback);
 
     return p;
   },
@@ -92,7 +93,7 @@ var Manager = Backbone.Marionette.Controller.extend({
       }
     }.bind(this));
 
-    p.nodeify(callback);
+    PromiseUtils.nodeify(p, callback);
 
     return p;
   },

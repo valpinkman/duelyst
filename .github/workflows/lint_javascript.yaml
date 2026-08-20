@@ -43,3 +43,9 @@ jobs:
 
     - name: lint javascript code
       run: pnpm lint:js:all
+
+    # guards the binding class of bug the bluebird codemods introduced:
+    # a file using PromiseUtils/onType without requiring it passes lint and
+    # unit tests, then throws ReferenceError at runtime.
+    - name: check utils_promise bindings
+      run: pnpm check:promise-utils

@@ -18,36 +18,24 @@ let unlock2 = null;
 const checklocks = function () {
   const isLocked1 = tk.isLocked(playerId1);
   const isLocked2 = tk.isLocked(playerId2);
-  return Promise.join(
-    isLocked1,
-    isLocked2,
-    (locked1, locked2) => {
-      console.log(`lock1 is ${locked1}`);
-      return console.log(`lock2 is ${locked2}`);
-    },
-  );
+  return Promise.all([isLocked1, isLocked2]).then(([locked1, locked2]) => {
+    console.log(`lock1 is ${locked1}`);
+    return console.log(`lock2 is ${locked2}`);
+  });
 };
 
-const locks = Promise.join(
-  lock1,
-  lock2,
-  (unlockFn1, unlockFn2) => {
-    console.log(`lock1 acquired: ${_.isFunction(unlockFn1)}`);
-    console.log(`lock2 acquired: ${_.isFunction(unlockFn2)}`);
-    unlock1 = Promise.promisify(unlockFn1);
-    return unlock2 = Promise.promisify(unlockFn2);
-  },
-).then(() => {
+const locks = Promise.all([lock1, lock2]).then(([unlockFn1, unlockFn2]) => {
+  console.log(`lock1 acquired: ${_.isFunction(unlockFn1)}`);
+  console.log(`lock2 acquired: ${_.isFunction(unlockFn2)}`);
+  unlock1 = Promise.promisify(unlockFn1);
+  return unlock2 = Promise.promisify(unlockFn2);
+}).then(() => {
   console.log('locking done...');
   checklocks();
-  return Promise.join(
-    unlock1(),
-    unlock2(),
-    (result1, result2) => {
-      console.log(`unlock1 success: ${Boolean(result1)}`);
-      return console.log(`unlock2 success: ${Boolean(result1)}`);
-    },
-  ).then(() => {
+  return Promise.all([unlock1(), unlock2()]).then(([result1, result2]) => {
+    console.log(`unlock1 success: ${Boolean(result1)}`);
+    return console.log(`unlock2 success: ${Boolean(result1)}`);
+  }).then(() => {
     console.log('unlocking done...');
     return checklocks();
   });

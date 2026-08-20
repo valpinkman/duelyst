@@ -755,10 +755,44 @@ server and worker. What remains is *typing* (5T.4), not converting.
         until knex 3 lands. Caught by e2e, not by 1,325 unit tests.
 
         `.map`/`.filter` turned out to be Array methods, not bluebird — 0 real sites.
-      - [ ] Stage 6b — `.nodeify` (3), `Promise.join` (9), `promisifyAll` (13), `promisify` (3),
-        `.cancellable`/`CancellationError` (7), and the 8 `.bind(this)` + `games_manager.ts` the
-        codemods refused to touch
-      - [ ] Stage 7 — drop `require('bluebird')` and the dependency; then `knex` 3
+      - [x] **Stage 6b — `Promise.join`, `.nodeify`, `.cancellable`, zlib `promisifyAll`.**
+        `Promise.join(a, b, fn)` → `Promise.all([a, b]).then(([a, b]) => …)` (9);
+        `.nodeify` (31, far more than the 3 line-initial ones counted);
+        `.cancellable()`/`CancellationError` (7) via a helper that attaches `.cancel()` to the
+        returned promise so call sites are unchanged; `Promise.promisifyAll(require('zlib'))` (6
+        files) → node's own `util.promisify`.
+
+        **Two runtime bugs, both mine, both caught only by e2e:**
+        - `.nodeify(cb)` is a **no-op when `cb` is undefined**, and these functions take an
+          optional callback so they work either as promise or callback APIs. Inlining
+          `.then(v => cb(null, v))` made every promise-style caller throw
+          `TypeError: callback is not a function` — a 500 on registration. Replaced with a helper
+          that also preserves the other two behaviours: the resolved value is unchanged, and a
+          rejection goes to the callback rather than becoming an unhandled rejection.
+        - The codemods decided "already imported" by matching the **module path** rather than the
+          **binding**, so a file with `const { onType } = require('…/utils_promise')` never got
+          `PromiseUtils` — `ReferenceError: PromiseUtils is not defined`, 500s server-side, and
+          the mirror image client-side with `onType`.
+
+        `scripts/check-promise-utils-bindings.mjs` now guards that whole class and runs in CI;
+        verified to fail when the binding is removed.
+
+        *Note: bluebird's `.cancel()` also tried to stop the underlying operation; the
+        replacement only settles the promise. That is enough for why this code cancels — a
+        promise wrapped around a one-shot event listener would otherwise never settle and leak
+        the chain waiting on it.*
+
+      🚧 **Stage 7 is BLOCKED, and the dependency runs the opposite way to the plan.** bluebird
+      cannot be dropped until:
+      - **knex 3** — `.timeout` (28) + `Promise.TimeoutError` (20) cannot move while knex 0.19 is
+        bluebird-based (see stage 6).
+      - **redis v4** — `Promise.promisifyAll(redis)` and `promisifyAll(warlock(redis))` supply the
+        `*Async` methods the redis layer is written against. Removing them IS the redis migration.
+
+      So the true order is **knex 3 → `.timeout` → redis v4 → drop bluebird**, not
+      "bluebird → knex" as originally planned. The bluebird *idioms* are gone from knex's chains,
+      which is what actually unblocks knex 3.
+      - [ ] Stage 7 — after knex 3 and redis v4: drop `require('bluebird')` and the dependency
 
   **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before
   anyone counted where the advisories actually come from. Of the 129 remaining, the top sources

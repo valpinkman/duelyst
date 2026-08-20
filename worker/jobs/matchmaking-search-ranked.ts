@@ -27,6 +27,7 @@ const RankFactory = require('../../app/sdk/rank/rankFactory');
 // redis
 const Redis = require('../../server/redis');
 const { onType } = require('../../app/common/utils/utils_promise');
+const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 const rankedQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'ranked' });
 const rankedDeckValueQueue = new Redis.PlayerQueue(Redis.Redis, { name: 'ranked-deck-value' });
@@ -261,7 +262,7 @@ module.exports = function (job, done) {
   // grab player token
   const playerToken = Redis.TokenManager.get(userId);
 
-  return Promise.join(isQueued, isLocked, playerToken, function (isQueued, isLocked, playerToken) {
+  return Promise.all([isQueued, isLocked, playerToken]).then(function ([isQueued, isLocked, playerToken]) {
     if ((isQueued == null) || (playerToken == null)) {
       Logger.module('MATCHMAKING-JOB').debug(`[J:${job.id}] player (${userId}) is no longer queued (isQueued:${isQueued})`);
       return done(); // the player is no longer in queue

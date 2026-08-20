@@ -1040,7 +1040,7 @@ router.post('/daily_challenge', (req, res, next) => res.status(403).json({}),
 
   Promise.promisifyAll(zlib)
 
-  zlib.gzipAsync(challengeJSON)
+  gzipAsync(challengeJSON)
   .then (gzipGameSessionData) ->
     @.gzipGameSessionData = gzipGameSessionData
 

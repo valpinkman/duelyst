@@ -12,6 +12,7 @@ const ReplaceNode = require('../../nodes/cards/ReplaceNode');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
 const BottomDeckCardNode = require('../../nodes/cards/BottomDeckCardNode');
 const CardNode = require('../../nodes/cards/CardNode');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 
 /** **************************************************************************
  BottomDeckLayer
@@ -217,7 +218,7 @@ var BottomDeckLayer = BaseLayer.extend({
       });
     }
 
-    statusPromise.nodeify(callback);
+    PromiseUtils.nodeify(statusPromise, callback);
 
     return statusPromise;
   },

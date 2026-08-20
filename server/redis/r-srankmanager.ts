@@ -11,7 +11,12 @@ const config = require('../../config/config');
 const env = config.get('env');
 const ttl = config.get('redis.ttl');
 const generatePushID = require('../../app/common/generate_push_id');
-const zlib = Promise.promisifyAll(require('zlib'));
+const zlib = require('zlib');
+const { promisify } = require('util');
+// bluebird's promisifyAll gave us gzipAsync/gunzipAsync; node's promisify is the
+// direct replacement and needs no extra dependency
+const gzipAsync = promisify(zlib.gzip);
+const gunzipAsync = promisify(zlib.gunzip);
 
 // Helper returns the SRank Ladder Redis key prefix
 const keyPrefix = function () {

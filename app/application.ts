@@ -156,6 +156,7 @@ const ReplayEngine = require('app/replay/replayEngine');
 
 const AnalyticsTracker = require('app/common/analyticsTracker');
 const PromiseUtils = require('app/common/utils/utils_promise');
+const { onType } = require('app/common/utils/utils_promise');
 
 // require the Handlebars Template Helpers extension here since it modifies core Marionette code
 require('app/ui/extensions/handlebars_template_helpers');
@@ -314,7 +315,7 @@ if (process.env.AI_TOOLS_ENABLED) {
     const ai2FactionId = SDK.FactionFactory.factionIdForGeneralId(ai2GeneralId);
 
     // stop running game
-    window.ai_gamePromise = ai_stopAIvAIGame().then(() => {
+    window.ai_gamePromise = PromiseUtils.cancellable(ai_stopAIvAIGame().then(() => {
       Logger.module('APPLICATION').log(`ai_runAIvAIGame - > requesting for v${ai1Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai1GeneralId, SDK.GameSession.getInstance()).getName()} vs v${ai2Version} w/ general ${SDK.CardFactory.cardForIdentifier(ai2GeneralId, SDK.GameSession.getInstance()).getName()}`);
       window.ai_gameStarted = true;
       window.ai_gameRunning = true;
@@ -384,9 +385,8 @@ if (process.env.AI_TOOLS_ENABLED) {
         // execute first step in sequence
         return window.ai_stepAIvAIGame();
       });
-    })
-      .cancellable()
-      .catch(Promise.CancellationError, (e) => Logger.module('APPLICATION').log('ai_runAIvAIGame -> promise chain cancelled'))
+    }))
+      .catch(onType(PromiseUtils.CancellationError, (e) => Logger.module('APPLICATION').log('ai_runAIvAIGame -> promise chain cancelled')))
       .catch(App._error);
     return ai_gamePromise;
   };
@@ -449,9 +449,8 @@ if (process.env.AI_TOOLS_ENABLED) {
       window.ai_gameNeedsMulligan = SDK.GameSession.getInstance().isNew();
 
       // execute first step in sequence
-      return window.ai_stepAIvAIGame()
-        .cancellable()
-        .catch(Promise.CancellationError, (e) => Logger.module('APPLICATION').log('ai_runAIvAIGameFromCurrentSession -> promise chain cancelled'));
+      return PromiseUtils.cancellable(window.ai_stepAIvAIGame())
+        .catch(onType(PromiseUtils.CancellationError, (e) => Logger.module('APPLICATION').log('ai_runAIvAIGameFromCurrentSession -> promise chain cancelled')));
     }).catch(App._error);
 
     return ai_gamePromise;
@@ -463,7 +462,7 @@ if (process.env.AI_TOOLS_ENABLED) {
     Logger.module('APPLICATION').log(`ai_stepAIvAIGame -> ${SDK.GameSession.getInstance().getGameId()} step queue length ${Scene.getInstance().getGameLayer()._stepQueue.length}`);
     if ((window.ai_gameStepsDataPromise == null) && (Scene.getInstance().getGameLayer()._stepQueue.length === 0)) {
       // request step game
-      window.ai_gameStepsDataPromise = new Promise((resolve, reject) => {
+      window.ai_gameStepsDataPromise = PromiseUtils.cancellable(new Promise((resolve, reject) => {
         const request = $.ajax({
           url: 'http://localhost:5001/step_game',
           data: JSON.stringify({
@@ -493,8 +492,8 @@ if (process.env.AI_TOOLS_ENABLED) {
       }).then((stepsData) => {
         Logger.module('APPLICATION').log('ai_stepAIvAIGame -> steps:', stepsData.slice(0));
         return window.ai_gameStepsData = stepsData;
-      }).cancellable()
-        .catch(Promise.CancellationError, (e) => Logger.module('APPLICATION').log('ai_stepAIvAIGame -> promise chain cancelled'));
+      }))
+        .catch(onType(PromiseUtils.CancellationError, (e) => Logger.module('APPLICATION').log('ai_stepAIvAIGame -> promise chain cancelled')));
     }
 
     return window.ai_gameStepsDataPromise.then(() => {
@@ -1660,7 +1659,7 @@ App._findingGame = function (gameMatchRequestData) {
   // save this promise to app object so it can be cancelled in the event of "cancelMatchmaking"
   // this is important because this promise is wrapped around the "found_game" event and a chain of stuff is waiting for it to resolve!
   // if we don't cancel this later, we will have a promise that never resolves and thus leaks memory
-  App._foundGamePromise = new Promise((resolve, reject) => {
+  App._foundGamePromise = PromiseUtils.cancellable(new Promise((resolve, reject) => {
     // listen for next found game
     const onFoundGame = function (foundGameListingData) {
       Logger.module('APPLICATION').log('App._findingGame -> onFoundGame()', foundGameListingData);
@@ -1679,7 +1678,7 @@ App._findingGame = function (gameMatchRequestData) {
     };
 
     return GamesManager.getInstance().once('found_game', onFoundGame);
-  }).cancellable();
+  }));
 
   // wait show finding game and found game, then join found game
   return Promise.all([
@@ -1700,7 +1699,7 @@ App._findingGame = function (gameMatchRequestData) {
       findingGameItemView.showFoundGame(playerDataModel),
     ]).then(() => // join found game
       App._joinGame(gameListingData, loadGamePromise));
-  }).catch(Promise.CancellationError, (e) => Logger.module('APPLICATION').log('App._findingGame -> promise chain cancelled'));
+  }).catch(onType(PromiseUtils.CancellationError, (e) => Logger.module('APPLICATION').log('App._findingGame -> promise chain cancelled')));
 };
 
 App._resumeGame = function (lastGameModel) {
@@ -1813,7 +1812,7 @@ App._startSinglePlayerGame = function (myPlayerDeck, myPlayerFactionId, myPlayer
   }
 
   // request single player game
-  App._singlePlayerGamePromise = new Promise((resolve, reject) => {
+  App._singlePlayerGamePromise = PromiseUtils.cancellable(new Promise((resolve, reject) => {
     const request = $.ajax({
       url: `${process.env.API_URL}/api/me/games/single_player`,
       data: JSON.stringify({
@@ -1834,7 +1833,7 @@ App._startSinglePlayerGame = function (myPlayerDeck, myPlayerFactionId, myPlayer
     request.done((res) => resolve(res));
 
     return request.fail((jqXHR) => reject((jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) || 'Connection error. Please retry.'));
-  }).cancellable();
+  }));
 
   // init finding game view
   const findingGameItemView = new FindingGameItemView({ model: new Backbone.Model({ gameType: SDK.GameType.SinglePlayer }) });
@@ -1864,7 +1863,7 @@ App._startSinglePlayerGame = function (myPlayerDeck, myPlayerFactionId, myPlayer
         findingGameItemView.showFoundGame(playerDataModel),
       ]).then(() => // join found game
         App._joinGame(gameListingData));
-    }) : undefined)).catch(Promise.CancellationError, (e) => Logger.module('APPLICATION').log('App:_startSinglePlayerGame -> promise chain cancelled')).catch((errorMessage) => App._error((errorMessage != null) ? `Failed to start single player game: ${errorMessage}` : undefined));
+    }) : undefined)).catch(onType(PromiseUtils.CancellationError, (e) => Logger.module('APPLICATION').log('App:_startSinglePlayerGame -> promise chain cancelled'))).catch((errorMessage) => App._error((errorMessage != null) ? `Failed to start single player game: ${errorMessage}` : undefined));
 };
 
 App._cancelSinglePlayer = function () {

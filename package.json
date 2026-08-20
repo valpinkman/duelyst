@@ -137,7 +137,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:rules": "firebase emulators:exec --only database \"vitest run --config vitest.rules.config.mjs\""
+    "test:rules": "firebase emulators:exec --only database \"vitest run --config vitest.rules.config.mjs\"",
+    "check:promise-utils": "node scripts/check-promise-utils-bindings.mjs"
   },
   "packageManager": "pnpm@10.12.1",
   "pnpm": {
