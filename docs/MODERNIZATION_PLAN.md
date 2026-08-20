@@ -1325,10 +1325,11 @@ concurrency: 1 })`, i.e. _serial_, and it says why in a comment: _"process the a
       runs give 2795 keys, matching the committed manifest exactly, with byte-identical contents.
       bluebird's scheduler had been hiding this race; native scheduling exposed it.
 
-      - [ ] Stage 5 — `.bind` chains → closures (367), the delicate one
-      - [~] Stage 6 — helpers in `app/common/utils/utils_promise.ts`: `withTimeout` +
-        `TimeoutError`, `delay`, `defer`. Converted: `Promise.defer()` (3), `.delay(ms)` (4),
-        and the **client-side** `.timeout` in `application.ts`.
+      - [x] Stage 5 — `.bind` chains → closures (367), the delicate one (5b–5d; the state-bag
+            artifacts it left behind became their own bug hunt, logged in AGENTS.md)
+      - [x] Stage 6 — helpers in `app/common/utils/utils_promise.ts`: `withTimeout` +
+            `TimeoutError`, `delay`, `defer`. Converted: `Promise.defer()` (3), `.delay(ms)` (4),
+            and the **client-side** `.timeout` in `application.ts`.
 
         ✅ **UNBLOCKED AND DONE** — knex 3 landed and all 20 remaining `.timeout` sites converted
         with it; 0 remain in `server/`+`worker/`. The original blocker note is kept below because
@@ -1403,7 +1404,8 @@ concurrency: 1 })`, i.e. _serial_, and it says why in a comment: _"process the a
       until **knex 3** (`.timeout` 20 + `TimeoutError` 20 on the server) and **redis v4**
       (`promisifyAll(redis)` / `promisifyAll(warlock(redis))` supply the `*Async` API the redis
       layer is written against). Everything else bluebird provided is now gone.
-      - [ ] Stage 7 — after knex 3 and redis v4: drop `require('bluebird')` and the dependency
+      - [x] Stage 7 — after knex 3 and redis v4: drop `require('bluebird')` and the dependency
+            (7a–7d, then `e72316ed`: bluebird is gone from the tree and the lockfile)
 
   **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before
   anyone counted where the advisories actually come from. Of the 129 remaining, the top sources
