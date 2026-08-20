@@ -434,9 +434,28 @@ server and worker. What remains is *typing* (5T.4), not converting.
   JavaScript. Verified with the wire-format fixtures (11 tests) rather than assumed, and the whole
   diff is nothing but added `declare` lines.
 
-  What remains (2,684) needs individual judgement rather than codemods: ~1,392 further bare `{}`
-  locals, 175 on `unknown`, `RedisPlayerQueue` 53, and the assorted TS2554/TS2304 arity and
-  name errors.
+  **Then the two categories that could hide real bugs were triaged — and they split cleanly:**
+
+  - **TS2304 "cannot find name" — REAL. Six missing `require`s in SDK card logic**, each of which
+    would throw `ReferenceError` if its branch executed:
+    `PlayCardAction` in `modifierMyAttackWatchSpawnMinionNearby`,
+    `modifierMyAttackOrAttackedWatchSpawnMinionNearby` and `modifierTakeDamageWatchSpawnEntity`;
+    `ModifierDyingWishSpawnEntity` in `modifierOnDyingSpawnEntity`; `CardType` + `DamageAction`
+    in `playerModifierManaModifierNextCard`; `UtilsJavascript` in `spellEssenceSculpt`.
+    **All are upstream bugs**, absent from the original CoffeeScript too — and the sibling
+    `modifierDyingWishSpawnEntity` requires `PlayCardAction` correctly, which is what makes these
+    omissions rather than design. Unreachable with today's card definitions (`spawnSilently`
+    defaults to `true`, so the broken branch never runs), which is how the game shipped — but a
+    single new card passing `spawnSilently: false` would hit it. Fixed; adding a `require` cannot
+    change behaviour, and the affected cards were confirmed to still construct.
+  - **TS2554 "wrong argument count" — NOT bugs, on inspection.** Overwhelmingly optional
+    parameters that were never marked optional: `pushEvent(event, options)` explicitly does
+    `if ((options == null))`, so 1-argument calls are correct by design. The rest are harmless
+    redundant arguments, e.g. `popCardFromStack(card)` where the method pops the stack and ignores
+    its parameter. Marking these `?` is annotation tidying, not bug fixing.
+
+  What remains (2,676) needs individual judgement rather than codemods: ~1,392 further bare `{}`
+  locals, 175 on `unknown`, `RedisPlayerQueue` 53, and ~143 optional-parameter annotations.
 - [ ] 5T.3 Replace the tsx require-hook with a real build for production images (the hook
   compiles on every boot; fine for dev, wasteful for prod).
 

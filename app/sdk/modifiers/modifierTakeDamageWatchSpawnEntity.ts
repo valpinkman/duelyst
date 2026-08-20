@@ -9,6 +9,7 @@
 const CONFIG = require('app/common/config');
 const UtilsGameSession = require('app/common/utils/utils_game_session');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
+const PlayCardAction = require('app/sdk/actions/playCardAction');
 const Cards = require('app/sdk/cards/cardsLookupComplete');
 const ModifierTakeDamageWatch = require('./modifierTakeDamageWatch');
 

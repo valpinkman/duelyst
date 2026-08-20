@@ -12,6 +12,7 @@ const UtilsPosition = require('app/common/utils/utils_position');
 const PlayCardSilentlyAction = require('app/sdk/actions/playCardSilentlyAction');
 const PlayCardAction = require('app/sdk/actions/playCardAction');
 const ModifierOnDying = require('./modifierOnDying');
+const ModifierDyingWishSpawnEntity = require('./modifierDyingWishSpawnEntity');
 
 class ModifierOnDyingSpawnEntity extends ModifierOnDying {
   declare type: any;

@@ -9,6 +9,8 @@ const PlayerModifierManaModifier = require('app/sdk/playerModifiers/playerModifi
 const ModifierManaCostChange = require('app/sdk/modifiers/modifierManaCostChange');
 const PlayCardFromHandAction = require('app/sdk/actions/playCardFromHandAction');
 const PlaySignatureCardAction = require('app/sdk/actions/playSignatureCardAction');
+const CardType = require('app/sdk/cards/cardType');
+const DamageAction = require('app/sdk/actions/damageAction');
 
 class PlayerModifierManaModifierNextCard extends PlayerModifierManaModifier {
   declare type: any;

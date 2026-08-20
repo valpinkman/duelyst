@@ -8,6 +8,7 @@
 const Spell = require('./spell');
 const ModifierStunned = require('app/sdk/modifiers/modifierStunned');
 const PutCardInHandAction = require('app/sdk/actions/putCardInHandAction');
+const UtilsJavascript = require('app/common/utils/utils_javascript');
 
 class SpellEssenceSculpt extends Spell {
   onApplyEffectToBoardTile(board, x, y, sourceAction) {
