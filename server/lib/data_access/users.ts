@@ -309,7 +309,6 @@ class UsersModule {
     const this_obj = {};
 
     return UsersModule.userIdForUsername(newUsername)
-      .bind({})
       .then(function (existingUserId) {
         if (existingUserId) {
           throw new Errors.AlreadyExistsError('Username already exists');
@@ -317,7 +316,6 @@ class UsersModule {
           return knex.transaction(function (tx) {
             knex('users').where('id', userId).first('username', 'username_updated_at', 'wallet_gold').forUpdate()
               .transacting(tx)
-              .bind({})
               .then(function (userRow) {
                 // we should have a user
                 let userUpdateParams;
@@ -425,7 +423,6 @@ class UsersModule {
     return knex.transaction(function (tx) {
       knex('users').where('id', userId).first('password').forUpdate()
         .transacting(tx)
-        .bind({})
         .then(function (userRow) {
           if (!userRow) {
             throw new Errors.NotFoundError();
@@ -462,7 +459,6 @@ class UsersModule {
     return knex.transaction(function (tx) {
       knex('users').where('id', userId).first().forUpdate()
         .transacting(tx)
-        .bind({})
         .then(function (userRow) {
           if (!userRow) {
             throw new Errors.NotFoundError();
@@ -489,7 +485,6 @@ class UsersModule {
     return knex.transaction(function (tx) {
       knex('users').where('id', userId).first().forUpdate()
         .transacting(tx)
-        .bind({})
         .then(function (userRow) {
           if (!userRow) {
             throw new Errors.NotFoundError();
@@ -518,7 +513,6 @@ class UsersModule {
     return knex.transaction(function (tx) {
       knex('users').where('id', userId).first().forUpdate()
         .transacting(tx)
-        .bind({})
         .then(function (userRow) {
           if (!userRow) {
             throw new Errors.NotFoundError();
@@ -545,7 +539,6 @@ class UsersModule {
     return knex.transaction(function (tx) {
       knex('users').where('id', userId).first().forUpdate()
         .transacting(tx)
-        .bind({})
         .then(function (userRow) {
           if (!userRow) {
             throw new Errors.NotFoundError();
@@ -2270,7 +2263,6 @@ class UsersModule {
 
     // Begin the promise rabbit hole
     return DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
         const statsRef = _chainState.fbRootRef.child('user-stats').child(userId);
@@ -2713,7 +2705,6 @@ class UsersModule {
   static iterateNewPlayerCoreProgression(userId) {
     const _chainState: Record<string, any> = {};
     return knex('user_new_player_progression').where('user_id', userId).andWhere('module_name', NewPlayerProgressionModuleLookup.Core).first()
-      .bind({})
       .then(function (moduleProgression) {
         const stage = NewPlayerProgressionStageEnum[moduleProgression != null ? moduleProgression.stage : undefined] || NewPlayerProgressionStageEnum.Tutorial;
 
@@ -2749,7 +2740,6 @@ class UsersModule {
               // throw new Error("Invalid state: user never received all required stage quests")
               Logger.module('SDK').warn(`iterateNewPlayerCoreProgression() -> Invalid state: user ${userId.blue} never received all required stage ${stage.key} quests`);
               return QuestsModule.generateBeginnerQuests(userId)
-                .bind({})
                 .then(function (questData) {
                   if (questData) {
                     return _chainState.questData = questData;
@@ -2776,7 +2766,6 @@ class UsersModule {
 
             // update current stage and generate any new beginner quests
             return UsersModule.setNewPlayerFeatureProgression(userId, NewPlayerProgressionModuleLookup.Core, nextStage.key)
-              .bind({})
               .then(function (progressionData) {
                 _chainState.progressionData = progressionData;
                 return QuestsModule.generateBeginnerQuests(userId);
@@ -2965,7 +2954,6 @@ class UsersModule {
     const this_obj = {};
 
     return Promise.resolve()
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then((rootRef) => FirebasePromises.push(rootRef.child('user-notifications').child(userId), { message, created_at: moment().utc().valueOf(), type }));
   }

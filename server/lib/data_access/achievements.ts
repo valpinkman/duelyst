@@ -643,7 +643,6 @@ class AchievementsModule {
   static giveMythronCard(txPromise, tx, userId, achievementId) {
     const _chainState: Record<string, any> = {};
     return tx('user_card_collection').first('cards').where('user_id', userId)
-      .bind({})
       .then(function (card_collection_data) {
         let randomIndex,
           rewardedCardId;

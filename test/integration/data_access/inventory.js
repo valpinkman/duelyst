@@ -268,7 +268,6 @@ describe('inventory module', () => {
         return SyncModule.wipeUserData(userId)
           .then(() => {
             const txPromise = knex.transaction((tx) => knex('users').where('id', userId)
-              .bind({})
               .then(() => {
                 const promises = [];
                 for (let i = 0, il = 5; i < il; i++) {
@@ -286,7 +285,6 @@ describe('inventory module', () => {
         return SyncModule.wipeUserData(userId)
           .then(() => {
             const txPromise = knex.transaction((tx) => knex('users').where('id', userId)
-              .bind({})
               .then(() => {
                 const promises = [];
                 for (let i = 0, il = 13; i < il; i++) {
@@ -304,7 +302,6 @@ describe('inventory module', () => {
         return SyncModule.wipeUserData(userId)
           .then(() => {
             const txPromise = knex.transaction((tx) => knex('users').where('id', userId)
-              .bind({})
               .then(() => {
                 const promises = [];
                 for (let i = 0, il = 5; i < il; i++) {
@@ -316,7 +313,6 @@ describe('inventory module', () => {
             return txPromise
               .then(() => {
                 const txFailPromise = knex.transaction((tx) => knex('users').where('id', userId)
-                  .bind({})
                   .then(() => {
                     const promises = [];
                     for (let i = 0, il = 10; i < il; i++) {
@@ -544,7 +540,6 @@ describe('inventory module', () => {
           return SyncModule.wipeUserData(userId)
             .then(() => {
               const txPromise = knex.transaction((tx) => knex('users').where('id', userId)
-                .bind({})
                 .then(() => {
                   const promises = [];
                   for (let i = 0; i < 13; i++) {
@@ -556,7 +551,6 @@ describe('inventory module', () => {
               return txPromise;
             }).then(() => {
               const txPromise = knex.transaction((tx) => tx('user_spirit_orbs').where('user_id', userId)
-                .bind({})
                 .then((spiritOrbRows) => {
                   const promises = [];
                   expect(spiritOrbRows.length).to.equal(13);
@@ -791,7 +785,6 @@ describe('inventory module', () => {
         .then(function () {
           const txPromise = knex.transaction(function (tx) {
             return knex("users").where('id',userId)
-              .bind({})
               .then(function(){
                 const promises = [];
                 for (let i = 0, il = 100; i < il; i++) {
@@ -827,7 +820,6 @@ describe('inventory module', () => {
         .then(function () {
           const txPromise = knex.transaction(function (tx) {
             return knex("users").where('id',userId)
-              .bind({})
               .then(function(){
                 const promises = [];
                 for (let i = 0, il = 100; i < il; i++) {
@@ -864,7 +856,6 @@ describe('inventory module', () => {
         .then(function () {
           const txPromise = knex.transaction(function (tx) {
             return knex("users").where('id',userId)
-              .bind({})
               .then(function(){
                 const promises = [];
                 const arrayToMap = []

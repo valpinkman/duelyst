@@ -96,50 +96,52 @@ const mintFirebaseCustomToken = (id, username) => DuelystFirebase
 Log a user in (firing sync jobs) and generate a response (token)
 Possibly add param in return data to say username is null? OR just allow client to decode token
 */
-const logUserIn = (id) => UsersModule.userDataForId(id)
-  .bind({})
-  .then(function (data) {
-    if ((data == null)) {
-      throw new Errors.NotFoundError();
-    }
+const logUserIn = (id) => {
+  const _chainState = {};
+  return UsersModule.userDataForId(id)
+    .then(function (data) {
+      if ((data == null)) {
+        throw new Errors.NotFoundError();
+      }
 
-    if (data.is_suspended) {
-      throw new Errors.AccountDisabled(`This account has been suspended. Reason: ${data.suspended_memo}`);
-    }
+      if (data.is_suspended) {
+        throw new Errors.AccountDisabled(`This account has been suspended. Reason: ${data.suspended_memo}`);
+      }
 
-    const payload = {
-      d: {
-        id,
-        username: data.username || null,
-      },
-      v: 0,
-      iat: Math.floor(new Date().getTime() / 1000),
-    };
-    const options = {
-      expiresIn: config.get('jwt.tokenExpiration'),
-      algorithm: 'HS256',
-    };
+      const payload = {
+        d: {
+          id,
+          username: data.username || null,
+        },
+        v: 0,
+        iat: Math.floor(new Date().getTime() / 1000),
+      };
+      const options = {
+        expiresIn: config.get('jwt.tokenExpiration'),
+        algorithm: 'HS256',
+      };
 
-    this.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
-    this.analyticsData = analyticsDataFromUserData(data);
-    return mintFirebaseCustomToken(id, data.username)
-      .then((firebaseToken) => {
-        this.firebaseToken = firebaseToken;
-        return UsersModule.bumpSessionCountAndSyncDataIfNeeded(id, data);
-      });
-  }).then(function (synced) {
-    this.synced = synced;
-    return UsersModule.createDaysSeenOnJob(id);
-  })
-  .then(function () {
-    return {
-      token: this.token,
-      // additive in 9.1; the client ignores it until 9.3
-      firebase_token: this.firebaseToken,
-      synced: this.synced,
-      analytics_data: this.analyticsData,
-    };
-  });
+      _chainState.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
+      _chainState.analyticsData = analyticsDataFromUserData(data);
+      return mintFirebaseCustomToken(id, data.username)
+        .then((firebaseToken) => {
+          _chainState.firebaseToken = firebaseToken;
+          return UsersModule.bumpSessionCountAndSyncDataIfNeeded(id, data);
+        });
+    }).then(function (synced) {
+      _chainState.synced = synced;
+      return UsersModule.createDaysSeenOnJob(id);
+    })
+    .then(function () {
+      return {
+        token: _chainState.token,
+        // additive in 9.1; the client ignores it until 9.3
+        firebase_token: _chainState.firebaseToken,
+        synced: _chainState.synced,
+        analytics_data: _chainState.analyticsData,
+      };
+    });
+};
 
 /*
 GET handler for session status
@@ -150,7 +152,6 @@ router.get('/session/', isSignedIn, function (req, res, next) {
   const user_id = req.user.d.id;
 
   return logUserIn(user_id)
-    .bind({})
     .then((data) => res.status(200).json(data)).catch(onType(Errors.NotFoundError, (e) => res.status(401).json({})))
     .catch(onType(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message })))
     .catch((e) => next(e));
@@ -161,6 +162,7 @@ POST handler for session login
 Log users in
 */
 router.post('/session/', function (req, res, next) {
+  const _chainState = {};
   const result = t.validate(req.body, validators.loginInput);
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
@@ -172,16 +174,15 @@ router.post('/session/', function (req, res, next) {
   } = result.value;
 
   return UsersModule.userIdForUsername(username)
-    .bind({})
     .then(function (id) { // Step 2 : check if user exists
       if (!id) {
         throw new Errors.NotFoundError();
       }
 
-      this.id = id;
+      _chainState.id = id;
       return UsersModule.userDataForId(id);
     }).then(function (data) { // check password valid
-      this.userRow = data;
+      _chainState.userRow = data;
       if (data.is_suspended) {
         throw new Errors.AccountDisabled(`This account has been suspended. Reason: ${data.suspended_memo}`);
       }
@@ -197,8 +198,8 @@ router.post('/session/', function (req, res, next) {
       // iat : issued at time in seconds since epoch
         const payload = {
           d: {
-            id: this.id,
-            username: this.userRow.username,
+            id: _chainState.id,
+            username: _chainState.userRow.username,
           },
           v: 0,
           iat: Math.floor(new Date().getTime() / 1000),
@@ -216,26 +217,26 @@ router.post('/session/', function (req, res, next) {
         };
 
         // We are encoding the payload inside the token
-        this.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
+        _chainState.token = jwt.sign(payload, config.get('firebase.legacyToken'), options);
 
         // make a db transaction/ledger event for the login
         // UsersModule.logEvent(@id,"session","login")
 
-        return mintFirebaseCustomToken(this.id, this.userRow && this.userRow.username)
+        return mintFirebaseCustomToken(_chainState.id, _chainState.userRow && _chainState.userRow.username)
           .then((firebaseToken) => {
-            this.firebaseToken = firebaseToken;
-            return UsersModule.bumpSessionCountAndSyncDataIfNeeded(this.id, this.userRow);
+            _chainState.firebaseToken = firebaseToken;
+            return UsersModule.bumpSessionCountAndSyncDataIfNeeded(_chainState.id, _chainState.userRow);
           });
       }
     })
     .then(function () {
-      return UsersModule.createDaysSeenOnJob(this.id);
+      return UsersModule.createDaysSeenOnJob(_chainState.id);
     })
     .then(function () {
-      const analyticsData = analyticsDataFromUserData(this.userRow);
+      const analyticsData = analyticsDataFromUserData(_chainState.userRow);
       // Send token
       // firebase_token is additive in 9.1; the client ignores it until 9.3
-      return res.status(200).json({ token: this.token, firebase_token: this.firebaseToken, analytics_data: analyticsData });
+      return res.status(200).json({ token: _chainState.token, firebase_token: _chainState.firebaseToken, analytics_data: analyticsData });
     })
     .catch(onType(Errors.AccountDisabled, (e) => res.status(401).json({ message: e.message })))
     .catch(onType(Errors.NotFoundError, (e) => res.status(401).json({ message: 'Invalid Username or Password' })))
@@ -248,6 +249,7 @@ POST handler for registration
 Register new users
 */
 router.post('/session/register', function (req, res, next) {
+  const _chainState = {};
   const result = t.validate(req.body, validators.signupInput);
   if (!result.isValid()) {
     return res.status(400).json(result.errors);
@@ -267,7 +269,6 @@ router.post('/session/register', function (req, res, next) {
   const registrationSource = result.value.is_desktop ? 'desktop' : 'web';
 
   return UsersModule.isValidInviteCode(inviteCode)
-    .bind({})
     .then(function (inviteCodeData) { // captcha verification
       if ((captcha != null) && config.get('recaptcha.secret')) {
         return Promise.resolve(
@@ -283,7 +284,7 @@ router.post('/session/register', function (req, res, next) {
             }),
           }),
         )
-          .bind(this)
+          .bind(_chainState)
           .timeout(10000)
           .then(function (res) {
             if (res.ok) {

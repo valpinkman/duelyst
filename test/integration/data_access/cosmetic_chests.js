@@ -387,7 +387,6 @@ describe('cosmetic chests module', () => {
 
       const txPromise = knex.transaction(function (tx) {
         return knex("users").where('id',userId)
-          .bind({})
           .then(function(){
             const chestPromises = [];
             const keyPromises = [];

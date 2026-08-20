@@ -30,7 +30,16 @@ import fs from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const espree = require(require.resolve('espree', { paths: [require.resolve('eslint')] }));
+/*
+ * espree parses JavaScript only, and most of this codebase is TypeScript now -
+ * it fails on the first type annotation with "Unexpected token :". The
+ * typescript-eslint parser produces an ESTree-compatible AST with the same node
+ * types, so the walk below is unchanged.
+ */
+const tsParser = require('@typescript-eslint/parser');
+const espree = {
+  parse: (code) => tsParser.parse(code, { ecmaVersion: 2022, sourceType: 'script', loc: true, range: true }),
+};
 
 const COMBINATORS = new Set(['then', 'catch', 'finally', 'tap', 'spread', 'map', 'each',
   'reduce', 'filter', 'nodeify', 'done', 'caught', 'error', 'bind']);

@@ -489,7 +489,6 @@ class MigrationsModule {
     Logger.module('MigrationsModule').time(`userUnlockableOrbsRefund() -> ${userId} done`.green);
 
     return txPromise = knex.transaction((tx) => tx('user_spirit_orbs').select('id', 'user_id', 'card_set').whereIn('card_set', [SDK.CardSet.Bloodborn, SDK.CardSet.Unity]).andWhere('user_id', userId)
-      .bind({})
       .then(function (userUnlockableSpiritOrbRows) {
         _chainState.userUnlockableSpiritOrbRows = userUnlockableSpiritOrbRows;
         return Promise.map(_chainState.userUnlockableSpiritOrbRows, (unlockableOrbRow) => Promise.all([

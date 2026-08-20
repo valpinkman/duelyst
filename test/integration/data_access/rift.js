@@ -768,7 +768,6 @@ describe('rift module', () => {
         let firstTicketId = null;
         let secondTicketId = null;
         return SyncModule.wipeUserData(userId)
-          .bind({})
           .then(() => knex('users').where('id', userId).update({ wallet_gold: CONFIG.RIFT_TICKET_GOLD_PRICE * 2 })).then(() =>
             // console.log("here test 1")
             RiftModule.buyRiftTicketWithGold(userId))

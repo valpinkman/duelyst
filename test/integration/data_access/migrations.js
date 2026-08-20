@@ -206,10 +206,10 @@ describe('migrations module', () => {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive no prismatic backfill rewards if they have opened 10 spirit orbs before cutoff', () => {
+      const _chainState = {};
       const dateToOpenSpiritOrbs = moment.utc('2016-07-12 03:30');
 
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update('last_session_version', null)).then(() => {
           const unlockSpiritOrbPromises = [];
           for (let i = 0; i < 10; i++) {
@@ -230,7 +230,7 @@ describe('migrations module', () => {
           expect(spiritOrbsOpenedRow.length).to.equal(10);
 
           expect(cardRows).to.exist;
-          this.previousCardRows = cardRows;
+          _chainState.previousCardRows = cardRows;
 
           return MigrationsModule.userBackfillPrismaticRewards(userId);
         })
@@ -242,7 +242,7 @@ describe('migrations module', () => {
 
           for (let i = 0; i < newCardRows.length; i++) {
             const newCardRow = newCardRows[i];
-            const oldCardRow = _.find(this.previousCardRows, (val) => val.card_id == newCardRow.card_id);
+            const oldCardRow = _.find(_chainState.previousCardRows, (val) => val.card_id == newCardRow.card_id);
             let numCopiesAdded = 0;
             if (oldCardRow == null) {
               numCopiesAdded = newCardRow.count;
@@ -261,11 +261,11 @@ describe('migrations module', () => {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive no prismatic backfill rewards if they have opened 10 spirit orbs before cutoff and 20 after (long)', () => {
+      const _chainState = {};
       const dateToOpenSpiritOrbs = moment.utc('2016-07-12 03:30');
       const dateAfterCutoff = moment.utc('2016-09-12 03:30');
 
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update('last_session_version', null)).then(() => {
           const unlockSpiritOrbPromises = [];
           for (var i = 0; i < 10; i++) {
@@ -291,7 +291,7 @@ describe('migrations module', () => {
           expect(spiritOrbsOpenedRow.length).to.equal(10 + 20);
 
           expect(cardRows).to.exist;
-          this.previousCardRows = cardRows;
+          _chainState.previousCardRows = cardRows;
 
           return MigrationsModule.userBackfillPrismaticRewards(userId);
         })
@@ -303,7 +303,7 @@ describe('migrations module', () => {
 
           for (let i = 0; i < newCardRows.length; i++) {
             const newCardRow = newCardRows[i];
-            const oldCardRow = _.find(this.previousCardRows, (val) => val.card_id == newCardRow.card_id);
+            const oldCardRow = _.find(_chainState.previousCardRows, (val) => val.card_id == newCardRow.card_id);
             let numCopiesAdded = 0;
             if (oldCardRow == null) {
               numCopiesAdded = newCardRow.count;
@@ -322,10 +322,10 @@ describe('migrations module', () => {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive small prismatic backfill reward if they have opened 28 spirit orbs before cutoff (long)', () => {
+      const _chainState = {};
       const dateToOpenSpiritOrbs = moment.utc('2016-07-12 03:30');
 
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update('last_session_version', null)).then(() => {
           const unlockSpiritOrbPromises = [];
           for (let i = 0; i < 28; i++) {
@@ -346,7 +346,7 @@ describe('migrations module', () => {
           expect(spiritOrbsOpenedRow.length).to.equal(28);
 
           expect(cardRows).to.exist;
-          this.previousCardRows = cardRows;
+          _chainState.previousCardRows = cardRows;
 
           return MigrationsModule.userBackfillPrismaticRewards(userId);
         })
@@ -358,7 +358,7 @@ describe('migrations module', () => {
 
           for (let i = 0; i < newCardRows.length; i++) {
             const newCardRow = newCardRows[i];
-            const oldCardRow = _.find(this.previousCardRows, (val) => val.card_id == newCardRow.card_id);
+            const oldCardRow = _.find(_chainState.previousCardRows, (val) => val.card_id == newCardRow.card_id);
             let numCopiesAdded = 0;
             if (oldCardRow == null) {
               numCopiesAdded = newCardRow.count;
@@ -405,11 +405,11 @@ describe('migrations module', () => {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive small prismatic backfill reward if they have opened 28 spirit orbs before cutoff and 25 after (long)', () => {
+      const _chainState = {};
       const dateToOpenSpiritOrbs = moment.utc('2016-07-12 03:30');
       const dateAfterCutoff = moment.utc('2016-09-12 03:30');
 
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update('last_session_version', null)).then(() => {
           const unlockSpiritOrbPromises = [];
           for (var i = 0; i < 28; i++) {
@@ -434,7 +434,7 @@ describe('migrations module', () => {
           expect(spiritOrbsOpenedRow.length).to.equal(28 + 25);
 
           expect(cardRows).to.exist;
-          this.previousCardRows = cardRows;
+          _chainState.previousCardRows = cardRows;
 
           return MigrationsModule.userBackfillPrismaticRewards(userId);
         })
@@ -446,7 +446,7 @@ describe('migrations module', () => {
 
           for (let i = 0; i < newCardRows.length; i++) {
             const newCardRow = newCardRows[i];
-            const oldCardRow = _.find(this.previousCardRows, (val) => val.card_id == newCardRow.card_id);
+            const oldCardRow = _.find(_chainState.previousCardRows, (val) => val.card_id == newCardRow.card_id);
             let numCopiesAdded = 0;
             if (oldCardRow == null) {
               numCopiesAdded = newCardRow.count;
@@ -493,11 +493,11 @@ describe('migrations module', () => {
 
     /* Test disabled: unsafe (function declaration inside loop)
     it('expect a player to receive 2 prismatic backfill reward chunks if they have opened 119 spirit orbs before cutoff (very long)', function () {
+      const _chainState = {};
 
       const dateToOpenSpiritOrbs = moment.utc('2016-07-12 03:30');
 
       return SyncModule.wipeUserData(userId)
-        .bind({})
         .then(() => knex('users').where('id', userId).update('last_session_version', null)).then(() => {
           const unlockSpiritOrbPromises = [];
           for (let i = 0; i < 119; i++) {
@@ -518,7 +518,7 @@ describe('migrations module', () => {
           expect(spiritOrbsOpenedRow.length).to.equal(119);
 
           expect(cardRows).to.exist;
-          this.previousCardRows = cardRows;
+          _chainState.previousCardRows = cardRows;
 
           return MigrationsModule.userBackfillPrismaticRewards(userId);
         })
@@ -530,7 +530,7 @@ describe('migrations module', () => {
 
           for (let i = 0; i < newCardRows.length; i++) {
             const newCardRow = newCardRows[i];
-            const oldCardRow = _.find(this.previousCardRows, (val) => val.card_id == newCardRow.card_id);
+            const oldCardRow = _.find(_chainState.previousCardRows, (val) => val.card_id == newCardRow.card_id);
             let numCopiesAdded = 0;
             if (oldCardRow == null) {
               numCopiesAdded = newCardRow.count;

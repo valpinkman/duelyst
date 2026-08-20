@@ -440,7 +440,6 @@ class InventoryModule {
 
     // First check if user already owns the cosmetic id
     return currentCosmeticInventoryPromise
-      .bind({})
       .then(function (cosmeticIdsOwned) {
         let matchingPotentialCosmetics = [];
         if ((cosmeticType != null) && (rarityId != null)) {
@@ -533,7 +532,6 @@ class InventoryModule {
 
     // First check if user already owns the cosmetic id
     return trx('user_cosmetic_inventory').where('user_id', userId).andWhere('cosmetic_id', cosmeticId).first('cosmetic_id')
-      .bind({})
       .then(function (cosmeticRow) {
         if (cosmeticRow != null) {
           Logger.module('InventoryModule').debug(`giveUserCosmeticId() -> duplicate cosmetic id - ${cosmeticId}.`);
@@ -772,7 +770,6 @@ class InventoryModule {
 
     // search user inventory
     return tx('user_cosmetic_inventory').where('user_id', userId).andWhere('cosmetic_id', cosmeticId).first()
-      .bind({})
       .then(function (cosmeticRow) {
         if ((cosmeticRow == null)) {
           return Promise.reject(new Errors.NotFoundError('Can\'t use cosmetic that you don\'t own'));
@@ -806,7 +803,6 @@ class InventoryModule {
       if (cosmeticType != null) { query = query.andWhere('cosmetic_type', cosmeticType); }
       query = query.select('cosmetic_id');
       return query
-        .bind({})
         .then(function (cosmeticRows) {
           for (var cosmeticId of Array.from<any>(cosmeticIds)) {
             cosmeticId = parseInt(cosmeticId);
@@ -863,7 +859,6 @@ class InventoryModule {
         if (cosmeticType != null) { query = query.andWhere('cosmetic_type', cosmeticType); }
         query = query.select('cosmetic_id');
         return query
-          .bind({})
           .then(function (cosmeticRows) {
             for (var cosmeticId of Array.from<any>(cosmeticIds)) {
               cosmeticId = parseInt(cosmeticId);
@@ -1141,7 +1136,7 @@ class InventoryModule {
       params: additionalBoosterAttrs,
       card_set: cardSetId,
       created_at: NOW_UTC_MOMENT.toDate(),
-    }).bind({})
+    })
       .then(function () {
       // If a set has a max number of orbs, make sure the user doesn't go over that
         let orbCountTrackingPromise = Promise.resolve();
@@ -2099,7 +2094,6 @@ class InventoryModule {
 
     // attempt to lock user record first
     return trx.first('wallet_spirit').from('users').where('id', userId).forUpdate()
-      .bind({})
       .then(function (userRow) {
         _chainState.userRow = userRow;
         return DuelystFirebase.connect().getRootRef();
@@ -2685,7 +2679,6 @@ class InventoryModule {
         .forUpdate(),
       trx.insert(cardDataList).into('user_card_log'),
     ])
-      .bind({})
       .then(function ([cardCountRows]) {
         _chainState.cardCountRows = cardCountRows;
 
@@ -2763,7 +2756,6 @@ class InventoryModule {
       faction_id: factionId,
       transaction_type: transactionType,
     }).into('user_emotes').transacting(trx)
-      .bind({})
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {
         _chainState.inventory = fbRootRef.child('user-inventory').child(userId);
@@ -2930,7 +2922,6 @@ class InventoryModule {
     const txPromise = knex.transaction(function (tx) {
       knex.select('id').from('users').where({ id: userId }).transacting(tx)
         .forUpdate()
-        .bind({})
         .then(() => knex.select().from('user_card_lore_inventory').where({ user_id: userId, card_id: cardId }).transacting(tx)
           .forUpdate())
         .then(function (cardLoreCountRows) {
@@ -2990,7 +2981,6 @@ class InventoryModule {
 
     var txPromise = knex.transaction(function (tx) {
       tx('users').first('id', 'wallet_spirit', 'soft_wipe_count').where('id', userId).forUpdate()
-        .bind({})
         .then(function (userRow) {
           _chainState.userRow = userRow;
           if (userRow.soft_wipe_count >= InventoryModule.MAX_SOFTWIPE_COUNT) {

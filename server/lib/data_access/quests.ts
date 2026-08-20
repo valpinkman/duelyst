@@ -68,7 +68,6 @@ class QuestsModule {
       knex('users').first('daily_quests_generated_at').where('id', userId),
       knex('user_quests').select().where('user_id', userId),
     ])
-      .bind({})
       .then(function ([newPlayerProgressionRow, userRow, questRows]) {
         const currentStage = NewPlayerProgressionStageEnum[newPlayerProgressionRow != null ? newPlayerProgressionRow.stage : undefined] || NewPlayerProgressionStageEnum.Tutorial;
         if (currentStage.value < NewPlayerProgressionHelper.DailyQuestsStartToGenerateStage.value) {
@@ -637,7 +636,6 @@ class QuestsModule {
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
     return knex.first().from('user_quests').where({ user_id: userId, quest_slot_index: questIndex })
-      .bind({})
       .then(function (questRow) {
         if (questRow != null) {
           if (!questRow.is_replaceable) {
@@ -919,7 +917,6 @@ class QuestsModule {
       tx('users').where({ id: userId }).first('id').forUpdate(),
       tx('user_quests').select().where({ user_id: userId }).forUpdate(),
     ])
-      .bind({})
       .then(function ([userRow, questRows]) {
         _chainState.userRow = userRow;
         _chainState.questRows = questRows;
@@ -996,7 +993,6 @@ class QuestsModule {
     const this_obj = {};
 
     return Promise.resolve()
-      .bind({})
       .then(function () {
         _chainState.questRows = questRows;
         if ((questRows != null ? questRows.length : undefined) > 0) {
@@ -1089,7 +1085,6 @@ class QuestsModule {
       tx('users').where({ id: userId }).first('id').forUpdate(),
       tx('user_quests').select().where({ user_id: userId }).forUpdate(),
     ])
-      .bind({})
       .then(function ([userRow, questRows]) {
         _chainState.userRow = userRow;
         _chainState.questRows = questRows;
@@ -1272,7 +1267,6 @@ class QuestsModule {
     }
 
     return Promise.all(allQueries)
-      .bind({})
       .then(function () { return _chainState.rewards = rewards; })
       .then(() => DuelystFirebase.connect().getRootRef())
       .then(function (fbRootRef) {

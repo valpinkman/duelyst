@@ -1462,7 +1462,6 @@ class RiftModule {
       return Promise.resolve(cardId);
     } else {
       return InventoryModule.filterUsableCosmetics(txPromise, tx, userId, cardSkinIds, SDK.CosmeticsTypeLookup.CardSkin)
-        .bind({})
         .then(function (usableSkinIds) {
           if (usableSkinIds.length <= 0) {
             return cardId;

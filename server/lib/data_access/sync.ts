@@ -66,7 +66,6 @@ class SyncModule {
   static syncUserDataIfTrasactionCountMismatched(userId) {
     const _chainState: Record<string, any> = {};
     return DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
         return Promise.all([
@@ -115,7 +114,6 @@ class SyncModule {
     Logger.module('SyncModule').time(`wipeUserData() -> ${userId.blue} wiped`);
 
     return DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
 
@@ -394,7 +392,6 @@ class SyncModule {
     Logger.module('UsersModule').time(`_syncUserFromSQLToFirebase() -> ${userId} + buddies:${shouldSyncBuddyList}`.green);
 
     return DuelystFirebase.connect().getRootRef()
-      .bind({})
       .then(function (fbRootRef) {
         _chainState.fbRootRef = fbRootRef;
         return knex.first().from('users').where('id', userId);

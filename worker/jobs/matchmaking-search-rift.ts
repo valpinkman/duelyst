@@ -239,6 +239,7 @@ module.exports = function (job, done) {
         // Logger.module("MATCHMAKING-RIFT-JOB").log("[J:#{job.id}] RIFT - lock(#{userId}) acquired.")
           return findOpponent(userId, playerToken.lastOpponentId, rank, searchRadius)
             .then(function (opponent) {
+              const _chainState = {};
               if (!opponent) {
                 // if we've waited 20 seconds, queue with a bot
                 if (moment.duration(moment.utc().valueOf() - firstAttemptAt.valueOf()).asSeconds() > 25) {
@@ -246,7 +247,7 @@ module.exports = function (job, done) {
                     Redis.TokenManager.remove(playerToken.userId),
                     riftQueue.remove([playerToken.userId]),
                   ]).then(() => knex('users').where('is_bot', true).offset(knex.raw('floor(random()*110)')).first('id', 'username')).then(function (randomBotRow) {
-                    this.randomBotRow = randomBotRow;
+                    _chainState.randomBotRow = randomBotRow;
 
                     // get random faction
                     const aiFactionId = _.sample([
@@ -265,7 +266,7 @@ module.exports = function (job, done) {
                     // bots should use around ~12 random cards
                     const aiNumRandomCards = Math.floor(CONFIG.MAX_DECK_SIZE * 0.3);
 
-                    Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] ${gameType.yellow} - ${userId} has waited too long, matching with bot ${this.randomBotRow.username}`);
+                    Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] ${gameType.yellow} - ${userId} has waited too long, matching with bot ${_chainState.randomBotRow.username}`);
 
                     const gameSetupOptions = {
                       player: {
@@ -292,7 +293,7 @@ module.exports = function (job, done) {
                     );
                   }).then(function () {
                     // We're done
-                    return done(null, { opponentName: this.randomBotRow.name });
+                    return done(null, { opponentName: _chainState.randomBotRow.name });
                   });
                 } else {
                   // no opponents found, unlock and requeue
@@ -302,44 +303,43 @@ module.exports = function (job, done) {
               } else {
                 Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] RIFT - searchQueue(${userId}): ${JSON.stringify(opponent)}`);
                 return Redis.TokenManager.get(opponent.id)
-                  .bind({})
                   .then(function (opponentToken) { // TODO: We should validate results
-                    this.token1 = playerToken;
-                    this.token2 = opponentToken;
+                    _chainState.token1 = playerToken;
+                    _chainState.token2 = opponentToken;
 
-                    if (!(this.token1 != null ? this.token1.userId : undefined)) {
+                    if (!(_chainState.token1 != null ? _chainState.token1.userId : undefined)) {
                       Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] searchQueue(${userId}): ERROR: player token has no user id`);
                       throw new Errors.NotFoundError('player token has no user id');
                     }
-                    if (!(this.token2 != null ? this.token2.userId : undefined)) {
+                    if (!(_chainState.token2 != null ? _chainState.token2.userId : undefined)) {
                       Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] searchQueue(${userId}): ERROR: opponent token has no user id`);
                       throw new Errors.UnexpectedBadDataError('opponent token has no user id');
                     }
 
                     return Promise.all([
-                      Redis.TokenManager.remove(this.token1.userId),
-                      Redis.TokenManager.remove(this.token2.userId),
-                      riftQueue.remove([this.token1.userId, this.token2.userId]),
+                      Redis.TokenManager.remove(_chainState.token1.userId),
+                      Redis.TokenManager.remove(_chainState.token2.userId),
+                      riftQueue.remove([_chainState.token1.userId, _chainState.token2.userId]),
                     ]);
                   }).then(function (results) { // TODO: We should validate results
                     // mark match made
-                    logMatchMade(this.token1, this.token2);
+                    logMatchMade(_chainState.token1, _chainState.token2);
 
                     // log it
-                    Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] ${gameType.yellow} - Search for Game (${userId}) done(), matched versus ${this.token2.userId}`);
-                    job.log('Matched versus %s(%s)', this.token2.userId, this.token2.name);
+                    Logger.module('MATCHMAKING-RIFT-JOB').log(`[J:${job.id}] ${gameType.yellow} - Search for Game (${userId}) done(), matched versus ${_chainState.token2.userId}`);
+                    job.log('Matched versus %s(%s)', _chainState.token2.userId, _chainState.token2.name);
 
                     // Fire off job to setup game between both players
                     Redis.Jobs.create('matchmaking-setup-game', {
                       name: 'Matchmaking Setup Game',
-                      title: util.format('Game :: Setup Game :: %s versus %s', this.token1.name, this.token2.name),
-                      token1: this.token1,
-                      token2: this.token2,
+                      title: util.format('Game :: Setup Game :: %s versus %s', _chainState.token1.name, _chainState.token2.name),
+                      token1: _chainState.token1,
+                      token2: _chainState.token2,
                       gameType,
                     }).removeOnComplete(true).save();
 
                     // We're done
-                    return done(null, { opponentName: this.token2.name });
+                    return done(null, { opponentName: _chainState.token2.name });
                   })
                   .catch(onType(Errors.NotFoundError, (error) => done(error)))
                   .catch(onType(Errors.UnexpectedBadDataError, function (error) {
