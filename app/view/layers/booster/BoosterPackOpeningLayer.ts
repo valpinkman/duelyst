@@ -812,7 +812,7 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
         // cc.delayTime(delayScaleDown),
         cc.callFunc(function () {
           this.stopSystem();
-        }.bind(particles)),
+        }),
         cc.scaleTo(0.4, 0.25).easing(cc.easeExponentialOut()),
         cc.callFunc(() => {
           // zodiac symbol that animates from a single point out
@@ -905,9 +905,8 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
 
     if (cardCount > 1) {
       showRevealPromise
-        .bind(cardNode)
         .then(function () {
-          this.showStack(CONFIG.ANIMATE_FAST_DURATION, cardCount - 1, null, cc.p(0, -17), 10);
+          cardNode.showStack(CONFIG.ANIMATE_FAST_DURATION, cardCount - 1, null, cc.p(0, -17), 10);
         });
     }
 

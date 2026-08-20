@@ -914,7 +914,6 @@ class RankModule {
     if (recalculateIfOldSeason == null) { recalculateIfOldSeason = false; }
 
     return this.getUserRatingData(tx, playerId, MOMENT_UTC_NOW)
-      .bind(({}))
       .then(function (userRatingRow) {
         _chainState.userRatingRow = userRatingRow;
         if ((_chainState.userRatingRow != null ? _chainState.userRatingRow.rating : undefined) != null) {

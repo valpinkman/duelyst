@@ -314,16 +314,14 @@ module.exports = function (job, done) {
   return GamesModule.updateUserGame(userId, gameId, {
     status: GameStatus.over, is_scored: !isUnscored, is_winner: isWinner, is_draw: isDraw, is_bot_game: isBotGame,
   })
-    .bind(thisObj)
     .then(function () {
       Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> loading game session data ...`);
       // grab game session data from REDIS
       return GameManager.loadGameSession(gameId)
-        .bind(thisObj)
         .then(JSON.parse) // parse game session data to JSON
         .then(function (gameSessionData) {
           Logger.module('JOB').debug(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> loading game session data ... DONE`);
-          this.gameSessionData = gameSessionData;
+          thisObj.gameSessionData = gameSessionData;
           return gameSessionData;
         });
     }).then(function (gameSessionData) { // process game promises
@@ -346,20 +344,19 @@ module.exports = function (job, done) {
         { name: 'achievements', func: onProcessAchievements },
       ], (item) => // call the process function, and watch for errors on the returned promise
         (item != null ? item.func(job, userId, opponentId, gameId, factionId, generalId, isWinner, isDraw, isUnscored, gameType, gameSessionData, ticketId)
-          .bind(thisObj)
           .catch(function (e) {
             // if we catch an error, add it to the retained error object, and log out some info
-            if (this.errors == null) { this.errors = []; }
-            this.errors.push(e);
+            if (thisObj.errors == null) { thisObj.errors = []; }
+            thisObj.errors.push(e);
             Logger.module('JOB').debug(`[J:${job.id}]`, e.stack);
             return Logger.module('JOB').error(`[J:${job.id}] update-user-post-game (${userId} - ${gameId}) -> error processing part '${(item != null ? item.name : undefined)}' `, e != null ? e.message : undefined);
           }) : undefined));
     })
     .then(function () {
     // done with all processes! check the retained errors object to find if any of the processes failed
-      if (this.errors != null ? this.errors.length : undefined) {
+      if (thisObj.errors != null ? thisObj.errors.length : undefined) {
       // throw the first error
-        throw this.errors[0];
+        throw thisObj.errors[0];
       }
       // otherwise all good
       Logger.module('JOB').timeEnd(logSignature);

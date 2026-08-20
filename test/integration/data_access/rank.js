@@ -611,7 +611,7 @@ describe('rank module', () => {
           return Promise.all([
             knex.first().from('user_rank_ratings').where('user_id', player3Id).andWhere('season_starting_at', seasonStartingAt),
             knex.first().from('user_rank_ratings').where('user_id', player4Id).andWhere('season_starting_at', seasonStartingAt),
-          ]).bind(_chainState).then(([player3RatingRow, player4RatingRow]) => {
+          ]).then(([player3RatingRow, player4RatingRow]) => {
             expect(player3RatingRow).to.exist;
             expect(player3RatingRow.rating).to.exist;
             expect(player3RatingRow.rating).to.equal(_chainState.player3RatingBefore);
@@ -631,7 +631,6 @@ describe('rank module', () => {
           rating: 5000,
           ladder_rating: 5000,
         })
-          .bind(thisObjective)
           .then(() => SRankManager.updateUserLadderRating(player3Id, startOfSeasonMonth, 5000))
           .then(() => RankModule.updateAndGetUserLadderPosition(txPromise, tx, player3Id, startOfSeasonMonth, now))
           .then((ladderPosition) => {
@@ -644,7 +643,6 @@ describe('rank module', () => {
           });
       });
       return txPromise
-        .bind(thisObjective)
         .then(() => {
           expect(_chainState.ladderPosition).to.exist;
           expect(_chainState.ladderPosition).to.equal(1);

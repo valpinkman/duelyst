@@ -284,7 +284,6 @@ router.post('/session/register', function (req, res, next) {
             }),
           }),
         )
-          .bind(_chainState)
           .timeout(10000)
           .then(function (res) {
             if (res.ok) {

@@ -14,6 +14,7 @@ const BattleMapTemplate = require('app/sdk/battleMapTemplate');
 const fetch = require('isomorphic-fetch');
 const Promise = require('bluebird');
 const i18next = require('i18next');
+const PromiseUtils = require('app/common/utils/utils_promise');
 
 class ChallengeRemote extends Challenge {
   declare type: any;
@@ -31,10 +32,8 @@ class ChallengeRemote extends Challenge {
   static type = 'rando-1';
 
   static loadAndCreateFromModelData(modelAttributes) {
-    return Promise.resolve(fetch(modelAttributes.url))
-      .bind(this)
-      .timeout(10000)
-      .catch(this._networkError)
+    return PromiseUtils.withTimeout(Promise.resolve(fetch(modelAttributes.url)), 10000)
+      .catch(this._networkError.bind(this))
       .then((res) => {
         if (res.ok) {
           return res.json();

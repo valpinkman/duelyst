@@ -12,6 +12,7 @@ const fetch = require('isomorphic-fetch');
 const moment = require('moment');
 const Storage = require('app/common/storage');
 const i18next = require('i18next');
+const PromiseUtils = require('app/common/utils/utils_promise');
 
 class Session extends EventEmitter {
   constructor(options) {
@@ -126,7 +127,7 @@ class Session extends EventEmitter {
     body.password = password;
     body.username = username;
 
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/session`, {
         method: 'POST',
         headers: {
@@ -135,11 +136,9 @@ class Session extends EventEmitter {
         },
         body: JSON.stringify(body),
       }),
-    )
-      .bind(this)
-      .timeout(10000)
-      .catch(this._networkError)
-      .then((this._checkResponse))
+    ), 10000)
+      .catch(this._networkError.bind(this))
+      .then(this._checkResponse.bind(this))
       .then((res) => {
         this.analyticsData = res.analytics_data;
         this.token = res.token;
@@ -193,7 +192,7 @@ class Session extends EventEmitter {
 
     opts.is_desktop = window.isDesktop || false;
 
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/session/register`, {
         method: 'POST',
         headers: {
@@ -202,11 +201,9 @@ class Session extends EventEmitter {
         },
         body: JSON.stringify(opts),
       }),
-    )
-      .bind(this)
-      .timeout(10000)
-      .catch(this._networkError)
-      .then((this._checkResponse))
+    ), 10000)
+      .catch(this._networkError.bind(this))
+      .then(this._checkResponse.bind(this))
       .then((data) => {
         debug(data);
         this.justRegistered = true;
@@ -241,7 +238,7 @@ class Session extends EventEmitter {
   }
 
   changeUsername(new_username) {
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/session/change_username`, {
         method: 'POST',
         headers: {
@@ -251,15 +248,13 @@ class Session extends EventEmitter {
         },
         body: JSON.stringify({ new_username }),
       }),
-    )
-      .bind(this)
-      .timeout(10000)
-      .catch(this._networkError)
-      .then(this._checkResponse);
+    ), 10000)
+      .catch(this._networkError.bind(this))
+      .then(this._checkResponse.bind(this));
   }
 
   changePassword(currentPassword, new_password) {
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/session/change_password`, {
         method: 'POST',
         headers: {
@@ -272,11 +267,9 @@ class Session extends EventEmitter {
           new_password,
         }),
       }),
-    )
-      .bind(this)
-      .timeout(5000)
-      .catch(this._networkError)
-      .then(this._checkResponse);
+    ), 5000)
+      .catch(this._networkError.bind(this))
+      .then(this._checkResponse.bind(this));
   }
 
   changePortrait(portraitId) {
@@ -284,7 +277,7 @@ class Session extends EventEmitter {
       return Promise.reject(new Error('Invalid portrait!'));
     }
 
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/api/me/profile/portrait_id`, {
         method: 'PUT',
         headers: {
@@ -294,15 +287,13 @@ class Session extends EventEmitter {
         },
         body: JSON.stringify({ portrait_id: portraitId }),
       }),
-    )
-      .bind(this)
-      .timeout(5000)
-      .catch(this._networkError)
-      .then(this._checkResponse);
+    ), 5000)
+      .catch(this._networkError.bind(this))
+      .then(this._checkResponse.bind(this));
   }
 
   changeBattlemap(battlemapId) {
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/api/me/profile/battle_map_id`, {
         method: 'PUT',
         headers: {
@@ -312,11 +303,9 @@ class Session extends EventEmitter {
         },
         body: JSON.stringify({ battle_map_id: battlemapId }),
       }),
-    )
-      .bind(this)
-      .timeout(5000)
-      .catch(this._networkError)
-      .then(this._checkResponse);
+    ), 5000)
+      .catch(this._networkError.bind(this))
+      .then(this._checkResponse.bind(this));
   }
 
   /*
@@ -337,7 +326,7 @@ class Session extends EventEmitter {
     if ((token == null)) { return Promise.resolve(false); }
 
     this.token = token;
-    return Promise.resolve(
+    return PromiseUtils.withTimeout(Promise.resolve(
       fetch(`${this.url}/session`, {
         method: 'GET',
         headers: {
@@ -346,9 +335,7 @@ class Session extends EventEmitter {
           Authorization: `Bearer ${token}`,
         },
       }),
-    )
-      .bind(this)
-      .timeout(15000)
+    ), 15000)
       .then((res) => {
         debug(`isAuthenticated:fetch ${res.ok}`);
         if (!res.ok) { return null; }

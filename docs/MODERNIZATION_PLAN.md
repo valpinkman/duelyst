@@ -792,6 +792,26 @@ server and worker. What remains is *typing* (5T.4), not converting.
       So the true order is **knex 3 → `.timeout` → redis v4 → drop bluebird**, not
       "bluebird → knex" as originally planned. The bluebird *idioms* are gone from knex's chains,
       which is what actually unblocks knex 3.
+      - [x] **Stage 6c — every bluebird `.bind` chain is gone.** The last 20 needed hand work:
+        `session2.ts` and `challengeRemote.ts` had `.bind(this)` followed by `.timeout`, so the
+        client `.timeout` sites were converted first (client code, so the knex blocker does not
+        apply), which freed them. `rank.ts` had a `.bind(({}))` that was already a no-op, and
+        `games_manager.ts` — which the codemod had refused because its output would not parse —
+        was converted by hand.
+
+        **A subtlety worth recording:** those chains pass METHOD REFERENCES as callbacks —
+        `.then((this._checkResponse))`. bluebird invoked them with the bound `this`; native calls
+        them unbound, and `_checkResponse` uses `this.emit(...)`. Simply deleting `.bind(this)`
+        would have broken every error path in the session layer. All 13 such callbacks are now
+        explicitly `.bind(this)`-ed at the call site before the chain bind was removed.
+        Verified live: login, session restore (`GET /session/`), and a bad password still 400s.
+
+        The only `.bind(` left in chain position is a DOM event bind in `dat.gui.ts`.
+
+      🚧 **Stage 7 — genuinely blocked, not skipped.** `require('bluebird')` cannot be dropped
+      until **knex 3** (`.timeout` 20 + `TimeoutError` 20 on the server) and **redis v4**
+      (`promisifyAll(redis)` / `promisifyAll(warlock(redis))` supply the `*Async` API the redis
+      layer is written against). Everything else bluebird provided is now gone.
       - [ ] Stage 7 — after knex 3 and redis v4: drop `require('bluebird')` and the dependency
 
   **⚠ Reprioritisation, measured after the winston step.** The tier list above was written before

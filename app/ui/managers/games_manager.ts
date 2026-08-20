@@ -70,48 +70,47 @@ var GamesManager = Manager.extend({
   },
 
   onBeforeConnect: function () {
+    const _self = this;
     Manager.prototype.onBeforeConnect.call(this);
 
     ProfileManager.getInstance().onReady()
-      .bind(this)
       .then(function () {
         var userId = ProfileManager.getInstance().get('id');
 
         // initialize a rank model for best season
-        this.topRankingModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/top' });
+        _self.topRankingModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/top' });
 
         // initialize a model for the users stats
-        this.userStatsModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-stats/' + userId });
+        _self.userStatsModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-stats/' + userId });
 
         // init player games collection
-        this.playerGames = new DuelystFirebase.Collection(null, { firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1) });
+        _self.playerGames = new DuelystFirebase.Collection(null, { firebase: new Firebase(process.env.FIREBASE_URL + '/user-games/' + userId).limitToLast(1) });
 
         // init game invites collection
-        this.receivedInvitesCollection = new DuelystFirebase.Collection(null, { firebase: process.env.FIREBASE_URL + '/matchmaking/' + process.env.NODE_ENV + '/invites/to/' + userId });
-        this.listenTo(this.receivedInvitesCollection, 'add', this._onGameInviteReceived);
+        _self.receivedInvitesCollection = new DuelystFirebase.Collection(null, { firebase: process.env.FIREBASE_URL + '/matchmaking/' + process.env.NODE_ENV + '/invites/to/' + userId });
+        _self.listenTo(_self.receivedInvitesCollection, 'add', _self._onGameInviteReceived);
 
         // initialize a rank model
-        this.rankingModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/current' });
-        this.rankingModel.onSyncOrReady()
-          .bind(this)
+        _self.rankingModel = new DuelystFirebase.Model(null, { firebase: process.env.FIREBASE_URL + '/user-ranking/' + userId + '/current' });
+        _self.rankingModel.onSyncOrReady()
           .then(function (model) {
-            this._onRankingSyncedOrChanged(model);
-            return this._onRankingSyncedFirstTime(model);
+            _self._onRankingSyncedOrChanged(model);
+            return _self._onRankingSyncedFirstTime(model);
           })
           .then(function (response) {
-            this.listenTo(this.rankingModel, 'change', this._onRankingSyncedOrChanged);
+            _self.listenTo(_self.rankingModel, 'change', _self._onRankingSyncedOrChanged);
 
             // initialize a rank model collection for past seasons
-            this.historyRankingModelCollection = new DuelystBackbone.Collection();
-            this.historyRankingModelCollection.url = process.env.API_URL + '/api/me/rank/history';
-            this.historyRankingModelCollection.fetch();
+            _self.historyRankingModelCollection = new DuelystBackbone.Collection();
+            _self.historyRankingModelCollection.url = process.env.API_URL + '/api/me/rank/history';
+            _self.historyRankingModelCollection.fetch();
 
             // initialize a ranked ladder position model
-            this.ladderPositionModel = new DuelystBackbone.Model();
-            this.ladderPositionModel.url = process.env.API_URL + '/api/me/rank/current_ladder_position';
-            this.ladderPositionModel.fetch();
+            _self.ladderPositionModel = new DuelystBackbone.Model();
+            _self.ladderPositionModel.url = process.env.API_URL + '/api/me/rank/current_ladder_position';
+            _self.ladderPositionModel.fetch();
 
-            this._markAsReadyWhenModelsAndCollectionsSynced([this.historyRankingModelCollection, this.playerGames, this.ladderPositionModel]);
+            _self._markAsReadyWhenModelsAndCollectionsSynced([_self.historyRankingModelCollection, _self.playerGames, _self.ladderPositionModel]);
           });
       });
   },
