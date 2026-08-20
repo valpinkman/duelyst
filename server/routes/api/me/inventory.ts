@@ -23,9 +23,6 @@ const moment = require('moment');
 const { onType } = require('../../../../app/common/utils/utils_promise');
 // AWS = require "aws-sdk"
 
-// promisify
-Promise.promisifyAll(zlib);
-
 const router = express.Router();
 
 router.delete('/card_collection', function (req, res, next) {

@@ -4,6 +4,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const Promise = require('bluebird');
+const { promisify } = require('util');
 const _ = require('underscore');
 const r = require('../r-client');
 const tk = require('../r-tokenmanager')(r);
@@ -27,8 +28,8 @@ const checklocks = function () {
 const locks = Promise.all([lock1, lock2]).then(([unlockFn1, unlockFn2]) => {
   console.log(`lock1 acquired: ${_.isFunction(unlockFn1)}`);
   console.log(`lock2 acquired: ${_.isFunction(unlockFn2)}`);
-  unlock1 = Promise.promisify(unlockFn1);
-  return unlock2 = Promise.promisify(unlockFn2);
+  unlock1 = promisify(unlockFn1);
+  return unlock2 = promisify(unlockFn2);
 }).then(() => {
   console.log('locking done...');
   checklocks();

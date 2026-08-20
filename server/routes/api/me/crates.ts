@@ -17,9 +17,6 @@ const zlib = require('zlib');
 const Promise = require('bluebird');
 const moment = require('moment');
 
-// promisify
-Promise.promisifyAll(zlib);
-
 const router = express.Router();
 
 router.put('/cosmetic_chest/:chest_id/unlock', function (req, res, next) {

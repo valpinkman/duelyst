@@ -8,12 +8,15 @@ const _ = require('underscore');
 const colors = require('colors');
 const url = require('url');
 const zlib = require('zlib');
+const { promisify } = require('util');
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 const Logger = require('../app/common/logger');
 const config = require('../config/config.js');
 
-Promise.promisifyAll(zlib);
+// bluebird's promisifyAll gave us zlib.gzipAsync; node's promisify is the
+// direct equivalent, and a real binding rather than a mutation of the module.
+const gzipAsync = promisify(zlib.gzip);
 
 // Validate config.
 const env = config.get('env');

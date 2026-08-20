@@ -1,16 +1,18 @@
 /*
  * A small helper module for hash generation and compares
- * Uses Bluebird to promisify the bcrypt modules
+ * Uses node's util.promisify on the bcrypt module
  * Methods are both node style callback and promise compatible
  * @module hash_helpers
  */
 
-const Promise = require('bluebird');
+const { promisify } = require('util');
 const bcrypt = require('bcrypt');
 const PromiseUtils = require('../../app/common/utils/utils_promise');
 
-/* This call wraps the bcrypt module in a Promise compatible interface */
-Promise.promisifyAll(bcrypt);
+/* Promise-compatible wrappers around bcrypt's callback API. */
+const genSaltAsync = promisify(bcrypt.genSalt);
+const hashAsync = promisify(bcrypt.hash);
+const compareAsync = promisify(bcrypt.compare);
 
 /**
  * Generate a salt and hash using bcrypt when provided with a password
@@ -20,7 +22,7 @@ Promise.promisifyAll(bcrypt);
  * @param  {Function}  [callback]        Optional callback(err,hash)
  * @return  {Promise}              Promise returning hash
  */
-module.exports.generateHash = (password, callback) => bcrypt.genSaltAsync(10).then((salt) => PromiseUtils.nodeify(bcrypt.hashAsync(password, salt), callback));
+module.exports.generateHash = (password, callback) => genSaltAsync(10).then((salt) => PromiseUtils.nodeify(hashAsync(password, salt), callback));
 
 /**
  * Compare a password against a bcrypt hash
@@ -31,4 +33,4 @@ module.exports.generateHash = (password, callback) => bcrypt.genSaltAsync(10).th
  * @param  {Function}  [callback]        Optional callback(err,match)
  * @return  {Promise}              Promise returning true/false
  */
-module.exports.comparePassword = (password, hash, callback) => PromiseUtils.nodeify(bcrypt.compareAsync(password, hash), callback);
+module.exports.comparePassword = (password, hash, callback) => PromiseUtils.nodeify(compareAsync(password, hash), callback);

@@ -37,7 +37,7 @@ const config = require('../../config/config.js');
 
 // async promise to get client template
 const loadClientLogsHandlebarsTemplateAsync = new Promise(function (resolve, reject) {
-  const readFile = Promise.promisify(require('fs').readFile);
+  const readFile = require('util').promisify(require('fs').readFile);
   return readFile(__dirname + '/../templates/client-logs.hbs')
     .then(function (template) {
       const hbs_template = handlebars.compile(template.toString());
