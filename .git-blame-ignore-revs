@@ -1,0 +1,9 @@
+# Revisions to skip in `git blame`. Configure once with:
+#
+#     git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# Only whole-repo mechanical reformats belong here -- never a commit that
+# changes behaviour, or blame will hide something that mattered.
+
+# tooling: oxfmt owns formatting; reformat the repo (2,111 files)
+4d5763b4f1b463d2d0959242ac7389be3877a4b3
