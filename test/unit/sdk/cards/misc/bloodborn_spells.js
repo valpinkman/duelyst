@@ -6,7 +6,6 @@ const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
 const UtilsSDK = require('test/utils/utils_sdk');
 const _ = require('underscore');
-const Promise = require('bluebird');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

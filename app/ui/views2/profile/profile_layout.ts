@@ -9,7 +9,6 @@ var generatePushID = require('app/common/generate_push_id');
 var Scene = require('app/view/Scene');
 var SDK = require('app/sdk');
 var moment = require('moment');
-var Promise = require('bluebird');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 // template

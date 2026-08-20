@@ -23,7 +23,6 @@ var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 var ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
 var ArenaLayer = require('app/view/layers/arena/ArenaLayer');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
-var Promise = require('bluebird');
 var _ = require('underscore');
 var moment = require('moment');
 var ShopData = require('app/data/shop.json');

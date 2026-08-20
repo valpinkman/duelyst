@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Promise = require('bluebird');
 const _ = require('underscore');
 const r = require('../r-client');
 const queue = require('../r-playerqueue');

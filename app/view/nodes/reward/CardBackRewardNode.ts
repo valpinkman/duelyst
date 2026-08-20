@@ -9,7 +9,6 @@ const PKGS = require('app/data/packages');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const FigureEight = require('app/view/actions/FigureEight');
 const TweenTypes = require('app/view/actions/TweenTypes');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const RewardNode = require('./RewardNode');
 const BaseSprite = require('../BaseSprite');

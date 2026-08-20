@@ -9,7 +9,6 @@ const PKGS = require('app/data/packages');
 const FigureEight = require('app/view/actions/FigureEight');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
-const Promise = require('bluebird');
 const RewardNode = require('./RewardNode');
 
 /** **************************************************************************

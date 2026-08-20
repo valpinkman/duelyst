@@ -25,7 +25,6 @@ const TweenTypes = require('app/view/actions/TweenTypes');
 const GlowSprite = require('app/view/nodes/GlowSprite');
 const ZodiacNode = require('app/view/nodes/draw/Zodiac');
 const FXGlowImageMap = require('app/view/nodes/fx/FXGlowImageMap');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const moment = require('moment');
 const KeyRewardNode = require('./KeyRewardNode');

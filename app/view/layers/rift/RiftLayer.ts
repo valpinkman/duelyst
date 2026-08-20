@@ -4,7 +4,6 @@ const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const generatePushID = require('app/common/generate_push_id');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const FXCompositeLayer = require('../FXCompositeLayer');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');

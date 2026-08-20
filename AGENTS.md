@@ -128,6 +128,17 @@ How we work on it:
   `generate_packages.js` and RSX paths.
 
 Status log (newest first):
+- 2026-08-20 — **bluebird is down to 2 files.** Stage 7 landed in three steps: map/each/props
+  helpers with contract tests (7a), all 100 bluebird statics converted (7b), promisify off
+  bluebird for zlib/bcrypt/s3 (7c), and the require dropped from **213 of 215 files** (7d).
+  Only `server/redis/r-client.ts` + `r-tokenmanager.ts` still need it, so **redis v4 is the only
+  thing left before the dependency can go**. Four real bugs found: a `gzipAsync` ReferenceError
+  we introduced in stage 6b, `Promise.longStackTraces` crash-looping the worker, `.isFulfilled()`
+  (bluebird's inspection API, which native promises lack) hanging the login→registration
+  transition, and a genuine **race in `scripts/helpers.js` file traversal** that made asset
+  package generation non-deterministic — caught by the packages-manifest guard. New CI guard:
+  `pnpm check:bluebird-orphans`. Lesson repeated: lint can't see this class (no-undef is off for
+  TS), unit tests can't either — the e2e suite and booting the services found all four.
 - 2026-08-20 — **knex 0.19 → 3.3.0**, and with it the last of bluebird's `.timeout` (20/20
   converted, 0 left in server+worker). `/health` pool stats now read tarn *or* generic-pool and
   degrade to nulls rather than throwing. Advisories 90 → 88, and **bluebird is now a direct

@@ -1,7 +1,6 @@
 // pragma PKGS: cosmetic_key_reward
 const CONFIG = require('app/common/config');
 const UtilsEngine = require('app/common/utils/utils_engine');
-const Promise = require('bluebird');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const audio_engine = require('../../../audio/audio_engine');

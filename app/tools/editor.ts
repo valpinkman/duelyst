@@ -26,7 +26,6 @@ whenLocalizationReady.then(() => {
   const NodeFactory = require('app/view/helpers/NodeFactory');
   const EventBus = require('app/common/eventbus');
   EVENTS = require('app/common/event_types');
-  const Promise = require('bluebird');
 
   const _ = require('underscore');
   const moment = require('moment');
@@ -1042,7 +1041,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
       return PromiseUtils.each(allDateKeys, (dateKey) => new Promise((resolve, reject) => {
         const dailyChallengeRef = new Firebase(`${process.env.FIREBASE_URL}/daily-challenges/${dateKey}`);
-        return dailyChallengeRef.once(
+        dailyChallengeRef.once(
           'value',
           (dataSnapshot) => {
             challengeResults[dateKey] = dataSnapshot.val();
@@ -1672,7 +1671,7 @@ S-Rank Position: ${response.user_rating_data.ladder_position}`));
 
       return (new Promise((resolve, reject) => {
         const dailyChallengeRef = new Firebase(`${process.env.FIREBASE_URL}/daily-challenges/${challengeDate}`);
-        return dailyChallengeRef.once('value', (dailyChallengeSnapshot) => {
+        dailyChallengeRef.once('value', (dailyChallengeSnapshot) => {
           if ((dailyChallengeSnapshot == null) || (dailyChallengeSnapshot.val() == null)) {
             // No existing challenge
             return resolve(null);

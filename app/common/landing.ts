@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const url = require('url');
 const querystring = require('query-string');
 const _ = require('underscore');

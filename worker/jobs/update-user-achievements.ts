@@ -13,7 +13,6 @@ const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');
 const Logger = require('../../app/common/logger');
 const { GameManager } = require('../../server/redis');
 const FirebasePromises = require('../../server/lib/firebase_promises');
-const Promise = require('bluebird');
 
 /**
  * Job - 'update-user-achievements'

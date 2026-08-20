@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const normalizedPath = require('path').join(__dirname, './');
 const files = require('fs').readdirSync(normalizedPath);
 const PromiseUtils = require('../../../app/common/utils/utils_promise');

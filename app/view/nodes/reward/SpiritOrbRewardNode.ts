@@ -10,7 +10,6 @@ const FigureEight = require('app/view/actions/FigureEight');
 const TweenTypes = require('app/view/actions/TweenTypes');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const FXDissolveWithDiscFromCenterSprite = require('app/view/nodes/fx/FXDissolveWithDiscFromCenterSprite');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const RewardNode = require('./RewardNode');
 

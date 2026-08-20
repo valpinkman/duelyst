@@ -14,7 +14,6 @@ _NavigationManager.current = _NavigationManager.getInstance;
 
 module.exports = _NavigationManager;
 
-var Promise = require('bluebird');
 var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');

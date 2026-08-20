@@ -28,7 +28,6 @@ var Logger = require('app/common/logger');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var Analytics = require('app/common/analytics');
-var Promise = require('bluebird');
 var UtilsFirebase = require('app/common/utils/utils_firebase');
 var audio_engine = require('app/audio/audio_engine');
 var Conversations = require('app/ui/collections/conversations');

@@ -22,7 +22,6 @@ var Analytics = require('app/common/analytics');
 var moment = require('moment');
 var Logger = require('app/common/logger');
 var Storage = require('app/common/storage');
-var Promise = require('bluebird');
 var openUrl = require('app/common/openUrl');
 var ShopPremiumPacksCollectionView = require('app/ui/views2/shop/shop_premium_packs_collection_view');
 var CreditCardFormView = require('./credit_card_form');

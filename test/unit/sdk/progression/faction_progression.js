@@ -1,7 +1,6 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../../'));
 const { expect } = require('chai');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const config = require('../../../../config/config');
 const Logger = require('../../../../app/common/logger');

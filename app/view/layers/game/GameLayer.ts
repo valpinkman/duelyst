@@ -8,7 +8,6 @@ const EVENTS = require('app/common/event_types');
 const SDK = require('app/sdk');
 const NetworkManager = require('app/networkManager');
 const DATA = require('app/data');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
 const UtilsEngine = require('app/common/utils/utils_engine');

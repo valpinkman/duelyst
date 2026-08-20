@@ -9,7 +9,6 @@ const UtilsEngine = require('app/common/utils/utils_engine');
 const FXRiftLineSprite = require('app/view/nodes/fx/FXRiftLineSprite');
 const FXHorizontalGlowFlareSprite = require('app/view/nodes/fx/FXHorizontalGlowFlareSprite');
 const FXFireRingFlareWarpedSprite = require('app/view/nodes/fx/FXFireRingFlareWarpedSprite');
-const Promise = require('bluebird');
 const FXRiftFireSprite = require('app/view/nodes/fx/FXRiftFireSprite');
 const RiftHelper = require('app/sdk/rift/riftHelper');
 const NewPlayerManager = require('app/ui/managers/new_player_manager');

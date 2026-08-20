@@ -1,7 +1,7 @@
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
-const Promise = require('bluebird');
 const UtilsEngine = require('app/common/utils/utils_engine');
+const PromiseUtils = require('app/common/utils/utils_promise');
 
 // vendor engine extensions
 // must be required to activate
@@ -37,7 +37,7 @@ Scene.setup = function () {
         cc.director.runScene(scene);
         return resolve();
       };
-      return cc.game.run();
+      cc.game.run();
     });
   }
   return Scene._isSetupPromise;
@@ -278,7 +278,7 @@ var _Scene = cc.Scene.extend({
    */
   showContent(layer, withoutOverlay) {
     this._beforeShowOrEmptyLayer();
-    this._contentPromise = this._contentOnlyPromise = this._contentContainer.show(layer);
+    this._contentPromise = this._contentOnlyPromise = PromiseUtils.inspectable(this._contentContainer.show(layer));
     this._contentOnlyPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
 
     if (withoutOverlay && this._overlay.getCurrentLayer() != null) {
@@ -337,7 +337,7 @@ var _Scene = cc.Scene.extend({
    */
   showOverlay(layer) {
     this._beforeShowOrEmptyLayer();
-    this._overlayPromise = this._overlay.show(layer);
+    this._overlayPromise = PromiseUtils.inspectable(this._overlay.show(layer));
     this._overlayPromise.then((v) => this._afterShowOrEmptyLayer(null, v), (e) => this._afterShowOrEmptyLayer(e));
     return this._overlayPromise;
   },

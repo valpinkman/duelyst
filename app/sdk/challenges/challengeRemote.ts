@@ -12,7 +12,6 @@ const AgentActions = require('app/sdk/agents/agentActions');
 const RSX = require('app/data/resources');
 const BattleMapTemplate = require('app/sdk/battleMapTemplate');
 const fetch = require('isomorphic-fetch');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const PromiseUtils = require('app/common/utils/utils_promise');
 

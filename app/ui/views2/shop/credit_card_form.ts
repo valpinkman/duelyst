@@ -11,7 +11,6 @@ var NavigationManager = require('app/ui/managers/navigation_manager');
 var InventoryManager = require('app/ui/managers/inventory_manager');
 var ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
-var Promise = require('bluebird');
 var Template = require('./templates/credit_card_form.hbs');
 
 var CreditCardFormView = Backbone.Marionette.ItemView.extend({

@@ -13,7 +13,6 @@ const config = require('../../config/config.js');
 
 const env = config.get('env');
 const { GameManager } = require('../../server/redis');
-const Promise = require('bluebird');
 const Logger = require('../../app/common/logger');
 
 /**

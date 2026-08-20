@@ -18,7 +18,6 @@ const colors = require('colors'); // used for console message coloring
 const jwt = require('jsonwebtoken');
 let io = require('socket.io');
 const ioJwt = require('@thream/socketio-jwt');
-let Promise = require('bluebird');
 const kue = require('kue');
 const moment = require('moment');
 const request = require('superagent');
@@ -46,7 +45,6 @@ Logger = require('../app/common/logger');
 const CONFIG = require('../app/common/config');
 const http = require('http');
 const url = require('url');
-Promise = require('bluebird');
 
 // perform DNS health check
 const dnsHealthCheck = function () {

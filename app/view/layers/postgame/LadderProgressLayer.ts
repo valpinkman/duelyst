@@ -10,7 +10,6 @@ const RewardLayer = require('app/view/layers/reward/RewardLayer');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const moment = require('moment');
 const GiftCrateNode = require('app/view/nodes/reward/GiftCrateNode');
-const Promise = require('bluebird');
 const FXLensFlareSprite = require('app/view/nodes/fx/FXLensFlareSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const i18next = require('i18next');

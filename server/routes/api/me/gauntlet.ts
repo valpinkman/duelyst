@@ -7,7 +7,6 @@
 const express = require('express');
 const util = require('util');
 const moment = require('moment');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const GauntletModule = require('../../../lib/data_access/gauntlet');
 const knex = require('../../../lib/data_access/knex');

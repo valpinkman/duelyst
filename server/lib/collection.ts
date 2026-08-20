@@ -5,7 +5,6 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const _ = require('underscore');
-const Promise = require('bluebird');
 
 const CONFIG = require('../../app/common/config');
 const Logger = require('../../app/common/logger');

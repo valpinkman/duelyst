@@ -6,7 +6,6 @@ const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
 const SDK = require('app/sdk');
 const DATA = require('app/data');
-const Promise = require('bluebird');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const UtilsPosition = require('app/common/utils/utils_position');
 const ActionStateRecord = require('app/common/actionStateRecord');

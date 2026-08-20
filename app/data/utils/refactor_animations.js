@@ -1,7 +1,6 @@
 // this script converts the AnimationSetup file to an object map and writes animations.js
 
 (function () {
-  const Promise = require('bluebird');
   const _ = require('underscore');
   const helpers = require('../../../scripts/helpers');
   const RSX = require('../resources');

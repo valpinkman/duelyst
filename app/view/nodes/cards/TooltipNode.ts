@@ -6,7 +6,6 @@ const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const audio_engine = require('app/audio/audio_engine');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
-const Promise = require('bluebird');
 const EntitySupportNode = require('./EntitySupportNode');
 const BaseSprite = require('../BaseSprite');
 const BaseLabel = require('../BaseLabel');

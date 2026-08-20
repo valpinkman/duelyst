@@ -13,7 +13,6 @@ const TweenTypes = require('app/view/actions/TweenTypes');
 const GiftCrateNode = require('app/view/nodes/reward/GiftCrateNode');
 const audio_engine = require('app/audio/audio_engine');
 const GamesManager = require('app/ui/managers/games_manager');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 
 /** **************************************************************************

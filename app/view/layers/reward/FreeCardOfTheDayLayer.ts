@@ -2,7 +2,6 @@
 const CONFIG = require('app/common/config');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const CoreGemNode = require('app/view/nodes/gem/CoreGemNode');

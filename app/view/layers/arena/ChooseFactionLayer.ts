@@ -4,8 +4,8 @@ const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
 const RSX = require('app/data/resources');
 const UtilsEngine = require('app/common/utils/utils_engine');
-const Promise = require('bluebird');
 const i18next = require('i18next');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 const EVENTS = require('../../../common/event_types');
 const BaseLayer = require('../BaseLayer');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
@@ -120,7 +120,7 @@ const ChooseFactionLayer = BaseLayer.extend({
 
   showFactionOptions(factionChoices) {
     // wait to show factions until animations complete
-    return (this._showingAnimationsPromise || Promise.resolve()).then(() => this._showingAnimationsPromise = new Promise((resolve, reject) => {
+    return (this._showingAnimationsPromise || Promise.resolve()).then(() => this._showingAnimationsPromise = PromiseUtils.inspectable(new Promise((resolve, reject) => {
       // reset
       if (this._crestNodes != null && this._crestNodes.length > 0) {
         for (var i = 0, il = this._crestNodes.length; i < il; i++) {
@@ -158,7 +158,7 @@ const ChooseFactionLayer = BaseLayer.extend({
         // resolve after everything is shown
         resolve();
       });
-    })).finally(() => {
+    }))).finally(() => {
       this._showingAnimationsPromise = null;
     });
   },
@@ -323,7 +323,7 @@ const ChooseFactionLayer = BaseLayer.extend({
       audio_engine.current().play_effect_for_interaction(RSX.sfx_ui_confirm.audio, CONFIG.SELECT_SFX_PRIORITY);
 
       // set up an async promise that allows us to wait for animations to complete before showing anything else
-      this._showingAnimationsPromise = this.showSelectedNode(this._selectedNode).finally(() => {
+      this._showingAnimationsPromise = PromiseUtils.inspectable(this.showSelectedNode(this._selectedNode)).finally(() => {
         this._showingAnimationsPromise = null;
       });
 

@@ -18,7 +18,6 @@ const validators = require('../../../validators');
 const hashHelpers = require('../../../lib/hash_helpers');
 const validatorTypes = require('../../../validators/types');
 const zlib = require('zlib');
-const Promise = require('bluebird');
 const moment = require('moment');
 const { onType } = require('../../../../app/common/utils/utils_promise');
 // AWS = require "aws-sdk"

@@ -469,22 +469,25 @@ const usernames = [
 console.log('creating users');
 const createUsers = _.map(usernames, function (username) {
   console.log(`creating user: ${username}`);
+  // `.bind(this)` used to carry this per-user state down the chain. That is a
+  // bluebird method, and this script never required bluebird -- it depended on
+  // createNewUser handing back a bluebird promise, which it no longer does.
+  const state = {};
   return UsersModule.createNewUser(`u-${username}@test.test`, username, generatePushId(), 'kumite14')
-    .bind(this)
-    .then(function (userId) {
+    .then((userId) => {
       console.log(`created: ${username} as ${userId}`);
-      this.userId = userId;
-      this.portraitId = 20001; // PortraitLookup[_.sample(_.keys(PortraitLookup))]
-      return knex('users').where('id', this.userId).update({ is_bot: true, portrait_id: this.portraitId });
+      state.userId = userId;
+      state.portraitId = 20001; // PortraitLookup[_.sample(_.keys(PortraitLookup))]
+      return knex('users').where('id', state.userId).update({ is_bot: true, portrait_id: state.portraitId });
     }).catch((error) => {
       console.error(`ERROR: ${error.message}`);
     })
     .then(() => DuelystFirebase.connect().getRootRef())
-    .then(function (fbRootRef) {
-      if (this.userId) {
-        return FirebasePromises.update(fbRootRef.child('users').child(this.userId).child('presence'), {
+    .then((fbRootRef) => {
+      if (state.userId) {
+        return FirebasePromises.update(fbRootRef.child('users').child(state.userId).child('presence'), {
           rank: 30,
-          portrait_id: this.portraitId,
+          portrait_id: state.portraitId,
         });
       }
       return null;

@@ -1,6 +1,5 @@
 'use strict';
 
-var Promise = require('bluebird');
 var Animations = require('app/ui/views/animations');
 
 // override marionette's region's _destroyView method to call prepareForDestroy method on views

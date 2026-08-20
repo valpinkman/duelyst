@@ -15,7 +15,6 @@ const _ = require('underscore');
 const Logger = require('../../app/common/logger');
 const Errors = require('../lib/custom_errors');
 const knex = require('../lib/data_access/knex');
-const Promise = require('bluebird');
 const { Redis, SRankManager, RiftManager } = require('../redis');
 const config = require('../../config/config.js');
 

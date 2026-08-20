@@ -12,9 +12,9 @@ const router = express.Router();
 const util = require('util');
 const Logger = require('../../app/common/logger');
 const CONFIG = require('../../app/common/config');
-const Promise = require('bluebird');
 const moment = require('moment');
 const CustomError = require('../lib/custom_errors');
+const { onType } = require('../../app/common/utils/utils_promise');
 const isSignedIn = require('../middleware/signed_in');
 const t = require('tcomb-validation');
 const validators = require('../validators');
@@ -481,18 +481,18 @@ router.post('/matchmaking', function (req, res, next) {
           });
       }
     })
-    .catch(CustomError.NoArenaDeckError, function (error) {
+    .catch(onType(CustomError.NoArenaDeckError, function (error) {
       Logger.module('MATCHMAKING').error(`Request ${userId} : attempting to enter arena queue without active deck!`.red);
       return res.status(400).json({ error: error.message });
-    })
-    .catch(CustomError.InvalidDeckError, function (error) {
+    }))
+    .catch(onType(CustomError.InvalidDeckError, function (error) {
       Logger.module('MATCHMAKING').error(`Request ${userId} : attempting to use invalid deck!`.red);
       return res.status(400).json({ error: error.message });
-    })
-    .catch(CustomError.MatchmakingOfflineError, function (error) {
+    }))
+    .catch(onType(CustomError.MatchmakingOfflineError, function (error) {
       Logger.module('MATCHMAKING').error(`Request ${userId} : Matchmaking is currently offline`.red);
       return res.status(400).json({ error: error.message });
-    })
+    }))
     .catch(function (error) {
       Logger.module('MATCHMAKING').error(`ERROR: Request.post /matchmaking ${userId} failed!`.red);
       return next(error);

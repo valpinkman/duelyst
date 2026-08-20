@@ -10,7 +10,6 @@ var UtilsJavascript = require('app/common/utils/utils_javascript');
 var Scene = require('app/view/Scene');
 var SDK = require('app/sdk');
 var moment = require('moment');
-var Promise = require('bluebird');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');
 

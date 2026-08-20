@@ -1,6 +1,5 @@
 // pragma PKGS: unlock_faction
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
 const RSX = require('app/data/resources');
@@ -405,7 +404,7 @@ const UnlockFactionLayer = RewardLayer.extend({
         ));
       }
 
-      return Promise.all(cardRevealPromises).then(resolve);
+      Promise.all(cardRevealPromises).then(resolve);
     });
   },
 

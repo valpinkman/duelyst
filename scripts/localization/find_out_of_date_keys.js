@@ -10,7 +10,6 @@ require('app-module-path').addPath(path.join(__dirname, '../..'));
 
 const npmRun = require('npm-run');
 
-const Promise = require('bluebird');
 const _ = require('underscore');
 const moment = require('moment');
 const fs = require('fs');
@@ -18,15 +17,16 @@ const fs = require('fs');
 const helpers = require('scripts/helpers');
 const UtilsLocalization = require('scripts/localization/utils_localization');
 
-const runCommand = (commandStr) => new Promise((resolve, reject) => npmRun(commandStr, {}, (err, stdOut, stdErr) => {
-  if (err != null) {
-    return reject(err);
-  }
-  return resolve(stdOut);
-}));
+const runCommand = (commandStr) => new Promise((resolve, reject) => {
+  npmRun(commandStr, {}, (err, stdOut, stdErr) => {
+    if (err != null) {
+      return reject(err);
+    }
+    return resolve(stdOut);
+  });
+});
 
 Promise.resolve()
-  .bind({})
   .then(() => Promise.all([
     UtilsLocalization.readFileToJsonData(`${UtilsLocalization.PATH_TO_LOCALES}/en/index.json`),
   // UtilsLocalization.readFileToJsonData(UtilsLocalization.PATH_TO_LOCALES + "/de/index.json")

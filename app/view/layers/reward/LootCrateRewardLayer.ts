@@ -14,7 +14,6 @@ const MysteryT3CrateNode = require('app/view/nodes/reward/MysteryT3CrateNode');
 const MysteryBossCrateNode = require('app/view/nodes/reward/MysteryBossCrateNode');
 const FrostfireCrateNode = require('app/view/nodes/reward/FrostfireCrateNode');
 const FrostfirePremiumCrateNode = require('app/view/nodes/reward/FrostfirePremiumCrateNode');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const FXFbmPolarFlareWipeSprite = require('../../nodes/fx/FXFbmPolarFlareWipeSprite');
 const FXFbmPolarFlareSprite = require('../../nodes/fx/FXFbmPolarFlareSprite');

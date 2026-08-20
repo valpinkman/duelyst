@@ -11,7 +11,6 @@ const Logger = require('../app/common/logger');
 const http = require('http');
 const url = require('url');
 const os = require('os');
-const Promise = require('bluebird');
 const config = require('../config/config');
 const knex = require('../server/lib/data_access/knex');
 const PromiseUtils = require('../app/common/utils/utils_promise');

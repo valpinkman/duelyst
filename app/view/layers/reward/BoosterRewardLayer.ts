@@ -5,7 +5,6 @@ const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const audio_engine = require('../../../audio/audio_engine');
 const RewardLayer = require('./RewardLayer');

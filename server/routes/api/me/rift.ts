@@ -12,7 +12,6 @@ const Logger = require('../../../../app/common/logger');
 const Errors = require('../../../lib/custom_errors');
 const t = require('tcomb-validation');
 const knex = require('../../../lib/data_access/knex');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const PromiseUtils = require('../../../../app/common/utils/utils_promise');
 

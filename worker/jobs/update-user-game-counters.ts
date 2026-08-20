@@ -9,7 +9,6 @@ Job - Update User Progression
 const config = require('../../config/config.js');
 const UsersModule = require('../../server/lib/data_access/users');
 const Logger = require('../../app/common/logger');
-const Promise = require('bluebird');
 const colors = require('colors');
 
 /**

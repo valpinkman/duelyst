@@ -20,7 +20,6 @@ var Analytics = require('app/common/analytics');
 var moment = require('moment');
 var Logger = require('app/common/logger');
 var Storage = require('app/common/storage');
-var Promise = require('bluebird');
 var openUrl = require('app/common/openUrl');
 var i18next = require('i18next');
 var Session = require('app/common/session2');

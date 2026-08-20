@@ -15,7 +15,6 @@ var PackageManager = require('app/ui/managers/package_manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
 var ActivityDialogItemView = require('app/ui/views/item/activity_dialog');
 var Animations = require('app/ui/views/animations');
-var Promise = require('bluebird');
 var CodexLayoutTempl = require('./templates/codex_layout.hbs');
 var CodexChapterSelectCompositeView = require('./codex_chapter_select');
 var CodexChapterItemView = require('./codex_chapter');

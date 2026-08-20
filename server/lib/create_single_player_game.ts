@@ -5,7 +5,6 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
 const moment = require('moment');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const { GameManager } = require('../redis');
 const CONFIG = require('../../app/common/config');

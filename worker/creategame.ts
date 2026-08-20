@@ -11,7 +11,6 @@ const Logger = require('../app/common/logger');
 const _ = require('underscore');
 const request = require('superagent');
 const config = require('../config/config.js');
-const Promise = require('bluebird');
 const moment = require('moment');
 const GamesModule = require('../server/lib/data_access/games');
 const { GameManager } = require('../server/redis');

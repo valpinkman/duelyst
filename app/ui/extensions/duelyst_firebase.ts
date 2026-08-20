@@ -1,4 +1,3 @@
-var Promise = require('bluebird');
 var _ = require('underscore');
 const PromiseUtils = require('../../common/utils/utils_promise');
 

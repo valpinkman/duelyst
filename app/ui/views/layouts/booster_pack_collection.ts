@@ -9,7 +9,6 @@ var EVENTS = require('app/common/event_types');
 var RSX = require('app/data/resources');
 var PKGS = require('app/data/packages');
 var SDK = require('app/sdk');
-var Promise = require('bluebird');
 var Scene = require('app/view/Scene');
 var Analytics = require('app/common/analytics');
 var Animations = require('app/ui/views/animations');

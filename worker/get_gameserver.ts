@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 // _ = require 'underscore'
 
 const config = require('../config/config.js');

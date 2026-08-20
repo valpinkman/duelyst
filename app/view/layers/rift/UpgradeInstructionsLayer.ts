@@ -6,7 +6,6 @@ const SDK = require('app/sdk');
 const RSX = require('app/data/resources');
 const UtilsJavascript = require('app/common/utils/utils_javascript');
 const UtilsEngine = require('app/common/utils/utils_engine');
-const Promise = require('bluebird');
 const BaseLayer = require('../BaseLayer');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');
 const BaseSprite = require('../../nodes/BaseSprite');

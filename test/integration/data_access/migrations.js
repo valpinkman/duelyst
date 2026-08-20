@@ -3,7 +3,6 @@ require('app-module-path').addPath(path.join(__dirname, '../../../'));
 const chai = require('chai');
 
 const { expect } = chai;
-const Promise = require('bluebird');
 const _ = require('underscore');
 const moment = require('moment');
 const CardSetLookup = require('../../../app/sdk/cards/cardSetLookup');

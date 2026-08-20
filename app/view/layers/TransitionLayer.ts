@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const CONFIG = require('app/common/config');
 const BaseLayer = require('./BaseLayer');
 

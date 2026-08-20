@@ -12,7 +12,6 @@ _NewsManager.current = _NewsManager.getInstance;
 
 module.exports = _NewsManager;
 
-var Promise = require('bluebird');
 var CONFIG = require('app/common/config');
 var Logger = require('app/common/logger');
 var SDK = require('app/sdk');

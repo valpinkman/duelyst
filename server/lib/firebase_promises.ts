@@ -5,7 +5,6 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Promise = require('bluebird');
 const generatePushId = require('../../app/common/generate_push_id');
 const Errors = require('./custom_errors');
 const Logger = require('../../app/common/logger');

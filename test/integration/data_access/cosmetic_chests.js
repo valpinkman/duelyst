@@ -4,7 +4,6 @@ const chai = require('chai');
 
 chai.config.includeStack = true;
 const { expect } = chai;
-const Promise = require('bluebird');
 const _ = require('underscore');
 const moment = require('moment');
 const colors = require('colors');

@@ -9,7 +9,6 @@ const audio_engine = require('app/audio/audio_engine');
 const RewardLayer = require('app/view/layers/reward/RewardLayer');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const moment = require('moment');
-const Promise = require('bluebird');
 const FXLensFlareSprite = require('app/view/nodes/fx/FXLensFlareSprite');
 const BaseParticleSystem = require('app/view/nodes/BaseParticleSystem');
 const RiftHelper = require('app/sdk/rift/riftHelper');

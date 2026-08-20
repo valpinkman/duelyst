@@ -18,7 +18,6 @@ const config = require('config/config');
 const t = require('tcomb-validation');
 const types = require('server/validators/types');
 const Consul = require('server/lib/consul');
-const Promise = require('bluebird');
 const { onType } = require('../../../../app/common/utils/utils_promise');
 
 const router = express.Router();

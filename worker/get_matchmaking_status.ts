@@ -6,7 +6,6 @@
 const config = require('../config/config.js');
 const Logger = require('../app/common/logger');
 const Colors = require('colors');
-const Promise = require('bluebird');
 const request = require('superagent');
 const Consul = require('../server/lib/consul');
 const CustomError = require('../server/lib/custom_errors');

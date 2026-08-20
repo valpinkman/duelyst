@@ -22,7 +22,6 @@ var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var DuelystBackbone = require('app/ui/extensions/duelyst_backbone');
 var Analytics = require('app/common/analytics');
 var moment = require('moment'); // WHY WONT THIS WORK
-var Promise = require('bluebird');
 var ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 var NewPlayerFeatureLookup = require('app/sdk/progression/newPlayerProgressionFeatureLookup');
 var NewPlayerProgressionStageEnum = require('app/sdk/progression/newPlayerProgressionStageEnum');

@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const promiseThrottle = require('p-throttle');
 const promiseWhilst = require('p-whilst');
 const { ChromaApp, Color, Keyboard } = require('@counterplay/chromajs');
@@ -6,7 +5,7 @@ const { ChromaApp, Color, Keyboard } = require('@counterplay/chromajs');
 const App = new ChromaApp('Duelyst', 'The ULTIMATE collectible tactics game', 'Duelyst');
 
 function sleep(timeMs) {
-  return new Promise((resolve) => setTimeout(resolve, timeMs));
+  return new Promise((resolve) => { setTimeout(resolve, timeMs); });
 }
 
 function flashTurnTimer(timePct, color) {

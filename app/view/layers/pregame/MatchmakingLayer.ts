@@ -1,6 +1,5 @@
 // pragma PKGS: matchmaking
 
-const Promise = require('bluebird');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const Logger = require('app/common/logger');

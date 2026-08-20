@@ -5,7 +5,6 @@ const EventBus = require('app/common/eventbus');
 const EVENTS = require('app/common/event_types');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
-const Promise = require('bluebird');
 const BaseSprite = require('../BaseSprite');
 const BaseParticleSystem = require('../BaseParticleSystem');
 const FXFbmPolarFlareSprite = require('../fx/FXFbmPolarFlareSprite');

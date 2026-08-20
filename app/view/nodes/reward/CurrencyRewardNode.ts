@@ -9,7 +9,6 @@ const UtilsEngine = require('app/common/utils/utils_engine');
 const FigureEight = require('app/view/actions/FigureEight');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const GlowSprite = require('app/view/nodes/GlowSprite');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const RewardNode = require('./RewardNode');
 const BaseParticleSystem = require('../BaseParticleSystem');

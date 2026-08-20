@@ -1,6 +1,5 @@
 const _ = require('underscore');
 const moment = require('moment');
-const Promise = require('bluebird');
 const PromiseUtils = require('../../app/common/utils/utils_promise');
 
 // var FirebasePromises = require('../lib/firebase_promises')

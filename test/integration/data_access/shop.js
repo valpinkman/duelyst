@@ -14,7 +14,6 @@ var ShopModule = require('../../../server/lib/data_access/shop');
 var FirebasePromises = require('../../../server/lib/firebase_promises');
 var generatePushId = require('../../../app/common/generate_push_id');
 var config = require('../../../config/config');
-var Promise = require('bluebird');
 var Logger = require('../../../app/common/logger');
 var _ = require('underscore');
 var SDK = require('../../../app/sdk/index');

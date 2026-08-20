@@ -12,7 +12,6 @@ _QuestsManager.current = _QuestsManager.getInstance;
 
 module.exports = _QuestsManager;
 
-var Promise = require('bluebird');
 var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');

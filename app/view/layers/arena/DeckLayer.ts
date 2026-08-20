@@ -4,7 +4,6 @@ const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
 const RSX = require('app/data/resources');
 const UtilsEngine = require('app/common/utils/utils_engine');
-const Promise = require('bluebird');
 const EVENTS = require('../../../common/event_types');
 const BaseLayer = require('../BaseLayer');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');

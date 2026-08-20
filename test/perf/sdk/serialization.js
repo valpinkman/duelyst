@@ -1,6 +1,5 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, '../../../'));
-const Promise = require('bluebird');
 const Benchmark = require('benchmark');
 const Logger = require('../../../app/common/logger');
 const SDK = require('../../../app/sdk/index');

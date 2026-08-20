@@ -11,7 +11,6 @@ const Logger = require('../../../../app/common/logger');
 const Errors = require('../../../lib/custom_errors');
 const t = require('tcomb-validation');
 const moment = require('moment');
-const Promise = require('bluebird');
 
 const router = express.Router();
 

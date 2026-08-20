@@ -6,8 +6,8 @@ const UtilsJavascript = require('app/common/utils/utils_javascript');
 const PKGS = require('app/data/packages');
 const PackageManager = require('app/ui/managers/package_manager');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const _ = require('underscore');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 const InstructionNode = require('./InstructionNode');
 const StatsChangeNode = require('./StatsChangeNode');
 const NodeFactory = require('../../helpers/NodeFactory');
@@ -581,7 +581,7 @@ const SdkNode = cc.Node.extend({
         valid: true,
         id: modifierLoadId,
         modifierIndex,
-        promise: this.addResourceRequest(modifierLoadId, modifierType),
+        promise: PromiseUtils.inspectable(this.addResourceRequest(modifierLoadId, modifierType)),
       };
     }
 
@@ -604,7 +604,7 @@ const SdkNode = cc.Node.extend({
       // create pseudo load data so that any further attempts to use resources for this modifier get blocked
       this._modifierLoadDataByLoadId[modifierLoadId] = {
         valid: false,
-        promise: Promise.resolve(modifierLoadId),
+        promise: PromiseUtils.inspectable(Promise.resolve(modifierLoadId)),
       };
     }
   },

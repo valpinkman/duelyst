@@ -9,7 +9,6 @@ const router = express.Router();
 
 const util = require('util');
 // AWS = require "aws-sdk"
-const Promise = require('bluebird');
 const fs = require('fs');
 const hbs = require('hbs');
 

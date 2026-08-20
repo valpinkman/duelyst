@@ -3,7 +3,6 @@
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const UtilsEngine = require('app/common/utils/utils_engine');
@@ -27,6 +26,7 @@ const i18next = require('i18next');
 const RiftHelper = require('app/sdk/rift/riftHelper');
 const ErrorDialogItemView = require('app/ui/views/item/error_dialog');
 const InventoryManager = require('app/ui/managers/inventory_manager');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 const EVENTS = require('../../../common/event_types');
 
 /** **************************************************************************
@@ -339,7 +339,7 @@ const UpgradeCardLayer = BaseLayer.extend({
       if (this._cardCountsById != null) {
         cardCount = this._cardCountsById[cardId] || 1;
       }
-      this._whenMostRecentShowCardReveal = this._showCardReveal(cardId, index, this._mouseOverGem.getPosition(), cardCount);
+      this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(this._showCardReveal(cardId, index, this._mouseOverGem.getPosition(), cardCount));
 
       // destroy gem
       // this.coreGemNodes = _.without(this.coreGemNodes,this._mouseOverGem)
@@ -349,7 +349,7 @@ const UpgradeCardLayer = BaseLayer.extend({
 
     if (!this._unlocked && this.coreGemNodes.length > 0 && this.coreGemNodes.length == this.cardNodes.length) {
       if (!this._whenMostRecentShowCardReveal) {
-        this._whenMostRecentShowCardReveal = Promise.resolve();
+        this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(Promise.resolve());
       }
       this._unlocked = true;
       this._whenMostRecentShowCardReveal.then(() => {

@@ -8,7 +8,6 @@ const PKGS = require('app/data/packages');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const GlowSprite = require('app/view/nodes/GlowSprite');
 const CrateManager = require('app/ui/managers/crate_manager');
-const Promise = require('bluebird');
 const PromiseUtils = require('app/common/utils/utils_promise');
 const { onType } = require('app/common/utils/utils_promise');
 const LootCrateNode = require('./LootCrateNode');

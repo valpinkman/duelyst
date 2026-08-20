@@ -1,7 +1,6 @@
 // this script reads cardFactory.coffee and replaces all animation resources that are strings with direct references to the RSX entries
 
 (function () {
-  const Promise = require('bluebird');
   const _ = require('underscore');
   const helpers = require('../../../scripts/helpers');
   const RSX = require('../resources');

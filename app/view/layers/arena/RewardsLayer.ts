@@ -8,7 +8,6 @@ const UtilsEngine = require('app/common/utils/utils_engine');
 const BaseLayer = require('app/view/layers/BaseLayer');
 const audio_engine = require('app/audio/audio_engine');
 const GiftCrateNode = require('app/view/nodes/reward/GiftCrateNode');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 
 /** **************************************************************************

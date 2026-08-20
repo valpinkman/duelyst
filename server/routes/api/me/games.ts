@@ -11,7 +11,6 @@
 const express = require('express');
 const request = require('superagent');
 const moment = require('moment');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const { GameManager } = require('../../../redis');
 const { WatchableGamesManager } = require('../../../redis');

@@ -4,7 +4,6 @@ var FindingGameTemplate = require('app/ui/templates/item/finding_game.hbs');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var generatePushID = require('app/common/generate_push_id');
-var Promise = require('bluebird');
 var SDK = require('app/sdk');
 var Scene = require('app/view/Scene');
 var CONFIG = require('app/common/config');

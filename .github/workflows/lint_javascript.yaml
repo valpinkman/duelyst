@@ -49,3 +49,10 @@ jobs:
     # unit tests, then throws ReferenceError at runtime.
     - name: check utils_promise bindings
       run: pnpm check:promise-utils
+
+    # the mirror-image bug: a file that uses a bluebird-only API but no longer
+    # requires bluebird. worker.ts and api.ts shipped exactly this
+    # (Promise.longStackTraces) and crashed on boot; lint and 1350 unit tests
+    # were both green.
+    - name: check for bluebird orphans
+      run: pnpm check:bluebird-orphans

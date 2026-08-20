@@ -6,7 +6,6 @@
 /*
 Job - Setup Match
 */
-const Promise = require('bluebird');
 const getGameServerAsync = require('../get_gameserver');
 const createGameAsync = require('../creategame');
 const DuelystFirebaseModule = require('../../server/lib/duelyst_firebase_module');

@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('underscore');
-var Promise = require('bluebird');
 var Analytics = require('app/common/analytics');
 var validator = require('validator');
 var Template = require('app/ui/templates/item/account_inventory_reset_modal.hbs');

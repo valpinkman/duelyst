@@ -11,7 +11,6 @@ const PKGS = require('app/data/packages');
 const BaseLayer = require('app/view/layers/BaseLayer');
 const BaseSprite = require('app/view/nodes/BaseSprite');
 const NavigationManager = require('app/ui/managers/navigation_manager');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 
 /** **************************************************************************

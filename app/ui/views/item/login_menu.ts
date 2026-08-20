@@ -1,6 +1,5 @@
 'use strict';
 
-var Promise = require('bluebird');
 var Session = require('app/common/session2');
 var Logger = require('app/common/logger');
 var EVENTS = require('app/common/event_types');

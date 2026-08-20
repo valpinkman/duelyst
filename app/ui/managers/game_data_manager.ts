@@ -10,7 +10,6 @@ _GameDataManager.current = _GameDataManager.getInstance;
 
 module.exports = _GameDataManager;
 
-var Promise = require('bluebird');
 var Logger = require('app/common/logger');
 var UtilsEnv = require('app/common/utils/utils_env');
 var CardsCollection = require('app/ui/collections/cards');

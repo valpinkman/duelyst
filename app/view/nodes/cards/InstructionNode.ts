@@ -9,7 +9,6 @@ const UtilsJavascript = require('app/common/utils/utils_javascript');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const SDK = require('app/sdk');
 const EVENTS = require('app/common/event_types');
-const Promise = require('bluebird');
 const EntitySupportNode = require('./EntitySupportNode');
 const BaseSprite = require('../BaseSprite');
 const BaseLabel = require('../BaseLabel');

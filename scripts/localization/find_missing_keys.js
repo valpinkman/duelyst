@@ -9,7 +9,6 @@ require('app-module-path').addPath(path.join(__dirname, '../..'));
 
 const npmRun = require('npm-run');
 
-const Promise = require('bluebird');
 const _ = require('underscore');
 const fs = require('fs');
 
@@ -19,7 +18,6 @@ const UtilsLocalization = require('scripts/localization/utils_localization');
 // git log -G "win_streak_message" --pretty=oneline ./rank.json
 
 Promise.resolve()
-  .bind({})
   .then(() => Promise.all([
     UtilsLocalization.readFileToJsonData(`${UtilsLocalization.PATH_TO_LOCALES}/en/index.json`),
   // UtilsLocalization.readFileToJsonData(UtilsLocalization.PATH_TO_LOCALES + "/de/index.json")

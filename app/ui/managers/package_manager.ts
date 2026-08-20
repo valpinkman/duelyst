@@ -1,6 +1,7 @@
 'use strict';
 
 var UtilsJavascript = require('app/common/utils/utils_javascript');
+var PromiseUtils = require('app/common/utils/utils_promise');
 
 var _PackageManager = {};
 _PackageManager.instance = null;
@@ -108,7 +109,10 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
    */
   cls.prototype.whenRequiredResourcesReady = function () {
     var requiredResourcesRequestId = this.getRequiredResourcesRequestId();
-    return this.whenResourcesReady(requiredResourcesRequestId);
+    // inspectable: callers synchronously ask `.isFulfilled()` on this to decide
+    // whether resources are already available (CardNode.getIsReady, UnitNode,
+    // SdkNode). That is bluebird's api, so native promises need it attached.
+    return PromiseUtils.inspectable(this.whenResourcesReady(requiredResourcesRequestId));
   };
 
   /**
@@ -336,7 +340,6 @@ _PackageManager.injectClassWithResourceRequests = function (cls) {
 module.exports = _PackageManager;
 
 var _ = require('underscore');
-var Promise = require('bluebird');
 var CONFIG = require('app/common/config');
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
@@ -349,7 +352,6 @@ var PKGS = require('app/data/packages');
 var Factions = require('app/sdk/cards/factionsLookup');
 var Manager = require('app/ui/managers/manager');
 var NavigationManager = require('app/ui/managers/navigation_manager');
-const PromiseUtils = require('../../common/utils/utils_promise');
 
 /**
  *  PackageManager - manages resources by organizing/tracking packages and adds the concept of strong references to resources.

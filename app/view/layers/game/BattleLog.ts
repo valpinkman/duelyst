@@ -2,7 +2,6 @@
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const RSX = require('app/data/resources');
 const UtilsEngine = require('app/common/utils/utils_engine');

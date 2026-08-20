@@ -7,14 +7,12 @@ const fs = require('fs');
 const os = require('os');
 const Logger = require('../app/common/logger');
 const config = require('../config/config.js');
-const Promise = require('bluebird');
 const { Jobs } = require('../server/redis');
 
-if (config.isDevelopment()) {
-  Logger.module('WORKER').log('DEV MODE: enabling long stack support');
-  process.env.BLUEBIRD_DEBUG = 1;
-  Promise.longStackTraces();
-}
+// Long stack traces used to be switched on here via bluebird
+// (Promise.longStackTraces + BLUEBIRD_DEBUG). Native promises have no such
+// call; node emits async stack traces for them by default, so there is
+// nothing to enable.
 
 // Increase the number of event listeners in Node.js.
 // Raising this suppresses benign warnings without losing leak detection.

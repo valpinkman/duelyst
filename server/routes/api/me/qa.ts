@@ -8,7 +8,6 @@
  */
 const express = require('express');
 const _ = require('underscore');
-const Promise = require('bluebird');
 const FirebasePromises = require('../../../lib/firebase_promises');
 const DuelystFirebase = require('../../../lib/duelyst_firebase_module');
 const moment = require('moment');

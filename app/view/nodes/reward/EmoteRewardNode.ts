@@ -7,7 +7,6 @@ const EVENTS = require('app/common/event_types');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const FigureEight = require('app/view/actions/FigureEight');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const RewardNode = require('./RewardNode');
 const BaseSprite = require('../BaseSprite');

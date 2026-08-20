@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('underscore');
-var Promise = require('bluebird');
 var SDK = require('app/sdk');
 var moment = require('moment');
 var Analytics = require('app/common/analytics');

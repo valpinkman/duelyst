@@ -8,7 +8,6 @@ const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
 const CONFIG = require('app/common/config');
 const generatePushId = require('app/common/generate_push_id');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const cluster = require('cluster');
 const CLUSTER_NUMBEROFWORKERS = require('os').cpus().length;

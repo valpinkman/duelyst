@@ -1,6 +1,7 @@
 'use strict';
 
 var SDK = require('app/sdk');
+const PromiseUtils = require('app/common/utils/utils_promise');
 var Logger = require('app/common/logger');
 var CONFIG = require('app/common/config');
 var UtilsUI = require('app/ui/utils_ui');
@@ -335,7 +336,7 @@ var BuddyListView = ListWithPooledRowsView.extend({
     if (this._addBuddyPromise == null) {
       var buddyInput = $.trim(this.ui.$addBuddyInput.val());
       if (buddyInput) {
-        this._addBuddyPromise = ChatManager.getInstance().inviteBuddy(buddyInput);
+        this._addBuddyPromise = PromiseUtils.inspectable(ChatManager.getInstance().inviteBuddy(buddyInput));
         this._addBuddyPromise.then(
           function () {
             this.ui.$addBuddySubmit.addClass('done');

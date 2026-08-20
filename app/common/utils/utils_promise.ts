@@ -222,3 +222,35 @@ exports.props = function (obj) {
     });
   });
 };
+
+/**
+ * Replacement for bluebird's synchronous promise INSPECTION api
+ * (`p.isFulfilled()` / `isPending()` / `isRejected()`), which native promises
+ * do not have at all.
+ *
+ * This is easy to miss when dropping bluebird, because the calls do not look
+ * like promise combinators and nothing flags them: lint cannot see it,
+ * typecheck does not gate, and the failure is a TypeError thrown deep inside a
+ * UI transition. In this codebase that surfaced as
+ * "this._contentOnlyPromise.isFulfilled is not a function", which hung the
+ * login -> registration transition with the app otherwise looking healthy.
+ *
+ * Note the one behavioural difference from bluebird: the flag flips in a
+ * microtask after the underlying promise settles, not synchronously with it.
+ * Every call site here is a UI guard ("is this transition still running?"),
+ * where a one-tick delay is not observable.
+ */
+exports.inspectable = function (promise) {
+  if (promise == null) return promise;
+  if (typeof promise.isFulfilled === 'function') return promise; // already inspectable
+
+  let state = 'pending';
+  const tracked = Promise.resolve(promise).then(
+    (value) => { state = 'fulfilled'; return value; },
+    (err) => { state = 'rejected'; throw err; },
+  );
+  tracked.isFulfilled = () => state === 'fulfilled';
+  tracked.isRejected = () => state === 'rejected';
+  tracked.isPending = () => state === 'pending';
+  return tracked;
+};

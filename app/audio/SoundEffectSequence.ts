@@ -1,4 +1,3 @@
-const Promise = require('bluebird');
 const _ = require('underscore');
 const audio_engine = require('./audio_engine');
 const audio_object = require('./audio_object');

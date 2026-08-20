@@ -3,7 +3,6 @@
 const CONFIG = require('app/common/config');
 const Logger = require('app/common/logger');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const RSX = require('app/data/resources');
 const PKGS = require('app/data/packages');
 const UtilsEngine = require('app/common/utils/utils_engine');
@@ -24,6 +23,7 @@ const Shake = require('app/view/actions/Shake');
 const CoreGemNode = require('app/view/nodes/gem/CoreGemNode');
 const MotionStreakRingNode = require('app/view//nodes/misc/MotionStreakRingNode');
 const i18next = require('i18next');
+const PromiseUtils = require('../../../common/utils/utils_promise');
 const EVENTS = require('../../../common/event_types');
 
 /** **************************************************************************
@@ -409,7 +409,7 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
       if (this._cardCountsById != null) {
         cardCount = this._cardCountsById[cardId] || 1;
       }
-      this._whenMostRecentShowCardReveal = this._showCardReveal(cardId, index, this._mouseOverGem.getPosition(), cardCount);
+      this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(this._showCardReveal(cardId, index, this._mouseOverGem.getPosition(), cardCount));
 
       // destroy gem
       // this.coreGemNodes = _.without(this.coreGemNodes,this._mouseOverGem)
@@ -419,7 +419,7 @@ const BoosterPackOpeningLayer = FXCompositeLayer.extend({
 
     if (!this._unlocked && this.coreGemNodes.length > 0 && this.coreGemNodes.length == this.cardNodes.length) {
       if (!this._whenMostRecentShowCardReveal) {
-        this._whenMostRecentShowCardReveal = Promise.resolve();
+        this._whenMostRecentShowCardReveal = PromiseUtils.inspectable(Promise.resolve());
       }
       this._unlocked = true;
       this._whenMostRecentShowCardReveal.then(() => {

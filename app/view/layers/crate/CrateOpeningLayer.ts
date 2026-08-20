@@ -27,7 +27,6 @@ const MysteryT3CrateNode = require('app/view/nodes/reward/MysteryT3CrateNode');
 const MysteryBossCrateNode = require('app/view/nodes/reward/MysteryBossCrateNode');
 const audio_engine = require('app/audio/audio_engine');
 const CrateManager = require('app/ui/managers/crate_manager');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const _ = require('underscore');
 

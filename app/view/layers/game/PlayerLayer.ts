@@ -4,7 +4,6 @@ const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
 const SDK = require('app/sdk');
-const Promise = require('bluebird');
 const _ = require('underscore');
 const UtilsEngine = require('app/common/utils/utils_engine');
 const BaseLayer = require('../BaseLayer');

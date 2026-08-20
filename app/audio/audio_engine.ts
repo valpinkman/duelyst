@@ -13,7 +13,6 @@ _audio_engine.current = _audio_engine.instance;
 module.exports = _audio_engine;
 
 const _ = require('underscore');
-const Promise = require('bluebird');
 const Logger = require('../common/logger');
 const CONFIG = require('../common/config');
 const UtilsAudio = require('../common/utils/utils_audio');

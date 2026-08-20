@@ -20,7 +20,6 @@ require('app-module-path').addPath(path.join(__dirname, '../..'));
 const npmRun = require('npm-run');
 const ProgressBar = require('progress');
 
-const Promise = require('bluebird');
 const _ = require('underscore');
 
 const helpers = require('scripts/helpers');
@@ -56,12 +55,14 @@ UtilsLocalization.getAllKeysFromLocalizationJsonData = (jsonData) => _.reduce(
   [],
 );
 
-UtilsLocalization.readFileToJsonData = (fileName) => new Promise((resolve, reject) => fs.readFile(fileName, (err, contents) => {
-  if (err) {
-    reject(err);
-  }
-  return resolve(contents);
-})).then((fileContents) => Promise.resolve(JSON.parse(fileContents)));
+UtilsLocalization.readFileToJsonData = (fileName) => new Promise((resolve, reject) => {
+  fs.readFile(fileName, (err, contents) => {
+    if (err) {
+      reject(err);
+    }
+    return resolve(contents);
+  });
+}).then((fileContents) => Promise.resolve(JSON.parse(fileContents)));
 
 UtilsLocalization.writeMissingTranslationFiles = function (languageKey, englishData, translationData) {
   const englishKeys = UtilsLocalization.getAllKeysFromLocalizationJsonData(englishData);
@@ -128,12 +129,14 @@ UtilsLocalization.getLastUpdatedCommitForTranslation = (languageKey, translation
 UtilsLocalization.getTranslationFromFullKey = (translationData, fullTranslationKey) => translationData[fullTranslationKey.split('.')[0]][fullTranslationKey.split('.')[1]];
 
 // Sub helpers
-var runCommand = (commandStr) => new Promise((resolve, reject) => npmRun(commandStr, {}, (err, stdOut, stdErr) => {
-  if (err != null) {
-    return reject(err);
-  }
-  return resolve(stdOut);
-}));
+var runCommand = (commandStr) => new Promise((resolve, reject) => {
+  npmRun(commandStr, {}, (err, stdOut, stdErr) => {
+    if (err != null) {
+      return reject(err);
+    }
+    return resolve(stdOut);
+  });
+});
 
 var buildLastCommitCommandStrForTranslation = function (languageKey, translationKey) {
   const splitTranslationKey = translationKey.split('.');

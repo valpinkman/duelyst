@@ -1,5 +1,4 @@
 (function () {
-  const Promise = require('bluebird');
   const mkdirp = require('mkdirp');
   const fs = require('fs');
   const path = require('path');
@@ -64,36 +63,40 @@
    * @returns {Promise}
    */
   helpers.recursivelyGetFilesStartingFrom = function (dir) {
+    /*
+     * This used to accumulate paths in fs.stat COMPLETION order and resolve as
+     * soon as the last-INDEXED stat callback fired -- not the last to finish.
+     * Both are races: the returned list could come back in a different order
+     * every run, and could resolve before earlier entries had been added,
+     * silently dropping files.
+     *
+     * generate_packages.js text-parses whatever this returns, so a dropped file
+     * means a dropped asset package. That is exactly what the packages manifest
+     * guard caught: package counts flapped run to run (2789/2788/2785) with
+     * challenge_* packages appearing and disappearing. bluebird's scheduler had
+     * been hiding it; native promise scheduling exposed it.
+     *
+     * Now: entries are sorted, every stat and subdirectory is awaited, and
+     * results are assembled in list order, so the output is deterministic.
+     */
     return new Promise((resolve, reject) => {
-      let files = [];
       fs.readdir(dir, (err, list) => {
-        if (err) throw err;
+        if (err) { reject(err); return; }
+        if (list == null || list.length === 0) { resolve([]); return; }
 
-        const subDirectoryPromises = [];
-        if (list == null || list.length === 0) {
-          resolve(files);
-        } else {
-          list.forEach((file, index) => {
-            file = path.resolve(dir, file);
-            fs.stat(file, (err, stat) => {
-              if (stat && stat.isDirectory()) {
-                const subDirectoryPromise = helpers.recursivelyGetFilesStartingFrom(file);
-                subDirectoryPromise.then((filesInSubDirectory) => {
-                  files = files.concat(filesInSubDirectory);
-                });
-                subDirectoryPromises.push(subDirectoryPromise);
-              } else {
-                files.push(file);
-              }
-
-              if (index === list.length - 1) {
-                Promise.all(subDirectoryPromises).then(() => {
-                  resolve(files);
-                });
-              }
-            });
+        const perEntry = list.slice().sort().map((name) => new Promise((res, rej) => {
+          const file = path.resolve(dir, name);
+          fs.stat(file, (statErr, stat) => {
+            if (statErr) { rej(statErr); return; }
+            if (stat && stat.isDirectory()) {
+              helpers.recursivelyGetFilesStartingFrom(file).then(res, rej);
+            } else {
+              res([file]);
+            }
           });
-        }
+        }));
+
+        Promise.all(perEntry).then((groups) => resolve(groups.flat()), reject);
       });
     });
   };
@@ -113,7 +116,7 @@
         concurrency = 100;
       }
 
-      return helpers.recursivelyGetFilesStartingFrom(dir)
+      helpers.recursivelyGetFilesStartingFrom(dir)
         .then((files) => PromiseUtils.map(files, (file) => {
           if (fileNameFilter == null || !fileNameFilter.test(file)) {
             // console.log("READ", file);

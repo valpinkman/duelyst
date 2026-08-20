@@ -6,7 +6,6 @@
  */
 let RedisPlayerQueue;
 const _ = require('underscore');
-const Promise = require('bluebird');
 const crypto = require('crypto');
 let ts = require('./r-timeseries');
 const Logger = require('../../app/common/logger');

@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('underscore');
-var Promise = require('bluebird');
 var Analytics = require('app/common/analytics');
 var validator = require('validator');
 var Session = require('app/common/session2');

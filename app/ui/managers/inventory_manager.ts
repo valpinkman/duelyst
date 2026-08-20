@@ -21,7 +21,6 @@ var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var Logger = require('app/common/logger');
 var SDK = require('app/sdk');
-var Promise = require('bluebird');
 var DuelystFirebase = require('app/ui/extensions/duelyst_firebase');
 var UserDecksCollection = require('app/ui/collections/user_decks');
 var Analytics = require('app/common/analytics');

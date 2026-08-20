@@ -7,7 +7,6 @@ const SDK = require('app/sdk');
 const ModifierForcefieldAbsorb = require('app/sdk/modifiers/modifierForcefieldAbsorb');
 const UtilsSDK = require('test/utils/utils_sdk');
 const _ = require('underscore');
-const Promise = require('bluebird');
 
 // disable the logger for cleaner test output
 Logger.enabled = false;

@@ -6,7 +6,6 @@
  */
 let error,
   firebaseServiceAccount;
-const Promise = require('bluebird');
 /*
  * firebase-admin 14 is fully modular: the namespaced API this file used to
  * call (firebaseAdmin.credential.cert, firebaseAdmin.database.enableLogging,

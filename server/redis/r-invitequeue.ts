@@ -1,7 +1,6 @@
 let
   RedisInviteQueue;
 const _ = require('underscore');
-const Promise = require('bluebird');
 const crypto = require('crypto');
 const Logger = require('../../app/common/logger');
 const config = require('../../config/config');

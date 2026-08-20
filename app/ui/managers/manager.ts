@@ -5,7 +5,6 @@
 var EventBus = require('app/common/eventbus');
 var EVENTS = require('app/common/event_types');
 var Logger = require('app/common/logger');
-var Promise = require('bluebird');
 const PromiseUtils = require('../../common/utils/utils_promise');
 
 var Manager = Backbone.Marionette.Controller.extend({

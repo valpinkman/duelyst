@@ -5,7 +5,6 @@ const EVENTS = require('app/common/event_types');
 const SDK = require('app/sdk');
 const RSX = require('app/data/resources');
 const UtilsEngine = require('app/common/utils/utils_engine');
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const BaseLayer = require('../BaseLayer');
 const BaseParticleSystem = require('../../nodes/BaseParticleSystem');

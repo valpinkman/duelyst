@@ -3,7 +3,6 @@
  * DS102: Remove unnecessary code created because of implicit returns
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Promise = require('bluebird');
 const i18next = require('i18next');
 const XHR = require('i18next-xhr-backend');
 const LngDetector = require('i18next-browser-languagedetector');
@@ -31,7 +30,7 @@ const p = new Promise((resolve, reject) => {
     options.lng = preferredLanguageKey;
   }
 
-  return i18next
+  i18next
     .use(LngDetector)
     .use(XHR)
     .init(options, (err, t) => {

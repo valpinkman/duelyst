@@ -1,7 +1,6 @@
 'use strict';
 
 var _ = require('underscore');
-var Promise = require('bluebird');
 var CONFIG = require('app/common/config');
 var RSX = require('app/data/resources');
 var audio_engine = require('app/audio/audio_engine');

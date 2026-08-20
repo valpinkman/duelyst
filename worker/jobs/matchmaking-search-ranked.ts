@@ -10,7 +10,6 @@ Job - Search for Matches
 */
 const _ = require('underscore');
 const util = require('util');
-const Promise = require('bluebird');
 const moment = require('moment');
 const Errors = require('../../server/lib/custom_errors');
 const Logger = require('../../app/common/logger');

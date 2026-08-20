@@ -861,6 +861,64 @@ server and worker. What remains is *typing* (5T.4), not converting.
       `promisifyAll` + `Promise.delay`) can land *before* redis v4, leaving redis to gate only the
       ~40 redis `*Async` sites and `warlock`.
 
+      **7d landed: 213 of 215 files dropped the bluebird require.** Only `server/redis/r-client.ts`
+      and `server/redis/r-tokenmanager.ts` still need it, so redis v4 is now the *only* thing
+      between us and deleting the dependency.
+
+      Two of those 213 were not in the original scan at all: `server/game.ts` and
+      `server/single_player.ts` did `Promise = require('bluebird')` with **no declaration** —
+      an implicit global that replaced the process-wide `Promise` for both socket servers.
+      CoffeeScript would have scoped that to the file with an implicit `var`; decaffeination
+      dropped the declaration and silently promoted it to a global. Removing the line removes
+      the landmine too. (`Logger` on the neighbouring line is still an implicit global — catalogued,
+      not fixed here.)
+
+      **Three real bugs surfaced, none of which unit tests or lint could see.**
+
+      1. **`Promise.longStackTraces()` in `server/api.ts` and `worker/worker.ts`.** My
+         comment-stripped rescan checked `Promise.config(` but had dropped `longStackTraces`
+         from its pattern list, so both files were cleared as "clean". The worker crash-looped
+         on boot: `TypeError: Promise.longStackTraces is not a function`. Caught by booting the
+         services, not by 1,350 unit tests.
+      2. **`scripts/create_bot_users.js` used `.bind(this)` without ever requiring bluebird** —
+         it depended on `createNewUser` *handing back* a bluebird promise. Converted to a closure.
+      3. **bluebird's synchronous inspection API — the expensive one.** Eight files call
+         `promise.isFulfilled()`, which native promises simply do not have. These look nothing
+         like promise combinators (no chain position, no `Promise.` prefix), so every pattern-based
+         scan missed them. The first one to run threw
+         `this._contentOnlyPromise.isFulfilled is not a function` from `Scene.ts` and **hung the
+         login → registration transition** — with the app otherwise looking healthy: zero console
+         errors, boot fine, login screen fine. Fixed with `PromiseUtils.inspectable()`, applied at
+         the promise's origin (and centrally in `package_manager.whenRequiredResourcesReady`,
+         which covers `CardNode`/`UnitNode`).
+
+      **Guard added:** `scripts/check-no-bluebird-orphans.mjs` (`pnpm check:bluebird-orphans`, wired
+      into the lint workflow) fails on any bluebird-only API used in a file that does not require
+      bluebird — statics, chain methods **and** the inspection API. It is the mirror image of
+      `check-promise-utils-bindings.mjs`.
+
+      **How bug 3 was actually found is worth recording**, because two of my instincts were wrong
+      first: I hand-rolled a Playwright probe that showed the client rendering *nothing*, and
+      "bisected" by reverting `app/` — both misleading. The probe lacked the config's browser flags
+      (the game needs WebGL) so it never rendered at all, and the first bisect looked invalid
+      because I wrongly assumed the api container baked in `dist` (it volume-mounts `./dist/src`,
+      so the bisect had been valid all along). What worked was an **automated bisect using the real
+      Playwright harness** over the 98 changed files — 7 rounds, straight to
+      `app/view/layers/TransitionLayer.ts` — followed by a **temporary diagnostic spec** that
+      instrumented `showModalView` and printed the actual thrown message. Guessing cost far more
+      than instrumenting.
+
+      Also fixed on the way: **`scripts/helpers.js:recursivelyGetFilesStartingFrom` was racy**.
+      It accumulated paths in `fs.stat` *completion* order and resolved when the last-*indexed*
+      callback fired rather than the last to *finish* — so it could return files in a different
+      order each run, or resolve before earlier entries were added and silently drop some.
+      `generate_packages.js` text-parses whatever it returns, so dropped files meant dropped asset
+      packages: counts flapped 2789/2788/2785 across runs, with `challenge_*` packages appearing
+      and disappearing. **The packages-manifest guard caught it** (its second catch, after the 325
+      packages in 5.2c). Now sorted, fully awaited, assembled in list order — three consecutive
+      runs give 2795 keys, matching the committed manifest exactly, with byte-identical contents.
+      bluebird's scheduler had been hiding this race; native scheduling exposed it.
+
       - [ ] Stage 5 — `.bind` chains → closures (367), the delicate one
       - [~] Stage 6 — helpers in `app/common/utils/utils_promise.ts`: `withTimeout` +
         `TimeoutError`, `delay`, `defer`. Converted: `Promise.defer()` (3), `.delay(ms)` (4),

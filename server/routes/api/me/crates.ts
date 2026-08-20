@@ -14,7 +14,6 @@ const validators = require('../../../validators');
 const DataAccessHelpers = require('../../../lib/data_access/helpers');
 const GiftCrateModule = require('../../../lib/data_access/gift_crate');
 const zlib = require('zlib');
-const Promise = require('bluebird');
 const moment = require('moment');
 
 const router = express.Router();

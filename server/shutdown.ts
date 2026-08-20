@@ -5,7 +5,6 @@
  */
 const os = require('os');
 const Logger = require('../app/common/logger');
-const Promise = require('bluebird');
 
 // Configuration object
 const config = require('../config/config.js');

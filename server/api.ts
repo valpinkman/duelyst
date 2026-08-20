@@ -12,7 +12,6 @@ const fs = require('fs');
 const path = require('path');
 const downloadHtml = require('./lib/download_html');
 const mkdirp = require('mkdirp');
-const Promise = require('bluebird');
 const Logger = require('../app/common/logger');
 const shutdownLib = require('./shutdown');
 
@@ -28,11 +27,10 @@ const cdnDomain = config.get('aws.cdnDomainName');
 const cdnUrl = `https://${cdnDomain}/${env}`;
 const apiPort = config.get('port');
 
-if (config.isDevelopment()) {
-  Logger.module('SERVER').log('DEV MODE: enabling long stack support');
-  process.env.BLUEBIRD_DEBUG = 1;
-  Promise.longStackTraces();
-}
+// Long stack traces used to be switched on here via bluebird
+// (Promise.longStackTraces + BLUEBIRD_DEBUG). Native promises have no such
+// call; node emits async stack traces for them by default, so there is
+// nothing to enable.
 
 // Methods to download assets from S3
 // TODO : Put in module

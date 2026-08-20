@@ -10,7 +10,6 @@ Job - Update User Progression
 const _ = require('underscore');
 const config = require('../../config/config.js');
 const Logger = require('../../app/common/logger');
-const Promise = require('bluebird');
 const colors = require('colors');
 const util = require('util');
 const GameType = require('../../app/sdk/gameType');

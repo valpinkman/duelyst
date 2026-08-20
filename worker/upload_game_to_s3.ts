@@ -3,7 +3,6 @@
  * DS207: Consider shorter variations of null checks
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
  */
-const Promise = require('bluebird');
 const _ = require('underscore');
 const colors = require('colors');
 const url = require('url');

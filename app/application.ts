@@ -20,7 +20,6 @@ const App = new Backbone.Marionette.Application();
 
 // require Firebase via browserify but temporarily alias it global scope
 const Firebase = (window.Firebase = require('app/firebase'));
-const Promise = require('bluebird');
 const moment = require('moment');
 const semver = require('semver');
 const querystring = require('query-string');
@@ -204,7 +203,7 @@ if (process.env.AI_TOOLS_ENABLED) {
       return resolve(actions);
     });
 
-    return request.fail((jqXHR) => {
+    request.fail((jqXHR) => {
       let errorMessage;
       if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
         errorMessage = jqXHR.responseJSON.message;
@@ -235,7 +234,7 @@ if (process.env.AI_TOOLS_ENABLED) {
       return resolve(sequenceActionsData);
     });
 
-    return request.fail((jqXHR) => {
+    request.fail((jqXHR) => {
       let errorMessage;
       if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
         errorMessage = jqXHR.responseJSON.message;
@@ -282,7 +281,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
       request.done((res) => resolve());
 
-      return request.fail((jqXHR) => {
+      request.fail((jqXHR) => {
         let errorMessage;
         if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
           errorMessage = jqXHR.responseJSON.message;
@@ -341,7 +340,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
         request.done((res) => resolve(JSON.parse(res.game_session_data)));
 
-        return request.fail((jqXHR) => {
+        request.fail((jqXHR) => {
           let errorMessage;
           if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
             errorMessage = jqXHR.responseJSON.message;
@@ -420,7 +419,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
         request.done((res) => resolve());
 
-        return request.fail((jqXHR) => {
+        request.fail((jqXHR) => {
           let errorMessage;
           if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
             errorMessage = jqXHR.responseJSON.message;
@@ -480,7 +479,7 @@ if (process.env.AI_TOOLS_ENABLED) {
           return resolve([]);
         });
 
-        return request.fail((jqXHR) => {
+        request.fail((jqXHR) => {
           let errorMessage;
           if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
             errorMessage = jqXHR.responseJSON.message;
@@ -549,7 +548,7 @@ if (process.env.AI_TOOLS_ENABLED) {
 
       request.done((res) => resolve());
 
-      return request.fail((jqXHR) => {
+      request.fail((jqXHR) => {
         let errorMessage;
         if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
           errorMessage = jqXHR.responseJSON.message;
@@ -1484,7 +1483,7 @@ App.spectateBuddyGame = (buddyId) => new Promise((resolve, reject) => {
     return resolve(response);
   });
 
-  return request.fail((response) => {
+  request.fail((response) => {
     const error = (response && response.responseJSON && response.responseJSON.error) || 'SPECTATE request failed';
     EventBus.getInstance().trigger(EVENTS.ajax_error, error);
     return reject(new Error(error));
@@ -1677,7 +1676,7 @@ App._findingGame = function (gameMatchRequestData) {
       });
     };
 
-    return GamesManager.getInstance().once('found_game', onFoundGame);
+    GamesManager.getInstance().once('found_game', onFoundGame);
   }));
 
   // wait show finding game and found game, then join found game
@@ -1759,7 +1758,7 @@ App._resumeGame = function (lastGameModel) {
     });
 
     // listen for cancel
-    return gameResumeItemView.listenTo(NavigationManager.getInstance(), EVENTS.user_triggered_cancel, () => {
+    gameResumeItemView.listenTo(NavigationManager.getInstance(), EVENTS.user_triggered_cancel, () => {
       if (!NavigationManager.getInstance().getIsShowingModalView()) { return onCancelContinueGame(); }
     });
   });
@@ -1832,7 +1831,7 @@ App._startSinglePlayerGame = function (myPlayerDeck, myPlayerFactionId, myPlayer
 
     request.done((res) => resolve(res));
 
-    return request.fail((jqXHR) => reject((jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) || 'Connection error. Please retry.'));
+    request.fail((jqXHR) => reject((jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) || 'Connection error. Please retry.'));
   }));
 
   // init finding game view
@@ -1915,7 +1914,7 @@ App._startBossBattleGame = function (myPlayerDeck, myPlayerFactionId, myPlayerGe
 
     request.done((res) => resolve(res));
 
-    return request.fail((jqXHR) => reject((jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) || 'Connection error. Please retry.'));
+    request.fail((jqXHR) => reject((jqXHR && jqXHR.responseJSON && (jqXHR.responseJSON.error || jqXHR.responseJSON.message)) || 'Connection error. Please retry.'));
   });
 
   // get ui promise
@@ -1988,7 +1987,7 @@ App._startGameForReplay = function (replayData) {
           contentType: 'application/json',
           dataType: 'json',
         });
-        return request.done((response) => resolve(response)).fail((response) => reject(new Error(`Error downloading replay data: ${__guard__(response != null ? response.responseJSON : undefined, (x) => x.message)}`)));
+        request.done((response) => resolve(response)).fail((response) => reject(new Error(`Error downloading replay data: ${__guard__(response != null ? response.responseJSON : undefined, (x) => x.message)}`)));
       });
     })
     .then(function (replayResponseData) {
@@ -2079,7 +2078,7 @@ App._subscribeToJoinGameEventsPromise = function () {
     });
 
     // wait for reconnect_failed event
-    return NetworkManager.getInstance().getEventBus().once(EVENTS.reconnect_failed, () => // reject and cancel reconnect
+    NetworkManager.getInstance().getEventBus().once(EVENTS.reconnect_failed, () => // reject and cancel reconnect
       reject('Reconnect failed!'));
   }).finally(() => // reset join game listeners
     App._unsubscribeFromJoinGameEvents());
@@ -2708,9 +2707,9 @@ App._startLoadingGameOverData = function () {
     if ((lastGameModel != null) && SDK.GameType.isNetworkGameType(gameSession.getGameType())) {
       // lastGameModel.onSyncOrReady().then ()->
       if (isGameReady(lastGameModel.attributes, lastGameModel.attributes.job_status || {})) {
-        return resolve([lastGameModel, null]);
+        resolve([lastGameModel, null]);
       }
-      return lastGameModel.on('change', () => {
+      lastGameModel.on('change', () => {
         if (isGameReady(lastGameModel.attributes, lastGameModel.attributes.job_status || {})) {
           lastGameModel.off('change');
           return resolve([lastGameModel, null]);
@@ -2721,20 +2720,20 @@ App._startLoadingGameOverData = function () {
       if (gameSession.getChallenge() instanceof SDK.ChallengeRemote && gameSession.getChallenge().isDaily) {
         // Don't process daily challenges run by qa tool
         if (gameSession.getChallenge()._generatedForQA) {
-          return resolve([null, null]);
+          resolve([null, null]);
         }
-        return ProgressionManager.getInstance().completeDailyChallenge(challengeId).then((challengeData) => {
+        ProgressionManager.getInstance().completeDailyChallenge(challengeId).then((challengeData) => {
           const challengeModel = new Backbone.Model(challengeData);
           return resolve([null, challengeModel]);
         });
       }
-      return ProgressionManager.getInstance().completeChallengeWithType(challengeId).then((challengeData) => {
+      ProgressionManager.getInstance().completeChallengeWithType(challengeId).then((challengeData) => {
         NewPlayerManager.getInstance().setHasSeenBloodbornSpellInfo();
         const challengeModel = new Backbone.Model(challengeData);
         return resolve([null, challengeModel]);
       });
     }
-    return resolve([null, null]);
+    resolve([null, null]);
   });
 
   return App._gameOverDataThenable = PromiseUtils.withTimeout(whenGameJobsProcessedAsync
@@ -3082,7 +3081,7 @@ App.showAchievementCompletions = function () {
     App.setCallbackWhenCancel(locResolve);
 
     // show reward
-    return App.showProgressReward(completedAchievementModel);
+    App.showProgressReward(completedAchievementModel);
   }).then(() => App.showAchievementCompletions());
 };
 
@@ -3103,7 +3102,7 @@ App.showTwitchRewards = function () {
     App.setCallbackWhenCancel(locResolve);
 
     // show reward
-    return App.showProgressReward(twitchRewardModel);
+    App.showProgressReward(twitchRewardModel);
   }).then(() => App.showTwitchRewards());
 };
 
@@ -3125,12 +3124,12 @@ App.showEndOfSeasonRewards = function () {
 
       if (bonusChevrons === 0) {
         // If there is no rewards we exit here
-        return locResolve();
+        locResolve();
       }
       Logger.module('APPLICATION').log('App:showEndOfSeasonRewards');
 
       const endOfSeasonLayer = new EndOfSeasonLayer(seasonModel);
-      return Promise.all([
+      Promise.all([
         NavigationManager.getInstance().destroyContentView(),
         NavigationManager.getInstance().destroyDialogView(),
         Scene.getInstance().showOverlay(endOfSeasonLayer),
@@ -4082,7 +4081,7 @@ App.getMinBrowserVersions = function () {
       5000,
     );
 
-    return minBrowserVersionRef.once('value', (snapshot) => {
+    minBrowserVersionRef.once('value', (snapshot) => {
       clearTimeout(minBrowserVersionTimeout);
       if (!snapshot.val()) {
         return resolve(defaults);

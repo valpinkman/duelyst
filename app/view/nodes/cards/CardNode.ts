@@ -1,6 +1,5 @@
 // pragma PKGS: card
 
-const Promise = require('bluebird');
 const Logger = require('app/common/logger');
 const CONFIG = require('app/common/config');
 const EVENTS = require('app/common/event_types');
