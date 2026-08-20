@@ -1216,7 +1216,7 @@ class RiftModule {
           }
 
           if (existingRun.disable_storing_upgrade === true) {
-            throw new Errors.BadRequestError(`User ${userId} can not store current upgrade for rift run ${riftRicketId}`);
+            throw new Errors.BadRequestError(`User ${userId} can not store current upgrade for rift run ${riftTicketId}`);
           }
 
           _chainState.storedCardChoices = existingRun.card_choices;

@@ -1121,7 +1121,18 @@ class QuestsModule {
    * @param  {Moment}    systemTime      Pass in the current system time to use to generate quests. Used only for testing.
    * @return  {Promise}              Promise.
    */
-  static _setQuestProgress(txPromise, tx, quest, progressAmount, gameId, systemTime) {
+  /*
+   * NOTE: `gameSessionData` is accepted but no caller passes it yet.
+   *
+   * The reset branch below referenced a `gameSessionData` that was never a
+   * parameter of this function -- not here and not in the CoffeeScript original
+   * -- so reaching it threw ReferenceError and failed the WHOLE quest progress
+   * update rather than resetting one quest's progress. Declaring it as a
+   * parameter makes the null check below legal, turning a guaranteed crash into
+   * the documented no-op, and leaves an obvious place for a caller to supply
+   * the game data when streak-reset is implemented properly.
+   */
+  static _setQuestProgress(txPromise, tx, quest, progressAmount, gameId, systemTime, gameSessionData = null) {
     const _chainState: Record<string, any> = {};
     const MOMENT_NOW_UTC = systemTime || moment().utc();
 
@@ -1227,7 +1238,7 @@ class QuestsModule {
       }
 
     // Checks if a quest's progress should be reset, such as in the case of a broken streak
-    } else if (questModel.shouldResetProgress(gameSessionData, progressAmount)) {
+    } else if (gameSessionData != null && questModel.shouldResetProgress(gameSessionData, progressAmount)) {
       Logger.module('QuestsModule').debug(`_setQuestProgress() -> quest[${quest.quest_slot_index}] progress is reset: ${questModel.getName()} User ${quest.user_id.blue}. Game [G:${gameId}].`.yellow);
 
       quest.progress = 0;

@@ -253,7 +253,19 @@ class SyncModule {
           }),
         ];
 
-        const referralCode = typeof referralCodeRow !== 'undefined' && referralCodeRow !== null ? referralCodeRow.code : undefined;
+        /*
+         * UPSTREAM GAP, left as-is deliberately. `referralCodeRow` was never
+         * defined here (nor in the CoffeeScript original, which wrote
+         * `referralCodeRow?.code`). CoffeeScript's `?.` compiles to a
+         * typeof-guard, so this never threw -- it just always evaluated to
+         * undefined, which means the referral_events cleanup below has never
+         * run and those rows are orphaned on user reset.
+         *
+         * Fixing it means deciding which referral code to look up and adding a
+         * query, which is a behaviour change rather than a typing fix, so it is
+         * catalogued in MODERNIZATION_PLAN.md instead of guessed at here.
+         */
+        const referralCode = null;
         if (referralCode != null) {
           allPromises.push(knex('referral_events').where('code', referralCode).delete());
         }
@@ -779,7 +791,7 @@ class SyncModule {
             var item = _chainState.factionProgression[i];
             map[i] = item;
           }
-          _chainState.factionProgression = m;
+          _chainState.factionProgression = map;
         }
 
         Logger.module('UsersModule').timeEnd('_syncUserFromFirebaseToSQL() -> firebase data loaded');

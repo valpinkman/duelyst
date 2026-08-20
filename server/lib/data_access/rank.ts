@@ -729,7 +729,7 @@ class RankModule {
           });
       }), 10000)
       .catch(onType(PromiseUtils.TimeoutError, function (e) {
-        Logger.module('RankModule').error(`updateUsersRatingsWithGameOutcome() -> ERROR, operation timeout for u:${userId} g:${gameId}`);
+        Logger.module('RankModule').error(`updateUsersRatingsWithGameOutcome() -> ERROR, operation timeout for u:${player1Id} vs u:${player2Id} g:${gameId}`);
         throw e;
       })))
       .then(() => DuelystFirebase.connect().getRootRef())

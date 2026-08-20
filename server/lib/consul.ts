@@ -40,7 +40,7 @@ class Consul {
     return PromiseUtils.nodeify(new Promise((resolve, reject) => request.get(this.aiServiceHealthUrl).end(function (err, res) {
       if ((res != null) && (res.status >= 400)) {
         // Network failure, we should probably return a more intuitive error object
-        Logger.module('CONSUL').debug(`ERROR! Failed to connect to Consul, kv.get(${key}) failed: ${res.status} `.red);
+        Logger.module('CONSUL').debug(`ERROR! Failed to connect to Consul, get(${this.aiServiceHealthUrl}) failed: ${res.status} `.red);
         return reject(new Error('Failed to connect to Consul.'));
       } else if (err) {
         // Internal failure

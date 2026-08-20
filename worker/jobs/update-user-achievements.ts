@@ -7,6 +7,7 @@
 /*
 Job - Update User Ranking
 */
+const moment = require('moment');
 const config = require('../../config/config.js');
 const AchievementsModule = require('../../server/lib/data_access/achievements');
 const DuelystFirebase = require('../../server/lib/duelyst_firebase_module');

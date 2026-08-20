@@ -1272,7 +1272,7 @@ class InventoryModule {
 
     // userId must be defined
     if (!tx) {
-      Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> invalid trx - ${trx}.`.red);
+      Logger.module('InventoryModule').debug(`addRemainingOrbsForCardSetToUser() -> invalid tx - ${tx}.`.red);
       return Promise.reject(new Error('Can not add complete card set : invalid transaction parameter'));
     }
 
