@@ -33,6 +33,16 @@ const defaults = { name: randomKey() };
  * Contains 5 timeseries to queue velocity by division
  */
 module.exports = (RedisPlayerQueue = class RedisPlayerQueue {
+  declare name: any;
+  declare queue: any;
+  declare redis: any;
+  declare ts_bronze: any;
+  declare ts_casual: any;
+  declare ts_diamond: any;
+  declare ts_elite: any;
+  declare ts_gauntlet: any;
+  declare ts_gold: any;
+  declare ts_silver: any;
   /**
    * Constructor
    * Gives itself a random name if none specified

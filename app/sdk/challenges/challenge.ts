@@ -19,6 +19,7 @@ const BattleMapTemplate = require('app/sdk/battleMapTemplate');
 const i18next = require('i18next');
 
 class Challenge {
+  declare _snapShotData: any;
   declare type: any;
   declare name: any;
   declare description: any;

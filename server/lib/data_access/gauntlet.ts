@@ -29,6 +29,7 @@ const PromiseUtils = require('../../../app/common/utils/utils_promise');
 const { onType } = require('../../../app/common/utils/utils_promise');
 
 class GauntletModule {
+  declare static rewardMap: any;
   declare static _GAUNTLET_SPIRIT_ORB_REWARD_SETS: any;
 
   static GAUNTLET_TICKET_GOLD_PRICE = 0;

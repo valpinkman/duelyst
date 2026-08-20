@@ -62,6 +62,9 @@ try {
 }
 
 class DuelystFirebaseModule {
+  declare firebaseUrl: any;
+  declare key: any;
+  declare promise: any;
   static apps = {};
 
   // Connect to a Firebase URL, returns connection if already exists

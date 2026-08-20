@@ -43,6 +43,7 @@ const expireAtTimeForSeasonStart = function (seasonStartMoment) {
  * ttl sets the expiration time of keys, defaults to 72 hours
  */
 class RedisSRankManager {
+  declare redis: any;
   static unitTestMode = false;
 
   /**

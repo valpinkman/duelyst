@@ -37,6 +37,7 @@ const createTokenId = function () {
  * Tokens are stored as hashes (objects) in Redis
  */
 class RedisTokenManager {
+  declare redis: any;
   /**
    * Constructor
    * @param {Object} redis, an ioredis client

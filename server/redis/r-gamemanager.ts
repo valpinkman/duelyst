@@ -31,6 +31,7 @@ const keyPrefixForMouseUIData = () => `${env}:games_mouse_ui_data:`;
  * ttl sets the expiration time of keys, defaults to 72 hours
  */
 class RedisGameManager {
+  declare redis: any;
   /**
    * Constructor
    * @param {Object} redis, a promisified redis connection

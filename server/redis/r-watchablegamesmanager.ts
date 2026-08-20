@@ -22,6 +22,7 @@ const keyPrefix = () => `${env}:watchable_games:`;
  * ttl sets the expiration time of keys, defaults to 72 hours
  */
 class RedisWatchableGamesManager {
+  declare redis: any;
   /**
    * Constructor
    * @param {Object} redis, a promisified redis connection

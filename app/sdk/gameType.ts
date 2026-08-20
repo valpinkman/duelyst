@@ -6,6 +6,16 @@
 var GameType = (function () {
   let GameFormat;
   GameType = class GameType {
+    declare static BossBattle: any;
+    declare static Casual: any;
+    declare static Challenge: any;
+    declare static Friendly: any;
+    declare static FriendlyLegacy: any;
+    declare static Gauntlet: any;
+    declare static Ranked: any;
+    declare static Rift: any;
+    declare static Sandbox: any;
+    declare static SinglePlayer: any;
     static initClass() {
       this.Ranked = 'ranked';
       this.Casual = 'casual';

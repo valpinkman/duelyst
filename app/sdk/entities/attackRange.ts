@@ -26,6 +26,8 @@ var AttackRange = (function () {
 
       // collections of attack maps for a entity and any number of potential attack positions
       AttackAtlas = class AttackAtlas {
+        declare _losByIndex: any;
+        declare _validTargetEntities: any;
         declare board: any;
         declare entity: any;
         declare positions: any;

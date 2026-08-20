@@ -35,6 +35,10 @@ const defaults = { name: randomKey() };
  * Since values must be unique, we also prefix the value w/ the timestamp
  */
 module.exports = (RedisTimeSeries = class RedisTimeSeries {
+  declare createdAt: any;
+  declare name: any;
+  declare redis: any;
+  declare ts: any;
   /**
    * Constructor
    * Gives itself a random name if none specified

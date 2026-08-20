@@ -24,6 +24,8 @@ var MovementRange = (function () {
       this.prototype._pathsToPositionsByIndex = null;
 
       _MoveNode = class _MoveNode {
+        declare _position: any;
+        declare pathTo: any;
         constructor(_position, parent) {
           this._position = _position;
           this.pathTo = (parent != null) ? parent.pathTo.slice() : [];

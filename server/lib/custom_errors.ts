@@ -9,6 +9,8 @@
  */
 
 class NotFoundError extends Error {
+  declare description: any;
+  declare status: any;
   constructor(message = 'Not Found.') {
     super(message);
     this.message = message;

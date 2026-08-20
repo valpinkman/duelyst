@@ -16,6 +16,8 @@ const keyPrefix = () => `${env}:matchmaking:`;
  * New list is created for each inviteId
  */
 module.exports = (RedisInviteQueue = class RedisInviteQueue {
+  declare list: any;
+  declare redis: any;
   /**
    * Constructor
    * Gives itself a random name if none specified

@@ -40,6 +40,7 @@ const expireAtTime = function (systemTime) {
  * ttl sets the expiration time of keys, defaults to 2 weeks
  */
 class RedisRiftManager {
+  declare redis: any;
   static unitTestMode = false;
 
   /**
